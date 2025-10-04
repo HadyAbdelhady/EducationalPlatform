@@ -10,6 +10,10 @@ namespace Application.Features.Auth.Commands.StudentGoogleSignUp
                 .NotEmpty()
                 .WithMessage("Google ID token is required.");
 
+            RuleFor(x => x.Ssn)
+                .NotEmpty()
+                .WithMessage("SSN is required.");
+
             RuleFor(x => x.DeviceId)
                 .NotEmpty()
                 .WithMessage("Device ID is required for student accounts.");

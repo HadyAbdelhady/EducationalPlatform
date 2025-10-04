@@ -27,7 +27,13 @@ namespace Infrastructure.Repositories
 
         public async Task<User> CreateAsync(User user, CancellationToken cancellationToken = default)
         {
+            // Explicitly add the user entity
             await _context.Users.AddAsync(user, cancellationToken);
+            
+            // EF Core will automatically track related entities (Student/Instructor) 
+            // through navigation properties, but we ensure change detection is enabled
+            _context.ChangeTracker.DetectChanges();
+            
             return user;
         }
 

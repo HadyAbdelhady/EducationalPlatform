@@ -49,7 +49,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleSignUp
             {
                 UserId = user.Id,
                 DeviceId = request.DeviceId,
-                ScreenshotTrial = 0,
+                ScreenshotTrial = 0
             };
 
             user.Student = student;

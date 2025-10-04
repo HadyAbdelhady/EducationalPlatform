@@ -35,14 +35,6 @@ namespace Edu_Base
             // Service Registration
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 
-            // Google Authentication Configuration
-            builder.Services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    options.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? throw new InvalidOperationException("Google ClientId is not configured");
-                    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? string.Empty;
-                });
-
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>
             {
@@ -83,7 +75,6 @@ namespace Edu_Base
 
             app.UseCors("AllowAll");
 
-            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

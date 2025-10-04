@@ -61,7 +61,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
                 var instructor = new Instructor
                 {
-                    UserId = user.Id,
+                    UserId = user.Id
                 };
 
                 user.Instructor = instructor;

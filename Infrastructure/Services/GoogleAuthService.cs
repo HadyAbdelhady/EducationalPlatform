@@ -5,14 +5,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Services
 {
-    public class GoogleAuthService : IGoogleAuthService
+    public class GoogleAuthService(IConfiguration configuration) : IGoogleAuthService
     {
-        private readonly IConfiguration _configuration;
-
-        public GoogleAuthService(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<GoogleUserInfo?> ValidateGoogleTokenAsync(string idToken, CancellationToken cancellationToken = default)
         {
@@ -28,7 +23,7 @@ namespace Infrastructure.Services
                 // Validate the token with Google
                 var validationSettings = new GoogleJsonWebSignature.ValidationSettings
                 {
-                    Audience = new[] { clientId }
+                    Audience = [clientId]
                 };
 
                 var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, validationSettings);

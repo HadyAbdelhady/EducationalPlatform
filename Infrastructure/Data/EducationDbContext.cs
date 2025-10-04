@@ -1,13 +1,11 @@
-﻿using System;
+using System;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
-    public class EducationDbContext : DbContext
+    public class EducationDbContext(DbContextOptions<EducationDbContext> options) : DbContext(options)
     {
-        public EducationDbContext(DbContextOptions<EducationDbContext> options) : base(options) { }
-
         public DbSet<User> Users => Set<User>();
         public DbSet<Student> Students => Set<Student>();
         public DbSet<Instructor> Instructors => Set<Instructor>();

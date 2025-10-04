@@ -16,7 +16,7 @@ namespace Edu_Base.Controllers
 
         [HttpPost("google-signup")]
         public async Task<IActionResult> GoogleSignUp(
-            [FromBody] InstructorGoogleLoginRequest request,
+            [FromBody] InstructorGoogleSignUpRequest request,
             CancellationToken cancellationToken)
         {
             try
@@ -27,6 +27,7 @@ namespace Edu_Base.Controllers
                 {
                     IdToken = request.IdToken,
                     PhoneNumber = request.PhoneNumber,
+                    Ssn = request.Ssn,
                     DateOfBirth = request.DateOfBirth,
                     Gender = request.Gender,
                     EducationYear = request.EducationYear,

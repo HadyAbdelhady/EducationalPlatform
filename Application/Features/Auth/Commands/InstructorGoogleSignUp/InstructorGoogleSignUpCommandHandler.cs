@@ -47,7 +47,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleSignUp
 
             var instructor = new Instructor
             {
-                UserId = user.Id,
+                UserId = user.Id
             };
 
             user.Instructor = instructor;
