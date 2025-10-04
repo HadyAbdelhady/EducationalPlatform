@@ -9,18 +9,12 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
     /// Handles the student Google login command.
     /// Validates the Google token, creates or updates the student account, and returns authentication response.
     /// </summary>
-    public class StudentGoogleLoginCommandHandler : IRequestHandler<StudentGoogleLoginCommand, AuthenticationResponse>
+    public class StudentGoogleLoginCommandHandler(
+        IGoogleAuthService googleAuthService,
+        IUserRepository userRepository) : IRequestHandler<StudentGoogleLoginCommand, AuthenticationResponse>
     {
-        private readonly IGoogleAuthService _googleAuthService;
-        private readonly IUserRepository _userRepository;
-
-        public StudentGoogleLoginCommandHandler(
-            IGoogleAuthService googleAuthService,
-            IUserRepository userRepository)
-        {
-            _googleAuthService = googleAuthService;
-            _userRepository = userRepository;
-        }
+        private readonly IGoogleAuthService _googleAuthService = googleAuthService;
+        private readonly IUserRepository _userRepository = userRepository;
 
         /// <summary>
         /// Handles the student Google login process.
@@ -52,7 +46,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 {
                     Id = Guid.NewGuid(),
                     FullName = googleUserInfo.FullName,
-                    Ssn = string.Empty, // Will be updated later if needed
+                    Ssn = request.Ssn, // Will be updated later if needed
                     PhoneNumber = request.PhoneNumber,
                     GmailExternal = googleUserInfo.Email,
                     PersonalPictureUrl = googleUserInfo.PictureUrl,
@@ -70,9 +64,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                     UserId = user.Id,
                     DeviceId = request.DeviceId,
                     ScreenshotTrial = 0,
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    UpdatedAt = DateTimeOffset.UtcNow,
-                    IsDeleted = false
+                   
                 };
 
                 user.Student = student;
@@ -90,7 +82,6 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 if (user.Student != null && user.Student.DeviceId != request.DeviceId)
                 {
                     user.Student.DeviceId = request.DeviceId;
-                    user.Student.UpdatedAt = DateTimeOffset.UtcNow;
                 }
 
                 await _userRepository.UpdateAsync(user, cancellationToken);

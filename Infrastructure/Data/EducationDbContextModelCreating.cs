@@ -40,9 +40,6 @@ namespace Infrastructure.Data
                 b.Property(x => x.UserId).HasColumnName("user_id");
                 b.Property(x => x.DeviceId).HasColumnName("device_id");
                 b.Property(x => x.ScreenshotTrial).HasColumnName("screenshot_trial");
-                b.Property(x => x.CreatedAt).HasColumnName("created_at");
-                b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
-                b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasOne(x => x.User).WithOne(x => x.Student).HasForeignKey<Student>(x => x.UserId).HasConstraintName("students_user_id_fkey");
             });
 
@@ -51,9 +48,6 @@ namespace Infrastructure.Data
                 b.ToTable("instructors");
                 b.HasKey(x => x.UserId).HasName("instructors_pkey");
                 b.Property(x => x.UserId).HasColumnName("user_id");
-                b.Property(x => x.CreatedAt).HasColumnName("created_at");
-                b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
-                b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasOne(x => x.User).WithOne(x => x.Instructor).HasForeignKey<Instructor>(x => x.UserId).HasConstraintName("instructors_user_id_fkey");
             });
 

@@ -50,9 +50,6 @@ namespace Application.Features.Auth.Commands.StudentGoogleSignUp
                 UserId = user.Id,
                 DeviceId = request.DeviceId,
                 ScreenshotTrial = 0,
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow,
-                IsDeleted = false
             };
 
             user.Student = student;

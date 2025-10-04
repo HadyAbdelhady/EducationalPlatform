@@ -9,18 +9,12 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
     /// Handles the instructor Google login command.
     /// Validates the Google token, creates or updates the instructor account, and returns authentication response.
     /// </summary>
-    public class InstructorGoogleLoginCommandHandler : IRequestHandler<InstructorGoogleLoginCommand, AuthenticationResponse>
+    public class InstructorGoogleLoginCommandHandler(
+        IGoogleAuthService googleAuthService,
+        IUserRepository userRepository) : IRequestHandler<InstructorGoogleLoginCommand, AuthenticationResponse>
     {
-        private readonly IGoogleAuthService _googleAuthService;
-        private readonly IUserRepository _userRepository;
-
-        public InstructorGoogleLoginCommandHandler(
-            IGoogleAuthService googleAuthService,
-            IUserRepository userRepository)
-        {
-            _googleAuthService = googleAuthService;
-            _userRepository = userRepository;
-        }
+        private readonly IGoogleAuthService _googleAuthService = googleAuthService;
+        private readonly IUserRepository _userRepository = userRepository;
 
         /// <summary>
         /// Handles the instructor Google login process.
@@ -33,7 +27,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
         {
             // Validate Google ID token
             var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
-            
+
             if (googleUserInfo == null || !googleUserInfo.EmailVerified)
             {
                 throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
@@ -41,7 +35,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
             // Check if user already exists
             var existingUser = await _userRepository.GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
-            
+
             bool isNewUser = existingUser == null;
             User user;
 
@@ -68,13 +62,10 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 var instructor = new Instructor
                 {
                     UserId = user.Id,
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    UpdatedAt = DateTimeOffset.UtcNow,
-                    IsDeleted = false
                 };
 
                 user.Instructor = instructor;
-                
+
                 await _userRepository.CreateAsync(user, cancellationToken);
             }
             else
@@ -83,7 +74,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 user = existingUser;
                 user.UpdatedAt = DateTimeOffset.UtcNow;
                 user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
-                
+
                 await _userRepository.UpdateAsync(user, cancellationToken);
             }
 

@@ -9,23 +9,12 @@ namespace Edu_Base.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class InstructorAuthController : ControllerBase
+    public class InstructorAuthController(IMediator mediator, ILogger<InstructorAuthController> logger) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<InstructorAuthController> _logger;
-
-        public InstructorAuthController(IMediator mediator, ILogger<InstructorAuthController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
+        private readonly IMediator _mediator = mediator;
+        private readonly ILogger<InstructorAuthController> _logger = logger;
 
         [HttpPost("google-signup")]
-        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GoogleSignUp(
             [FromBody] InstructorGoogleLoginRequest request,
             CancellationToken cancellationToken)
@@ -70,10 +59,6 @@ namespace Edu_Base.Controllers
         }
 
         [HttpPost("google-login")]
-        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GoogleLogin(
             [FromBody] InstructorGoogleLoginRequest request,
             CancellationToken cancellationToken)
@@ -112,10 +97,8 @@ namespace Edu_Base.Controllers
                 return StatusCode(500, new { message = "An error occurred during authentication" });
             }
         }
+       
         [HttpPost("logout")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Logout(
             [FromBody] Guid userId,
             CancellationToken cancellationToken)

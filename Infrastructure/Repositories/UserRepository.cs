@@ -5,14 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(EducationDbContext context) : IUserRepository
     {
-        private readonly EducationDbContext _context;
-
-        public UserRepository(EducationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly EducationDbContext _context = context;
 
         public async Task<User?> GetByGoogleEmailAsync(string email, CancellationToken cancellationToken = default)
         {
