@@ -9,5 +9,7 @@ namespace Application.DTOs.Auth
         public string UserRole { get; set; } = string.Empty;
         public bool IsNewUser { get; set; }
         public DateTimeOffset AuthenticatedAt { get; set; }
+        public string Token { get; set; } = string.Empty; // JWT Token for subsequent API calls
+        public DateTime TokenExpiresAt { get; set; }
     }
 }

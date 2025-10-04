@@ -11,10 +11,12 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
     /// </summary>
     public class InstructorGoogleLoginCommandHandler(
         IGoogleAuthService googleAuthService,
-        IUserRepository userRepository) : IRequestHandler<InstructorGoogleLoginCommand, AuthenticationResponse>
+        IUserRepository userRepository,
+        IJwtTokenService jwtTokenService) : IRequestHandler<InstructorGoogleLoginCommand, AuthenticationResponse>
     {
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IUserRepository _userRepository = userRepository;
+        private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
         /// <summary>
         /// Handles the instructor Google login process.
@@ -80,6 +82,16 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
             await _userRepository.SaveChangesAsync(cancellationToken);
 
+            // Generate JWT token
+            var token = _jwtTokenService.GenerateToken(
+                userId: user.Id,
+                email: user.GmailExternal ?? string.Empty,
+                role: "Instructor",
+                fullName: user.FullName
+            );
+
+            var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+
             // Return authentication response
             return new AuthenticationResponse
             {
@@ -89,7 +101,9 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 ProfilePictureUrl = user.PersonalPictureUrl,
                 UserRole = "Instructor",
                 IsNewUser = isNewUser,
-                AuthenticatedAt = DateTimeOffset.UtcNow
+                AuthenticatedAt = DateTimeOffset.UtcNow,
+                Token = token,
+                TokenExpiresAt = tokenExpiration
             };
         }
     }

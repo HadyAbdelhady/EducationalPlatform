@@ -3,22 +3,25 @@
   "WorkspaceRootPath": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\services\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\data\\educationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\controllers\\instructorauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\instructorauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\features\\auth\\commands\\instructorgooglesignup\\instructorgooglesignupcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\features\\auth\\commands\\instructorgooglesignup\\instructorgooglesignupcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\data\\educationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -28,7 +31,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 233,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 12,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,40 +69,40 @@
               "RelativeDocumentMoniker": "Controllers\\InstructorAuthController.cs",
               "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\InstructorAuthController.cs",
               "RelativeToolTip": "Controllers\\InstructorAuthController.cs",
-              "ViewState": "AgIAACAAAAAAAAAAAAAewDYAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAWwCoAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-04T14:46:38.942Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "InstructorGoogleSignUpCommandHandler.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\InstructorGoogleSignUp\\InstructorGoogleSignUpCommandHandler.cs",
               "RelativeDocumentMoniker": "..\\Application\\Features\\Auth\\Commands\\InstructorGoogleSignUp\\InstructorGoogleSignUpCommandHandler.cs",
               "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\InstructorGoogleSignUp\\InstructorGoogleSignUpCommandHandler.cs",
               "RelativeToolTip": "..\\Application\\Features\\Auth\\Commands\\InstructorGoogleSignUp\\InstructorGoogleSignUpCommandHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABIAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-04T15:46:06.874Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Program.cs*",
-              "RelativeToolTip": "Program.cs*",
-              "ViewState": "AgIAABkAAAAAAAAAAAAewDAAAAAuAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAwwDsAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-04T15:50:12.575Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -112,15 +115,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "EducationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Data\\EducationDbContext.cs",
               "RelativeDocumentMoniker": "..\\Infrastructure\\Data\\EducationDbContext.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Data\\EducationDbContext.cs*",
-              "RelativeToolTip": "..\\Infrastructure\\Data\\EducationDbContext.cs*",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAwAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Data\\EducationDbContext.cs",
+              "RelativeToolTip": "..\\Infrastructure\\Data\\EducationDbContext.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAYAAABUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-04T16:19:02.716Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "JwtTokenService.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Services\\JwtTokenService.cs",
+              "RelativeDocumentMoniker": "..\\Infrastructure\\Services\\JwtTokenService.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Services\\JwtTokenService.cs*",
+              "RelativeToolTip": "..\\Infrastructure\\Services\\JwtTokenService.cs*",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAwBwAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-04T16:38:14.762Z",
               "EditorCaption": ""
             }
           ]

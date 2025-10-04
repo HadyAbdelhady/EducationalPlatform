@@ -11,10 +11,12 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
     /// </summary>
     public class StudentGoogleLoginCommandHandler(
         IGoogleAuthService googleAuthService,
-        IUserRepository userRepository) : IRequestHandler<StudentGoogleLoginCommand, AuthenticationResponse>
+        IUserRepository userRepository,
+        IJwtTokenService jwtTokenService) : IRequestHandler<StudentGoogleLoginCommand, AuthenticationResponse>
     {
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IUserRepository _userRepository = userRepository;
+        private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
         /// <summary>
         /// Handles the student Google login process.
@@ -88,6 +90,16 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
 
             await _userRepository.SaveChangesAsync(cancellationToken);
 
+            // Generate JWT token
+            var token = _jwtTokenService.GenerateToken(
+                userId: user.Id,
+                email: user.GmailExternal ?? string.Empty,
+                role: "Student",
+                fullName: user.FullName
+            );
+
+            var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+
             // Return authentication response
             return new AuthenticationResponse
             {
@@ -97,7 +109,9 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 ProfilePictureUrl = user.PersonalPictureUrl,
                 UserRole = "Student",
                 IsNewUser = isNewUser,
-                AuthenticatedAt = DateTimeOffset.UtcNow
+                AuthenticatedAt = DateTimeOffset.UtcNow,
+                Token = token,
+                TokenExpiresAt = tokenExpiration
             };
         }
     }

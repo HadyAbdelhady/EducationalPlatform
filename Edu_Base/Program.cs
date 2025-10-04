@@ -5,6 +5,9 @@ using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Edu_Base
 {
@@ -34,6 +37,7 @@ namespace Edu_Base
 
             // Service Registration
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+            builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>
@@ -46,6 +50,33 @@ namespace Edu_Base
                 });
             });
 
+            // JWT Authentication Configuration
+            var jwtSecretKey = builder.Configuration["Jwt:SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured");
+            var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "EducationalPlatform";
+            var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "EducationalPlatformUsers";
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtIssuer,
+                    ValidateAudience = true,
+                    ValidAudience = jwtAudience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            builder.Services.AddAuthorization();
+
             builder.Services.AddControllers();
             
             // Swagger/OpenAPI Configuration
@@ -56,7 +87,32 @@ namespace Edu_Base
                 {
                     Title = "Educational Platform API",
                     Version = "v1",
-                    Description = "API for Educational Platform with Google Authentication"
+                    Description = "API for Educational Platform with Google Authentication and JWT"
+                });
+
+                // Add JWT Authentication to Swagger
+                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.",
+                    Name = "Authorization",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                {
+                    {
+                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        {
+                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                            {
+                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
                 });
             });
 
@@ -75,6 +131,7 @@ namespace Edu_Base
 
             app.UseCors("AllowAll");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

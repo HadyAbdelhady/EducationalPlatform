@@ -7,10 +7,12 @@ namespace Application.Features.Auth.Commands.StudentGoogleSignUp
 {
     public class StudentGoogleSignUpCommandHandler(
         IGoogleAuthService googleAuthService,
-        IUserRepository userRepository) : IRequestHandler<StudentGoogleSignUpCommand, AuthenticationResponse>
+        IUserRepository userRepository,
+        IJwtTokenService jwtTokenService) : IRequestHandler<StudentGoogleSignUpCommand, AuthenticationResponse>
     {
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IUserRepository _userRepository = userRepository;
+        private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
         public async Task<AuthenticationResponse> Handle(StudentGoogleSignUpCommand request, CancellationToken cancellationToken)
         {
@@ -57,6 +59,16 @@ namespace Application.Features.Auth.Commands.StudentGoogleSignUp
             await _userRepository.CreateAsync(user, cancellationToken);
             await _userRepository.SaveChangesAsync(cancellationToken);
 
+            // Generate JWT token
+            var token = _jwtTokenService.GenerateToken(
+                userId: user.Id,
+                email: user.GmailExternal ?? string.Empty,
+                role: "Student",
+                fullName: user.FullName
+            );
+
+            var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+
             return new AuthenticationResponse
             {
                 UserId = user.Id,
@@ -65,7 +77,9 @@ namespace Application.Features.Auth.Commands.StudentGoogleSignUp
                 ProfilePictureUrl = user.PersonalPictureUrl,
                 UserRole = "Student",
                 IsNewUser = true,
-                AuthenticatedAt = DateTimeOffset.UtcNow
+                AuthenticatedAt = DateTimeOffset.UtcNow,
+                Token = token,
+                TokenExpiresAt = tokenExpiration
             };
         }
     }
