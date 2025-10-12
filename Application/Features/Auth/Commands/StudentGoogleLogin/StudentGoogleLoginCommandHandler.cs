@@ -74,16 +74,29 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
             }
             else
             {
-                // Update existing user
+                // Validate device ID for existing student
                 user = existingUser;
+                
+                if (user.Student != null)
+                {
+                    // Check if the deviceID matches the stored one
+                    if (!string.IsNullOrEmpty(user.Student.DeviceId) && 
+                        user.Student.DeviceId != request.DeviceId)
+                    {
+                        throw new UnauthorizedAccessException(
+                            "Login attempt detected from a different device. " +
+                            "Please use your registered device to access your account.");
+                    }
+                    
+                    // Update deviceID if it was null/empty (for backward compatibility)
+                    if (string.IsNullOrEmpty(user.Student.DeviceId))
+                    {
+                        user.Student.DeviceId = request.DeviceId;
+                    }
+                }
+                
                 user.UpdatedAt = DateTimeOffset.UtcNow;
                 user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
-
-                // Update student device if different
-                if (user.Student != null && user.Student.DeviceId != request.DeviceId)
-                {
-                    user.Student.DeviceId = request.DeviceId;
-                }
 
                 await _userRepository.UpdateAsync(user, cancellationToken);
             }

@@ -7,6 +7,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
     {
         public string IdToken { get; set; } = string.Empty;
 
+        public string Ssn { get; set; } = string.Empty;
+
         public string PhoneNumber { get; set; } = string.Empty;
 
         public DateOnly DateOfBirth { get; set; }

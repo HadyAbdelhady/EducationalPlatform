@@ -48,7 +48,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 {
                     Id = Guid.NewGuid(),
                     FullName = googleUserInfo.FullName,
-                    Ssn = string.Empty, // Will be updated later if needed
+                    Ssn = request.Ssn,
                     PhoneNumber = request.PhoneNumber,
                     GmailExternal = googleUserInfo.Email,
                     PersonalPictureUrl = googleUserInfo.PictureUrl,

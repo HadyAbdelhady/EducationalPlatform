@@ -1,7 +1,6 @@
 using Application.DTOs.Auth;
 using Application.Features.Auth.Commands.GoogleLogout;
 using Application.Features.Auth.Commands.StudentGoogleLogin;
-using Application.Features.Auth.Commands.StudentGoogleSignUp;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,16 +13,20 @@ namespace Edu_Base.Controllers
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<StudentAuthController> _logger = logger;
 
-        [HttpPost("google-signup")]
-        public async Task<IActionResult> GoogleSignUp(
-            [FromBody] StudentGoogleSignUpRequest request,
+        /// <summary>
+        /// Google login endpoint. Now consolidated with login - creates account if new, returns existing if already registered.
+        /// </summary>
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin(
+            [FromBody] StudentGoogleLoginRequest request,
             CancellationToken cancellationToken)
         {
             try
             {
-                _logger.LogInformation("Student Google signup attempt for device: {DeviceId}", request.DeviceId);
+                _logger.LogInformation("Student Google signup/login attempt for device: {DeviceId}", request.DeviceId);
 
-                var command = new StudentGoogleSignUpCommand
+                // Use the consolidated login command which handles both signup and login
+                var command = new StudentGoogleLoginCommand
                 {
                     IdToken = request.IdToken,
                     DeviceId = request.DeviceId,
@@ -38,53 +41,7 @@ namespace Edu_Base.Controllers
                 var result = await _mediator.Send(command, cancellationToken);
 
                 _logger.LogInformation(
-                    "Student Google signup successful. UserId: {UserId}",
-                    result.UserId);
-
-                return Ok(result);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                _logger.LogWarning(ex, "Unauthorized student Google signup attempt");
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                _logger.LogWarning(ex, "Student signup failed - user already exists");
-                return Conflict(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during student Google signup");
-                return StatusCode(500, new { message = "An error occurred during signup" });
-            }
-        }
-
-       
-        [HttpPost("google-login")]
-        public async Task<IActionResult> GoogleLogin(
-            [FromBody] StudentGoogleLoginRequest request,
-            CancellationToken cancellationToken)
-        {
-            try
-            {
-                _logger.LogInformation("Student Google login attempt for device: {DeviceId}", request.DeviceId);
-
-                var command = new StudentGoogleLoginCommand
-                {
-                    IdToken = request.IdToken,
-                    DeviceId = request.DeviceId,
-                    PhoneNumber = request.PhoneNumber,
-                    DateOfBirth = request.DateOfBirth,
-                    Gender = request.Gender,
-                    EducationYear = request.EducationYear,
-                    LocationMaps = request.LocationMaps
-                };
-
-                var result = await _mediator.Send(command, cancellationToken);
-
-                _logger.LogInformation(
-                    "Student Google login successful. UserId: {UserId}, IsNewUser: {IsNewUser}",
+                    "Student Google authentication successful. UserId: {UserId}, IsNewUser: {IsNewUser}",
                     result.UserId,
                     result.IsNewUser);
 
@@ -92,12 +49,12 @@ namespace Edu_Base.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger.LogWarning(ex, "Unauthorized student Google login attempt");
+                _logger.LogWarning(ex, "Unauthorized student Google authentication attempt");
                 return Unauthorized(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during student Google login");
+                _logger.LogError(ex, "Error during student Google authentication");
                 return StatusCode(500, new { message = "An error occurred during authentication" });
             }
         }
