@@ -33,6 +33,7 @@ namespace Infrastructure.Data
         public DbSet<Payment> Payments => Set<Payment>();
         public DbSet<ExamResult> ExamResults => Set<ExamResult>();
         public DbSet<StudentSubmission> StudentSubmissions => Set<StudentSubmission>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

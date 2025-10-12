@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Features.Auth.Commands.InstructorGoogleSignUp
 {
-    public class InstructorGoogleSignUpCommand : IRequest<AuthenticationResponse>
+    public record InstructorGoogleSignUpCommand : IRequest<AuthenticationResponse>
     {
         public string IdToken { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;

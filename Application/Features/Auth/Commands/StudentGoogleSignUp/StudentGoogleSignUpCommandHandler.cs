@@ -7,12 +7,11 @@ namespace Application.Features.Auth.Commands.StudentGoogleSignUp
 {
     public class StudentGoogleSignUpCommandHandler(
         IGoogleAuthService googleAuthService,
-        IUserRepository userRepository,
-        IJwtTokenService jwtTokenService) : IRequestHandler<StudentGoogleSignUpCommand, AuthenticationResponse>
+        IUserRepository userRepository) : IRequestHandler<StudentGoogleSignUpCommand, AuthenticationResponse>
     {
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IUserRepository _userRepository = userRepository;
-        private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
+        //private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
         public async Task<AuthenticationResponse> Handle(StudentGoogleSignUpCommand request, CancellationToken cancellationToken)
         {
@@ -60,14 +59,14 @@ namespace Application.Features.Auth.Commands.StudentGoogleSignUp
             await _userRepository.SaveChangesAsync(cancellationToken);
 
             // Generate JWT token
-            var token = _jwtTokenService.GenerateToken(
-                userId: user.Id,
-                email: user.GmailExternal ?? string.Empty,
-                role: "Student",
-                fullName: user.FullName
-            );
+            //var token = _jwtTokenService.GenerateToken(
+            //    userId: user.Id,
+            //    email: user.GmailExternal ?? string.Empty,
+            //    role: "Student",
+            //    fullName: user.FullName
+            //);
 
-            var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+            //var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
 
             return new AuthenticationResponse
             {
@@ -78,8 +77,8 @@ namespace Application.Features.Auth.Commands.StudentGoogleSignUp
                 UserRole = "Student",
                 IsNewUser = true,
                 AuthenticatedAt = DateTimeOffset.UtcNow,
-                Token = token,
-                TokenExpiresAt = tokenExpiration
+                //Token = token,
+                //TokenExpiresAt = tokenExpiration
             };
         }
     }

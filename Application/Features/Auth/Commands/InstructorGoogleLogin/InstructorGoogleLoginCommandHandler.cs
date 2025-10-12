@@ -92,6 +92,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
             var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
 
+           var refreshToken = await _jwtTokenService.GenerateRefreshToken(user.Id, cancellationToken);
+
             // Return authentication response
             return new AuthenticationResponse
             {
@@ -103,7 +105,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 IsNewUser = isNewUser,
                 AuthenticatedAt = DateTimeOffset.UtcNow,
                 Token = token,
-                TokenExpiresAt = tokenExpiration
+                TokenExpiresAt = tokenExpiration,
+                RefreshToken = refreshToken
             };
         }
     }

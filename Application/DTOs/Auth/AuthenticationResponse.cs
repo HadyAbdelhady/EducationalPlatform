@@ -11,5 +11,6 @@ namespace Application.DTOs.Auth
         public DateTimeOffset AuthenticatedAt { get; set; }
         public string Token { get; set; } = string.Empty; // JWT Token for subsequent API calls
         public DateTime TokenExpiresAt { get; set; }
+        public string RefreshToken { get; set; } = string.Empty; // Refresh token to obtain new JWT tokens
     }
 }

@@ -1,27 +1,34 @@
 using Application.Interfaces;
+using Google.Apis.Auth.OAuth2.Requests;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Services
 {
     public class JwtTokenService : IJwtTokenService
     {
+
         private readonly IConfiguration _configuration;
         private readonly string _secretKey;
         private readonly string _issuer;
         private readonly string _audience;
         private readonly int _expirationMinutes;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-        public JwtTokenService(IConfiguration configuration)
+
+        public JwtTokenService(IRefreshTokenRepository refreshTokenRepository, IConfiguration configuration)
         {
             _configuration = configuration;
             _secretKey = _configuration["Jwt:SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured");
             _issuer = _configuration["Jwt:Issuer"] ?? "EducationalPlatform";
             _audience = _configuration["Jwt:Audience"] ?? "EducationalPlatformUsers";
             _expirationMinutes = int.Parse(_configuration["Jwt:ExpirationMinutes"] ?? "1440"); // Default 24 hours
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         public string GenerateToken(Guid userId, string email, string role, string fullName)
@@ -50,7 +57,12 @@ namespace Infrastructure.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
+        public async Task<string> GenerateRefreshToken(Guid UserId, CancellationToken cancellationToken)
+        {
+            var NewRefreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            await _refreshTokenRepository.AddRefreshTokenAsync(NewRefreshToken, UserId, cancellationToken);
+            return NewRefreshToken;
+        }
         public ClaimsPrincipal? ValidateToken(string token)
         {
             try

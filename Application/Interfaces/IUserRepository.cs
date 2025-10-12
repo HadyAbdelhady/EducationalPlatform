@@ -45,5 +45,6 @@ namespace Application.Interfaces
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>Number of state entries written to the database.</returns>
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
     }
 }

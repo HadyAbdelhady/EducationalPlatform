@@ -29,7 +29,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
         {
             // Validate Google ID token
             var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
-            
+
             if (googleUserInfo == null || !googleUserInfo.EmailVerified)
             {
                 throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
@@ -37,7 +37,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
 
             // Check if user already exists
             var existingUser = await _userRepository.GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
-            
+
             bool isNewUser = existingUser == null;
             User user;
 
@@ -69,7 +69,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 };
 
                 user.Student = student;
-                
+
                 await _userRepository.CreateAsync(user, cancellationToken);
             }
             else
@@ -78,7 +78,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 user = existingUser;
                 user.UpdatedAt = DateTimeOffset.UtcNow;
                 user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
-                
+
                 // Update student device if different
                 if (user.Student != null && user.Student.DeviceId != request.DeviceId)
                 {
@@ -91,7 +91,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
             await _userRepository.SaveChangesAsync(cancellationToken);
 
             // Generate JWT token
-            var token = _jwtTokenService.GenerateToken(
+            var accesstoken = _jwtTokenService.GenerateToken(
                 userId: user.Id,
                 email: user.GmailExternal ?? string.Empty,
                 role: "Student",
@@ -99,6 +99,8 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
             );
 
             var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+
+            var refreshToken = await _jwtTokenService.GenerateRefreshToken(user.Id, cancellationToken);
 
             // Return authentication response
             return new AuthenticationResponse
@@ -110,8 +112,9 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 UserRole = "Student",
                 IsNewUser = isNewUser,
                 AuthenticatedAt = DateTimeOffset.UtcNow,
-                Token = token,
-                TokenExpiresAt = tokenExpiration
+                Token = accesstoken,
+                TokenExpiresAt = tokenExpiration,
+                RefreshToken = refreshToken
             };
         }
     }

@@ -421,6 +421,17 @@ namespace Infrastructure.Data
                 b.HasOne(x => x.Question).WithMany(x => x.StudentSubmissions).HasForeignKey(x => x.QuestionId).HasConstraintName("student_submissions_question_id_fkey");
                 b.HasOne(x => x.ChosenAnswer).WithMany().HasForeignKey(x => x.ChosenAnswerId).HasConstraintName("student_submissions_chosen_answer_id_fkey");
             });
+
+            modelBuilder.Entity<RefreshToken>(t=>
+            {
+                t.ToTable("refresh_tokens");
+                t.HasKey(x => x.Id).HasName("refresh_tokens_pkey");
+                t.Property(x => x.Id).HasColumnName("id");
+                t.Property(x => x.Token).HasColumnName("token").IsRequired();
+                t.Property(x => x.UserId).HasColumnName("user_id");
+                t.Property(x => x.ExpiresAt).HasColumnName("expires_at");
+                //t.HasOne(x => x.User).WithMany(x => x.RefreshTokens).HasForeignKey(x => x.UserId).HasConstraintName("refresh_tokens_user_id_fkey");
+            });
         }
     }
 }

@@ -2,6 +2,7 @@ using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace Infrastructure.Repositories
 {
@@ -29,11 +30,11 @@ namespace Infrastructure.Repositories
         {
             // Explicitly add the user entity
             await _context.Users.AddAsync(user, cancellationToken);
-            
+
             // EF Core will automatically track related entities (Student/Instructor) 
             // through navigation properties, but we ensure change detection is enabled
             _context.ChangeTracker.DetectChanges();
-            
+
             return user;
         }
 
@@ -42,7 +43,7 @@ namespace Infrastructure.Repositories
             _context.Users.Update(user);
             await Task.CompletedTask;
         }
-        
+
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return await _context.SaveChangesAsync(cancellationToken);

@@ -34,10 +34,13 @@ namespace Edu_Base
 
             // Repository Registration
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
 
             // Service Registration
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>
