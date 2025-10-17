@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class ChatMessage
+    public class ChatMessage : IEntity
     {
         public Guid Id { get; set; }
         public Guid? ChatRoomId { get; set; }

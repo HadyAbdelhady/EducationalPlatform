@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class Video
+    public class Video : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;

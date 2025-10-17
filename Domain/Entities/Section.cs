@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class Section
+    public class Section : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;

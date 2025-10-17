@@ -1,8 +1,9 @@
 using System;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class Answer
+    public class Answer : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public Guid? QuestionId { get; set; }

@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+using Domain.Interfaces;
+
+namespace Domain.Entities
 {
-    public class RefreshToken
+    public class RefreshToken : IEntity
     {
         public Guid Id { get; set; } 
         public string Token { get; set; } = string.Empty;

@@ -3,18 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\controllers\\studentauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\studentauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\repositories\\repository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\controllers\\instructorauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\instructorauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\features\\auth\\commands\\studentgooglelogin\\studentgooglelogincommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\features\\auth\\commands\\instructorgooglelogin\\instructorgooglelogincommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\controllers\\studentauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\studentauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\controllers\\instructorauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\instructorauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -47,7 +53,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 256,
-          "SelectedChildIndex": 17,
+          "SelectedChildIndex": 19,
           "Children": [
             {
               "$type": "Bookmark",
@@ -79,7 +85,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -91,7 +97,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "LoginWithRefreshToken.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\UserLoginWithRefreshToken\\LoginWithRefreshToken.cs",
               "RelativeDocumentMoniker": "..\\Application\\Features\\Auth\\Commands\\UserLoginWithRefreshToken\\LoginWithRefreshToken.cs",
@@ -107,9 +113,9 @@
               "Title": "InstructorGoogleLoginCommandHandler.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs",
               "RelativeDocumentMoniker": "..\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs",
-              "RelativeToolTip": "..\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABYAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs*",
+              "RelativeToolTip": "..\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs*",
+              "ViewState": "AgIAADwAAAAAAAAAAAAlwE8AAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-10T09:08:08.671Z",
               "EditorCaption": ""
@@ -120,16 +126,16 @@
               "Title": "StudentGoogleLoginCommandHandler.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs",
               "RelativeDocumentMoniker": "..\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs",
-              "RelativeToolTip": "..\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAG0AAAAgAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs*",
+              "RelativeToolTip": "..\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs*",
+              "ViewState": "AgIAAFEAAAAAAAAAAAAlwGQAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-10T09:09:27.826Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "IJwtTokenService.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Interfaces\\IJwtTokenService.cs",
               "RelativeDocumentMoniker": "..\\Application\\Interfaces\\IJwtTokenService.cs",
@@ -141,7 +147,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "JwtTokenService.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Services\\JwtTokenService.cs",
               "RelativeDocumentMoniker": "..\\Infrastructure\\Services\\JwtTokenService.cs",
@@ -153,7 +159,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "GoogleAuthService.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Services\\GoogleAuthService.cs",
               "RelativeDocumentMoniker": "..\\Infrastructure\\Services\\GoogleAuthService.cs",
@@ -165,7 +171,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "LoginWithRefreshTokenCommand.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\UserLoginWithRefreshToken\\LoginWithRefreshTokenCommand.cs",
               "RelativeDocumentMoniker": "..\\Application\\Features\\Auth\\Commands\\UserLoginWithRefreshToken\\LoginWithRefreshTokenCommand.cs",
@@ -177,7 +183,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -185,33 +191,57 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-10-12T14:53:46.081Z",
+              "WhenOpened": "2025-10-12T14:53:46.081Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "InstructorAuthController.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\InstructorAuthController.cs",
+              "RelativeDocumentMoniker": "Controllers\\InstructorAuthController.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\InstructorAuthController.cs",
+              "RelativeToolTip": "Controllers\\InstructorAuthController.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAlwBUAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T20:47:38.812Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "StudentAuthController.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\StudentAuthController.cs",
+              "RelativeDocumentMoniker": "Controllers\\StudentAuthController.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\StudentAuthController.cs",
+              "RelativeToolTip": "Controllers\\StudentAuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T20:48:01.221Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "InstructorAuthController.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\InstructorAuthController.cs",
-              "RelativeDocumentMoniker": "Controllers\\InstructorAuthController.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\InstructorAuthController.cs*",
-              "RelativeToolTip": "Controllers\\InstructorAuthController.cs*",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAlwA8AAAACAAAAAAAAAA==",
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\UserRepository.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\UserRepository.cs*",
+              "RelativeToolTip": "..\\Infrastructure\\Repositories\\UserRepository.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-12T20:47:38.812Z",
+              "WhenOpened": "2025-10-17T12:28:13.174Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "StudentAuthController.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\StudentAuthController.cs",
-              "RelativeDocumentMoniker": "Controllers\\StudentAuthController.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\StudentAuthController.cs*",
-              "RelativeToolTip": "Controllers\\StudentAuthController.cs*",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAlwBQAAAAPAAAAAAAAAA==",
+              "Title": "Repository.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\Repository.cs",
+              "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\Repository.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\Repository.cs",
+              "RelativeToolTip": "..\\Infrastructure\\Repositories\\Repository.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAowFAAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-12T20:48:01.221Z",
+              "WhenOpened": "2025-10-17T12:28:22.551Z",
               "EditorCaption": ""
             }
           ]

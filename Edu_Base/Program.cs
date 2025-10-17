@@ -32,7 +32,10 @@ namespace Edu_Base
             // FluentValidation Configuration
             builder.Services.AddValidatorsFromAssembly(Assembly.Load("Application"));
 
-            // Repository Registration
+            // Unit of Work & Repository Registration
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
+            // Individual repositories (optional - can be accessed through UnitOfWork)
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 

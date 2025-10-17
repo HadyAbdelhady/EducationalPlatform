@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class ChatRoom
+    public class ChatRoom : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public Guid? User1Id { get; set; }

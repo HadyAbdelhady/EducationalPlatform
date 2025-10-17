@@ -11,11 +11,11 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
     /// </summary>
     public class InstructorGoogleLoginCommandHandler(
         IGoogleAuthService googleAuthService,
-        IUserRepository userRepository,
+        IUnitOfWork unitOfWork,
         IJwtTokenService jwtTokenService) : IRequestHandler<InstructorGoogleLoginCommand, AuthenticationResponse>
     {
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
-        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
             }
 
             // Check if user already exists
-            var existingUser = await _userRepository.GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
+            var existingUser = await _unitOfWork.Users.GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
 
             bool isNewUser = existingUser == null;
             User user;
@@ -68,7 +68,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
                 user.Instructor = instructor;
 
-                await _userRepository.CreateAsync(user, cancellationToken);
+                await _unitOfWork.Users.AddAsync(user, cancellationToken);
             }
             else
             {
@@ -77,10 +77,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 user.UpdatedAt = DateTimeOffset.UtcNow;
                 user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
 
-                await _userRepository.UpdateAsync(user, cancellationToken);
+                _unitOfWork.Users.Update(user);
             }
-
-            await _userRepository.SaveChangesAsync(cancellationToken);
 
             // Generate JWT token
             var token = _jwtTokenService.GenerateToken(
@@ -92,7 +90,12 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
             var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
 
-           var refreshToken = await _jwtTokenService.GenerateRefreshToken(user.Id, cancellationToken);
+            // Generate refresh token
+            var refreshToken = _jwtTokenService.GenerateRefreshToken();
+            await _unitOfWork.RefreshTokens.AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
+
+            // Save all changes in a single transaction
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             // Return authentication response
             return new AuthenticationResponse

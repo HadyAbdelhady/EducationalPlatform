@@ -1,8 +1,9 @@
 using System;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class Payment
+    public class Payment : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public Guid? StudentId { get; set; }
