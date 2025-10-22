@@ -3,10 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\controllers\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\features\\course\\query\\getcoursebyid\\getcoursebyidquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\repositories\\courserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\features\\course\\query\\getcoursebyid\\getcoursebyidqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\dtos\\course\\coursedetailresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -16,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 325,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
@@ -48,7 +58,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "GetCourseByIdQueryHandler.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQueryHandler.cs",
               "RelativeDocumentMoniker": "..\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQueryHandler.cs",
@@ -61,15 +71,54 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "CourseRepository.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\CourseRepository.cs",
               "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\CourseRepository.cs",
               "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\CourseRepository.cs",
               "RelativeToolTip": "..\\Infrastructure\\Repositories\\CourseRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAwAAAAAAAAAA==",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwAMAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-22T18:26:41.795Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CourseDetailResponse.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\DTOs\\Course\\CourseDetailResponse.cs",
+              "RelativeDocumentMoniker": "..\\Application\\DTOs\\Course\\CourseDetailResponse.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\DTOs\\Course\\CourseDetailResponse.cs",
+              "RelativeToolTip": "..\\Application\\DTOs\\Course\\CourseDetailResponse.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAywBMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-22T18:31:34.116Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CourseController.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\CourseController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CourseController.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Controllers\\CourseController.cs*",
+              "RelativeToolTip": "Controllers\\CourseController.cs*",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-22T18:42:51.69Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GetCourseByIdQuery.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQuery.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQuery.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQuery.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-22T18:43:19.304Z",
               "EditorCaption": ""
             }
           ]

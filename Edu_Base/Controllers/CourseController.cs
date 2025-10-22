@@ -1,9 +1,15 @@
-﻿using Application.Features.Course.Query.GetAllCourses;
+﻿using Application.DTOs.Course;
+using Application.Features.Course.Commands.CreateCourse;
+using Application.Features.Course.Commands.DeleteCourse;
+using Application.Features.Course.Query.GetAllCourses;
 using Application.Features.Course.Query.GetAllCoursesByInstructor;
 using Application.Features.Course.Query.GetAllCoursesForStudent;
+using Application.Features.Course.Query.GetCourseById;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Edu_Base.Controllers
 {
@@ -13,6 +19,58 @@ namespace Edu_Base.Controllers
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<CourseController> _logger = logger;
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> CreateCourse([FromBody] CourseCreationRequest courseCreationRequest, CancellationToken cancellationToken)
+        {
+            if (courseCreationRequest == null)
+            {
+                return BadRequest("Course creation request cannot be null.");
+            }
+            try
+            {
+                var createCourseCommand = new CreateCourseCommand
+                {
+                    CourseName = courseCreationRequest.CourseName,
+                    Description = courseCreationRequest.Description,
+                    InstructorId = courseCreationRequest.InstructorId,
+                    Price = courseCreationRequest.Price,
+                    PictureUrl = courseCreationRequest.PictureUrl,
+                    IntroVideoUrl = courseCreationRequest.IntroVideoUrl
+                };
+                var result = await _mediator.Send(createCourseCommand, cancellationToken);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException auth)
+            {
+                _logger.LogWarning(auth, "Unauthorized access attempt to create course");
+                return Unauthorized(new { message = auth.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating course");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet("GetCourseDetailById/{courseId}")]
+        public async Task<IActionResult> GetCourseDetailById(Guid courseId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching course detail for CourseId: {CourseId}", courseId);
+                var query = new GetCourseByIdQuery { CourseId = courseId };
+                var result = await _mediator.Send(query, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error fetching course detail for CourseId: {CourseId}", courseId);
+                return StatusCode(500, "Internal server error");
+            }
+        }
 
         [HttpGet("GetAllCourses")]
         public async Task<IActionResult> GetAllCourses(CancellationToken cancellationToken)
@@ -32,7 +90,6 @@ namespace Edu_Base.Controllers
         }
 
         [HttpGet("GetAllCoursesEnrolledByStudent/{studentId}")]
-        [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetAllCoursesEnrolledByStudent(Guid studentId, CancellationToken cancellationToken)
         {
             try
@@ -44,10 +101,6 @@ namespace Edu_Base.Controllers
 
                 return Ok(result);
             }
-            catch (UnauthorizedAccessException auth)
-            {
-                _logger.LogWarning(auth, "Unauthorized access attempt for StudentId: {StudentId}", studentId);
-            }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error fetching courses for StudentId: {StudentId}", studentId);
@@ -56,7 +109,6 @@ namespace Edu_Base.Controllers
         }
 
         [HttpGet("GetAllCoursesByInstructor/{instructorId}")]
-        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> GetAllCoursesByInstructor(Guid instructorId, CancellationToken cancellationToken)
         {
             try
@@ -66,6 +118,28 @@ namespace Edu_Base.Controllers
                 var result = await _mediator.Send(query, cancellationToken);
                 return Ok(result);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching courses for InstructorId: {InstructorId}", instructorId);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpDelete]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> DeleteCourse(Guid courseId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                _logger.LogInformation("Deleting course with CourseId: {CourseId}", courseId);
+                var command = new DeleteCourseCommand
+                {
+                    CourseId = courseId
+                };
+                var result = await _mediator.Send(command, cancellationToken);
+                return Ok(result);
+            }
             catch (UnauthorizedAccessException ex)
             {
                 _logger.LogWarning(ex, "Unauthorized access");
@@ -73,9 +147,11 @@ namespace Edu_Base.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching courses for InstructorId: {InstructorId}", instructorId);
+                _logger.LogError(ex, "Error Deleting the course");
                 return StatusCode(500, "Internal server error");
             }
+
+
         }
     }
 }

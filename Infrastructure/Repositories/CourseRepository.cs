@@ -25,7 +25,6 @@ namespace Infrastructure.Repositories
                 .Include(c => c.StudentCourses)
                 .ToListAsync(cancellationToken);
         }
-
         public async Task<Course?> GetCourseDetailByIdAsync(Guid courseId, CancellationToken cancellationToken = default)
         {
             return await _context.Courses

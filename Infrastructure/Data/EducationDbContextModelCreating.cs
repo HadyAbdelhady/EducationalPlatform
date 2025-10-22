@@ -59,8 +59,6 @@ namespace Infrastructure.Data
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.Name).HasColumnName("name").IsRequired();
                 b.Property(x => x.Description).HasColumnName("description");
-                b.Property(x => x.DateOfCreation).HasColumnName("date_of_creation");
-                b.Property(x => x.LastUpdatedDate).HasColumnName("last_updated_date");
                 b.Property(x => x.Price).HasColumnName("price");
                 b.Property(x => x.PictureUrl).HasColumnName("picture_url");
                 b.Property(x => x.IntroVideoUrl).HasColumnName("intro_video_url");
@@ -78,8 +76,6 @@ namespace Infrastructure.Data
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.Name).HasColumnName("name").IsRequired();
                 b.Property(x => x.Description).HasColumnName("description");
-                b.Property(x => x.DateOfCreation).HasColumnName("date_of_creation");
-                b.Property(x => x.LastUpdatedDate).HasColumnName("last_updated_date");
                 b.Property(x => x.Price).HasColumnName("price");
                 b.Property(x => x.NumberOfVideos).HasColumnName("number_of_videos");
                 b.Property(x => x.Rating).HasColumnName("rating");

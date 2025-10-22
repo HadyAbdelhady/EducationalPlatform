@@ -40,9 +40,7 @@ namespace Application.Features.Course.Query.GetCourseById
                     Description = s.Description,
                     NumberOfVideos = s.NumberOfVideos,
                     Rating = s.Rating,
-                    Price = s.Price,
-                    DateOfCreation = s.DateOfCreation,
-                    LastUpdatedDate = s.LastUpdatedDate
+                    Price = s.Price
                 })
                 .ToList();
 
@@ -79,8 +77,6 @@ namespace Application.Features.Course.Query.GetCourseById
                 TotalReviews = course.CourseReviews.Count,
                 NumberOfStudents = course.StudentCourses?.Count ?? 0,
                 NumberOfSections = sections.Count,
-                DateOfCreation = course.DateOfCreation,
-                LastUpdatedDate = course.LastUpdatedDate,
                 CreatedAt = course.CreatedAt,
                 UpdatedAt = course.UpdatedAt,
                 Instructors = instructors,

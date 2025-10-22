@@ -7,12 +7,10 @@ namespace Domain.Entities
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public DateTimeOffset DateOfCreation { get; set; }
-        public DateTimeOffset LastUpdatedDate { get; set; }
         public decimal? Price { get; set; }
         public string? PictureUrl { get; set; }
         public string? IntroVideoUrl { get; set; }
-        public int NumberOfVideos { get; set; }
+        public int NumberOfVideos { get; set; } = 0;
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
