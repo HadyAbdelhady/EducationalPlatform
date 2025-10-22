@@ -8,6 +8,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Infrastructure.Middleware;
 
 namespace Edu_Base
 {
@@ -139,6 +140,8 @@ namespace Edu_Base
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseScreenshotCheck();
 
             app.MapControllers();
 

@@ -65,7 +65,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 {
                     UserId = user.Id,
                     DeviceId = request.DeviceId,
-                    ScreenshotTrial = 0
+                    TriedScreenshot = false
                 };
 
                 user.Student = student;

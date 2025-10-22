@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-
 namespace Domain.Entities
 {
     public class Student
     {
         public Guid UserId { get; set; }
         public string? DeviceId { get; set; }
-        public int ScreenshotTrial { get; set; }
+        public bool TriedScreenshot { get; set; }
+        public string ParentPhoneNumber { get; set; } = string.Empty;
 
         public User User { get; set; } = null!;
 

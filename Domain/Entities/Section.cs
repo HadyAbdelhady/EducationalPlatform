@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Domain.Interfaces;
 
 namespace Domain.Entities
@@ -8,7 +6,6 @@ namespace Domain.Entities
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string? Category { get; set; }
         public string? Description { get; set; }
         public DateTimeOffset DateOfCreation { get; set; }
         public DateTimeOffset LastUpdatedDate { get; set; }

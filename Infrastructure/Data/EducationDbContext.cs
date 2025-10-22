@@ -1,11 +1,25 @@
 using System;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Infrastructure.Persistence.Interceptors;
 
 namespace Infrastructure.Data
 {
-    public class EducationDbContext(DbContextOptions<EducationDbContext> options) : DbContext(options)
+    public class EducationDbContext : DbContext
     {
+        private readonly SoftDeleteInterceptor _softDeleteInterceptor;
+
+        public EducationDbContext(DbContextOptions<EducationDbContext> options, SoftDeleteInterceptor softDeleteInterceptor) 
+            : base(options)
+        {
+            _softDeleteInterceptor = softDeleteInterceptor;
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(_softDeleteInterceptor);
+        }
+
         public DbSet<User> Users => Set<User>();
         public DbSet<Student> Students => Set<Student>();
         public DbSet<Instructor> Instructors => Set<Instructor>();

@@ -21,7 +21,6 @@ namespace Infrastructure.Data
                 b.Property(x => x.Ssn).HasColumnName("ssn").IsRequired();
                 b.Property(x => x.PhoneNumber).HasColumnName("phone_number").IsRequired();
                 b.Property(x => x.GmailExternal).HasColumnName("gmail_external");
-                b.Property(x => x.AppleExternal).HasColumnName("apple_external");
                 b.Property(x => x.PersonalPictureUrl).HasColumnName("personal_picture_url");
                 b.Property(x => x.DateOfBirth).HasColumnName("date_of_birth");
                 b.Property(x => x.Gender).HasColumnName("gender").IsRequired();
@@ -39,7 +38,8 @@ namespace Infrastructure.Data
                 b.HasKey(x => x.UserId).HasName("students_pkey");
                 b.Property(x => x.UserId).HasColumnName("user_id");
                 b.Property(x => x.DeviceId).HasColumnName("device_id");
-                b.Property(x => x.ScreenshotTrial).HasColumnName("screenshot_trial");
+                b.Property(x => x.TriedScreenshot).HasColumnName("tried_screenshot");
+                b.Property(x => x.ParentPhoneNumber).HasColumnName("parent_phone_number").IsRequired();
                 b.HasOne(x => x.User).WithOne(x => x.Student).HasForeignKey<Student>(x => x.UserId).HasConstraintName("students_user_id_fkey");
             });
 
@@ -57,7 +57,6 @@ namespace Infrastructure.Data
                 b.HasKey(x => x.Id).HasName("courses_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.Name).HasColumnName("name").IsRequired();
-                b.Property(x => x.Category).HasColumnName("category");
                 b.Property(x => x.Description).HasColumnName("description");
                 b.Property(x => x.DateOfCreation).HasColumnName("date_of_creation");
                 b.Property(x => x.LastUpdatedDate).HasColumnName("last_updated_date");
@@ -76,7 +75,6 @@ namespace Infrastructure.Data
                 b.HasKey(x => x.Id).HasName("sections_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.Name).HasColumnName("name").IsRequired();
-                b.Property(x => x.Category).HasColumnName("category");
                 b.Property(x => x.Description).HasColumnName("description");
                 b.Property(x => x.DateOfCreation).HasColumnName("date_of_creation");
                 b.Property(x => x.LastUpdatedDate).HasColumnName("last_updated_date");

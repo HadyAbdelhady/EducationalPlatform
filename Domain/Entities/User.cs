@@ -9,7 +9,6 @@ namespace Domain.Entities
         public string Ssn { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string? GmailExternal { get; set; }
-        public string? AppleExternal { get; set; }
         public string? PersonalPictureUrl { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public string Gender { get; set; } = string.Empty;
