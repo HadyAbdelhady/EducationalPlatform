@@ -30,6 +30,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasIndex(x => x.Ssn).IsUnique();
+                b.HasQueryFilter(x => !x.IsDeleted);
             });
 
             modelBuilder.Entity<Student>(b =>
@@ -67,6 +68,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
             });
 
             modelBuilder.Entity<Section>(b =>
@@ -85,6 +87,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Course).WithMany(x => x.Sections).HasForeignKey(x => x.CourseId).HasConstraintName("sections_course_id_fkey");
             });
 
@@ -101,6 +104,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Section).WithMany(x => x.Videos).HasForeignKey(x => x.SectionId).HasConstraintName("videos_section_id_fkey");
             });
 
@@ -117,6 +121,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Section).WithMany(x => x.Sheets).HasForeignKey(x => x.SectionId).HasConstraintName("sheets_section_id_fkey");
                 b.HasOne(x => x.Video).WithMany().HasForeignKey(x => x.VideoId).HasConstraintName("sheets_video_id_fkey");
             });
@@ -136,6 +141,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Course).WithMany(x => x.Exams).HasForeignKey(x => x.CourseId).HasConstraintName("exams_course_id_fkey");
                 b.HasOne(x => x.Section).WithMany(x => x.Exams).HasForeignKey(x => x.SectionId).HasConstraintName("exams_section_id_fkey");
             });
@@ -152,6 +158,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Exam).WithMany(x => x.Questions).HasForeignKey(x => x.ExamId).HasConstraintName("questions_exam_id_fkey");
             });
 
@@ -166,6 +173,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Question).WithMany(x => x.Answers).HasForeignKey(x => x.QuestionId).HasConstraintName("answers_question_id_fkey");
             });
 
@@ -179,6 +187,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.Property(x => x.NumberOfCourseVideosWatched).HasColumnName("number_of_course_videos_watched");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.StudentCourses).HasForeignKey(x => x.StudentId).HasConstraintName("student_courses_student_id_fkey");
                 b.HasOne(x => x.Course).WithMany(x => x.StudentCourses).HasForeignKey(x => x.CourseId).HasConstraintName("student_courses_course_id_fkey");
             });
@@ -192,6 +201,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.EnrolledAt).HasColumnName("enrolled_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.StudentSections).HasForeignKey(x => x.StudentId).HasConstraintName("student_sections_student_id_fkey");
                 b.HasOne(x => x.Section).WithMany(x => x.StudentSections).HasForeignKey(x => x.SectionId).HasConstraintName("student_sections_section_id_fkey");
             });
@@ -206,6 +216,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.IsWatched).HasColumnName("is_watched");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.StudentVideos).HasForeignKey(x => x.StudentId).HasConstraintName("student_videos_student_id_fkey");
                 b.HasOne(x => x.Video).WithMany(x => x.StudentVideos).HasForeignKey(x => x.VideoId).HasConstraintName("student_videos_video_id_fkey");
             });
@@ -219,6 +230,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.ViewedAt).HasColumnName("viewed_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.StudentSheets).HasForeignKey(x => x.StudentId).HasConstraintName("student_sheets_student_id_fkey");
                 b.HasOne(x => x.Sheet).WithMany(x => x.StudentSheets).HasForeignKey(x => x.SheetId).HasConstraintName("student_sheets_sheet_id_fkey");
             });
@@ -232,6 +244,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.TakenAt).HasColumnName("taken_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.StudentExams).HasForeignKey(x => x.StudentId).HasConstraintName("student_exams_student_id_fkey");
                 b.HasOne(x => x.Exam).WithMany(x => x.StudentExams).HasForeignKey(x => x.ExamId).HasConstraintName("student_exams_exam_id_fkey");
             });
@@ -244,6 +257,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CourseId).HasColumnName("course_id");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Instructor).WithMany(x => x.InstructorCourses).HasForeignKey(x => x.InstructorId).HasConstraintName("instructor_courses_instructor_id_fkey");
                 b.HasOne(x => x.Course).WithMany(x => x.InstructorCourses).HasForeignKey(x => x.CourseId).HasConstraintName("instructor_courses_course_id_fkey");
             });
@@ -256,6 +270,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.SectionId).HasColumnName("section_id");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Instructor).WithMany(x => x.InstructorSections).HasForeignKey(x => x.InstructorId).HasConstraintName("instructor_sections_instructor_id_fkey");
                 b.HasOne(x => x.Section).WithMany(x => x.InstructorSections).HasForeignKey(x => x.SectionId).HasConstraintName("instructor_sections_section_id_fkey");
             });
@@ -268,6 +283,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.ExamId).HasColumnName("exam_id");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Instructor).WithMany(x => x.InstructorExams).HasForeignKey(x => x.InstructorId).HasConstraintName("instructor_exams_instructor_id_fkey");
                 b.HasOne(x => x.Exam).WithMany(x => x.InstructorExams).HasForeignKey(x => x.ExamId).HasConstraintName("instructor_exams_exam_id_fkey");
             });
@@ -280,6 +296,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.SheetId).HasColumnName("sheet_id");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Video).WithMany(x => x.VideoSheets).HasForeignKey(x => x.VideoId).HasConstraintName("video_sheets_video_id_fkey");
                 b.HasOne(x => x.Sheet).WithMany(x => x.VideoSheets).HasForeignKey(x => x.SheetId).HasConstraintName("video_sheets_sheet_id_fkey");
             });
@@ -296,6 +313,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.CourseReviews).HasForeignKey(x => x.StudentId).HasConstraintName("course_reviews_student_id_fkey");
                 b.HasOne(x => x.Course).WithMany(x => x.CourseReviews).HasForeignKey(x => x.CourseId).HasConstraintName("course_reviews_course_id_fkey");
             });
@@ -312,6 +330,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.SectionReviews).HasForeignKey(x => x.StudentId).HasConstraintName("section_reviews_student_id_fkey");
                 b.HasOne(x => x.Section).WithMany(x => x.SectionReviews).HasForeignKey(x => x.SectionId).HasConstraintName("section_reviews_section_id_fkey");
             });
@@ -328,6 +347,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.VideoReviews).HasForeignKey(x => x.StudentId).HasConstraintName("video_reviews_student_id_fkey");
                 b.HasOne(x => x.Video).WithMany(x => x.VideoReviews).HasForeignKey(x => x.VideoId).HasConstraintName("video_reviews_video_id_fkey");
             });
@@ -342,6 +362,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.User1).WithMany().HasForeignKey(x => x.User1Id).HasConstraintName("chat_rooms_user1_id_fkey");
                 b.HasOne(x => x.User2).WithMany().HasForeignKey(x => x.User2Id).HasConstraintName("chat_rooms_user2_id_fkey");
             });
@@ -359,6 +380,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.SentAt).HasColumnName("sent_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.ChatRoom).WithMany(x => x.Messages).HasForeignKey(x => x.ChatRoomId).HasConstraintName("chat_messages_chat_room_id_fkey");
                 b.HasOne(x => x.Sender).WithMany().HasForeignKey(x => x.SenderId).HasConstraintName("chat_messages_sender_id_fkey");
             });
@@ -381,6 +403,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.Payments).HasForeignKey(x => x.StudentId).HasConstraintName("payments_student_id_fkey");
                 b.HasOne(x => x.Course).WithMany(x => x.Payments).HasForeignKey(x => x.CourseId).HasConstraintName("payments_course_id_fkey");
                 b.HasOne(x => x.Section).WithMany(x => x.Payments).HasForeignKey(x => x.SectionId).HasConstraintName("payments_section_id_fkey");
@@ -399,6 +422,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.ExamResults).HasForeignKey(x => x.StudentId).HasConstraintName("exam_results_student_id_fkey");
                 b.HasOne(x => x.Exam).WithMany(x => x.ExamResults).HasForeignKey(x => x.ExamId).HasConstraintName("exam_results_exam_id_fkey");
             });
@@ -416,6 +440,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.StudentSubmissions).HasForeignKey(x => x.StudentId).HasConstraintName("student_submissions_student_id_fkey");
                 b.HasOne(x => x.Question).WithMany(x => x.StudentSubmissions).HasForeignKey(x => x.QuestionId).HasConstraintName("student_submissions_question_id_fkey");
                 b.HasOne(x => x.ChosenAnswer).WithMany().HasForeignKey(x => x.ChosenAnswerId).HasConstraintName("student_submissions_chosen_answer_id_fkey");

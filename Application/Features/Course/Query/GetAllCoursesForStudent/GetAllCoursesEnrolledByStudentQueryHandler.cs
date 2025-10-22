@@ -2,17 +2,15 @@ using Application.DTOs.Course;
 using Application.Interfaces;
 using MediatR;
 
-namespace Application.Features.Course.Query.GetAllCoursesByInstructor
+namespace Application.Features.Course.Query.GetAllCoursesForStudent
 {
-    public class GetAllCoursesByInstructorQueryHandler(
-                                                        IUnitOfWork unitOfWork
-                                                      ) : IRequestHandler<GetAllCoursesByInstructorQuery, List<CourseByUserIdResponse>>
+    public class GetAllCoursesEnrolledByStudentQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllCoursesEnrolledByStudentQuery, List<CourseByUserIdResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<List<CourseByUserIdResponse>> Handle(GetAllCoursesByInstructorQuery request, CancellationToken cancellationToken)
+        public async Task<List<CourseByUserIdResponse>> Handle(GetAllCoursesEnrolledByStudentQuery request, CancellationToken cancellationToken)
         {
-            var courses = await _unitOfWork.Courses.GetAllCoursesByInstructorIdAsync(request.InstructorId, cancellationToken);
+            var courses = await _unitOfWork.Courses.GetAllCoursesByStudentIdAsync(request.StudentId, cancellationToken);
 
             var response = courses.Select(course => new CourseByUserIdResponse
             {

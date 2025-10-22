@@ -3,50 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\features\\auth\\commands\\studentgooglelogin\\studentgooglelogincommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\asus\\source\\educationalplatform\\domain\\entities\\joins.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\middleware\\screenshotcheckmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\middleware\\screenshotcheckmiddlewareextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\data\\educationdbcontextmodelcreating.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\asus\\source\\educationalplatform\\domain\\entities\\course.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\asus\\source\\educationalplatform\\domain\\entities\\student.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\data\\educationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\persistence\\interceptors\\softdeleteinterceptor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\asus\\source\\educationalplatform\\edu_base\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\features\\auth\\commands\\instructorgooglelogin\\instructorgooglelogincommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\services\\googleauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\services\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\asus\\source\\educationalplatform\\application\\interfaces\\igoogleauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\asus\\source\\educationalplatform\\infrastructure\\repositories\\refreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\asus\\source\\educationalplatform\\domain\\entities\\section.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -56,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 256,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -88,191 +54,60 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "StudentGoogleLoginCommandHandler.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs",
-              "RelativeDocumentMoniker": "..\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs*",
-              "RelativeToolTip": "..\\Application\\Features\\Auth\\Commands\\StudentGoogleLogin\\StudentGoogleLoginCommandHandler.cs*",
-              "ViewState": "AgIAADEAAAAAAAAAAAAAwEMAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-21T22:37:17.897Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "IGoogleAuthService.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Interfaces\\IGoogleAuthService.cs",
-              "RelativeDocumentMoniker": "..\\Application\\Interfaces\\IGoogleAuthService.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Interfaces\\IGoogleAuthService.cs",
-              "RelativeToolTip": "..\\Application\\Interfaces\\IGoogleAuthService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-21T22:38:01.791Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "RefreshTokenRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\RefreshTokenRepository.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\RefreshTokenRepository.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\RefreshTokenRepository.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Repositories\\RefreshTokenRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-21T22:39:16.012Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "InstructorGoogleLoginCommandHandler.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs",
-              "RelativeDocumentMoniker": "..\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs",
-              "RelativeToolTip": "..\\Application\\Features\\Auth\\Commands\\InstructorGoogleLogin\\InstructorGoogleLoginCommandHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADgAAAA6AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-21T22:40:46.621Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "GoogleAuthService.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Services\\GoogleAuthService.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Services\\GoogleAuthService.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Services\\GoogleAuthService.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Services\\GoogleAuthService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-21T22:42:33.53Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "JwtTokenService.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Services\\JwtTokenService.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Services\\JwtTokenService.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Services\\JwtTokenService.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Services\\JwtTokenService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-21T22:43:15.347Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "UserRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\UserRepository.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\UserRepository.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Repositories\\UserRepository.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Repositories\\UserRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T12:29:50.635Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Edu_Base\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAAABoAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T12:38:45.069Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Infrastructure",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Infrastructure.csproj",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Infrastructure.csproj",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Infrastructure.csproj",
-              "RelativeToolTip": "..\\Infrastructure\\Infrastructure.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-10-22T12:49:05.653Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "SoftDeleteInterceptor.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Persistence\\Interceptors\\SoftDeleteInterceptor.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Persistence\\Interceptors\\SoftDeleteInterceptor.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Persistence\\Interceptors\\SoftDeleteInterceptor.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Persistence\\Interceptors\\SoftDeleteInterceptor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T12:49:22.503Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "Student.cs",
               "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Domain\\Entities\\Student.cs",
               "RelativeDocumentMoniker": "..\\Domain\\Entities\\Student.cs",
               "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Domain\\Entities\\Student.cs",
               "RelativeToolTip": "..\\Domain\\Entities\\Student.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAYAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAYwAsAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T12:53:36.183Z",
+              "WhenOpened": "2025-10-22T13:59:41.725Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "EducationDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Data\\EducationDbContext.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Data\\EducationDbContext.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Data\\EducationDbContext.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Data\\EducationDbContext.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Joins.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Domain\\Entities\\Joins.cs",
+              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Joins.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Domain\\Entities\\Joins.cs",
+              "RelativeToolTip": "..\\Domain\\Entities\\Joins.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T12:54:24.503Z",
+              "WhenOpened": "2025-10-22T13:59:49.603Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "EducationDbContextModelCreating.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Data\\EducationDbContextModelCreating.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Data\\EducationDbContextModelCreating.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Data\\EducationDbContextModelCreating.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Data\\EducationDbContextModelCreating.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAQwA4AAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T12:54:30.265Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ScreenshotCheckMiddlewareExtensions.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Middleware\\ScreenshotCheckMiddlewareExtensions.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Middleware\\ScreenshotCheckMiddlewareExtensions.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Middleware\\ScreenshotCheckMiddlewareExtensions.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Middleware\\ScreenshotCheckMiddlewareExtensions.cs",
+              "Title": "Section.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Domain\\Entities\\Section.cs",
+              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Section.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Domain\\Entities\\Section.cs",
+              "RelativeToolTip": "..\\Domain\\Entities\\Section.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T13:04:01.928Z",
+              "WhenOpened": "2025-10-22T14:03:17.857Z",
               "EditorCaption": ""
-            },
+            }
+          ]
+        },
+        {
+          "DockedWidth": 256,
+          "SelectedChildIndex": 0,
+          "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ScreenshotCheckMiddleware.cs",
-              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Middleware\\ScreenshotCheckMiddleware.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Middleware\\ScreenshotCheckMiddleware.cs",
-              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Infrastructure\\Middleware\\ScreenshotCheckMiddleware.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Middleware\\ScreenshotCheckMiddleware.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAzwCQAAABGAAAAAAAAAA==",
+              "Title": "Course.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Domain\\Entities\\Course.cs",
+              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Course.cs",
+              "ToolTip": "C:\\Users\\ASUS\\source\\EducationalPlatform\\Domain\\Entities\\Course.cs",
+              "RelativeToolTip": "..\\Domain\\Entities\\Course.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAwBgAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T13:04:03.258Z",
+              "WhenOpened": "2025-10-22T13:58:42.486Z",
               "EditorCaption": ""
             }
           ]

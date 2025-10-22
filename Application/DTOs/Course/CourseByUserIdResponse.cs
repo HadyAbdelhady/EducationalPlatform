@@ -1,6 +1,6 @@
 namespace Application.DTOs.Course
 {
-    public class CourseByInstructorResponse
+    public class CourseByUserIdResponse
     {
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
