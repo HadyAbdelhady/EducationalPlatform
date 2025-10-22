@@ -7,16 +7,21 @@ namespace Infrastructure.Repositories
     /// <summary>
     /// Unit of Work implementation that manages transactions across multiple repositories.
     /// </summary>
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork(EducationDbContext context) : IUnitOfWork
     {
-        private readonly EducationDbContext _context;
+        private readonly EducationDbContext _context = context;
         private IDbContextTransaction? _transaction;
         private IUserRepository? _userRepository;
         private IRefreshTokenRepository? _refreshTokenRepository;
+        private ICourseRepository? _courseRepository;
 
-        public UnitOfWork(EducationDbContext context)
+        public ICourseRepository Courses
         {
-            _context = context;
+            get
+            {
+                _courseRepository ??= new CourseRepository(_context);
+                return _courseRepository;
+            }
         }
 
         /// <summary>

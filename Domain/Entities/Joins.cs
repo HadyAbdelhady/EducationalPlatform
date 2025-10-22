@@ -9,6 +9,7 @@ namespace Domain.Entities
         public DateTimeOffset EnrolledAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public int NumberOfCourseVideosWatched { get; set; } 
 
         public Student Student { get; set; } = null!;
         public Course Course { get; set; } = null!;

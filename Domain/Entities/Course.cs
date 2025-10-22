@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Domain.Interfaces;
 
 namespace Domain.Entities
@@ -19,12 +17,12 @@ namespace Domain.Entities
         public DateTimeOffset UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        public ICollection<Section> Sections { get; set; } = new List<Section>();
-        public ICollection<InstructorCourse> InstructorCourses { get; set; } = new List<InstructorCourse>();
-        public ICollection<StudentCourse> StudentCourses { get; set; } = new List<StudentCourse>();
-        public ICollection<CourseReview> CourseReviews { get; set; } = new List<CourseReview>();
-        public ICollection<Exam> Exams { get; set; } = new List<Exam>();
-        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public ICollection<Section> Sections { get; set; } = [];
+        public ICollection<InstructorCourse> InstructorCourses { get; set; } = [];
+        public ICollection<StudentCourse> StudentCourses { get; set; } = [];
+        public ICollection<CourseReview> CourseReviews { get; set; } = [];
+        public ICollection<Exam> Exams { get; set; } = [];
+        public ICollection<Payment> Payments { get; set; } = [];
     }
 }
 

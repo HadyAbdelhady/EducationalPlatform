@@ -12,6 +12,11 @@ namespace Application.Interfaces
         IUserRepository Users { get; }
 
         /// <summary>
+        /// Gets the Course repository.
+        /// </summary>
+        ICourseRepository Courses { get; }
+
+        /// <summary>
         /// Gets the RefreshToken repository.
         /// </summary>
         IRefreshTokenRepository RefreshTokens { get; }

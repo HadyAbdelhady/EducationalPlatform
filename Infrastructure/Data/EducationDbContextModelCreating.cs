@@ -178,6 +178,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.EnrolledAt).HasColumnName("enrolled_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.Property(x => x.NumberOfCourseVideosWatched).HasColumnName("number_of_course_videos_watched");
                 b.HasOne(x => x.Student).WithMany(x => x.StudentCourses).HasForeignKey(x => x.StudentId).HasConstraintName("student_courses_student_id_fkey");
                 b.HasOne(x => x.Course).WithMany(x => x.StudentCourses).HasForeignKey(x => x.CourseId).HasConstraintName("student_courses_course_id_fkey");
             });
