@@ -1,4 +1,4 @@
-namespace Domain.Entities
+namespace Domain.enums
 {
     public enum ExamStatus
     {

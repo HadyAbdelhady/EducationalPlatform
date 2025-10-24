@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Domain.Entities
 {
-    public class Instructor
+    public class Instructor 
     {
         public Guid UserId { get; set; }
 

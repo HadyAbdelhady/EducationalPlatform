@@ -1,15 +1,13 @@
-using System;
-
 namespace Domain.Entities
 {
-    public class StudentCourse
+    public class StudentCourse 
     {
         public Guid StudentId { get; set; }
         public Guid CourseId { get; set; }
         public DateTimeOffset EnrolledAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-        public int NumberOfCourseVideosWatched { get; set; } 
+        public int NumberOfCourseVideosWatched { get; set; }
 
         public Student Student { get; set; } = null!;
         public Course Course { get; set; } = null!;
@@ -64,7 +62,7 @@ namespace Domain.Entities
         public Exam Exam { get; set; } = null!;
     }
 
-    public class InstructorCourse
+    public class InstructorCourse 
     {
         public Guid InstructorId { get; set; }
         public Guid CourseId { get; set; }

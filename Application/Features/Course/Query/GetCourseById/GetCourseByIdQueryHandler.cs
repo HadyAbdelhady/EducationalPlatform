@@ -11,7 +11,7 @@ namespace Application.Features.Course.Query.GetCourseById
         public async Task<CourseDetailResponse> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
         {
             // Fetch course with all related entities including nested navigation properties
-            var course = await _unitOfWork.Courses.GetCourseDetailByIdAsync(request.CourseId, cancellationToken)
+            var course = await _unitOfWork.GetRepository<ICourseRepository>().GetCourseDetailByIdAsync(request.CourseId, cancellationToken)
                               ?? throw new KeyNotFoundException($"Course with ID {request.CourseId} not found.");
 
             // Calculate rating

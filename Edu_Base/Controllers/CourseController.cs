@@ -5,11 +5,9 @@ using Application.Features.Course.Query.GetAllCourses;
 using Application.Features.Course.Query.GetAllCoursesByInstructor;
 using Application.Features.Course.Query.GetAllCoursesForStudent;
 using Application.Features.Course.Query.GetCourseById;
-using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Edu_Base.Controllers
 {
@@ -20,10 +18,10 @@ namespace Edu_Base.Controllers
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<CourseController> _logger = logger;
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> CreateCourse([FromBody] CourseCreationRequest courseCreationRequest, CancellationToken cancellationToken)
+        [HttpPost("create")]
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> CreateCourse(CourseCreationRequest courseCreationRequest, CancellationToken cancellationToken) 
         {
             if (courseCreationRequest == null)
             {

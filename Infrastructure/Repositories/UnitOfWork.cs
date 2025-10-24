@@ -1,52 +1,44 @@
 using Application.Interfaces;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections.Concurrent;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Repositories
 {
     /// <summary>
     /// Unit of Work implementation that manages transactions across multiple repositories.
     /// </summary>
-    public class UnitOfWork(EducationDbContext context) : IUnitOfWork
+    public class UnitOfWork(EducationDbContext context, IServiceProvider provider) : IUnitOfWork
     {
         private readonly EducationDbContext _context = context;
+        private readonly IServiceProvider _provider = provider;
         private IDbContextTransaction? _transaction;
         private IUserRepository? _userRepository;
         private IRefreshTokenRepository? _refreshTokenRepository;
         private ICourseRepository? _courseRepository;
 
-        public ICourseRepository Courses
+        private readonly ConcurrentDictionary<Type, object> _repositories = new();
+
+        public IRepository<T> Repository<T>() where T : class, Domain.Interfaces.IEntity
         {
-            get
-            {
-                _courseRepository ??= new CourseRepository(_context);
-                return _courseRepository;
-            }
+            var type = typeof(T);
+            // Try to get cached one
+            if (_repositories.TryGetValue(type, out var repoObj))
+                return (IRepository<T>)repoObj;
+
+            // Resolve from DI (open generic registration will return Repository<T>)
+            var repo = _provider.GetRequiredService<IRepository<T>>();
+            _repositories[type] = repo!;
+            return repo!;
         }
 
-        /// <summary>
-        /// Gets the User repository. Creates it lazily if not yet instantiated.
-        /// </summary>
-        public IUserRepository Users
+        public TRepo GetRepository<TRepo>() where TRepo : class
         {
-            get
-            {
-                _userRepository ??= new UserRepository(_context);
-                return _userRepository;
-            }
+            return _provider.GetRequiredService<TRepo>();
         }
 
-        /// <summary>
-        /// Gets the RefreshToken repository. Creates it lazily if not yet instantiated.
-        /// </summary>
-        public IRefreshTokenRepository RefreshTokens
-        {
-            get
-            {
-                _refreshTokenRepository ??= new RefreshTokenRepository(_context);
-                return _refreshTokenRepository;
-            }
-        }
 
         /// <summary>
         /// Saves all changes made in this unit of work to the database.

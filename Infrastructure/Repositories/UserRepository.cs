@@ -12,7 +12,7 @@ namespace Infrastructure.Repositories
             return await _context.Users
                 .Include(u => u.Student)
                 .Include(u => u.Instructor)
-                .FirstOrDefaultAsync(u => u.GmailExternal == email && !u.IsDeleted, cancellationToken);
+                .FirstOrDefaultAsync(u => u.GmailExternal == email, cancellationToken);
         }
 
         public async Task<User?> GetByIdWithRelationsAsync(Guid userId, CancellationToken cancellationToken = default)
@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
             return await _context.Users
                 .Include(u => u.Student)
                 .Include(u => u.Instructor)
-                .FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted, cancellationToken);
+                .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         }
     }
 }

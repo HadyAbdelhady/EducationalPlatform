@@ -36,7 +36,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
             }
 
             // Check if user already exists
-            var existingUser = await _unitOfWork.Users.GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
+            var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
+                                                     .GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
 
             bool isNewUser = existingUser == null;
             User user;
@@ -68,7 +69,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
                 user.Instructor = instructor;
 
-                await _unitOfWork.Users.AddAsync(user, cancellationToken);
+                await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
             }
             else
             {
@@ -77,7 +78,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 user.UpdatedAt = DateTimeOffset.UtcNow;
                 user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
 
-                _unitOfWork.Users.Update(user);
+                _unitOfWork.Repository<User>().Update(user);
             }
 
             // Generate JWT token
@@ -92,7 +93,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
             // Generate refresh token
             var refreshToken = _jwtTokenService.GenerateRefreshToken();
-            await _unitOfWork.RefreshTokens.AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
+            await _unitOfWork.GetRepository<IRefreshTokenRepository>().AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
 
             // Save all changes in a single transaction
             await _unitOfWork.SaveChangesAsync(cancellationToken);

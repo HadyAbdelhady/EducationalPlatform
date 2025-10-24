@@ -36,7 +36,8 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
             }
 
             // Check if user already exists
-            var existingUser = await _unitOfWork.Users.GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
+            var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
+                                                     .GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
 
             bool isNewUser = existingUser == null;
             User user;
@@ -70,35 +71,35 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
 
                 user.Student = student;
 
-                await _unitOfWork.Users.AddAsync(user, cancellationToken);
+                await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
             }
             else
             {
                 // Validate device ID for existing student
                 user = existingUser;
-                
+
                 if (user.Student != null)
                 {
                     // Check if the deviceID matches the stored one
-                    if (!string.IsNullOrEmpty(user.Student.DeviceId) && 
+                    if (!string.IsNullOrEmpty(user.Student.DeviceId) &&
                         user.Student.DeviceId != request.DeviceId)
                     {
                         throw new UnauthorizedAccessException(
                             "Login attempt detected from a different device. " +
                             "Please use your registered device to access your account.");
                     }
-                    
+
                     // Update deviceID if it was null/empty (for backward compatibility)
                     if (string.IsNullOrEmpty(user.Student.DeviceId))
                     {
                         user.Student.DeviceId = request.DeviceId;
                     }
                 }
-                
+
                 user.UpdatedAt = DateTimeOffset.UtcNow;
                 user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
 
-                _unitOfWork.Users.Update(user);
+                _unitOfWork.Repository<User>().Update(user);
             }
 
             // Generate JWT token
@@ -113,7 +114,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
 
             // Generate refresh token
             var refreshToken = _jwtTokenService.GenerateRefreshToken();
-            await _unitOfWork.RefreshTokens.AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
+            await _unitOfWork.GetRepository<IRefreshTokenRepository>().AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
 
             // Save all changes in a single transaction
             await _unitOfWork.SaveChangesAsync(cancellationToken);

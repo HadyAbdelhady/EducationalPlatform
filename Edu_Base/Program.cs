@@ -1,14 +1,19 @@
+﻿using Application.DTOs.Media;
 using Application.Interfaces;
+using CloudinaryDotNet;
+using FluentValidation;
 using Infrastructure.Data;
+using Infrastructure.Middleware;
+using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
-using Microsoft.EntityFrameworkCore;
-using FluentValidation;
-using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
-using Infrastructure.Middleware;
+using Scrutor;
 
 namespace Edu_Base
 {
@@ -20,14 +25,36 @@ namespace Edu_Base
 
             // Add services to the container.
 
-            // Database Configuration
-            builder.Services.AddDbContext<EducationDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+            // Register EF Core interceptor used by the DbContext
+            builder.Services.AddSingleton<SoftDeleteInterceptor>();
+
+
+            // Database Configuration (register DbContext with interceptor from DI)
+            builder.Services.AddDbContext<EducationDbContext>((provider, options) =>
+            {
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+                       .AddInterceptors(provider.GetRequiredService<SoftDeleteInterceptor>());
+            });
 
             // MediatR Configuration
-            builder.Services.AddMediatR(cfg => 
+            builder.Services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(Assembly.Load("Application"));
+            });
+
+            // Configure Cloudinary
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
+            // Register Cloudinary instance
+            builder.Services.AddSingleton(provider =>
+            {
+                var config = provider.GetRequiredService<IOptions<CloudinarySettings>>();
+                var account = new Account(
+                    config.Value.CloudName,
+                    config.Value.ApiKey,
+                    config.Value.ApiSecret
+                );
+                return new Cloudinary(account);
             });
 
             // FluentValidation Configuration
@@ -35,16 +62,22 @@ namespace Edu_Base
 
             // Unit of Work & Repository Registration
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            
-            // Individual repositories (optional - can be accessed through UnitOfWork)
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+            // Open generic base repository
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            // Auto-register concrete repository implementations (Scrutor)
+            builder.Services.Scan(scan => scan
+                .FromAssembliesOf(typeof(UnitOfWork))
+                .AddClasses(classes => classes.Where(c => c.Name.EndsWith("Repository")))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime());
 
 
             // Service Registration
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-
+            builder.Services.AddScoped<ICloudinaryCore, CloudinaryService>();
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>
@@ -85,7 +118,7 @@ namespace Edu_Base
             builder.Services.AddAuthorization();
 
             builder.Services.AddControllers();
-            
+
             // Swagger/OpenAPI Configuration
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>

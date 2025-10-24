@@ -1,3 +1,5 @@
+using Domain.Interfaces;
+
 namespace Application.Interfaces
 {
     /// <summary>
@@ -9,17 +11,17 @@ namespace Application.Interfaces
         /// <summary>
         /// Gets the User repository.
         /// </summary>
-        IUserRepository Users { get; }
+        //IUserRepository Users { get; }
 
-        /// <summary>
-        /// Gets the Course repository.
-        /// </summary>
-        ICourseRepository Courses { get; }
+        ///// <summary>
+        ///// Gets the Course repository.
+        ///// </summary>
+        //ICourseRepository Courses { get; }
 
-        /// <summary>
-        /// Gets the RefreshToken repository.
-        /// </summary>
-        IRefreshTokenRepository RefreshTokens { get; }
+        ///// <summary>
+        ///// Gets the RefreshToken repository.
+        ///// </summary>
+        //IRefreshTokenRepository RefreshTokens { get; }
 
         /// <summary>
         /// Saves all changes made in this unit of work to the database.
@@ -45,5 +47,7 @@ namespace Application.Interfaces
         /// </summary>
         /// <param name="cancellationToken">Cancellation token.</param>
         Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
+        public IRepository<T> Repository<T>() where T : class, Domain.Interfaces.IEntity;
+        public TRepo GetRepository<TRepo>() where TRepo : class;
     }
 }

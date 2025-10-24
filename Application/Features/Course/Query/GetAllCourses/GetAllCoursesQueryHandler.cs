@@ -10,7 +10,7 @@ namespace Application.Features.Course.Query.GetAllCourses
 
         public async Task<List<CourseByUserIdResponse>> Handle(GetAllCoursesQuery request, CancellationToken cancellationToken)
         {
-            var courses = await _unitOfWork.Courses.GetAllAsync(cancellationToken);
+            var courses = await _unitOfWork.GetRepository<ICourseRepository>().GetAllAsync(cancellationToken);
 
             var response = courses.Select(course => new CourseByUserIdResponse
             {

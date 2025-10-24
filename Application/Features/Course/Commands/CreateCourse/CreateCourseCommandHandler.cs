@@ -10,37 +10,45 @@ namespace Application.Features.Course.Commands.CreateCourse
 
         public async Task<CourseCreationResponse> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
         {
-            Domain.Entities.Course newCourse = new()
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            try
             {
-                Id = Guid.NewGuid(),
-                Name = request.CourseName,
-                Description = request.Description,
-                Price = request.Price,
-                PictureUrl = request.PictureUrl,
-                IntroVideoUrl = request.IntroVideoUrl,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
+                Domain.Entities.Course newCourse = new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = request.CourseName,
+                    Description = request.Description,
+                    Price = request.Price,
+                    PictureUrl = request.PictureUrl,
+                    IntroVideoUrl = request.IntroVideoUrl,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                };
 
-            };
+                await _unitOfWork.Repository<Domain.Entities.Course>().AddAsync(newCourse, cancellationToken);
 
-            await _unitOfWork.Courses.AddAsync(newCourse, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                newCourse.InstructorCourses.Add(new Domain.Entities.InstructorCourse
+                {
+                    InstructorId = request.InstructorId,
+                    CourseId = newCourse.Id,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                });
 
-            newCourse.InstructorCourses.Add(new Domain.Entities.InstructorCourse
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _unitOfWork.CommitTransactionAsync(cancellationToken);
+
+                return new CourseCreationResponse
+                {
+                    CourseId = newCourse.Id,
+                    CourseName = newCourse.Name,
+                    CreatedAt = newCourse.CreatedAt.DateTime
+                };
+            }
+            catch
             {
-                InstructorId = request.InstructorId,
-                CourseId = newCourse.Id
-            });
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            return new CourseCreationResponse
-            {
-                CourseId = newCourse.Id,
-                CourseName = newCourse.Name,
-                CreatedAt = newCourse.CreatedAt.DateTime
-            };
-
+                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
+                throw;
+            }
         }
 
     }

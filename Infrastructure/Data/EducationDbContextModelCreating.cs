@@ -9,8 +9,9 @@ namespace Infrastructure.Data
         {
             modelBuilder.HasDefaultSchema("public");
 
-            modelBuilder.HasPostgresEnum(schema: "public", name: "exam_status", labels: null);
-            modelBuilder.HasPostgresEnum(schema: "public", name: "payment_status", labels: null);
+            modelBuilder.HasPostgresEnum(schema: "public", name: "exam_status", ["Submitted", "Graded", "Pending"]);
+            modelBuilder.HasPostgresEnum(schema: "public", name: "payment_status", ["Pending", "Completed", "Failed"]);
+            modelBuilder.HasPostgresEnum("public", "UsageCategory", ["ProfilePicture", "Thumbnail"]);
 
             modelBuilder.Entity<User>(b =>
             {
@@ -442,7 +443,7 @@ namespace Infrastructure.Data
                 b.HasOne(x => x.ChosenAnswer).WithMany().HasForeignKey(x => x.ChosenAnswerId).HasConstraintName("student_submissions_chosen_answer_id_fkey");
             });
 
-            modelBuilder.Entity<RefreshToken>(t=>
+            modelBuilder.Entity<RefreshToken>(t =>
             {
                 t.ToTable("refresh_tokens");
                 t.HasKey(x => x.Id).HasName("refresh_tokens_pkey");

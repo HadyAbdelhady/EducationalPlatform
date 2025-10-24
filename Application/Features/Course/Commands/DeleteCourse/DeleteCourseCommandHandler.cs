@@ -9,10 +9,10 @@ namespace Application.Features.Course.Commands.DeleteCourse
 
         public async Task<string> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
         {
-            var course = await _unitOfWork.Courses.GetByIdAsync(request.CourseId)
+            var course = await _unitOfWork.Repository<Domain.Entities.Course>().GetByIdAsync(request.CourseId, cancellationToken)
                                                         ?? throw new KeyNotFoundException("Course not found");
 
-            await _unitOfWork.Courses.RemoveAsync(course.Id,cancellationToken);
+            await _unitOfWork.Repository<Domain.Entities.Course>().RemoveAsync(course.Id,cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return "Course deleted successfully";
         }
