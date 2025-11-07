@@ -1,5 +1,6 @@
 using Application.DTOs.Auth;
 using Application.Interfaces;
+using Application.ResultWrapper;
 using Domain.Entities;
 using MediatR;
 
@@ -12,7 +13,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
     public class InstructorGoogleLoginCommandHandler(
         IGoogleAuthService googleAuthService,
         IUnitOfWork unitOfWork,
-        IJwtTokenService jwtTokenService) : IRequestHandler<InstructorGoogleLoginCommand, AuthenticationResponse>
+        IJwtTokenService jwtTokenService) : IRequestHandler<InstructorGoogleLoginCommand, Result<AuthenticationResponse>>
     {
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -25,93 +26,103 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>Authentication response with user information.</returns>
         /// <exception cref="UnauthorizedAccessException">Thrown when Google token is invalid.</exception>
-        public async Task<AuthenticationResponse> Handle(InstructorGoogleLoginCommand request, CancellationToken cancellationToken)
+        public async Task<Result<AuthenticationResponse>> Handle(InstructorGoogleLoginCommand request, CancellationToken cancellationToken)
         {
-            // Validate Google ID token
-            var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
-
-            if (googleUserInfo == null || !googleUserInfo.EmailVerified)
+            try
             {
-                throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
-            }
+                // Validate Google ID token
+                var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
 
-            // Check if user already exists
-            var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
-                                                     .GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
-
-            bool isNewUser = existingUser == null;
-            User user;
-
-            if (existingUser == null)
-            {
-                // Create new user and instructor
-                user = new User
+                if (googleUserInfo == null || !googleUserInfo.EmailVerified)
                 {
-                    Id = Guid.NewGuid(),
-                    FullName = googleUserInfo.FullName,
-                    Ssn = request.Ssn,
-                    PhoneNumber = request.PhoneNumber,
-                    GmailExternal = googleUserInfo.Email,
-                    PersonalPictureUrl = googleUserInfo.PictureUrl,
-                    DateOfBirth = request.DateOfBirth,
-                    Gender = request.Gender,
-                    EducationYear = request.EducationYear,
-                    LocationMaps = request.LocationMaps,
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    UpdatedAt = DateTimeOffset.UtcNow,
-                    IsDeleted = false
-                };
+                    throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
+                }
 
-                var instructor = new Instructor
+                // Check if user already exists
+                var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
+                                                         .GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
+
+                bool isNewUser = existingUser == null;
+                User user;
+
+                if (existingUser == null)
                 {
-                    UserId = user.Id
-                };
+                    // Create new user and instructor
+                    user = new User
+                    {
+                        Id = Guid.NewGuid(),
+                        FullName = googleUserInfo.FullName,
+                        Ssn = request.Ssn,
+                        PhoneNumber = request.PhoneNumber,
+                        GmailExternal = googleUserInfo.Email,
+                        PersonalPictureUrl = googleUserInfo.PictureUrl,
+                        DateOfBirth = request.DateOfBirth,
+                        Gender = request.Gender,
+                        EducationYear = request.EducationYear,
+                        LocationMaps = request.LocationMaps,
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        UpdatedAt = DateTimeOffset.UtcNow,
+                        IsDeleted = false
+                    };
 
-                user.Instructor = instructor;
+                    var instructor = new Instructor
+                    {
+                        UserId = user.Id
+                    };
 
-                await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
+                    user.Instructor = instructor;
+
+                    await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
+                }
+                else
+                {
+                    // Update existing user
+                    user = existingUser;
+                    user.UpdatedAt = DateTimeOffset.UtcNow;
+                    user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
+
+                    _unitOfWork.Repository<User>().Update(user);
+                }
+
+                // Generate JWT token
+                var token = _jwtTokenService.GenerateToken(
+                    userId: user.Id,
+                    email: user.GmailExternal ?? string.Empty,
+                    role: "Instructor",
+                    fullName: user.FullName
+                );
+
+                var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+
+                // Generate refresh token
+                var refreshToken = _jwtTokenService.GenerateRefreshToken();
+                await _unitOfWork.GetRepository<IRefreshTokenRepository>().AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
+
+                // Save all changes in a single transaction
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                return Result<AuthenticationResponse>.Success(new AuthenticationResponse
+                {
+                    UserId = user.Id,
+                    FullName = user.FullName,
+                    Email = user.GmailExternal ?? string.Empty,
+                    ProfilePictureUrl = user.PersonalPictureUrl,
+                    UserRole = "Instructor",
+                    IsNewUser = isNewUser,
+                    AuthenticatedAt = DateTimeOffset.UtcNow,
+                    Token = token,
+                    TokenExpiresAt = tokenExpiration,
+                    RefreshToken = refreshToken
+                });
             }
-            else
+            catch (UnauthorizedAccessException auth)
             {
-                // Update existing user
-                user = existingUser;
-                user.UpdatedAt = DateTimeOffset.UtcNow;
-                user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
-
-                _unitOfWork.Repository<User>().Update(user);
+                return Result<AuthenticationResponse>.Failure(auth.Message);
             }
-
-            // Generate JWT token
-            var token = _jwtTokenService.GenerateToken(
-                userId: user.Id,
-                email: user.GmailExternal ?? string.Empty,
-                role: "Instructor",
-                fullName: user.FullName
-            );
-
-            var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
-
-            // Generate refresh token
-            var refreshToken = _jwtTokenService.GenerateRefreshToken();
-            await _unitOfWork.GetRepository<IRefreshTokenRepository>().AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
-
-            // Save all changes in a single transaction
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            // Return authentication response
-            return new AuthenticationResponse
+            catch (Exception ex)
             {
-                UserId = user.Id,
-                FullName = user.FullName,
-                Email = user.GmailExternal ?? string.Empty,
-                ProfilePictureUrl = user.PersonalPictureUrl,
-                UserRole = "Instructor",
-                IsNewUser = isNewUser,
-                AuthenticatedAt = DateTimeOffset.UtcNow,
-                Token = token,
-                TokenExpiresAt = tokenExpiration,
-                RefreshToken = refreshToken
-            };
+                return Result<AuthenticationResponse>.Failure($"Error during Google login: {ex.Message}");
+            }
         }
     }
 }

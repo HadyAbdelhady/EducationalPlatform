@@ -21,70 +21,49 @@ namespace Edu_Base.Controllers
             [FromBody] StudentGoogleLoginRequest request,
             CancellationToken cancellationToken)
         {
-            try
+            _logger.LogInformation("Student Google signup/login attempt for device: {DeviceId}", request.DeviceId);
+
+            // Use the consolidated login command which handles both signup and login
+            var command = new StudentGoogleLoginCommand
             {
-                _logger.LogInformation("Student Google signup/login attempt for device: {DeviceId}", request.DeviceId);
+                IdToken = request.IdToken,
+                DeviceId = request.DeviceId,
+                Ssn = request.Ssn,
+                PhoneNumber = request.PhoneNumber,
+                DateOfBirth = request.DateOfBirth,
+                Gender = request.Gender,
+                EducationYear = request.EducationYear,
+                LocationMaps = request.LocationMaps
+            };
 
-                // Use the consolidated login command which handles both signup and login
-                var command = new StudentGoogleLoginCommand
-                {
-                    IdToken = request.IdToken,
-                    DeviceId = request.DeviceId,
-                    Ssn = request.Ssn,
-                    PhoneNumber = request.PhoneNumber,
-                    DateOfBirth = request.DateOfBirth,
-                    Gender = request.Gender,
-                    EducationYear = request.EducationYear,
-                    LocationMaps = request.LocationMaps
-                };
+            var result = await _mediator.Send(command, cancellationToken);
 
-                var result = await _mediator.Send(command, cancellationToken);
+            _logger.LogInformation(
+                "Student Google authentication successful. UserId: {UserId}, IsNewUser: {IsNewUser}",
+                result.Value.UserId,
+                result.Value.IsNewUser);
 
-                _logger.LogInformation(
-                    "Student Google authentication successful. UserId: {UserId}, IsNewUser: {IsNewUser}",
-                    result.UserId,
-                    result.IsNewUser);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
 
-                return Ok(result);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                _logger.LogWarning(ex, "Unauthorized student Google authentication attempt");
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during student Google authentication");
-                return StatusCode(500, new { message = "An error occurred during authentication" });
-            }
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout(
-            [FromBody] Guid userId,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> Logout([FromBody] Guid userId, CancellationToken cancellationToken)
         {
-            try
+            if (userId == Guid.Empty)
             {
-                if (userId == Guid.Empty)
-                {
-                    return BadRequest(new { message = "Invalid user ID" });
-                }
-
-                _logger.LogInformation("Student logout attempt for UserId: {UserId}", userId);
-
-                var command = new GoogleLogoutCommand { UserId = userId };
-                var result = await _mediator.Send(command, cancellationToken);
-
-                _logger.LogInformation("Student logout successful for UserId: {UserId}", userId);
-
-                return Ok(new { success = result, message = "Logged out successfully" });
+                return BadRequest(new { message = "Invalid user ID" });
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during student logout for UserId: {UserId}", userId);
-                return StatusCode(500, new { message = "An error occurred during logout" });
-            }
+
+            _logger.LogInformation("Student logout attempt for UserId: {UserId}", userId);
+
+            var command = new GoogleLogoutCommand { UserId = userId };
+            var result = await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Student logout successful for UserId: {UserId}", userId);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+
         }
     }
 }

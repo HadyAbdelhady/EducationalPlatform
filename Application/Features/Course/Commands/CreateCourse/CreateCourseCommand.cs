@@ -1,9 +1,10 @@
 ﻿using Application.DTOs.Course;
+using Application.ResultWrapper;
 using MediatR;
 
 namespace Application.Features.Course.Commands.CreateCourse
 {
-    public record CreateCourseCommand : IRequest<CourseCreationResponse>
+    public record CreateCourseCommand : IRequest<Result<CourseCreationResponse>>
     {
         public string CourseName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

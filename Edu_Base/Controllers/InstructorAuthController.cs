@@ -18,68 +18,46 @@ namespace Edu_Base.Controllers
             [FromBody] InstructorGoogleLoginRequest request,
             CancellationToken cancellationToken)
         {
-            try
+            _logger.LogInformation("Instructor Google login attempt");
+
+            var command = new InstructorGoogleLoginCommand
             {
-                _logger.LogInformation("Instructor Google login attempt");
+                IdToken = request.IdToken,
+                Ssn = request.Ssn,
+                PhoneNumber = request.PhoneNumber,
+                DateOfBirth = request.DateOfBirth,
+                Gender = request.Gender,
+                EducationYear = request.EducationYear,
+                LocationMaps = request.LocationMaps
+            };
 
-                var command = new InstructorGoogleLoginCommand
-                {
-                    IdToken = request.IdToken,
-                    Ssn = request.Ssn,
-                    PhoneNumber = request.PhoneNumber,
-                    DateOfBirth = request.DateOfBirth,
-                    Gender = request.Gender,
-                    EducationYear = request.EducationYear,
-                    LocationMaps = request.LocationMaps
-                };
+            var result = await _mediator.Send(command, cancellationToken);
 
-                var result = await _mediator.Send(command, cancellationToken);
+            _logger.LogInformation(
+                "Instructor Google login successful. UserId: {UserId}, IsNewUser: {IsNewUser}",
+                result.Value.UserId,
+                result.Value.IsNewUser);
 
-                _logger.LogInformation(
-                    "Instructor Google login successful. UserId: {UserId}, IsNewUser: {IsNewUser}",
-                    result.UserId,
-                    result.IsNewUser);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
 
-                return Ok(result);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                _logger.LogWarning(ex, "Unauthorized instructor Google login attempt");
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during instructor Google login");
-                return StatusCode(500, new { message = "An error occurred during authentication" });
-            }
         }
-       
+
         [HttpPost("logout")]
         public async Task<IActionResult> Logout(
             [FromBody] Guid userId,
             CancellationToken cancellationToken)
         {
-            try
+            if (userId == Guid.Empty)
             {
-                if (userId == Guid.Empty)
-                {
-                    return BadRequest(new { message = "Invalid user ID" });
-                }
-
-                _logger.LogInformation("Instructor logout attempt for UserId: {UserId}", userId);
-
-                var command = new GoogleLogoutCommand { UserId = userId };
-                var result = await _mediator.Send(command, cancellationToken);
-
-                _logger.LogInformation("Instructor logout successful for UserId: {UserId}", userId);
-
-                return Ok(new { success = result, message = "Logged out successfully" });
+                return BadRequest(new { message = "Invalid user ID" });
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during instructor logout for UserId: {UserId}", userId);
-                return StatusCode(500, new { message = "An error occurred during logout" });
-            }
+            _logger.LogInformation("Instructor logout attempt for UserId: {UserId}", userId);
+
+            var command = new GoogleLogoutCommand { UserId = userId };
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+
         }
     }
 }

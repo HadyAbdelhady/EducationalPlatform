@@ -1,9 +1,10 @@
 using Application.DTOs.Auth;
+using Application.ResultWrapper;
 using MediatR;
 
 namespace Application.Features.Auth.Commands.StudentGoogleLogin
 {
-    public class StudentGoogleLoginCommand : IRequest<AuthenticationResponse>
+    public class StudentGoogleLoginCommand : IRequest<Result<AuthenticationResponse>>
     {
         public string IdToken { get; set; } = string.Empty;
 

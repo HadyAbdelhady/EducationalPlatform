@@ -1,14 +1,15 @@
 ﻿using Application.DTOs.Course;
 using Application.Interfaces;
+using Application.ResultWrapper;
 using MediatR;
 
 namespace Application.Features.Course.Commands.CreateCourse
 {
-    public class CreateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateCourseCommand, CourseCreationResponse>
+    public class CreateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateCourseCommand, Result<CourseCreationResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<CourseCreationResponse> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CourseCreationResponse>> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
         {
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
@@ -37,17 +38,21 @@ namespace Application.Features.Course.Commands.CreateCourse
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-                return new CourseCreationResponse
+                return Result<CourseCreationResponse>.Success(new CourseCreationResponse
                 {
                     CourseId = newCourse.Id,
                     CourseName = newCourse.Name,
                     CreatedAt = newCourse.CreatedAt.DateTime
-                };
+                });
             }
-            catch
+            catch (UnauthorizedAccessException auth)
+            {
+                return Result<CourseCreationResponse>.Failure(auth.Message);
+            }
+            catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-                throw;
+                return Result<CourseCreationResponse>.Failure($"Error creating course: {ex.Message}");
             }
         }
 
