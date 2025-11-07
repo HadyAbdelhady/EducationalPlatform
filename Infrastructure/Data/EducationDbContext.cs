@@ -6,15 +6,10 @@ using Infrastructure.Persistence.Interceptors;
 
 namespace Infrastructure.Data
 {
-    public class EducationDbContext : DbContext
+    public class EducationDbContext(DbContextOptions<EducationDbContext> options, SoftDeleteInterceptor softDeleteInterceptor) : DbContext(options)
     {
-        private readonly SoftDeleteInterceptor _softDeleteInterceptor;
+        private readonly SoftDeleteInterceptor _softDeleteInterceptor = softDeleteInterceptor;
 
-        public EducationDbContext(DbContextOptions<EducationDbContext> options, SoftDeleteInterceptor softDeleteInterceptor) 
-            : base(options)
-        {
-            _softDeleteInterceptor = softDeleteInterceptor;
-        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.AddInterceptors(_softDeleteInterceptor);
