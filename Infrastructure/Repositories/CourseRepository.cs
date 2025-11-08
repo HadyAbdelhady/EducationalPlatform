@@ -27,6 +27,12 @@ namespace Infrastructure.Repositories
         }
         public async Task<Course?> GetCourseDetailByIdAsync(Guid courseId, CancellationToken cancellationToken = default)
         {
+            // First, check if the course exists without loading all related entities 
+
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId, cancellationToken: cancellationToken);
+            if (course == null) return null;
+
+
             return await _context.Courses
                 .Include(c => c.Sections)
                 .Include(c => c.InstructorCourses)

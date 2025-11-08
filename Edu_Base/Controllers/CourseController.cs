@@ -37,7 +37,7 @@ namespace Edu_Base.Controllers
                 IntroVideoUrl = courseCreationRequest.IntroVideoUrl
             };
             var result = await _mediator.Send(createCourseCommand, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result.Error);
 
         }
 

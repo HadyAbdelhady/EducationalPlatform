@@ -1,6 +1,7 @@
 using Application.DTOs.Auth;
 using Application.Interfaces;
 using Application.ResultWrapper;
+using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Auth.Commands.UserLoginWithRefreshToken
@@ -44,11 +45,11 @@ namespace Application.Features.Auth.Commands.UserLoginWithRefreshToken
             }
             catch (UnauthorizedAccessException uaEx)
             {
-                return Result<AuthResponse>.Failure(uaEx.Message);
+                return Result<AuthResponse>.FailureStatusCode(uaEx.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                return Result<AuthResponse>.Failure($"An error occurred while processing the request: {ex.Message}");
+                return Result<AuthResponse>.FailureStatusCode($"An error occurred while processing the request: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }

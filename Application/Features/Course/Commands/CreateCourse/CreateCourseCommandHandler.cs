@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Course;
 using Application.Interfaces;
 using Application.ResultWrapper;
+using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Course.Commands.CreateCourse
@@ -47,12 +48,12 @@ namespace Application.Features.Course.Commands.CreateCourse
             }
             catch (UnauthorizedAccessException auth)
             {
-                return Result<CourseCreationResponse>.Failure(auth.Message);
+                return Result<CourseCreationResponse>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-                return Result<CourseCreationResponse>.Failure($"Error creating course: {ex.Message}");
+                return Result<CourseCreationResponse>.FailureStatusCode($"Error creating course: {ex.Message}", ErrorType.NotCreated);
             }
         }
 

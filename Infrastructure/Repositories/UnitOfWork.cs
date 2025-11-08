@@ -1,6 +1,5 @@
 using Application.Interfaces;
 using Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,9 +14,6 @@ namespace Infrastructure.Repositories
         private readonly EducationDbContext _context = context;
         private readonly IServiceProvider _provider = provider;
         private IDbContextTransaction? _transaction;
-        private IUserRepository? _userRepository;
-        private IRefreshTokenRepository? _refreshTokenRepository;
-        private ICourseRepository? _courseRepository;
 
         private readonly ConcurrentDictionary<Type, object> _repositories = new();
 

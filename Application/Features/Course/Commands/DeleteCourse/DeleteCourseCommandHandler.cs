@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.ResultWrapper;
+using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Course.Commands.DeleteCourse
@@ -22,15 +23,15 @@ namespace Application.Features.Course.Commands.DeleteCourse
             }
             catch (KeyNotFoundException knfEx)
             {
-                return Result<string>.Failure(knfEx.Message);
+                return Result<string>.FailureStatusCode(knfEx.Message, ErrorType.NotFound);
             }
             catch (UnauthorizedAccessException auth)
             {
-                return Result<string>.Failure(auth.Message);
+                return Result<string>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                return Result<string>.Failure($"An error occurred while deleting the course: {ex.Message}");
+                return Result<string>.FailureStatusCode($"An error occurred while deleting the course: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }

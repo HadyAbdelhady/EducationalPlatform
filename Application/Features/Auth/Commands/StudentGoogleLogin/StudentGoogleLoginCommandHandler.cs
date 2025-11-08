@@ -2,6 +2,7 @@ using Application.DTOs.Auth;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
+using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Auth.Commands.StudentGoogleLogin
@@ -141,11 +142,11 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
             }
             catch (UnauthorizedAccessException auth)
             {
-                return Result<AuthenticationResponse>.Failure(auth.Message);
+                return Result<AuthenticationResponse>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                return Result<AuthenticationResponse>.Failure($"Error during Google login: {ex.Message}");
+                return Result<AuthenticationResponse>.FailureStatusCode($"Error during Google login: {ex.Message}", ErrorType.InternalServerError);
             }
 
         }

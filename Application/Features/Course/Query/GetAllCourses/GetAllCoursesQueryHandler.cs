@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Course;
 using Application.Interfaces;
 using Application.ResultWrapper;
+using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Course.Query.GetAllCourses
@@ -40,11 +41,11 @@ namespace Application.Features.Course.Query.GetAllCourses
             }
             catch (UnauthorizedAccessException auth)
             {
-                return Result<PaginatedResult<CourseByUserIdResponse>>.Failure(auth.Message);
+                return Result<PaginatedResult<CourseByUserIdResponse>>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                return Result<PaginatedResult<CourseByUserIdResponse>>.Failure($"An error occurred while retrieving courses: {ex.Message}");
+                return Result<PaginatedResult<CourseByUserIdResponse>>.FailureStatusCode($"An error occurred while retrieving courses: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }

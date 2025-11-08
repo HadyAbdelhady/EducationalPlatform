@@ -1,4 +1,5 @@
 using Application.ResultWrapper;
+using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Auth.Commands.GoogleLogout
@@ -31,11 +32,11 @@ namespace Application.Features.Auth.Commands.GoogleLogout
             }
             catch (UnauthorizedAccessException auth)
             {
-                return Result<bool>.Failure(auth.Message);
+                return Result<bool>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                return Result<bool>.Failure($"Logout failed: {ex.Message}");
+                return Result<bool>.FailureStatusCode($"Logout failed: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }

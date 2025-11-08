@@ -1,6 +1,7 @@
 using Application.DTOs.Course;
 using Application.Interfaces;
 using Application.ResultWrapper;
+using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Course.Query.GetCourseById
@@ -92,11 +93,11 @@ namespace Application.Features.Course.Query.GetCourseById
             }
             catch (UnauthorizedAccessException auth)
             {
-                return Result<CourseDetailResponse>.Failure(auth.Message);
+                return Result<CourseDetailResponse>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                return Result<CourseDetailResponse>.Failure($"An error occurred while retrieving the course: {ex.Message}");
+                return Result<CourseDetailResponse>.FailureStatusCode($"An error occurred while retrieving the course: {ex.Message}", ErrorType.InternalServerError);
             }
         }
 
