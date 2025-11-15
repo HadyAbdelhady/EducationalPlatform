@@ -11,6 +11,8 @@ namespace Application.Features.Course.Commands.DeleteCourse
 
         public async Task<Result<string>> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
         {
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+
             try
             {
 
@@ -19,6 +21,8 @@ namespace Application.Features.Course.Commands.DeleteCourse
 
                 await _unitOfWork.Repository<Domain.Entities.Course>().RemoveAsync(course.Id, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _unitOfWork.CommitTransactionAsync(cancellationToken);
+
                 return Result<string>.Success("Course deleted successfully");
             }
             catch (KeyNotFoundException knfEx)
@@ -31,7 +35,9 @@ namespace Application.Features.Course.Commands.DeleteCourse
             }
             catch (Exception ex)
             {
+                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<string>.FailureStatusCode($"An error occurred while deleting the course: {ex.Message}", ErrorType.InternalServerError);
+
             }
         }
     }

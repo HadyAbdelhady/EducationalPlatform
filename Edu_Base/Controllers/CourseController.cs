@@ -79,8 +79,8 @@ namespace Edu_Base.Controllers
         }
 
         [HttpDelete]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Instructor")]
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Instructor")]
         public async Task<IActionResult> DeleteCourse(Guid courseId, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Deleting course with CourseId: {CourseId}", courseId);
