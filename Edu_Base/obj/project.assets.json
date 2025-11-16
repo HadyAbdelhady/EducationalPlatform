@@ -5200,23 +5200,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\hady0\\.nuget\\packages\\": {},
+    "C:\\Users\\usef85\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\Edu_Base.csproj",
+      "projectUniqueName": "D:\\Me\\Educational Platform\\Source Code\\Edu_Base\\Edu_Base.csproj",
       "projectName": "Edu_Base",
-      "projectPath": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\Edu_Base.csproj",
-      "packagesPath": "C:\\Users\\hady0\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\obj\\",
+      "projectPath": "D:\\Me\\Educational Platform\\Source Code\\Edu_Base\\Edu_Base.csproj",
+      "packagesPath": "C:\\Users\\usef85\\.nuget\\packages\\",
+      "outputPath": "D:\\Me\\Educational Platform\\Source Code\\Edu_Base\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\hady0\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\usef85\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -5225,18 +5225,17 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Application.csproj": {
-              "projectPath": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Application.csproj"
+            "D:\\Me\\Educational Platform\\Source Code\\Application\\Application.csproj": {
+              "projectPath": "D:\\Me\\Educational Platform\\Source Code\\Application\\Application.csproj"
             },
-            "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Infrastructure\\Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Infrastructure\\Infrastructure.csproj"
+            "D:\\Me\\Educational Platform\\Source Code\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "D:\\Me\\Educational Platform\\Source Code\\Infrastructure\\Infrastructure.csproj"
             }
           }
         }
@@ -5301,7 +5300,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
