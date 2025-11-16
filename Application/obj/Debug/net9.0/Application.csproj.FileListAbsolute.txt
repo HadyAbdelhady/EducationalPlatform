@@ -30,3 +30,12 @@ C:\Users\hady0\OneDrive\Desktop\EducationalPlatform\Application\obj\Debug\net9.0
 C:\Users\hady0\OneDrive\Desktop\EducationalPlatform\Application\obj\Debug\net9.0\refint\Application.dll
 C:\Users\hady0\OneDrive\Desktop\EducationalPlatform\Application\obj\Debug\net9.0\Application.pdb
 C:\Users\hady0\OneDrive\Desktop\EducationalPlatform\Application\obj\Debug\net9.0\ref\Application.dll
+D:\Project\EducationalPlatform\Application\obj\Debug\net9.0\Application.csproj.AssemblyReference.cache
+D:\Project\EducationalPlatform\Application\obj\Debug\net9.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\EducationalPlatform\Application\obj\Debug\net9.0\Application.AssemblyInfoInputs.cache
+D:\Project\EducationalPlatform\Application\obj\Debug\net9.0\Application.AssemblyInfo.cs
+D:\Project\EducationalPlatform\Application\obj\Debug\net9.0\Application.csproj.CoreCompileInputs.cache
+D:\Project\EducationalPlatform\Application\obj\Debug\net9.0\Application.sourcelink.json
+D:\Project\EducationalPlatform\Application\obj\Debug\net9.0\Application.dll
+D:\Project\EducationalPlatform\Application\obj\Debug\net9.0\refint\Application.dll
+D:\Project\EducationalPlatform\Application\obj\Debug\net9.0\Application.pdb

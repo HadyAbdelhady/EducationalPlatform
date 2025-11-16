@@ -63,6 +63,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.Price).HasColumnName("price");
                 b.Property(x => x.PictureUrl).HasColumnName("picture_url");
                 b.Property(x => x.IntroVideoUrl).HasColumnName("intro_video_url");
+                b.Property(x => x.NumberOfSections).HasColumnName("number_of_sections");
                 b.Property(x => x.NumberOfVideos).HasColumnName("number_of_videos");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
