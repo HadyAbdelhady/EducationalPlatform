@@ -65,5 +65,16 @@ namespace Edu_Base.Controllers
 
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
+
+        [HttpDelete("bulk-delete")]
+        public async Task<IActionResult> BulkDeleteSections(BulkDeleteSectionRequest request, CancellationToken cancellationToken)
+        {
+            var command = new BulkDeleteSectionCommand(request.SectionIds);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return result.IsSuccess? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
     }
 }

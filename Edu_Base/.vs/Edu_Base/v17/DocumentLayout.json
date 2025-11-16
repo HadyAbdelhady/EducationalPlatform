@@ -3,14 +3,14 @@
   "WorkspaceRootPath": "D:\\Project\\EducationalPlatform\\Edu_Base\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|d:\\project\\educationalplatform\\application\\features\\section\\commands\\deletesection\\deletesectioncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\dotnet\\sdk\\9.0.307\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|d:\\project\\educationalplatform\\edu_base\\controllers\\sectioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\sectioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|d:\\project\\educationalplatform\\application\\features\\section\\commands\\deletesection\\bulkdeletesectioncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|d:\\project\\educationalplatform\\application\\features\\section\\commands\\deletesection\\deletesectioncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -20,41 +20,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 521,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Microsoft.PackageDependencyResolution.targets",
-              "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.307\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
-              "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.307\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
-              "ViewState": "AgIAAPwAAAAAAAAAAAAowAkBAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2025-11-16T20:33:34.452Z",
+              "Title": "BulkDeleteSectionCommandHandler.cs",
+              "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Commands\\DeleteSection\\BulkDeleteSectionCommandHandler.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Features\\Section\\Commands\\DeleteSection\\BulkDeleteSectionCommandHandler.cs",
+              "ToolTip": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Commands\\DeleteSection\\BulkDeleteSectionCommandHandler.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Section\\Commands\\DeleteSection\\BulkDeleteSectionCommandHandler.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAQwCkAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-16T22:33:37.263Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "DeleteSectionCommandHandler.cs",
               "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs",
               "RelativeDocumentMoniker": "..\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs",
-              "ToolTip": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs*",
-              "RelativeToolTip": "..\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "ToolTip": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwBAAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T19:34:22.787Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "SectionController.cs",
               "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Edu_Base\\Controllers\\SectionController.cs",
               "RelativeDocumentMoniker": "Controllers\\SectionController.cs",
               "ToolTip": "D:\\Project\\EducationalPlatform\\Edu_Base\\Controllers\\SectionController.cs",
               "RelativeToolTip": "Controllers\\SectionController.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAQwCkAAAA4AAAAAAAAAA==",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAiwFAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-16T19:16:00.828Z",
               "EditorCaption": ""
