@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Section\**" />
     <Compile Remove="Persistence\**" />
+    <EmbeddedResource Remove="Features\Section\**" />
     <EmbeddedResource Remove="Persistence\**" />
+    <None Remove="Features\Section\**" />
     <None Remove="Persistence\**" />
   </ItemGroup>
 
@@ -26,10 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Course\Query\GetCourseById\" />
-    <Folder Include="Features\Section\Commands\CreateSection\" />
-    <Folder Include="Features\Section\Commands\DeleteSection\" />
-    <Folder Include="Features\Section\Query\GetAllSectionsByCourse\" />
-    <Folder Include="Features\Section\Query\GetSectionByID\" />
   </ItemGroup>
 
 </Project>

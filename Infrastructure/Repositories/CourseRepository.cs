@@ -1,3 +1,4 @@
+using Application.DTOs.Course;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
@@ -16,15 +17,41 @@ namespace Infrastructure.Repositories
                 .Include(c => c.StudentCourses)
                 .ToListAsync(cancellationToken);
         }
-        public async Task<IEnumerable<Course>> GetAllCoursesByStudentIdAsync(Guid studentId, CancellationToken cancellationToken = default)
+        
+        public async Task<IEnumerable<CourseByUserIdResponse>>GetAllCoursesByStudentIdAsync(Guid studentId, CancellationToken cancellationToken = default)
         {
             return await _context.Courses
                 .Where(c => c.StudentCourses.Any(sc => sc.StudentId == studentId))
-                .Include(c => c.CourseReviews)
-                .Include(c => c.Sections)
-                .Include(c => c.StudentCourses)
+                .Select(c => new CourseByUserIdResponse
+                {
+                    Id = c.Id,
+                    Title = c.Name,
+                    Price = c.Price ?? 0,
+
+                    Rating = c.CourseReviews.Any()
+                        ? c.CourseReviews.Average(r => r.StarRating)
+                        : 0,
+
+                    NumberOfStudents = c.StudentCourses.Count(),
+
+                    NumberOfVideos = c.NumberOfVideos,
+
+                    NumberOfSections = c.Sections.Count(),
+
+                    NumberOfWatchedVideos = c.StudentCourses
+                            .Where(sc => sc.StudentId == studentId)
+                            .Select(sc => sc.NumberOfCourseVideosWatched)
+                            .FirstOrDefault(),
+
+                    ThumbnailUrl = c.IntroVideoUrl ?? string.Empty,
+
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt
+                })
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }
+
         public async Task<Course?> GetCourseDetailByIdAsync(Guid courseId, CancellationToken cancellationToken = default)
         {
             // First, check if the course exists without loading all related entities 

@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Course;
 using Application.Features.Course.Commands.CreateCourse;
 using Application.Features.Course.Commands.DeleteCourse;
+using Application.Features.Course.Commands.UpdateCourse;
 using Application.Features.Course.Query.GetAllCourses;
 using Application.Features.Course.Query.GetAllCoursesByInstructor;
 using Application.Features.Course.Query.GetAllCoursesForStudent;
@@ -76,6 +77,24 @@ namespace Edu_Base.Controllers
             var query = new GetAllCoursesByInstructorQuery { InstructorId = instructorId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateCourse(CourseUpdateRequest courseUpdateRequest, CancellationToken cancellationToken)
+        {
+            var command = new UpdateCourseCommand
+            {
+                Id = courseUpdateRequest.CourseId,
+                CourseName = courseUpdateRequest.CourseName,
+                Description = courseUpdateRequest.Description,
+                InstructorId = courseUpdateRequest.InstructorId,
+                Price = courseUpdateRequest.Price,
+                PictureUrl = courseUpdateRequest.PictureUrl,
+                IntroVideoUrl = courseUpdateRequest.IntroVideoUrl
+            };
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpDelete]
