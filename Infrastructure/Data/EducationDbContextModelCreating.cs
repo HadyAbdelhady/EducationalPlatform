@@ -430,16 +430,14 @@ namespace Infrastructure.Data
                 b.ToTable("student_submissions");
                 b.HasKey(x => x.Id).HasName("student_submissions_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
-                b.Property(x => x.StudentId).HasColumnName("student_id");
                 b.Property(x => x.QuestionId).HasColumnName("question_id");
+                b.Property(x=>x.ExamResultId).HasColumnName("exam_result_id");
                 b.Property(x => x.ChosenAnswerId).HasColumnName("chosen_answer_id");
-                b.Property(x => x.Mark).HasColumnName("mark");
-                b.Property(x => x.SubmittingDate).HasColumnName("submitting_date");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
-                b.HasOne(x => x.Student).WithMany(x => x.StudentSubmissions).HasForeignKey(x => x.StudentId).HasConstraintName("student_submissions_student_id_fkey");
+                b.HasOne(x => x.ExamResult).WithMany(x => x.StudentSubmissions).HasForeignKey(x => x.ExamResultId).HasConstraintName("student_submissions_exam_result_id_fkey");
                 b.HasOne(x => x.Question).WithMany(x => x.StudentSubmissions).HasForeignKey(x => x.QuestionId).HasConstraintName("student_submissions_question_id_fkey");
                 b.HasOne(x => x.ChosenAnswer).WithMany().HasForeignKey(x => x.ChosenAnswerId).HasConstraintName("student_submissions_chosen_answer_id_fkey");
             });
