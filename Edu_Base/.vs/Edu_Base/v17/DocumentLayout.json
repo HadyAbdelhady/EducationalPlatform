@@ -7,10 +7,13 @@
       "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\sectioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|d:\\project\\educationalplatform\\application\\features\\section\\commands\\deletesection\\bulkdeletesectioncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|d:\\project\\educationalplatform\\application\\features\\section\\query\\getsectionsforcourse\\getsectionsforcoursequeryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|d:\\project\\educationalplatform\\application\\features\\section\\commands\\deletesection\\deletesectioncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|d:\\project\\educationalplatform\\application\\features\\section\\query\\getsectionsforcourse\\getsectionsforcoursequery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|d:\\project\\educationalplatform\\application\\dtos\\section\\getsectionresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -20,47 +23,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 521,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 7,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "BulkDeleteSectionCommandHandler.cs",
-              "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Commands\\DeleteSection\\BulkDeleteSectionCommandHandler.cs",
-              "RelativeDocumentMoniker": "..\\Application\\Features\\Section\\Commands\\DeleteSection\\BulkDeleteSectionCommandHandler.cs",
-              "ToolTip": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Commands\\DeleteSection\\BulkDeleteSectionCommandHandler.cs",
-              "RelativeToolTip": "..\\Application\\Features\\Section\\Commands\\DeleteSection\\BulkDeleteSectionCommandHandler.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAQwCkAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-16T22:33:37.263Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "DeleteSectionCommandHandler.cs",
-              "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs",
-              "RelativeDocumentMoniker": "..\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs",
-              "ToolTip": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs",
-              "RelativeToolTip": "..\\Application\\Features\\Section\\Commands\\DeleteSection\\DeleteSectionCommandHandler.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAQwBAAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-16T19:34:22.787Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "SectionController.cs",
-              "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Edu_Base\\Controllers\\SectionController.cs",
-              "RelativeDocumentMoniker": "Controllers\\SectionController.cs",
-              "ToolTip": "D:\\Project\\EducationalPlatform\\Edu_Base\\Controllers\\SectionController.cs",
-              "RelativeToolTip": "Controllers\\SectionController.cs",
-              "ViewState": "AgIAAD0AAAAAAAAAAAAiwFAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-16T19:16:00.828Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
@@ -76,6 +40,58 @@
             {
               "$type": "Bookmark",
               "Name": "ST:131:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GetSectionsForCourseQueryHandler.cs",
+              "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Query\\GetSectionsForCourse\\GetSectionsForCourseQueryHandler.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Features\\Section\\Query\\GetSectionsForCourse\\GetSectionsForCourseQueryHandler.cs",
+              "ToolTip": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Query\\GetSectionsForCourse\\GetSectionsForCourseQueryHandler.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Section\\Query\\GetSectionsForCourse\\GetSectionsForCourseQueryHandler.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAtwBkAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T21:52:34.776Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GetSectionsForCourseQuery.cs",
+              "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Query\\GetSectionsForCourse\\GetSectionsForCourseQuery.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Features\\Section\\Query\\GetSectionsForCourse\\GetSectionsForCourseQuery.cs",
+              "ToolTip": "D:\\Project\\EducationalPlatform\\Application\\Features\\Section\\Query\\GetSectionsForCourse\\GetSectionsForCourseQuery.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Section\\Query\\GetSectionsForCourse\\GetSectionsForCourseQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T21:51:09.44Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "GetSectionResponse.cs",
+              "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Application\\DTOs\\Section\\GetSectionResponse.cs",
+              "RelativeDocumentMoniker": "..\\Application\\DTOs\\Section\\GetSectionResponse.cs",
+              "ToolTip": "D:\\Project\\EducationalPlatform\\Application\\DTOs\\Section\\GetSectionResponse.cs",
+              "RelativeToolTip": "..\\Application\\DTOs\\Section\\GetSectionResponse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T21:48:23.248Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SectionController.cs",
+              "DocumentMoniker": "D:\\Project\\EducationalPlatform\\Edu_Base\\Controllers\\SectionController.cs",
+              "RelativeDocumentMoniker": "Controllers\\SectionController.cs",
+              "ToolTip": "D:\\Project\\EducationalPlatform\\Edu_Base\\Controllers\\SectionController.cs*",
+              "RelativeToolTip": "Controllers\\SectionController.cs*",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAwwC4AAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T21:05:28.638Z",
+              "EditorCaption": ""
             }
           ]
         }

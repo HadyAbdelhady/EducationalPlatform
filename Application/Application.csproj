@@ -26,8 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Course\Query\GetCourseById\" />
-    <Folder Include="Features\Section\Commands\CreateSection\" />
-    <Folder Include="Features\Section\Query\GetAllSectionsByCourse\" />
     <Folder Include="Features\Section\Query\GetSectionByID\" />
   </ItemGroup>
 

@@ -2,6 +2,7 @@
 using Application.Features.Section.Commands.CreateSection;
 using Application.Features.Section.Commands.DeleteSection;
 using Application.Features.Section.Commands.UpdateSection.Application.Features.Section.Commands.UpdateSection;
+using Application.Features.Section.Query.GetSectionsForCourse;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using static Application.DTOs.Section.CreateSectionRequest;
@@ -15,7 +16,7 @@ namespace Edu_Base.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateSection(SectionCreationRequest sectionCreationRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateSection(CreateSectionRequest sectionCreationRequest, CancellationToken cancellationToken)
         {
             if (sectionCreationRequest == null)
             {
@@ -30,6 +31,24 @@ namespace Edu_Base.Controllers
                 CourseId = sectionCreationRequest.CourseId
             };
             var result = await _mediator.Send(createSectionCommand, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpPost("bulk-create")]
+        public async Task<IActionResult> BulkCreateSections(BulkCreateSectionRequest request, CancellationToken cancellationToken)
+        {
+            var command = new BulkCreateSectionCommand(request.Sections);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("course/{courseId}")]
+        public async Task<IActionResult> GetSectionsForCourse(Guid courseId)
+        {
+            var result = await _mediator.Send(new GetSectionsForCourseQuery(courseId));
+
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
@@ -75,6 +94,6 @@ namespace Edu_Base.Controllers
 
             return result.IsSuccess? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
-
+    
     }
 }

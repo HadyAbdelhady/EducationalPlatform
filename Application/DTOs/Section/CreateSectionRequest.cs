@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Section
 {
-    public class CreateSectionRequest
-    {
-        public class SectionCreationRequest
+        public class CreateSectionRequest
         {
             public string Name { get; set; } = string.Empty;
             public string Description { get; set; } = string.Empty;
@@ -17,5 +15,4 @@ namespace Application.DTOs.Section
             public decimal Price { get; set; }
             public Guid CourseId { get; set; }
         }
-    }
 }

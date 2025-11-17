@@ -37,7 +37,6 @@ namespace Application.Features.Section.Commands.CreateSection
                 if (course != null)
                 {
                     course.NumberOfSections += 1;
-                    course.UpdatedAt = DateTimeOffset.UtcNow;
                     courseRepo.Update(course);
                 }
 

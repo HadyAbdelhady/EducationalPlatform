@@ -30,7 +30,7 @@ namespace Application.Interfaces
         /// Gets all entities.
         /// </summary>
         /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>Collection of all entities.</returns>
+        /// k<returns>Collection of all entities.</returns>
         Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -39,7 +39,13 @@ namespace Application.Interfaces
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <param name="includes">Navigation properties to include.</param>
         /// <returns>Collection of all entities.</returns>
+        /// 
         Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includes);
+
+
+        // with condition kira
+        Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includes);
+
 
         /// <summary>
         /// Finds entities matching the specified predicate.
