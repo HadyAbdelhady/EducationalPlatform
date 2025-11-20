@@ -3,41 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\domain\\entities\\exam.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\infrastructure\\data\\educationdbcontextmodelcreating.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\domain\\entities\\examquestions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\domain\\entities\\question.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\domain\\entities\\joins.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\edu_base\\controllers\\questioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\questioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\edu_base\\controllers\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E07FD68A-1872-493F-AFBA-1E271BB751B2}|Edu_Base.csproj|solutionrelative:controllers\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\application\\features\\course\\query\\getcoursebyid\\getcoursebyidqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\application\\features\\question\\command\\addquestion\\addquestioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5AF1CD2D-BB94-4256-8901-D58818DBC2A5}|..\\Infrastructure\\Infrastructure.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\infrastructure\\repositories\\courserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\application\\features\\course\\commands\\createcourse\\createcoursecommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\domain\\entities\\section.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\application\\features\\question\\command\\addquestion\\addquestioncommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\domain\\entities\\studentsubmission.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\domain\\entities\\question.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\domain\\entities\\examresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\application\\features\\course\\commands\\createcourse\\createcoursecommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\application\\interfaces\\icourserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C3CDEA9D-B27A-45CF-AE68-E6053C92539B}|..\\Domain\\Domain.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\domain\\entities\\answer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\application\\features\\question\\command\\addquestion\\addquestionvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91289EED-464E-46F3-9686-E3E74D515393}|..\\Application\\Application.csproj|c:\\users\\hady0\\onedrive\\desktop\\educationalplatform\\application\\dtos\\question\\createanswerrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -47,8 +42,112 @@
       "DocumentGroups": [
         {
           "DockedWidth": 521,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CourseController.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\Controllers\\CourseController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CourseController.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\Controllers\\CourseController.cs",
+              "RelativeToolTip": "Controllers\\CourseController.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABMAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T15:03:00.973Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "QuestionController.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\Controllers\\QuestionController.cs",
+              "RelativeDocumentMoniker": "Controllers\\QuestionController.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\Controllers\\QuestionController.cs",
+              "RelativeToolTip": "Controllers\\QuestionController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABIAAABqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T15:02:07.452Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CreateCourseCommandHandler.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Course\\Commands\\CreateCourse\\CreateCourseCommandHandler.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Features\\Course\\Commands\\CreateCourse\\CreateCourseCommandHandler.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Course\\Commands\\CreateCourse\\CreateCourseCommandHandler.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Course\\Commands\\CreateCourse\\CreateCourseCommandHandler.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAQwDAAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T14:08:58.752Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Question.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Question.cs",
+              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Question.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Question.cs",
+              "RelativeToolTip": "..\\Domain\\Entities\\Question.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T14:56:11.195Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Answer.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Answer.cs",
+              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Answer.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Answer.cs",
+              "RelativeToolTip": "..\\Domain\\Entities\\Answer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAkAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T14:44:40.6Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AddQuestionValidator.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionValidator.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionValidator.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionValidator.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T14:20:01.214Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "CreateAnswerRequest.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\DTOs\\Question\\CreateAnswerRequest.cs",
+              "RelativeDocumentMoniker": "..\\Application\\DTOs\\Question\\CreateAnswerRequest.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\DTOs\\Question\\CreateAnswerRequest.cs",
+              "RelativeToolTip": "..\\Application\\DTOs\\Question\\CreateAnswerRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T14:15:13.03Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CreateCourseCommand.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Course\\Commands\\CreateCourse\\CreateCourseCommand.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Features\\Course\\Commands\\CreateCourse\\CreateCourseCommand.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Course\\Commands\\CreateCourse\\CreateCourseCommand.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Course\\Commands\\CreateCourse\\CreateCourseCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T14:08:59.655Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
@@ -79,158 +178,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Exam.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Exam.cs",
-              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Exam.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Exam.cs",
-              "RelativeToolTip": "..\\Domain\\Entities\\Exam.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA0AAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "AddQuestionCommandHandler.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionCommandHandler.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionCommandHandler.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionCommandHandler.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionCommandHandler.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAQwBAAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-18T09:01:43.475Z",
+              "WhenOpened": "2025-11-20T14:08:14.636Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ExamQuestions.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\ExamQuestions.cs",
-              "RelativeDocumentMoniker": "..\\Domain\\Entities\\ExamQuestions.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\ExamQuestions.cs",
-              "RelativeToolTip": "..\\Domain\\Entities\\ExamQuestions.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAFAAAAAAAAAA==",
+              "Title": "AddQuestionCommand.cs",
+              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionCommand.cs",
+              "RelativeDocumentMoniker": "..\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionCommand.cs",
+              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionCommand.cs",
+              "RelativeToolTip": "..\\Application\\Features\\Question\\Command\\AddQuestion\\AddQuestionCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAkAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-18T08:51:04.936Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Question.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Question.cs",
-              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Question.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Question.cs",
-              "RelativeToolTip": "..\\Domain\\Entities\\Question.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-18T08:43:24.649Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Section.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Section.cs",
-              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Section.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Section.cs",
-              "RelativeToolTip": "..\\Domain\\Entities\\Section.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T14:49:21.686Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "ExamResult.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\ExamResult.cs",
-              "RelativeDocumentMoniker": "..\\Domain\\Entities\\ExamResult.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\ExamResult.cs",
-              "RelativeToolTip": "..\\Domain\\Entities\\ExamResult.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T14:06:43.321Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "EducationDbContextModelCreating.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Infrastructure\\Data\\EducationDbContextModelCreating.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Data\\EducationDbContextModelCreating.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Infrastructure\\Data\\EducationDbContextModelCreating.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Data\\EducationDbContextModelCreating.cs",
-              "ViewState": "AgIAAJwAAAAAAAAAAAAmwKkAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T14:02:00.746Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "StudentSubmission.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\StudentSubmission.cs",
-              "RelativeDocumentMoniker": "..\\Domain\\Entities\\StudentSubmission.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\StudentSubmission.cs",
-              "RelativeToolTip": "..\\Domain\\Entities\\StudentSubmission.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAYwAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T13:59:28.597Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "GetCourseByIdQueryHandler.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQueryHandler.cs",
-              "RelativeDocumentMoniker": "..\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQueryHandler.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQueryHandler.cs",
-              "RelativeToolTip": "..\\Application\\Features\\Course\\Query\\GetCourseById\\GetCourseByIdQueryHandler.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAxwBIAAABcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T11:01:20.596Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CourseController.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\Controllers\\CourseController.cs",
-              "RelativeDocumentMoniker": "Controllers\\CourseController.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Edu_Base\\Controllers\\CourseController.cs",
-              "RelativeToolTip": "Controllers\\CourseController.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAQwDQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T10:53:06.385Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "ICourseRepository.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Interfaces\\ICourseRepository.cs",
-              "RelativeDocumentMoniker": "..\\Application\\Interfaces\\ICourseRepository.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Application\\Interfaces\\ICourseRepository.cs",
-              "RelativeToolTip": "..\\Application\\Interfaces\\ICourseRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAgAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T08:24:54.708Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "CourseRepository.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Infrastructure\\Repositories\\CourseRepository.cs",
-              "RelativeDocumentMoniker": "..\\Infrastructure\\Repositories\\CourseRepository.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Infrastructure\\Repositories\\CourseRepository.cs",
-              "RelativeToolTip": "..\\Infrastructure\\Repositories\\CourseRepository.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAqwCcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T07:57:09.578Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Joins.cs",
-              "DocumentMoniker": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Joins.cs",
-              "RelativeDocumentMoniker": "..\\Domain\\Entities\\Joins.cs",
-              "ToolTip": "C:\\Users\\hady0\\OneDrive\\Desktop\\EducationalPlatform\\Domain\\Entities\\Joins.cs",
-              "RelativeToolTip": "..\\Domain\\Entities\\Joins.cs",
-              "ViewState": "AgIAADoAAAAAAAAAAAAQwEIAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-17T05:36:14.389Z",
+              "WhenOpened": "2025-11-20T14:07:54.979Z",
               "EditorCaption": ""
             }
           ]

@@ -9,9 +9,9 @@ namespace Domain.Entities
         public string QuestionString { get; set; } = string.Empty;
         public string? QuestionImageUrl { get; set; }
         public decimal? QuestionMark { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.Now;
+        public bool IsDeleted { get; set; } = false;
 
         public ICollection<ExamQuestions> ExamQuestions { get; set; } = [];
         public ICollection<Answer> Answers { get; set; } = [];
