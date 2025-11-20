@@ -48,12 +48,13 @@ namespace Application.Features.Course.Commands.CreateCourse
             }
             catch (UnauthorizedAccessException auth)
             {
+                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<CourseCreationResponse>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-                return Result<CourseCreationResponse>.FailureStatusCode($"Error creating course: {ex.Message}", ErrorType.NotCreated);
+                return Result<CourseCreationResponse>.FailureStatusCode($"Error creating course: {ex.Message}", ErrorType.Conflict);
             }
         }
 

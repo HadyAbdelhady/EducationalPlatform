@@ -28,8 +28,31 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\Question\" />
+    <Folder Include="Features\Answer\Command\AnswerQuestion\" />
+    <Folder Include="Features\Answer\Command\ClearAnswer\" />
     <Folder Include="Features\Course\Query\GetCourseById\" />
     <Folder Include="Features\Section\Query\GetSectionByID\" />
+    <Folder Include="Features\Exam\Command\GenerateExam\" />
+    <Folder Include="Features\Exam\Command\AddQuestionsToExam\" />
+    <Folder Include="Features\Exam\Command\PublishExamResults\" />
+    <Folder Include="Features\Exam\Command\ProcessTimedOutExams\" />
+    <Folder Include="Features\Exam\Command\RemoveQuestionFromExam\" />
+    <Folder Include="Features\Exam\Command\SubmitExam\" />
+    <Folder Include="Features\Exam\Command\StartExam\" />
+    <Folder Include="Features\Exam\Query\GetExamById\" />
+    <Folder Include="Features\Exam\Query\GetAllStudentExams\" />
+    <Folder Include="Features\Exam\Query\GetAllInstructorExams\" />
+    <Folder Include="Features\Exam\Query\GetActiveExamAttempt\" />
+    <Folder Include="Features\Exam\Query\GetStudentExamResult\" />
+    <Folder Include="Features\Exam\Query\GetExamSubmissionsList\" />
+    <Folder Include="Features\Exam\Query\CanStudentTakeExam\" />
+    <Folder Include="Features\Exam\Query\GetExamStatistics\" />
+    <Folder Include="Features\Exam\Command\DeleteExam\" />
+    <Folder Include="Features\Question\Query\GetQuestionById\" />
+    <Folder Include="Features\Exam\Command\UpdateExam\" />
+    <Folder Include="Features\Question\Query\GetAllQuestionsInExam\" />
+    <Folder Include="Features\Question\Query\GetAllQuestionsInBank\" />
   </ItemGroup>
 
 </Project>
