@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Course\Query\GetCourseById\" />
+    <Folder Include="Features\Section\Query\GetSectionByID\" />
   </ItemGroup>
 
 </Project>
