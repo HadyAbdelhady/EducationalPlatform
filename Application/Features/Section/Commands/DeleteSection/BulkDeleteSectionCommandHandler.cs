@@ -28,10 +28,11 @@ namespace Application.Features.Section.Commands.DeleteSection
                 {
                     var section = await sectionRepo.GetByIdAsync(id, cancellationToken);
 
-                    if (section == null)
-                        continue;
-
-                    var course = await courseRepo.GetByIdAsync(section.CourseId.Value, cancellationToken);
+                    if (section == null) continue;
+                    
+                    var courseId = section.CourseId ?? Guid.Empty;
+                    
+                    var course = await courseRepo.GetByIdAsync(courseId, cancellationToken);
 
                     if (course != null)
                     {

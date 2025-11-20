@@ -60,7 +60,7 @@ namespace Application.Features.Section.Commands.CreateSection
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
                 return Result<CreateSectionResponse>
-                    .FailureStatusCode($"Error creating section: {ex.Message}", ErrorType.NotCreated);
+                    .FailureStatusCode($"Error creating section: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }

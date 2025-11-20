@@ -61,7 +61,7 @@ namespace Application.Features.Section.Commands.CreateSection
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<List<CreateSectionResponse>>
-                    .FailureStatusCode($"Error in bulk create: {ex.Message}", ErrorType.NotCreated);
+                    .FailureStatusCode($"Error in bulk create: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }

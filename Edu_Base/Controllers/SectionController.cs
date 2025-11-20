@@ -1,11 +1,10 @@
 ﻿using Application.DTOs.Section;
 using Application.Features.Section.Commands.CreateSection;
 using Application.Features.Section.Commands.DeleteSection;
-using Application.Features.Section.Commands.UpdateSection.Application.Features.Section.Commands.UpdateSection;
+using Application.Features.Section.Commands.UpdateSection;
 using Application.Features.Section.Query.GetSectionsForCourse;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using static Application.DTOs.Section.CreateSectionRequest;
 
 namespace Edu_Base.Controllers
 {
@@ -53,7 +52,7 @@ namespace Edu_Base.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateSection(SectionUpdateRequest sectionUpdateRequest,CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateSection(SectionUpdateRequest sectionUpdateRequest, CancellationToken cancellationToken)
         {
             if (sectionUpdateRequest == null)
                 return BadRequest("Update request cannot be null.");
@@ -77,7 +76,7 @@ namespace Edu_Base.Controllers
         {
             var deleteCommand = new DeleteSectionCommand
             {
-                SectionId = id 
+                SectionId = id
             };
 
             var result = await _mediator.Send(deleteCommand, cancellationToken);
@@ -92,8 +91,8 @@ namespace Edu_Base.Controllers
 
             var result = await _mediator.Send(command, cancellationToken);
 
-            return result.IsSuccess? Ok(result) : StatusCode((int)result.ErrorType, result);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
-    
+
     }
 }

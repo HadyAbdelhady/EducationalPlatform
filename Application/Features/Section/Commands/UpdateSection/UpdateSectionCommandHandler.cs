@@ -1,5 +1,4 @@
 ﻿using Application.DTOs.Section;
-using Application.Features.Section.Commands.UpdateSection.Application.Features.Section.Commands.UpdateSection;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.enums;
@@ -48,7 +47,7 @@ namespace Application.Features.Section.Commands.UpdateSection
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-                return Result<SectionUpdateResponse>.FailureStatusCode($"Error updating section: {ex.Message}", ErrorType.NotCreated);
+                return Result<SectionUpdateResponse>.FailureStatusCode($"Error updating section: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }
