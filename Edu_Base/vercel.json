@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "Program.cs",
+      "use": "@vercel/dotnet",
+      "config": {
+        "publishDir": "./bin/Release/net8.0/publish"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "Program.cs"
+    }
+  ]
+}
