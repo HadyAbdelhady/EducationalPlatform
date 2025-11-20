@@ -7,7 +7,7 @@
         BadRequest = 400,
         UnAuthorized = 401,
         Validation = 422,
-        NotCreated = 409,
+        Conflict = 409,
         InternalServerError = 500
     }
 }

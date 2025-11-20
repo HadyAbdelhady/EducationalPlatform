@@ -16,18 +16,20 @@ namespace Application.Features.Course.Query.GetAllCoursesForStudent
             try
             {
 
-                var courses = await _unitOfWork.GetRepository<ICourseRepository>().GetAllCoursesByStudentIdAsync(request.StudentId, cancellationToken);
+                var courses = await _unitOfWork.GetRepository<ICourseRepository>()
+                                               .GetAllCoursesByStudentIdAsync(request.StudentId, cancellationToken);
 
                 var response = courses.Select(course => new CourseByUserIdResponse
                 {
                     Id = course.Id,
-                    Title = course.Name,
-                    Price = course.Price ?? 0,
-                    Rating = course.CourseReviews.Count > 0 ? course.CourseReviews.Average(r => r.StarRating) : 0,
-                    NumberOfStudents = course.StudentCourses?.Count ?? 0,
+                    Title = course.Title,
+                    Price = course.Price,
+                    Rating = course.Rating,
+                    NumberOfStudents = course.NumberOfStudents,
                     NumberOfVideos = course.NumberOfVideos,
-                    NumberOfSections = course.Sections?.Count ?? 0,
-                    ThumbnailUrl = course.IntroVideoUrl ?? string.Empty,
+                    NumberOfSections = course.NumberOfSections,
+                    NumberOfWatchedVideos = course.NumberOfWatchedVideos,
+                    ThumbnailUrl = course.ThumbnailUrl,
                     CreatedAt = course.CreatedAt,
                     UpdatedAt = course.UpdatedAt
                 }).ToList();

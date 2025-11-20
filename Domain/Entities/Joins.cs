@@ -19,6 +19,8 @@ namespace Domain.Entities
         public Guid SectionId { get; set; }
         public DateTimeOffset EnrolledAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
+        public int NumberOfSectionVideosWatched { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public Student Student { get; set; } = null!;

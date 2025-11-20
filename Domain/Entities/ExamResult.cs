@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
 using Domain.enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities
 {
 
- public class ExamResult : ISoftDeletableEntity
+    public class ExamResult : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public Guid StudentId { get; set; }
@@ -20,5 +18,7 @@ namespace Domain.Entities
 
         public Student Student { get; set; } = null!;
         public Exam Exam { get; set; } = null!;
+
+        public IQueryable<StudentSubmission> StudentSubmissions { get; set; } = null!;
     }
 }
