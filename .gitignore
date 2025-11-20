@@ -5,3 +5,37 @@
 /Edu_Base/Properties/launchSettings.json
 /Edu_Base/appsettings.json
 /Edu_Base/appsettings.Development.json
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+
+# Build artifacts
+*.dll
+*.pdb
+*.cache
+*.deps.json
+*.sourcelink.json
+
+# Visual Studio cache files
+*.csproj.nuget.dgspec.json
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
+project.assets.json
+project.nuget.cache
+
+# Visual Studio user-specific files
+.vs/
+*.suo
+*.user
+*.userosscache
+
+# Assembly info files
+*.AssemblyInfo.cs
+*.AssemblyInfoInputs.cache
+*.GeneratedMSBuildEditorConfig.editorconfig
+*.assets.cache
+*.csproj.AssemblyReference.cache
+*.csproj.CoreCompileInputs.cache
