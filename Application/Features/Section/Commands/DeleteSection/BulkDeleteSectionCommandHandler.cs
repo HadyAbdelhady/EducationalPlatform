@@ -12,6 +12,7 @@ namespace Application.Features.Section.Commands.DeleteSection
 
         public async Task<Result<string>> Handle(BulkDeleteSectionCommand request, CancellationToken cancellationToken)
         {
+            
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
             try
