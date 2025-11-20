@@ -151,14 +151,39 @@ namespace Infrastructure.Data
                 b.Property(x => x.QuestionString).HasColumnName("question_string").IsRequired();
                 b.Property(x => x.QuestionImageUrl).HasColumnName("question_image_url");
                 b.Property(x => x.QuestionMark).HasColumnName("question_mark");
-                b.Property(x => x.ExamId).HasColumnName("exam_id");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
-                b.HasOne(x => x.Exam).WithMany(x => x.Questions).HasForeignKey(x => x.ExamId).HasConstraintName("questions_exam_id_fkey");
             });
+            modelBuilder.Entity<ExamQuestions>(b =>
+            {
+                b.ToTable("exam_questions", "public");
 
+                b.HasKey(eq => eq.Id);
+
+                b.Property(eq => eq.Id)
+                       .HasColumnName("id")
+                       .HasDefaultValueSql("gen_random_uuid()");
+
+                b.Property(eq => eq.ExamId)
+                       .HasColumnName("exam_id")
+                       .IsRequired();
+
+                b.Property(eq => eq.QuestionId)
+                       .HasColumnName("question_id")
+                       .IsRequired();
+
+                b.HasOne(eq => eq.Exam)
+                       .WithMany(e => e.ExamQuestions)
+                       .HasForeignKey(eq => eq.ExamId)
+                       .HasConstraintName("exam_questions_exam_id_fkey");
+
+                b.HasOne(eq => eq.Question)
+                       .WithMany(q => q.ExamQuestions)
+                       .HasForeignKey(eq => eq.QuestionId)
+                       .HasConstraintName("exam_questions_question_id_fkey");
+            });
             modelBuilder.Entity<Answer>(b =>
             {
                 b.ToTable("answers");
