@@ -16,6 +16,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Features\Section\Commands\CreateSection\BulkCreateSectionCommand.cs" />
+    <Compile Include="Features\Section\Commands\CreateSection\BulkCreateSectionCommandHandler.cs" />
+    <Compile Include="Features\Section\Commands\CreateSection\CreateSectionCommand.cs" />
+    <Compile Include="Features\Section\Commands\CreateSection\CreateSectionCommandHandler.cs" />
+    <Compile Include="Features\Section\Commands\DeleteSection\BulkDeleteSectionCommand.cs" />
+    <Compile Include="Features\Section\Commands\DeleteSection\BulkDeleteSectionCommandHandler.cs" />
+    <Compile Include="Features\Section\Commands\DeleteSection\DeleteSectionCommand.cs" />
+    <Compile Include="Features\Section\Commands\DeleteSection\DeleteSectionCommandHandler.cs" />
+    <Compile Include="Features\Section\Commands\UpdateSection\UpdateSectionCommand.cs" />
+    <Compile Include="Features\Section\Commands\UpdateSection\UpdateSectionCommandHandler.cs" />
+    <Compile Include="Features\Section\Query\GetSectionDetails\GetSectionDetailsQuery.cs" />
+    <Compile Include="Features\Section\Query\GetSectionDetails\GetSectionDetailsQueryHandler.cs" />
+    <Compile Include="Features\Section\Query\GetSectionsForCourse\GetSectionsForCourseQuery.cs" />
+    <Compile Include="Features\Section\Query\GetSectionsForCourse\GetSectionsForCourseQueryHandler.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
@@ -32,6 +49,8 @@
     <Folder Include="Features\Answer\Command\AnswerQuestion\" />
     <Folder Include="Features\Answer\Command\ClearAnswer\" />
     <Folder Include="Features\Course\Query\GetCourseById\" />
+    <Folder Include="Features\Section\Query\GetAllSectionsByCourse\" />
+    <Folder Include="Features\Section\Query\GetSectionByID\" />
     <Folder Include="Features\Section\Query\GetSectionByID\" />
     <Folder Include="Features\Exam\Command\GenerateExam\" />
     <Folder Include="Features\Exam\Command\AddQuestionsToExam\" />
