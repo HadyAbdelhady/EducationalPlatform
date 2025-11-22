@@ -1,22 +1,19 @@
 using Domain.Interfaces;
-using System;
-using System.Collections.Generic;
 
 namespace Domain.Entities
 {
     public abstract class Review : ISoftDeletableEntity
     {
-        public Guid Id { get; set; }
-        public Guid StudentId { get; set; }
-        public Guid EntityId { get; set; }
-        public int StarRating { get; set; }
-        public string? Comment { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+        public required Guid Id { get; set; }
+        public required Guid StudentId { get; set; }
+        public required Guid EntityId { get; set; }
+        public int StarRating { get; set; } = 1;
+        public string Comment { get; set; } = string.Empty;
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.Now;
+        public bool IsDeleted { get; set; } = false;
 
         public Student Student { get; set; } = null!;
-        public required string EntityType { get; set; }
     }
 
     public class CourseReview : Review

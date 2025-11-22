@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Domain.enums;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.DTOs.Review
 {
@@ -11,9 +7,10 @@ namespace Application.DTOs.Review
     {
         public Guid StudentId { get; set; }
         public Guid EntityId { get; set; }
+        public required ReviewEntityType EntityType { get; set; }
 
         [Range(1, 5, ErrorMessage = "Rate Must be between 1 and 5.")]
         public int StarRating { get; set; }
-        public string? Comment { get; set; }
+        public string Comment { get; set; } = string.Empty;
     }
 }

@@ -1,11 +1,7 @@
 ﻿using Application.DTOs.Review;
 using Application.ResultWrapper;
+using Domain.enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Review.Commands.CreateReview
 {
@@ -13,7 +9,9 @@ namespace Application.Features.Review.Commands.CreateReview
     {
         public Guid StudentId { get; set; }
         public Guid EntityId { get; set; }
+        public required ReviewEntityType EntityType { get; set; }
         public int StarRating { get; set; }
-        public string? Comment { get; set; }
+        public string Comment { get; set; } = string.Empty;
     }
+
 }

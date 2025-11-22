@@ -7,13 +7,13 @@ using Infrastructure.Middleware;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.ReviewService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
-using Scrutor;
 
 namespace Edu_Base
 {
@@ -78,6 +78,11 @@ namespace Edu_Base
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryCore, CloudinaryService>();
+            builder.Services.AddScoped<IReviewServiceFactory, ReviewServiceFactory>();
+            builder.Services.AddScoped<IReviewService, CourseReviewService>();
+            builder.Services.AddScoped<IReviewService, SectionReviewService>();
+            builder.Services.AddScoped<IReviewService, InstructorReviewService>();
+            builder.Services.AddScoped<IReviewService, VideoReviewService>();
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>

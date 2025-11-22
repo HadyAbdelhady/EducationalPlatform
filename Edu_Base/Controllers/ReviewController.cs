@@ -12,7 +12,7 @@ namespace Edu_Base.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReviewController(IMediator mediator, ILogger<ReviewController> logger) : ControllerBase
+    public class ReviewController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 
@@ -30,6 +30,7 @@ namespace Edu_Base.Controllers
                 StarRating = reviewCreationRequest.StarRating,
                 EntityId = reviewCreationRequest.EntityId,
                 StudentId = reviewCreationRequest.StudentId,
+                EntityType = reviewCreationRequest.EntityType
             };
 
             var result = await _mediator.Send(reviewCommand, cancellationToken);
@@ -37,14 +38,14 @@ namespace Edu_Base.Controllers
         }
 
         [HttpPut("updateCourseReview")]
-        public async Task<IActionResult> UpdateCourseReview(CourseReviewUpdateRequest courseReviewUpdateRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateCourseReview(ReviewResponse courseReviewUpdateRequest, CancellationToken cancellationToken)
         {
-            if(courseReviewUpdateRequest == null)
+            if (courseReviewUpdateRequest == null)
             {
                 return BadRequest("Course review update request can not be null.");
             }
 
-            UpdateCourseReviewCommand updatedCourseReview = new UpdateCourseReviewCommand
+            UpdateCourseReviewCommand updatedCourseReview = new()
             {
                 CourseReviewId = courseReviewUpdateRequest.CourseReviewId,
                 Comment = courseReviewUpdateRequest.Comment,
@@ -56,20 +57,20 @@ namespace Edu_Base.Controllers
         }
 
         [HttpDelete("deleteCourseReview")]
-        public async Task<IActionResult> DeleteCourseReview(CourseReviewDeleteRequest courseReviewDeleteRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteCourseReview(Guid courseReviewId, CancellationToken cancellationToken)
         {
-            if (courseReviewDeleteRequest == null)
+            if (courseReviewId == Guid.Empty)
             {
                 return BadRequest("Course review delete request can not be null");
             }
 
-            DeleteCourseReviewCommand deleteCourseReview = new DeleteCourseReviewCommand
+            DeleteCourseReviewCommand deleteCourseReview = new()
             {
-                CourseReviewId = courseReviewDeleteRequest.CourseReviewId
+                CourseReviewId = courseReviewId
             };
 
             var result = await _mediator.Send(deleteCourseReview, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result); 
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
     }

@@ -1,15 +1,8 @@
-﻿using Application.DTOs.Review;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.Features.Review.Commands.DeleteReview
 {
@@ -32,9 +25,9 @@ namespace Application.Features.Review.Commands.DeleteReview
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-                return Result<string>.Success($"Course Review with ID: {request.CourseReviewId} deleted Successfully.");
+                return Result<string>.Success($"Course Review with ID: {request} deleted Successfully.");
             }
-            catch(UnauthorizedAccessException authEx)
+            catch (UnauthorizedAccessException authEx)
             {
                 return Result<string>.FailureStatusCode(authEx.Message, ErrorType.UnAuthorized);
             }

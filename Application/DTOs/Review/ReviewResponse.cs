@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.DTOs.Review
+﻿namespace Application.DTOs.Review
 {
     public class ReviewResponse
     {
         public Guid CourseReviewId { get; set; }
         public int StarRating { get; set; }
-        public string? Comment { get; set; }
+        public string Comment { get; set; } = string.Empty;
     }
 }

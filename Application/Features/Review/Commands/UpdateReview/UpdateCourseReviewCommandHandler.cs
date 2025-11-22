@@ -4,28 +4,23 @@ using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Review.Commands.UpdateReview
 {
-    public class UpdateCourseReviewCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateCourseReviewCommand, Result<CourseReviewUpdateResponse>>
+    public class UpdateCourseReviewCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateCourseReviewCommand, Result<ReviewResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<Result<CourseReviewUpdateResponse>> Handle(UpdateCourseReviewCommand request, CancellationToken cancellationToken)
+        public async Task<Result<ReviewResponse>> Handle(UpdateCourseReviewCommand request, CancellationToken cancellationToken)
         {
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
                 var courseReview = await _unitOfWork.Repository<CourseReview>().GetByIdAsync(request.CourseReviewId, cancellationToken);
-                if(courseReview is null)
+                if (courseReview is null)
                 {
                     await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-                    return Result<CourseReviewUpdateResponse>.FailureStatusCode($"Course review not found", ErrorType.NotFound);
+                    return Result<ReviewResponse>.FailureStatusCode($"Course review not found", ErrorType.NotFound);
                 }
 
                 courseReview.Comment = request.Comment;
@@ -36,7 +31,7 @@ namespace Application.Features.Review.Commands.UpdateReview
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-                return Result<CourseReviewUpdateResponse>.Success(new CourseReviewUpdateResponse
+                return Result<ReviewResponse>.Success(new ReviewResponse
                 {
                     CourseReviewId = request.CourseReviewId,
                     StarRating = request.StarRating,
@@ -47,12 +42,12 @@ namespace Application.Features.Review.Commands.UpdateReview
             catch (UnauthorizedAccessException authEx)
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-                return Result<CourseReviewUpdateResponse>.FailureStatusCode(authEx.Message, Domain.enums.ErrorType.UnAuthorized);
+                return Result<ReviewResponse>.FailureStatusCode(authEx.Message, Domain.enums.ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-                return Result<CourseReviewUpdateResponse>.FailureStatusCode($"Error updating course review: {ex.Message}", ErrorType.InternalServerError);
+                return Result<ReviewResponse>.FailureStatusCode($"Error updating course review: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }
