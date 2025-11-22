@@ -8,8 +8,8 @@ namespace Domain.Entities
         public Guid? QuestionId { get; set; }
         public string AnswerText { get; set; } = string.Empty;
         public bool IsCorrect { get; set; }
-        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
-        public DateTimeOffset UpdatedAt { get; set; }= DateTimeOffset.Now;
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+        public DateTimeOffset UpdatedAt { get; set; }= DateTimeOffset.UtcNow;
         public bool IsDeleted { get; set; } = false;
 
         public Question? Question { get; set; }

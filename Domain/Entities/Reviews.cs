@@ -1,9 +1,10 @@
+using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 
 namespace Domain.Entities
 {
-    public class CourseReview
+    public class CourseReview : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public Guid StudentId { get; set; }
@@ -18,7 +19,7 @@ namespace Domain.Entities
         public Course Course { get; set; } = null!;
     }
 
-    public class SectionReview
+    public class SectionReview : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public Guid StudentId { get; set; }
@@ -33,7 +34,7 @@ namespace Domain.Entities
         public Section Section { get; set; } = null!;
     }
 
-    public class VideoReview
+    public class VideoReview : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public Guid StudentId { get; set; }

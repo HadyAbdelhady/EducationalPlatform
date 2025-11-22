@@ -150,6 +150,8 @@ namespace Infrastructure.Data
                 b.HasKey(x => x.Id).HasName("questions_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.QuestionString).HasColumnName("question_string").IsRequired();
+                b.Property(x => x.SectionId).HasColumnName("section_id").IsRequired();
+                b.Property(x => x.CourseId).HasColumnName("course_id").IsRequired();
                 b.Property(x => x.QuestionImageUrl).HasColumnName("question_image_url");
                 b.Property(x => x.QuestionMark).HasColumnName("question_mark");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
@@ -175,15 +177,10 @@ namespace Infrastructure.Data
                        .HasColumnName("question_id")
                        .IsRequired();
 
-                b.HasOne(eq => eq.Exam)
-                       .WithMany(e => e.ExamQuestions)
-                       .HasForeignKey(eq => eq.ExamId)
-                       .HasConstraintName("exam_questions_exam_id_fkey");
-
-                b.HasOne(eq => eq.Question)
-                       .WithMany(q => q.ExamQuestions)
-                       .HasForeignKey(eq => eq.QuestionId)
-                       .HasConstraintName("exam_questions_question_id_fkey");
+                //b.HasOne(eq => eq.Exam)
+                //       .WithMany(e => e.ExamQuestions)
+                //       .HasForeignKey(eq => eq.ExamId)
+                //       .HasConstraintName("exam_questions_exam_id_fkey");
             });
             modelBuilder.Entity<Answer>(b =>
             {

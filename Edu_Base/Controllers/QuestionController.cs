@@ -1,4 +1,6 @@
 ﻿using Application.Features.Question.Command.AddQuestion;
+using Application.Features.Question.Command.DeleteQuestion;
+using Application.Features.Question.Command.UpdateQuestion;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +14,7 @@ namespace Edu_Base.Controllers
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<QuestionController> _logger = logger;
 
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] AddQuestionCommand command)
         {
 
@@ -21,11 +23,23 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateQuestionCommand command)
         {
-            // Placeholder for your GetQuery
-            return Ok();
+            if (id != command.QuestionId)
+            {
+                return BadRequest();
+            }
+
+            var result = await _mediator.Send(command);
+            return result.IsSuccess ? NoContent() : NotFound(result.Error);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] DeleteQuestionCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.IsSuccess ? NoContent() : NotFound(result.Error);
         }
     }
 }
