@@ -13,7 +13,6 @@
 		<!-- 🔑 Critical for Vercel .NET deployment -->
 		<PublishReadyToRun>false</PublishReadyToRun>
 		<SelfContained>false</SelfContained>
-		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
 		<IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
 	</PropertyGroup>
 

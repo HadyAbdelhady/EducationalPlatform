@@ -150,6 +150,8 @@ namespace Infrastructure.Data
                 b.HasKey(x => x.Id).HasName("questions_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.QuestionString).HasColumnName("question_string").IsRequired();
+                b.Property(x => x.SectionId).HasColumnName("section_id").IsRequired();
+                b.Property(x => x.CourseId).HasColumnName("course_id").IsRequired();
                 b.Property(x => x.QuestionImageUrl).HasColumnName("question_image_url");
                 b.Property(x => x.QuestionMark).HasColumnName("question_mark");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
@@ -175,15 +177,10 @@ namespace Infrastructure.Data
                        .HasColumnName("question_id")
                        .IsRequired();
 
-                b.HasOne(eq => eq.Exam)
-                       .WithMany(e => e.ExamQuestions)
-                       .HasForeignKey(eq => eq.ExamId)
-                       .HasConstraintName("exam_questions_exam_id_fkey");
-
-                b.HasOne(eq => eq.Question)
-                       .WithMany(q => q.ExamQuestions)
-                       .HasForeignKey(eq => eq.QuestionId)
-                       .HasConstraintName("exam_questions_question_id_fkey");
+                //b.HasOne(eq => eq.Exam)
+                //       .WithMany(e => e.ExamQuestions)
+                //       .HasForeignKey(eq => eq.ExamId)
+                //       .HasConstraintName("exam_questions_exam_id_fkey");
             });
             modelBuilder.Entity<Answer>(b =>
             {
@@ -331,7 +328,7 @@ namespace Infrastructure.Data
                 b.HasKey(x => x.Id).HasName("course_reviews_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.StudentId).HasColumnName("student_id");
-                b.Property(x => x.CourseId).HasColumnName("course_id");
+                b.Property(x => x.EntityId).HasColumnName("course_id");
                 b.Property(x => x.StarRating).HasColumnName("star_rating");
                 b.Property(x => x.Comment).HasColumnName("comment");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
@@ -339,7 +336,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.CourseReviews).HasForeignKey(x => x.StudentId).HasConstraintName("course_reviews_student_id_fkey");
-                b.HasOne(x => x.Course).WithMany(x => x.CourseReviews).HasForeignKey(x => x.CourseId).HasConstraintName("course_reviews_course_id_fkey");
+                b.HasOne(x => x.Course).WithMany(x => x.CourseReviews).HasForeignKey(x => x.EntityId).HasConstraintName("course_reviews_course_id_fkey");
             });
 
             modelBuilder.Entity<SectionReview>(b =>
@@ -348,7 +345,7 @@ namespace Infrastructure.Data
                 b.HasKey(x => x.Id).HasName("section_reviews_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.StudentId).HasColumnName("student_id");
-                b.Property(x => x.SectionId).HasColumnName("section_id");
+                b.Property(x => x.EntityId).HasColumnName("section_id");
                 b.Property(x => x.StarRating).HasColumnName("star_rating");
                 b.Property(x => x.Comment).HasColumnName("comment");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
@@ -356,7 +353,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.SectionReviews).HasForeignKey(x => x.StudentId).HasConstraintName("section_reviews_student_id_fkey");
-                b.HasOne(x => x.Section).WithMany(x => x.SectionReviews).HasForeignKey(x => x.SectionId).HasConstraintName("section_reviews_section_id_fkey");
+                b.HasOne(x => x.Section).WithMany(x => x.SectionReviews).HasForeignKey(x => x.EntityId).HasConstraintName("section_reviews_section_id_fkey");
             });
 
             modelBuilder.Entity<VideoReview>(b =>
@@ -365,7 +362,7 @@ namespace Infrastructure.Data
                 b.HasKey(x => x.Id).HasName("video_reviews_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.StudentId).HasColumnName("student_id");
-                b.Property(x => x.VideoId).HasColumnName("video_id");
+                b.Property(x => x.EntityId).HasColumnName("video_id");
                 b.Property(x => x.StarRating).HasColumnName("star_rating");
                 b.Property(x => x.Comment).HasColumnName("comment");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
@@ -373,7 +370,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.VideoReviews).HasForeignKey(x => x.StudentId).HasConstraintName("video_reviews_student_id_fkey");
-                b.HasOne(x => x.Video).WithMany(x => x.VideoReviews).HasForeignKey(x => x.VideoId).HasConstraintName("video_reviews_video_id_fkey");
+                b.HasOne(x => x.Video).WithMany(x => x.VideoReviews).HasForeignKey(x => x.EntityId).HasConstraintName("video_reviews_video_id_fkey");
             });
 
             modelBuilder.Entity<ChatRoom>(b =>

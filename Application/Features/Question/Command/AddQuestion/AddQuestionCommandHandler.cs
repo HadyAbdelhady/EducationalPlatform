@@ -22,6 +22,8 @@ namespace Application.Features.Question.Command.AddQuestion
                     QuestionString = request.QuestionString,
                     QuestionImageUrl = request.QuestionImageUrl,
                     QuestionMark = request.Mark,
+                    SectionId = request.SectionId,
+                    CourseId = request.CourseId,
                 };
 
                 // 2. Create the Answer Entities
