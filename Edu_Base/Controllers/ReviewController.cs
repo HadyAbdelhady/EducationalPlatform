@@ -17,22 +17,22 @@ namespace Edu_Base.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpPost("createCourseReview")]
-        public async Task<IActionResult> CreateCourseReview(CourseReviewCreationRequest courseReviewCreationRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCourseReview(ReviewCreationRequest reviewCreationRequest, CancellationToken cancellationToken)
         {
-            if (courseReviewCreationRequest == null)
+            if (reviewCreationRequest == null)
             {
                 return BadRequest("Course review creation request can not be null.");
             }
 
-            CreateCourseReviewCommand courseReviewCommand = new CreateCourseReviewCommand
+            CreateReviewCommand reviewCommand = new()
             {
-                Comment = courseReviewCreationRequest.Comment,
-                StarRating = courseReviewCreationRequest.StarRating,
-                CourseId = courseReviewCreationRequest.CourseId,
-                StudentId = courseReviewCreationRequest.StudentId,
+                Comment = reviewCreationRequest.Comment,
+                StarRating = reviewCreationRequest.StarRating,
+                EntityId = reviewCreationRequest.EntityId,
+                StudentId = reviewCreationRequest.StudentId,
             };
 
-            var result = await _mediator.Send(courseReviewCommand, cancellationToken);
+            var result = await _mediator.Send(reviewCommand, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 

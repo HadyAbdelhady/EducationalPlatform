@@ -20,7 +20,7 @@ namespace Domain.Entities
         public Section? Section { get; set; }
         public ICollection<ExamQuestions> ExamQuestions { get; set; } = [];
         public ICollection<InstructorExam> InstructorExams { get; set; } = [];
-        public ICollection<Question> Questions { get; set; } = [];
+        //public ICollection<Question> Questions { get; set; } = [];
         public ICollection<StudentExam> StudentExams { get; set; } = [];
         public ICollection<ExamResult> ExamResults { get; set; } = [];
     }

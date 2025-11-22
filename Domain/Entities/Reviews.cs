@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace Domain.Entities
 {
-    public class CourseReview : ISoftDeletableEntity
+    public abstract class Review : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public Guid StudentId { get; set; }
-        public Guid CourseId { get; set; }
+        public Guid EntityId { get; set; }
         public int StarRating { get; set; }
         public string? Comment { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
@@ -16,36 +16,21 @@ namespace Domain.Entities
         public bool IsDeleted { get; set; }
 
         public Student Student { get; set; } = null!;
+        public required string EntityType { get; set; }
+    }
+
+    public class CourseReview : Review
+    {
         public Course Course { get; set; } = null!;
     }
 
-    public class SectionReview : ISoftDeletableEntity
+    public class SectionReview : Review
     {
-        public Guid Id { get; set; }
-        public Guid StudentId { get; set; }
-        public Guid SectionId { get; set; }
-        public int StarRating { get; set; }
-        public string? Comment { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
-
-        public Student Student { get; set; } = null!;
         public Section Section { get; set; } = null!;
     }
 
-    public class VideoReview : ISoftDeletableEntity
+    public class VideoReview : Review
     {
-        public Guid Id { get; set; }
-        public Guid StudentId { get; set; }
-        public Guid VideoId { get; set; }
-        public int StarRating { get; set; }
-        public string? Comment { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
-
-        public Student Student { get; set; } = null!;
         public Video Video { get; set; } = null!;
     }
 }
