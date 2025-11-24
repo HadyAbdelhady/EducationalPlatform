@@ -14,7 +14,8 @@ namespace Application.Features.Section.Query.GetSectionsForCourse
             GetSectionsForCourseQuery request,
             CancellationToken cancellationToken)
         {
-            var sections = await _unitOfWork.Repository<Domain.Entities.Section>().GetAllAsync(s => s.CourseId == request.CourseId, cancellationToken);
+            //var sections = await _unitOfWork.Repository<Domain.Entities.Section>().GetAllAsync(cancellationToken, s => s.CourseId == request.CourseId);
+            var sections = await _unitOfWork.Repository<Domain.Entities.Section>().FindAsync(s => s.CourseId == request.CourseId, cancellationToken);
 
 
             if (sections == null || !sections.Any())

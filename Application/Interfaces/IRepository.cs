@@ -42,11 +42,6 @@ namespace Application.Interfaces
         /// 
         Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includes);
 
-
-        // with condition kira
-        Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includes);
-
-
         /// <summary>
         /// Finds entities matching the specified predicate.
         /// </summary>

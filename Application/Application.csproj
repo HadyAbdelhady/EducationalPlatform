@@ -49,7 +49,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Question\" />
     <Folder Include="Features\Answer\Command\AnswerQuestion\" />
     <Folder Include="Features\Answer\Command\ClearAnswer\" />
     <Folder Include="Features\Course\Query\GetCourseById\" />
@@ -72,7 +71,6 @@
     <Folder Include="Features\Question\Query\GetQuestionById\" />
     <Folder Include="Features\Exam\Command\UpdateExam\" />
     <Folder Include="Features\Question\Query\GetAllQuestionsInExam\" />
-    <Folder Include="Features\Question\Query\GetAllQuestionsInBank\" />
   </ItemGroup>
 
 </Project>

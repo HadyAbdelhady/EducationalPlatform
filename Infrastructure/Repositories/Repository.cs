@@ -49,23 +49,6 @@ namespace Infrastructure.Repositories
             return await query.ToListAsync(cancellationToken);
         }
 
-
-        // with condition kira
-
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null,CancellationToken cancellationToken = default,params Expression<Func<TEntity, object>>[] includes)
-        {
-            IQueryable<TEntity> query = _dbSet;
-
-            if (predicate != null)
-                query = query.Where(predicate);
-
-            foreach (var include in includes)
-                query = query.Include(include);
-
-            return await query.ToListAsync(cancellationToken);
-        }
-
-
         public virtual async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
             return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
