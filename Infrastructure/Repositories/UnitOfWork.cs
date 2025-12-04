@@ -95,11 +95,27 @@ namespace Infrastructure.Repositories
 
         /// <summary>
         /// Disposes the unit of work and releases resources.
+        /// Note: DbContext disposal is handled by the DI container, so we only dispose resources we own (transactions).
+        /// If a transaction is still open, it will be rolled back to prevent "zombie" transactions.
         /// </summary>
         public void Dispose()
         {
-            _transaction?.Dispose();
-            _context.Dispose();
+            // If a transaction is still open, roll it back to prevent connection locks
+            if (_transaction != null)
+            {
+                try
+                {
+                    _transaction.Rollback();
+                }
+                catch
+                {
+                    // Ignore errors during rollback on dispose
+                }
+                _transaction.Dispose();
+                _transaction = null;
+            }
+            // Do NOT dispose _context - it's managed by the DI container and will be disposed automatically
+            // when the scope ends. Disposing it here causes double-dispose issues and connection pool problems.
         }
     }
 }

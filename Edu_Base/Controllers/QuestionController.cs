@@ -1,6 +1,9 @@
 ﻿using Application.Features.Question.Command.AddQuestion;
 using Application.Features.Question.Command.DeleteQuestion;
 using Application.Features.Question.Command.UpdateQuestion;
+using Application.Features.Question.Query.GetQuestionById;
+using Application.Features.Question.Query.GetAllQuestionsInBank;
+using Application.Features.Question.Query.GetAllQuestionsInExam;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,6 +43,33 @@ namespace Edu_Base.Controllers
         {
             var result = await _mediator.Send(command);
             return result.IsSuccess ? NoContent() : NotFound(result.Error);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetQuestionById(Guid id, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching question detail for QuestionId: {QuestionId}", id);
+            var query = new GetQuestionByIdQuery { QuestionId = id };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+        }
+
+        [HttpGet("bank/{bankId}")]
+        public async Task<IActionResult> GetAllQuestionsInBank(Guid bankId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching all questions in bank: {BankId}", bankId);
+            var query = new GetAllQuestionsInBankQuery { BankId = bankId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+        }
+
+        [HttpGet("exam/{examId}")]
+        public async Task<IActionResult> GetAllQuestionsInExam(Guid examId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching all questions in exam: {ExamId}", examId);
+            var query = new GetAllQuestionsInExamQuery { ExamId = examId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
         }
     }
 }

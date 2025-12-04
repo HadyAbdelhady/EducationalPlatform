@@ -1,5 +1,3 @@
-using Domain.Interfaces;
-
 namespace Application.Interfaces
 {
     /// <summary>

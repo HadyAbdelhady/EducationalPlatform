@@ -18,7 +18,7 @@ namespace Domain.Entities
         public bool IsDeleted { get; set; }
         public Course? Course { get; set; }
         public Section? Section { get; set; }
-        public ICollection<ExamQuestions> ExamQuestions { get; set; } = [];
+        public ICollection<ExamBank> ExamQuestions { get; set; } = [];
         public ICollection<InstructorExam> InstructorExams { get; set; } = [];
         //public ICollection<Question> Questions { get; set; } = [];
         public ICollection<StudentExam> StudentExams { get; set; } = [];

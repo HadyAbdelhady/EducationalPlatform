@@ -1,6 +1,6 @@
-﻿namespace Application.DTOs.Question
+namespace Application.DTOs.Question
 {
-    public class AllQuestionsInBankResponse
+    public class GetAllQuestionsInExamResponse
     {
         public Guid Id { get; set; }
         public string QuestionString { get; set; } = string.Empty;
@@ -10,3 +10,4 @@
         public Guid CourseId { get; set; }
     }
 }
+

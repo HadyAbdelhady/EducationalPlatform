@@ -3,6 +3,8 @@ using Application.Features.Section.Commands.CreateSection;
 using Application.Features.Section.Commands.DeleteSection;
 using Application.Features.Section.Commands.UpdateSection;
 using Application.Features.Section.Query.GetSectionsForCourse;
+using Application.Features.Section.Query.GetSectionByID;
+using Application.Features.Section.Query.GetSectionDetails;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -92,6 +94,22 @@ namespace Edu_Base.Controllers
             var result = await _mediator.Send(command, cancellationToken);
 
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("{sectionId}")]
+        public async Task<IActionResult> GetSectionById(Guid sectionId, CancellationToken cancellationToken)
+        {
+            var query = new GetSectionByIDQuery { SectionId = sectionId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("{sectionId}/details")]
+        public async Task<IActionResult> GetSectionDetails(Guid sectionId, CancellationToken cancellationToken)
+        {
+            var query = new GetSectionDetailsQuery { SectionId = sectionId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
         }
 
     }

@@ -2,6 +2,8 @@
 using Application.Features.Review.Commands.CreateReview;
 using Application.Features.Review.Commands.DeleteReview;
 using Application.Features.Review.Commands.UpdateReview;
+using Application.Features.Review.Query.GetReviewById;
+using Application.Features.Review.Query.GetAllReviewsByCourse;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -71,6 +73,32 @@ namespace Edu_Base.Controllers
 
             var result = await _mediator.Send(deleteCourseReview, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("{reviewId}")]
+        public async Task<IActionResult> GetReviewById(Guid reviewId, CancellationToken cancellationToken)
+        {
+            if (reviewId == Guid.Empty)
+            {
+                return BadRequest("Review ID cannot be empty");
+            }
+
+            var query = new GetReviewByIdQuery { ReviewId = reviewId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("course/{courseId}")]
+        public async Task<IActionResult> GetAllReviewsByCourse(Guid courseId, CancellationToken cancellationToken)
+        {
+            if (courseId == Guid.Empty)
+            {
+                return BadRequest("Course ID cannot be empty");
+            }
+
+            var query = new GetAllReviewsByCourseQuery { CourseId = courseId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
         }
 
     }

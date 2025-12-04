@@ -159,9 +159,9 @@ namespace Infrastructure.Data
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
             });
-            modelBuilder.Entity<ExamQuestions>(b =>
+            modelBuilder.Entity<ExamBank>(b =>
             {
-                b.ToTable("exam_questions", "public");
+                b.ToTable("exam_bank", "public");
 
                 b.HasKey(eq => eq.Id);
 
@@ -177,10 +177,10 @@ namespace Infrastructure.Data
                        .HasColumnName("question_id")
                        .IsRequired();
 
-                //b.HasOne(eq => eq.Exam)
-                //       .WithMany(e => e.ExamQuestions)
-                //       .HasForeignKey(eq => eq.ExamId)
-                //       .HasConstraintName("exam_questions_exam_id_fkey");
+                b.Property(x => x.CreatedAt).HasColumnName("CreatedAt");
+                b.Property(x => x.UpdatedAt).HasColumnName("UpdatedAt");
+                b.Property(x => x.IsDeleted).HasColumnName("IsDeleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
             });
             modelBuilder.Entity<Answer>(b =>
             {

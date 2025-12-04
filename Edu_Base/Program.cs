@@ -32,7 +32,13 @@ namespace Edu_Base
             // Database Configuration (register DbContext with interceptor from DI)
             builder.Services.AddDbContext<EducationDbContext>((provider, options) =>
             {
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+                // Enable a retry-on-failure execution strategy and set a command timeout
+                options.UseNpgsql(
+                        builder.Configuration.GetConnectionString("DefaultConnection"),
+                        npgsqlOptions => npgsqlOptions
+                            .EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(2), errorCodesToAdd: null)
+                            .CommandTimeout(60)
+                    )
                        .AddInterceptors(provider.GetRequiredService<SoftDeleteInterceptor>());
             });
 

@@ -68,9 +68,7 @@
     <Folder Include="Features\Exam\Query\CanStudentTakeExam\" />
     <Folder Include="Features\Exam\Query\GetExamStatistics\" />
     <Folder Include="Features\Exam\Command\DeleteExam\" />
-    <Folder Include="Features\Question\Query\GetQuestionById\" />
     <Folder Include="Features\Exam\Command\UpdateExam\" />
-    <Folder Include="Features\Question\Query\GetAllQuestionsInExam\" />
   </ItemGroup>
 
 </Project>
