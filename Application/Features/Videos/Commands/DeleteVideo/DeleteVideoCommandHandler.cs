@@ -11,18 +11,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Videos.Commands.DeleteVideo
 {
-    public class DeleteVideoCommandHandler : IRequestHandler<DeleteVideoCommand, Result<string>>
+    public class DeleteVideoCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteVideoCommand, Result<string>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public DeleteVideoCommandHandler(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
         public async Task<Result<string>> Handle(DeleteVideoCommand request, CancellationToken cancellationToken)
         {
-           await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
             try
             {
                 var video = await _unitOfWork.Repository<Video>().GetByIdAsync(request.VideoId,cancellationToken) ?? throw new KeyNotFoundException("Video not found");
@@ -43,7 +37,6 @@ namespace Application.Features.Videos.Commands.DeleteVideo
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<string>.FailureStatusCode($"An error occurred while deleting the video: {ex.Message}", ErrorType.InternalServerError);
 
             }

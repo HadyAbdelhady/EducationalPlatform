@@ -9,7 +9,6 @@ namespace Domain.Entities
         public Guid CourseId { get; set; }
         public string QuestionString { get; set; } = string.Empty;
         public string? QuestionImageUrl { get; set; }
-        public decimal? QuestionMark { get; set; }
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
         public bool IsDeleted { get; set; } = false;

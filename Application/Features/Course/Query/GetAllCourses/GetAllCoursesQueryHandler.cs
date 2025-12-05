@@ -14,7 +14,6 @@ namespace Application.Features.Course.Query.GetAllCourses
         {
             try
             {
-
                 var courses = await _unitOfWork.GetRepository<ICourseRepository>().GetAllAsync(cancellationToken);
 
                 var response = courses.Select(course => new CourseByUserIdResponse

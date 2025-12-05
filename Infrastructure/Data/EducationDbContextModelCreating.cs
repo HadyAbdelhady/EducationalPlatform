@@ -133,12 +133,15 @@ namespace Infrastructure.Data
                 b.Property(x => x.Description).HasColumnName("description");
                 b.Property(x => x.StartTime).HasColumnName("start_time");
                 b.Property(x => x.EndTime).HasColumnName("end_time");
+                b.Property(x => x.DurationInMinutes).HasColumnName("duration");
+                b.Property(x => x.ExamType).HasColumnName("exam_type");
                 b.Property(x => x.TotalMark).HasColumnName("total_mark");
                 b.Property(x => x.CourseId).HasColumnName("course_id");
                 b.Property(x => x.SectionId).HasColumnName("section_id");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.Property(x => x.IsRandomized).HasColumnName("is_randomized");
                 b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Course).WithMany(x => x.Exams).HasForeignKey(x => x.CourseId).HasConstraintName("exams_course_id_fkey");
                 b.HasOne(x => x.Section).WithMany(x => x.Exams).HasForeignKey(x => x.SectionId).HasConstraintName("exams_section_id_fkey");
@@ -153,35 +156,29 @@ namespace Infrastructure.Data
                 b.Property(x => x.SectionId).HasColumnName("section_id").IsRequired();
                 b.Property(x => x.CourseId).HasColumnName("course_id").IsRequired();
                 b.Property(x => x.QuestionImageUrl).HasColumnName("question_image_url");
-                b.Property(x => x.QuestionMark).HasColumnName("question_mark");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
             });
-            modelBuilder.Entity<ExamBank>(b =>
-            {
-                b.ToTable("exam_bank", "public");
+            //modelBuilder.Entity<ExamBank>(b =>
+            //{
+            //    b.ToTable("exam_bank", "public");
 
-                b.HasKey(eq => eq.Id);
+            //    b.Property(eq => eq.ExamId)
+            //           .HasColumnName("exam_id")
+            //           .IsRequired();
 
-                b.Property(eq => eq.Id)
-                       .HasColumnName("id")
-                       .HasDefaultValueSql("gen_random_uuid()");
+            //    b.Property(eq => eq.QuestionId)
+            //           .HasColumnName("question_id")
+            //           .IsRequired();
+            //    b.Property(x => x.QuestionMark).HasColumnName("question_mark");
 
-                b.Property(eq => eq.ExamId)
-                       .HasColumnName("exam_id")
-                       .IsRequired();
-
-                b.Property(eq => eq.QuestionId)
-                       .HasColumnName("question_id")
-                       .IsRequired();
-
-                b.Property(x => x.CreatedAt).HasColumnName("CreatedAt");
-                b.Property(x => x.UpdatedAt).HasColumnName("UpdatedAt");
-                b.Property(x => x.IsDeleted).HasColumnName("IsDeleted");
-                b.HasQueryFilter(x => !x.IsDeleted);
-            });
+            //    b.Property(x => x.CreatedAt).HasColumnName("CreatedAt");
+            //    b.Property(x => x.UpdatedAt).HasColumnName("UpdatedAt");
+            //    b.Property(x => x.IsDeleted).HasColumnName("IsDeleted");
+            //    b.HasQueryFilter(x => !x.IsDeleted);
+            //});
             modelBuilder.Entity<Answer>(b =>
             {
                 b.ToTable("answers");
@@ -302,7 +299,6 @@ namespace Infrastructure.Data
                 b.HasKey(x => new { x.InstructorId, x.ExamId }).HasName("instructor_exams_pkey");
                 b.Property(x => x.InstructorId).HasColumnName("instructor_id");
                 b.Property(x => x.ExamId).HasColumnName("exam_id");
-                b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Instructor).WithMany(x => x.InstructorExams).HasForeignKey(x => x.InstructorId).HasConstraintName("instructor_exams_instructor_id_fkey");
@@ -454,7 +450,7 @@ namespace Infrastructure.Data
                 b.HasKey(x => x.Id).HasName("student_submissions_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.QuestionId).HasColumnName("question_id");
-                b.Property(x=>x.ExamResultId).HasColumnName("exam_result_id");
+                b.Property(x => x.ExamResultId).HasColumnName("exam_result_id");
                 b.Property(x => x.ChosenAnswerId).HasColumnName("chosen_answer_id");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");

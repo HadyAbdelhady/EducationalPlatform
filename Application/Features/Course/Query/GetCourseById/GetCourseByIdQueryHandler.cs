@@ -14,7 +14,6 @@ namespace Application.Features.Course.Query.GetCourseById
         {
             try
             {
-
                 // Fetch course with all related entities including nested navigation properties
                 var course = await _unitOfWork.GetRepository<ICourseRepository>().GetCourseDetailByIdAsync(request.CourseId, cancellationToken)
                                   ?? throw new KeyNotFoundException($"Course with ID {request.CourseId} not found.");

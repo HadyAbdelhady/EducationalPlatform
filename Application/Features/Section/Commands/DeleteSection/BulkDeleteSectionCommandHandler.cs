@@ -12,8 +12,6 @@ namespace Application.Features.Section.Commands.DeleteSection
 
         public async Task<Result<string>> Handle(BulkDeleteSectionCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
             try
             {
                 if (request.SectionIds == null || request.SectionIds.Count == 0)
@@ -45,13 +43,11 @@ namespace Application.Features.Section.Commands.DeleteSection
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
                 return Result<string>.Success($"{deletedCount} sections deleted successfully");
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<string>.FailureStatusCode(
                     $"Error while bulk deleting sections: {ex.Message}",
                     ErrorType.InternalServerError

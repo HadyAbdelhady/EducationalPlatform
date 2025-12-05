@@ -80,7 +80,7 @@ namespace Domain.Entities
         public Guid InstructorId { get; set; }
         public Guid SectionId { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public Instructor Instructor { get; set; } = null!;
         public Section Section { get; set; } = null!;
@@ -90,7 +90,6 @@ namespace Domain.Entities
     {
         public Guid InstructorId { get; set; }
         public Guid ExamId { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
         public Instructor Instructor { get; set; } = null!;

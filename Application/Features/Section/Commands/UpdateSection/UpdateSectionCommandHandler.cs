@@ -12,8 +12,6 @@ namespace Application.Features.Section.Commands.UpdateSection
 
         public async Task<Result<SectionUpdateResponse>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
             try
             {
                 var sectionRepo = _unitOfWork.Repository<Domain.Entities.Section>();
@@ -31,7 +29,6 @@ namespace Application.Features.Section.Commands.UpdateSection
                 sectionRepo.Update(section);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
                 return Result<SectionUpdateResponse>.Success(new SectionUpdateResponse
                 {
@@ -46,7 +43,6 @@ namespace Application.Features.Section.Commands.UpdateSection
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<SectionUpdateResponse>.FailureStatusCode($"Error updating section: {ex.Message}", ErrorType.InternalServerError);
             }
         }

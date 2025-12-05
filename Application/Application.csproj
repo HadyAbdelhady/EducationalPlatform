@@ -52,8 +52,6 @@
     <Folder Include="Features\Answer\Command\AnswerQuestion\" />
     <Folder Include="Features\Answer\Command\ClearAnswer\" />
     <Folder Include="Features\Course\Query\GetCourseById\" />
-    <Folder Include="Features\Exam\Command\GenerateExam\" />
-    <Folder Include="Features\Exam\Command\AddQuestionsToExam\" />
     <Folder Include="Features\Exam\Command\PublishExamResults\" />
     <Folder Include="Features\Exam\Command\ProcessTimedOutExams\" />
     <Folder Include="Features\Exam\Command\RemoveQuestionFromExam\" />

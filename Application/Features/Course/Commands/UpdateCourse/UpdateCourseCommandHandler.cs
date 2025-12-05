@@ -12,7 +12,6 @@ namespace Application.Features.Course.Commands.UpdateCourse
 
         public async Task<Result<string>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
         {
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
                 var course = await unitOfWork.Repository<Domain.Entities.Course>().GetByIdAsync(request.Id, cancellationToken)
@@ -33,17 +32,15 @@ namespace Application.Features.Course.Commands.UpdateCourse
                 course.UpdatedAt = DateTime.UtcNow;
                 unitOfWork.Repository<Domain.Entities.Course>().Update(course);
                 await unitOfWork.SaveChangesAsync(cancellationToken);
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
+
                 return Result<string>.Success("Course updated successfully");
             }
             catch (KeyNotFoundException)
             {
-                await unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<string>.FailureStatusCode("Course not found", ErrorType.NotFound);
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<string>.FailureStatusCode($"An error occurred while updating the course: {ex.Message}", ErrorType.Validation);
             }
         }

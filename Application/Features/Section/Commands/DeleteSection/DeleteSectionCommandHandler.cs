@@ -11,8 +11,6 @@ namespace Application.Features.Section.Commands.DeleteSection
 
         public async Task<Result<string>> Handle(DeleteSectionCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
             try
             {
                 var sectionRepo = _unitOfWork.Repository<Domain.Entities.Section>();
@@ -35,23 +33,19 @@ namespace Application.Features.Section.Commands.DeleteSection
                 await sectionRepo.RemoveAsync(section.Id, cancellationToken);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
                 return Result<string>.Success("Section deleted successfully");
             }
             catch (KeyNotFoundException knfEx)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<string>.FailureStatusCode(knfEx.Message, ErrorType.NotFound);
             }
             catch (UnauthorizedAccessException auth)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<string>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<string>.FailureStatusCode(
                     $"An error occurred while deleting the section: {ex.Message}",
                     ErrorType.InternalServerError);

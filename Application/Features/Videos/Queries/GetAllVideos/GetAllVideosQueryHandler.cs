@@ -1,30 +1,19 @@
-﻿using Application.DTOs.Course;
-using Application.DTOs.Videos;
-using Application.Features.Course.Query.GetAllCourses;
+﻿using Application.DTOs.Videos;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Videos.Queries.GetAllVideos
 {
-    public class GetAllVideosQueryHandler : IRequestHandler<GetAllVideosQuery, Result<PaginatedResult<VideoByUserIdResponse>>>
+    public class GetAllVideosQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllVideosQuery, Result<PaginatedResult<VideoByUserIdResponse>>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public GetAllVideosQueryHandler(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
         public async Task<Result<PaginatedResult<VideoByUserIdResponse>>> Handle(GetAllVideosQuery request, CancellationToken cancellationToken)
         {
-            
+
             try
             {
                 var videos = await _unitOfWork.Repository<Video>().GetAllAsync(cancellationToken);

@@ -19,7 +19,6 @@ namespace Infrastructure.Repositories
                     CourseId = q.CourseId,
                     QuestionString = q.QuestionString,
                     QuestionImageUrl = q.QuestionImageUrl,
-                    QuestionMark = q.QuestionMark,
                     CreatedAt = q.CreatedAt,
                     UpdatedAt = q.UpdatedAt,
                     Answers = q.Answers
@@ -39,13 +38,12 @@ namespace Infrastructure.Repositories
         public async Task<IEnumerable<AllQuestionsInBankResponse>> GetAllQuestionsInBankAsync(Guid examId, CancellationToken cancellationToken = default)
         {
             return await _context.Set<ExamBank>()
-                .Where(eb => eb.Id == examId)
+                .Where(eb => eb.ExamId == examId)
                 .Select(eb => new AllQuestionsInBankResponse
                 {
                     Id = eb.Question.Id,
                     QuestionString = eb.Question.QuestionString,
                     QuestionImageUrl = eb.Question.QuestionImageUrl,
-                    QuestionMark = eb.Question.QuestionMark,
                     SectionId = eb.Question.SectionId,
                     CourseId = eb.Question.CourseId
                 })
@@ -72,7 +70,7 @@ namespace Infrastructure.Repositories
                     Id = eb.Question.Id,
                     QuestionString = eb.Question.QuestionString,
                     QuestionImageUrl = eb.Question.QuestionImageUrl,
-                    QuestionMark = eb.Question.QuestionMark,
+                    QuestionMark = (decimal)eb.QuestionMark,
                     SectionId = eb.Question.SectionId,
                     CourseId = eb.Question.CourseId
                 })

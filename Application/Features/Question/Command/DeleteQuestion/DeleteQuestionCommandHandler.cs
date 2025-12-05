@@ -12,7 +12,6 @@ namespace Application.Features.Question.Command.DeleteQuestion
 
         public async Task<Result<Guid>> Handle(DeleteQuestionCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
                 var question = await _unitOfWork.Repository<Domain.Entities.Question>()
@@ -38,18 +37,15 @@ namespace Application.Features.Question.Command.DeleteQuestion
 
                 await _unitOfWork.Repository<Domain.Entities.Question>().RemoveAsync(question.Id, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
                 return Result<Guid>.Success(question.Id);
             }
             catch (UnauthorizedAccessException ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<Guid>.FailureStatusCode(ex.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<Guid>.FailureStatusCode(
                     $"Error deleting question: {ex.Message}",
                     ErrorType.InternalServerError);

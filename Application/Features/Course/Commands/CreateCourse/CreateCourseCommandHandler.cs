@@ -12,7 +12,6 @@ namespace Application.Features.Course.Commands.CreateCourse
 
         public async Task<Result<CourseCreationResponse>> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
                 Domain.Entities.Course newCourse = new()
@@ -37,7 +36,6 @@ namespace Application.Features.Course.Commands.CreateCourse
                 });
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
                 return Result<CourseCreationResponse>.Success(new CourseCreationResponse
                 {
@@ -48,12 +46,10 @@ namespace Application.Features.Course.Commands.CreateCourse
             }
             catch (UnauthorizedAccessException auth)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<CourseCreationResponse>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<CourseCreationResponse>.FailureStatusCode($"Error creating course: {ex.Message}", ErrorType.Conflict);
             }
         }

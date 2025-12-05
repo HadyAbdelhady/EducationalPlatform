@@ -12,7 +12,6 @@ namespace Application.Features.Question.Command.AddQuestion
 
         public async Task<Result<Guid>> Handle(AddQuestionCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
                 // 1. Create the Question Entity
@@ -21,7 +20,6 @@ namespace Application.Features.Question.Command.AddQuestion
                     Id = Guid.NewGuid(),
                     QuestionString = request.QuestionString,
                     QuestionImageUrl = request.QuestionImageUrl,
-                    QuestionMark = request.Mark,
                     SectionId = request.SectionId,
                     CourseId = request.CourseId,
                 };
@@ -40,18 +38,15 @@ namespace Application.Features.Question.Command.AddQuestion
                 }
                 await _unitOfWork.Repository<Domain.Entities.Question>().AddAsync(question, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
                 return Result<Guid>.Success(question.Id);
             }
             catch (UnauthorizedAccessException auth)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<Guid>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<Guid>.FailureStatusCode($"Error creating Question: {ex.Message}", ErrorType.Conflict);
             }
         }

@@ -13,8 +13,6 @@ namespace Application.Features.Section.Commands.CreateSection
 
         public async Task<Result<List<CreateSectionResponse>>> Handle(BulkCreateSectionCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
             try
             {
                 var sectionRepo = _unitOfWork.Repository<Domain.Entities.Section>();
@@ -53,13 +51,11 @@ namespace Application.Features.Section.Commands.CreateSection
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
                 return Result<List<CreateSectionResponse>>.Success(responses);
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<List<CreateSectionResponse>>
                     .FailureStatusCode($"Error in bulk create: {ex.Message}", ErrorType.InternalServerError);
             }

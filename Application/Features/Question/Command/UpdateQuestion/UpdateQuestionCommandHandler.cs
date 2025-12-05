@@ -12,7 +12,6 @@ namespace Application.Features.Question.Command.UpdateQuestion
 
         public async Task<Result<Guid>> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
                 var existingQuestion = await _unitOfWork.Repository<Domain.Entities.Question>()
@@ -26,7 +25,6 @@ namespace Application.Features.Question.Command.UpdateQuestion
                 // Update question
                 existingQuestion.QuestionString = request.QuestionString;
                 existingQuestion.QuestionImageUrl = request.QuestionImageUrl;
-                existingQuestion.QuestionMark = request.Mark;
                 existingQuestion.UpdatedAt = DateTimeOffset.UtcNow;
 
                 var now = DateTimeOffset.UtcNow;
@@ -75,18 +73,15 @@ namespace Application.Features.Question.Command.UpdateQuestion
 
                 _unitOfWork.Repository<Domain.Entities.Question>().Update(existingQuestion);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
                 return Result<Guid>.Success(existingQuestion.Id);
             }
             catch (UnauthorizedAccessException ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<Guid>.FailureStatusCode(ex.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return Result<Guid>.FailureStatusCode(
                     $"Failed to update question: {ex.Message}",
                     ErrorType.InternalServerError);
