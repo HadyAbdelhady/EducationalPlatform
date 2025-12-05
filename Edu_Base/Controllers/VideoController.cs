@@ -39,11 +39,26 @@ namespace Edu_Base.Controllers
                 SectionId = videoCreationRequest.SectionId,
                 Description = videoCreationRequest.Description,
                 VideoUrl = videoCreationRequest.VideoUrl,
-                DateOfCreation = videoCreationRequest.DateOfCreation,
+                //DateOfCreation = videoCreationRequest.DateOfCreation,
 
             };
             var result = await _mediator.Send(createVideoCommand,cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+
+        }
+
+        [HttpPost("BulkCreateVideos")]
+        public async Task<IActionResult> BulkCreateVideo(BulkCreateVideosRequest bulkCreateVideosRequest , CancellationToken cancellationToken)
+        {
+            if (bulkCreateVideosRequest is  null)
+                return BadRequest("Creation Request Of Videos Must Be Send");
+
+            var bulkCreateVideosCommand = new BulkCreateVideosCommand(bulkCreateVideosRequest.Videos);
+
+            var result  = await _mediator.Send(bulkCreateVideosCommand,cancellationToken);
+
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+
 
         }
 

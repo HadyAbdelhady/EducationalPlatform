@@ -34,7 +34,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
                     Id = Guid.NewGuid(),
                     Name = request.Name,
                     VideoUrl = request.VideoUrl,
-                    DateOfCreation = request.DateOfCreation,
+                    //DateOfCreation = request.DateOfCreation,
                     SectionId = request.SectionId,
                     Description = request.Description,
                     CreatedAt = DateTime.UtcNow,

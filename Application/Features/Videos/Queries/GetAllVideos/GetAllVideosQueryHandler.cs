@@ -34,7 +34,7 @@ namespace Application.Features.Videos.Queries.GetAllVideos
                     Id = v.Id,
                     Name = v.Name,
                     VideoUrl = v.VideoUrl,
-                    DateOfCreation = v.DateOfCreation,
+                    //DateOfCreation = v.DateOfCreation,
                     Description = v.Description,
                     NumberOfSheets = v.VideoSheets?.Count ?? 0,
                     SectionId = v.SectionId,
