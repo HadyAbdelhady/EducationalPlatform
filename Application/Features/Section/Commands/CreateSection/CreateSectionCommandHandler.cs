@@ -2,19 +2,19 @@
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.enums;
+using Domain.Events;
 using MediatR;
 
 namespace Application.Features.Section.Commands.CreateSection
 {
-    public class CreateSectionCommandHandler(IUnitOfWork unitOfWork)
+    public class CreateSectionCommandHandler(IUnitOfWork unitOfWork, IMediator mediator)
         : IRequestHandler<CreateSectionCommand, Result<CreateSectionResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMediator _mediator = mediator;
 
         public async Task<Result<CreateSectionResponse>> Handle(CreateSectionCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
             try
             {
                 var newSection = new Domain.Entities.Section
@@ -32,17 +32,9 @@ namespace Application.Features.Section.Commands.CreateSection
                 await _unitOfWork.Repository<Domain.Entities.Section>()
                     .AddAsync(newSection, cancellationToken);
 
-                var courseRepo = _unitOfWork.Repository<Domain.Entities.Course>();
-                var course = await courseRepo.GetByIdAsync(request.CourseId, cancellationToken);
-                if (course != null)
-                {
-                    course.NumberOfSections += 1;
-                    courseRepo.Update(course);
-                }
-
+                await _mediator.Publish(new SectionAddedEvent(newSection.Id, request.CourseId), cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                await _unitOfWork.CommitTransactionAsync(cancellationToken);
-
+                
                 return Result<CreateSectionResponse>.Success(new CreateSectionResponse
                 {
                     SectionId = newSection.Id,
@@ -57,8 +49,6 @@ namespace Application.Features.Section.Commands.CreateSection
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-
                 return Result<CreateSectionResponse>
                     .FailureStatusCode($"Error creating section: {ex.Message}", ErrorType.InternalServerError);
             }
