@@ -13,7 +13,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
     {
         public string Name { get; set; } = string.Empty;
         public string VideoUrl { get; set; } = string.Empty;
-        public DateTimeOffset DateOfCreation { get; set; } = DateTimeOffset.Now;
+        //public DateTimeOffset DateOfCreation { get; set; } = DateTimeOffset.Now;
         public string? Description { get; set; }
         public Guid? SectionId { get; set; }
     }
