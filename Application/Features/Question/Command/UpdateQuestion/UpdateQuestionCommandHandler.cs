@@ -54,6 +54,7 @@ namespace Application.Features.Question.Command.UpdateQuestion
                             QuestionId = existingQuestion.Id,
                             AnswerText = dto.AnswerText,
                             IsCorrect = dto.IsCorrect,
+                            Explanation = dto.Explanation,
                             CreatedAt = now,
                             UpdatedAt = now,
                             IsDeleted = false

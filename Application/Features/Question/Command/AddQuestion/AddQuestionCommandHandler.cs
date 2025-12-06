@@ -33,6 +33,7 @@ namespace Application.Features.Question.Command.AddQuestion
                         QuestionId = question.Id, // Link to parent
                         AnswerText = answerDto.AnswerText,
                         IsCorrect = answerDto.IsCorrect,
+                        Explanation = request.Explanation
                     };
                     question.Answers.Add(answer);
                 }

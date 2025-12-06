@@ -8,9 +8,11 @@ namespace Application.Features.Question.Command.AddQuestion
     {
         public string QuestionString { get; init; } = string.Empty;
         public string? QuestionImageUrl { get; init; }
-        public decimal Mark { get; init; } // Default mark for this question
+        public decimal Mark { get; init; }
         public Guid SectionId { get; set; }
         public Guid CourseId { get; set; }
+        public string Explanation { get; init; } = string.Empty;
+
         public List<CreateAnswerDto> Answers { get; init; } = [];
     }
 }

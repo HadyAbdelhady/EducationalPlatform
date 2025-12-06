@@ -187,6 +187,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.QuestionId).HasColumnName("question_id");
                 b.Property(x => x.AnswerText).HasColumnName("answer_text").IsRequired();
                 b.Property(x => x.IsCorrect).HasColumnName("is_correct");
+                b.Property(x => x.Explanation).HasColumnName("explanation");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");

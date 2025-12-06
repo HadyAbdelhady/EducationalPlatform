@@ -11,7 +11,7 @@ namespace Infrastructure.Repositories
         public async Task<QuestionDetailsResponse?> GetQuestionByIdAsync(Guid questionId, CancellationToken cancellationToken = default)
         {
             return await _context.Questions
-                .Where(q => q.Id == questionId && !q.IsDeleted)
+                .Where(q => q.Id == questionId)
                 .Select(q => new QuestionDetailsResponse
                 {
                     Id = q.Id,
