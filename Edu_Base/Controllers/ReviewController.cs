@@ -18,8 +18,8 @@ namespace Edu_Base.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpPost("createReview")]
-        public async Task<IActionResult> CreateCourseReview(ReviewCreationRequest reviewCreationRequest, CancellationToken cancellationToken)
+        [HttpPost]
+        public async Task<IActionResult> CreateReview(ReviewCreationRequest reviewCreationRequest, CancellationToken cancellationToken)
         {
             if (reviewCreationRequest is null)
             {
@@ -39,8 +39,8 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpPut("updateReview")]
-        public async Task<IActionResult> UpdateCourseReview(ReviewUpdateRequest reviewUpdateRequest, CancellationToken cancellationToken)
+        [HttpPut]
+        public async Task<IActionResult> UpdateReview(ReviewUpdateRequest reviewUpdateRequest, CancellationToken cancellationToken)
         {
             if (reviewUpdateRequest is null)
             {
@@ -59,8 +59,8 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpDelete("deleteReview")]
-        public async Task<IActionResult> DeleteCourseReview(ReviewDeletionRequest reviewDeletionRequest, CancellationToken cancellationToken)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteReview(ReviewDeletionRequest reviewDeletionRequest, CancellationToken cancellationToken)
         {
             if (reviewDeletionRequest is null)
             {

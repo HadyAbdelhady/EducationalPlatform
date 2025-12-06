@@ -21,13 +21,13 @@ namespace Infrastructure.Services.ReviewService
                     return Result<ReviewResponse>.FailureStatusCode("Student not found.", ErrorType.NotFound);
                 }
 
-                var alreadyExistReview = await _unitOfWork.Repository<TReview>().AnyAsync(r => r.StudentId == request.StudentId && r.EntityId == request.EntityId, cancellationToken);
-                if (alreadyExistReview)
+                var reviewAlreadyExists = await _unitOfWork.Repository<TReview>().AnyAsync(r => r.StudentId == request.StudentId && r.EntityId == request.EntityId, cancellationToken);
+                if (reviewAlreadyExists)
                 {
-                    return Result<ReviewResponse>.FailureStatusCode("You have already submitted a review for this video.", ErrorType.BadRequest);
+                    return Result<ReviewResponse>.FailureStatusCode("You have already submitted a review.", ErrorType.BadRequest);
                 }
 
-                TReview newVideoreview = new()
+                TReview newReview = new()
                 {
                     Id = Guid.NewGuid(),
                     Comment = request.Comment,
@@ -38,13 +38,13 @@ namespace Infrastructure.Services.ReviewService
                     UpdatedAt = DateTimeOffset.UtcNow,
                 };
 
-                await _unitOfWork.Repository<TReview>().AddAsync(newVideoreview, cancellationToken);
+                await _unitOfWork.Repository<TReview>().AddAsync(newReview, cancellationToken);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<ReviewResponse>.Success(new ReviewResponse
                 {
-                    ReviewId = newVideoreview.Id,
+                    ReviewId = newReview.Id,
                     Comment = request.Comment,
                     StarRating = request.StarRating
 
@@ -64,16 +64,16 @@ namespace Infrastructure.Services.ReviewService
         {
             try
             {
-                var isInstructorReviewExists = await _unitOfWork.Repository<InstructorReview>().AnyAsync(r => r.Id == reviewId, cancellationToken);
-                if (!isInstructorReviewExists)
+                var reviewExists = await _unitOfWork.Repository<TReview>().AnyAsync(r => r.Id == reviewId, cancellationToken);
+                if (!reviewExists)
                 {
-                    return Result<string>.FailureStatusCode($"Instructor review not found", ErrorType.NotFound);
+                    return Result<string>.FailureStatusCode($"Review not found", ErrorType.NotFound);
                 }
 
-                await _unitOfWork.Repository<InstructorReview>().RemoveAsync(reviewId, cancellationToken);
+                await _unitOfWork.Repository<TReview>().RemoveAsync(reviewId, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result<string>.Success($"Instructor Review with ID: {reviewId} deleted Successfully.");
+                return Result<string>.Success($"Review with ID: {reviewId} deleted Successfully.");
             }
             catch (UnauthorizedAccessException authEx)
             {
@@ -81,23 +81,23 @@ namespace Infrastructure.Services.ReviewService
             }
             catch (Exception ex)
             {
-                return Result<string>.FailureStatusCode($"Error deleting instructor review: {ex.Message}", ErrorType.InternalServerError);
+                return Result<string>.FailureStatusCode($"Error deleting review: {ex.Message}", ErrorType.InternalServerError);
             }
         }
 
         public async Task<Result<ReviewResponse>> UpdateReviewAsync(ReviewUpdateRequest request, CancellationToken cancellationToken = default)
         {
-            var videoReview = await _unitOfWork.Repository<TReview>().GetByIdAsync(request.ReviewId, cancellationToken);
-            if (videoReview is null)
+            var review = await _unitOfWork.Repository<TReview>().GetByIdAsync(request.ReviewId, cancellationToken);
+            if (review is null)
             {
                 return Result<ReviewResponse>.FailureStatusCode($"Review not found", ErrorType.NotFound);
             }
 
-            videoReview.Comment = request.Comment;
-            videoReview.StarRating = request.StarRating;
-            videoReview.UpdatedAt = DateTimeOffset.UtcNow;
+            review.Comment = request.Comment;
+            review.StarRating = request.StarRating;
+            review.UpdatedAt = DateTimeOffset.UtcNow;
 
-            _unitOfWork.Repository<TReview>().Update(videoReview);
+            _unitOfWork.Repository<TReview>().Update(review);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<ReviewResponse>.Success(new ReviewResponse

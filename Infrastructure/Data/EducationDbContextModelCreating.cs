@@ -161,24 +161,19 @@ namespace Infrastructure.Data
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
             });
-            //modelBuilder.Entity<ExamBank>(b =>
-            //{
-            //    b.ToTable("exam_bank", "public");
+            modelBuilder.Entity<ExamBank>(b =>
+            {
+                b.ToTable("exam_bank", "public");
+                b.HasKey(x => new { x.QuestionId, x.ExamId }).HasName("exam_bank_pkey");
+                b.Property(eq => eq.ExamId)
+                       .HasColumnName("exam_id")
+                       .IsRequired();
 
-            //    b.Property(eq => eq.ExamId)
-            //           .HasColumnName("exam_id")
-            //           .IsRequired();
-
-            //    b.Property(eq => eq.QuestionId)
-            //           .HasColumnName("question_id")
-            //           .IsRequired();
-            //    b.Property(x => x.QuestionMark).HasColumnName("question_mark");
-
-            //    b.Property(x => x.CreatedAt).HasColumnName("CreatedAt");
-            //    b.Property(x => x.UpdatedAt).HasColumnName("UpdatedAt");
-            //    b.Property(x => x.IsDeleted).HasColumnName("IsDeleted");
-            //    b.HasQueryFilter(x => !x.IsDeleted);
-            //});
+                b.Property(eq => eq.QuestionId)
+                       .HasColumnName("question_id")
+                       .IsRequired();
+                b.Property(x => x.QuestionMark).HasColumnName("question_mark");
+            });
             modelBuilder.Entity<Answer>(b =>
             {
                 b.ToTable("answers");
@@ -368,6 +363,23 @@ namespace Infrastructure.Data
                 b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Student).WithMany(x => x.VideoReviews).HasForeignKey(x => x.StudentId).HasConstraintName("video_reviews_student_id_fkey");
                 b.HasOne(x => x.Video).WithMany(x => x.VideoReviews).HasForeignKey(x => x.EntityId).HasConstraintName("video_reviews_video_id_fkey");
+            });
+
+            modelBuilder.Entity<InstructorReview>(b =>
+            {
+                b.ToTable("instructor_reviews");
+                b.HasKey(x => x.Id).HasName("instructor_reviews_pkey");
+                b.Property(x => x.Id).HasColumnName("id");
+                b.Property(x => x.StudentId).HasColumnName("student_id");
+                b.Property(x => x.EntityId).HasColumnName("instructor_id");
+                b.Property(x => x.StarRating).HasColumnName("star_rating");
+                b.Property(x => x.Comment).HasColumnName("comment");
+                b.Property(x => x.CreatedAt).HasColumnName("created_at");
+                b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+                b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
+                b.HasOne(x => x.Student).WithMany(x => x.InstructorReviews).HasForeignKey(x => x.StudentId).HasConstraintName("instructor_reviews_student_id_fkey");
+                b.HasOne(x => x.Instructor).WithMany(x => x.InstructorReviews).HasForeignKey(x => x.EntityId).HasConstraintName("instructor_reviews_instructor_id_fkey");
             });
 
             modelBuilder.Entity<ChatRoom>(b =>

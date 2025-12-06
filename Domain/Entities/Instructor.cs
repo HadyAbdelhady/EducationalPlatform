@@ -12,6 +12,7 @@ namespace Domain.Entities
         public ICollection<InstructorCourse> InstructorCourses { get; set; } = [];
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];
         public ICollection<InstructorExam> InstructorExams { get; set; } = [];
+        public ICollection<InstructorReview> InstructorReviews { get; set; } = [];
     }
 }
 
