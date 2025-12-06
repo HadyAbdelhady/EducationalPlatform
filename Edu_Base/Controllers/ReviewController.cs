@@ -16,12 +16,12 @@ namespace Edu_Base.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpPost("createCourseReview")]
+        [HttpPost("createReview")]
         public async Task<IActionResult> CreateCourseReview(ReviewCreationRequest reviewCreationRequest, CancellationToken cancellationToken)
         {
-            if (reviewCreationRequest == null)
+            if (reviewCreationRequest is null)
             {
-                return BadRequest("Course review creation request can not be null.");
+                return BadRequest("Review creation request can not be null.");
             }
 
             CreateReviewCommand reviewCommand = new()
@@ -37,39 +37,41 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpPut("updateCourseReview")]
-        public async Task<IActionResult> UpdateCourseReview(ReviewResponse courseReviewUpdateRequest, CancellationToken cancellationToken)
+        [HttpPut("updateReview")]
+        public async Task<IActionResult> UpdateCourseReview(ReviewUpdateRequest reviewUpdateRequest, CancellationToken cancellationToken)
         {
-            if (courseReviewUpdateRequest == null)
+            if (reviewUpdateRequest is null)
             {
-                return BadRequest("Course review update request can not be null.");
+                return BadRequest("Review update request can not be null.");
             }
 
-            UpdateCourseReviewCommand updatedCourseReview = new()
+            UpdateReviewCommand updatedCourseReview = new()
             {
-                CourseReviewId = courseReviewUpdateRequest.CourseReviewId,
-                Comment = courseReviewUpdateRequest.Comment,
-                StarRating = courseReviewUpdateRequest.StarRating,
+                ReviewId = reviewUpdateRequest.ReviewId,
+                EntityType = reviewUpdateRequest.EntityType,
+                Comment = reviewUpdateRequest.Comment,
+                StarRating = reviewUpdateRequest.StarRating,
             };
 
             var result = await _mediator.Send(updatedCourseReview, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpDelete("deleteCourseReview")]
-        public async Task<IActionResult> DeleteCourseReview(Guid courseReviewId, CancellationToken cancellationToken)
+        [HttpDelete("deleteReview")]
+        public async Task<IActionResult> DeleteCourseReview(ReviewDeletionRequest reviewDeletionRequest, CancellationToken cancellationToken)
         {
-            if (courseReviewId == Guid.Empty)
+            if (reviewDeletionRequest is null)
             {
-                return BadRequest("Course review delete request can not be null");
+                return BadRequest("Review deletion request can not be null");
             }
 
-            DeleteCourseReviewCommand deleteCourseReview = new()
+            DeleteReviewCommand deleteReview = new()
             {
-                CourseReviewId = courseReviewId
+                ReviewId = reviewDeletionRequest.ReviewId,
+                EntityType = reviewDeletionRequest.EntityType,
             };
 
-            var result = await _mediator.Send(deleteCourseReview, cancellationToken);
+            var result = await _mediator.Send(deleteReview, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 

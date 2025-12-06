@@ -20,7 +20,7 @@ namespace Application.Features.Review.Commands.CreateReview
                 EntityType = request.EntityType,
                 StarRating = request.StarRating,
                 Comment = request.Comment
-            }, cancellationToken); ;
+            }, cancellationToken);
         }
     }
 }
