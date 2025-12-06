@@ -30,6 +30,11 @@ namespace Domain.Entities
     {
         public Video Video { get; set; } = null!;
     }
+
+    public class InstructorReview : Review
+    {
+        public Instructor Instructor { get; set; } = null!;
+    }
 }
 
 

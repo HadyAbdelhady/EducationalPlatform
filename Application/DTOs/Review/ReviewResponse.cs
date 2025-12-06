@@ -2,7 +2,7 @@
 {
     public class ReviewResponse
     {
-        public Guid CourseReviewId { get; set; }
+        public Guid ReviewId { get; set; }
         public int StarRating { get; set; }
         public string Comment { get; set; } = string.Empty;
     }
