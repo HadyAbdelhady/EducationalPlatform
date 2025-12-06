@@ -1,6 +1,4 @@
-﻿using Domain.Interfaces;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
     public class ExamBank
     {
@@ -8,7 +6,7 @@ namespace Domain.Entities
         public Guid QuestionId { get; set; }
         public decimal QuestionMark { get; set; }
 
-        
+
         // Navigation Properties
         public Exam Exam { get; set; } = null!;
         public Question Question { get; set; } = null!;

@@ -34,10 +34,6 @@ namespace Infrastructure.Services
             return true;
         }
       
-        
-        /// <summary>
-        /// Upload image from IFormFile (for Flutter/mobile app uploads via ASP.NET Core API)
-        /// </summary>
         public async Task<string> UploadMediaAsync(IFormFile file, UsageCategory usageCategory, string? folder = null)
         {
             if (file == null || file.Length == 0)

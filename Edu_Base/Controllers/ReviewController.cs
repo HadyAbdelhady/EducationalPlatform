@@ -2,10 +2,9 @@
 using Application.Features.Review.Commands.CreateReview;
 using Application.Features.Review.Commands.DeleteReview;
 using Application.Features.Review.Commands.UpdateReview;
-using Application.Features.Review.Query.GetReviewById;
 using Application.Features.Review.Query.GetAllReviewsByCourse;
+using Application.Features.Review.Query.GetReviewById;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -39,7 +38,7 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> UpdateReview(ReviewUpdateRequest reviewUpdateRequest, CancellationToken cancellationToken)
         {
             if (reviewUpdateRequest is null)

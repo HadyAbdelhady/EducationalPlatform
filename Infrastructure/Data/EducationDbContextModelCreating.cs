@@ -96,7 +96,6 @@ namespace Infrastructure.Data
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.Name).HasColumnName("name").IsRequired();
                 b.Property(x => x.VideoUrl).HasColumnName("video_url").IsRequired();
-                //b.Property(x => x.DateOfCreation).HasColumnName("date_of_creation");
                 b.Property(x => x.Description).HasColumnName("description");
                 b.Property(x => x.SectionId).HasColumnName("section_id");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
@@ -113,7 +112,6 @@ namespace Infrastructure.Data
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.Name).HasColumnName("name").IsRequired();
                 b.Property(x => x.SheetUrl).HasColumnName("sheet_url");
-                b.Property(x => x.DateOfCreation).HasColumnName("date_of_creation");
                 b.Property(x => x.SectionId).HasColumnName("section_id");
                 b.Property(x => x.VideoId).HasColumnName("video_id");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");

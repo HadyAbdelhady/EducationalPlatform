@@ -26,7 +26,7 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateQuestionCommand command)
         {
             if (id != command.QuestionId)

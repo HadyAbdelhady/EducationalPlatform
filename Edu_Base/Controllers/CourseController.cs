@@ -7,7 +7,6 @@ using Application.Features.Course.Query.GetAllCoursesByInstructor;
 using Application.Features.Course.Query.GetAllCoursesForStudent;
 using Application.Features.Course.Query.GetCourseById;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Edu_Base.Controllers
@@ -79,7 +78,7 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
         }
 
-        [HttpPut("update")]
+        [HttpPatch("update")]
         public async Task<IActionResult> UpdateCourse(CourseUpdateRequest courseUpdateRequest, CancellationToken cancellationToken)
         {
             var command = new UpdateCourseCommand

@@ -1,15 +1,10 @@
 ﻿using Application.DTOs.Videos;
-using Application.Features.Course.Commands.DeleteCourse;
 using Application.Features.Videos.Commands.CreateVideo;
 using Application.Features.Videos.Commands.DeleteVideo;
 using Application.Features.Videos.Commands.UpdateVideo;
 using Application.Features.Videos.Queries.GetAllVideos;
-using Application.ResultWrapper;
-using Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Edu_Base.Controllers
 {
@@ -20,7 +15,7 @@ namespace Edu_Base.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger _logger;
 
-        public VideoController(IMediator mediator , ILogger<VideoController> logger)
+        public VideoController(IMediator mediator, ILogger<VideoController> logger)
         {
             _mediator = mediator;
             _logger = logger;
@@ -28,7 +23,7 @@ namespace Edu_Base.Controllers
 
         [HttpPost("Create")]
 
-        public async Task<IActionResult> CreateVideo(VideoCreationRequest videoCreationRequest , CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateVideo(VideoCreationRequest videoCreationRequest, CancellationToken cancellationToken)
         {
             if (videoCreationRequest == null)
                 return BadRequest("Creation Request Of Video Must Be Send");
@@ -42,27 +37,27 @@ namespace Edu_Base.Controllers
                 //DateOfCreation = videoCreationRequest.DateOfCreation,
 
             };
-            var result = await _mediator.Send(createVideoCommand,cancellationToken);
+            var result = await _mediator.Send(createVideoCommand, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
 
         }
 
         [HttpPost("BulkCreateVideos")]
-        public async Task<IActionResult> BulkCreateVideo(BulkCreateVideosRequest bulkCreateVideosRequest , CancellationToken cancellationToken)
+        public async Task<IActionResult> BulkCreateVideo(BulkCreateVideosRequest bulkCreateVideosRequest, CancellationToken cancellationToken)
         {
-            if (bulkCreateVideosRequest is  null)
+            if (bulkCreateVideosRequest is null)
                 return BadRequest("Creation Request Of Videos Must Be Send");
 
             var bulkCreateVideosCommand = new BulkCreateVideosCommand(bulkCreateVideosRequest.Videos);
 
-            var result  = await _mediator.Send(bulkCreateVideosCommand,cancellationToken);
+            var result = await _mediator.Send(bulkCreateVideosCommand, cancellationToken);
 
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
 
 
         }
 
-        [HttpPost("Update")]
+        [HttpPatch("Update")]
         public async Task<IActionResult> UpdateVideo(VideoUpdateRequest videoUpdateRequest, CancellationToken cancellationToken)
         {
             if (videoUpdateRequest == null)
@@ -75,7 +70,7 @@ namespace Edu_Base.Controllers
                 SectionId = videoUpdateRequest.SectionId,
                 Description = videoUpdateRequest.Description,
                 VideoUrl = videoUpdateRequest.VideoUrl,
-                
+
 
             };
             var result = await _mediator.Send(UpdateVideoCommand, cancellationToken);
@@ -101,7 +96,7 @@ namespace Edu_Base.Controllers
         {
             _logger.LogInformation($"Reterving All Videos");
             var query = new GetAllVideosQuery();
-            
+
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
 

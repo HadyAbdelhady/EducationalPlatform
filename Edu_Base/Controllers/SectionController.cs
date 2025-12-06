@@ -53,7 +53,7 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpPut("update")]
+        [HttpPatch("update")]
         public async Task<IActionResult> UpdateSection(SectionUpdateRequest sectionUpdateRequest, CancellationToken cancellationToken)
         {
             if (sectionUpdateRequest == null)
