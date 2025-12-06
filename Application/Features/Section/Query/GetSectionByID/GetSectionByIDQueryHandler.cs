@@ -17,7 +17,7 @@ namespace Application.Features.Section.Query.GetSectionByID
                 var section = await _unitOfWork.Repository<Domain.Entities.Section>()
                     .GetByIdAsync(request.SectionId, cancellationToken);
 
-                if (section == null || section.IsDeleted)
+                if (section == null)
                 {
                     return Result<GetSectionByIDResponse>.FailureStatusCode(
                         $"Section with ID {request.SectionId} not found.",

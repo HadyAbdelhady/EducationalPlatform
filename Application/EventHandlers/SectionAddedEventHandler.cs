@@ -17,7 +17,6 @@ namespace Application.EventHandlers
                 course.NumberOfSections += 1;
                 courseRepo.Update(course);
             }
-
         }
     }
 }

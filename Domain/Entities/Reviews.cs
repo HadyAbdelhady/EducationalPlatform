@@ -4,9 +4,9 @@ namespace Domain.Entities
 {
     public abstract class Review : ISoftDeletableEntity
     {
-        public required Guid Id { get; set; }
-        public required Guid StudentId { get; set; }
-        public required Guid EntityId { get; set; }
+        public Guid Id { get; set; }
+        public Guid StudentId { get; set; }
+        public Guid EntityId { get; set; }
         public int StarRating { get; set; } = 1;
         public string Comment { get; set; } = string.Empty;
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
@@ -29,6 +29,11 @@ namespace Domain.Entities
     public class VideoReview : Review
     {
         public Video Video { get; set; } = null!;
+
+        public VideoReview()
+        {
+
+        }
     }
 
     public class InstructorReview : Review
