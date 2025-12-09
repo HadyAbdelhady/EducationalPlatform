@@ -51,6 +51,9 @@ namespace Edu_Base
             // Configure Cloudinary
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
+            builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google")
+                            );
+
             // Register Cloudinary instance
             builder.Services.AddSingleton(provider =>
             {
