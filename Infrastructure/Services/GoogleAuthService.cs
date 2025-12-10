@@ -1,7 +1,6 @@
 using Application.DTOs.Auth;
 using Application.Interfaces;
 using Google.Apis.Auth;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services
@@ -14,7 +13,7 @@ namespace Infrastructure.Services
     {
         private readonly GoogleAuthSettings _settings = googleAuthOptions.Value;
 
-        public async Task<GoogleUserInfo?> ValidateGoogleTokenAsync(string idToken, CancellationToken cancellationToken = default)
+        public async Task<bool?> ValidateGoogleTokenAsync(string idToken, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -26,22 +25,14 @@ namespace Infrastructure.Services
                     Audience = _settings.ClientId
                 };
 
-
                 var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, validationSettings);
 
                 if (payload == null)
                 {
-                    return null;
+                    return false;
                 }
 
-                return new GoogleUserInfo
-                {
-                    GoogleId = payload.Subject,
-                    Email = payload.Email,
-                    FullName = payload.Name ?? string.Empty,
-                    PictureUrl = payload.Picture,
-                    EmailVerified = payload.EmailVerified
-                };
+                return true;
             }
             catch (InvalidJwtException)
             {
