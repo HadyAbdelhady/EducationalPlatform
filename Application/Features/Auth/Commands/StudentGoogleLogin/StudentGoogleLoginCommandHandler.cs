@@ -47,6 +47,9 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
 
                 bool isNewUser = existingUser == null;
                 User user;
+                string accesstoken = string.Empty;
+                DateTime tokenExpiration = DateTime.UtcNow;
+                string refreshToken = string.Empty;
 
                 if (existingUser == null)
                 {
@@ -78,6 +81,24 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                     user.Student = student;
 
                     await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
+
+                    // Generate JWT token
+                    accesstoken = _jwtTokenService.GenerateToken(
+                        userId: user.Id,
+                        email: user.GmailExternal ?? string.Empty,
+                        role: "Student",
+                        fullName: user.FullName
+                    );
+
+                    tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+
+                    // Generate refresh token
+                    refreshToken = _jwtTokenService.GenerateRefreshToken();
+                    await _unitOfWork.GetRepository<IRefreshTokenRepository>().AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
+
+                    // Save all changes in a single transaction
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+
                 }
                 else
                 {
@@ -102,28 +123,10 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         }
                     }
 
-                    user.UpdatedAt = DateTimeOffset.UtcNow;
-                    user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
-
-                    _unitOfWork.Repository<User>().Update(user);
+                    //user.UpdatedAt = DateTimeOffset.UtcNow;
+                    //user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
+                    //_unitOfWork.Repository<User>().Update(user);
                 }
-
-                // Generate JWT token
-                var accesstoken = _jwtTokenService.GenerateToken(
-                    userId: user.Id,
-                    email: user.GmailExternal ?? string.Empty,
-                    role: "Student",
-                    fullName: user.FullName
-                );
-
-                var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
-
-                // Generate refresh token
-                var refreshToken = _jwtTokenService.GenerateRefreshToken();
-                await _unitOfWork.GetRepository<IRefreshTokenRepository>().AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
-
-                // Save all changes in a single transaction
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 // Return authentication response
                 return Result<AuthenticationResponse>.Success(new AuthenticationResponse

@@ -4,7 +4,7 @@ namespace Domain.Entities
     {
         public Guid UserId { get; set; }
         public string? DeviceId { get; set; }
-        public bool TriedScreenshot { get; set; }
+        public bool TriedScreenshot { get; set; } = false;
         public string ParentPhoneNumber { get; set; } = string.Empty;
 
         public User User { get; set; } = null!;

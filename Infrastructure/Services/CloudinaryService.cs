@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Http;
+using CloudinaryDotNet.Actions;
 using Application.Interfaces;
 using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
 using Domain.enums;
-using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Services
 {
@@ -46,8 +46,8 @@ namespace Infrastructure.Services
             if (!allowedExtensions.Contains(fileExtension))
                 throw new ArgumentException($"Invalid file type. Allowed types: {string.Join(", ", allowedExtensions)}");
 
-            // Validate file size (max 10MB)
-            const long maxFileSize = 10 * 1024 * 1024;
+            // Validate file size (max 5MB)
+            const long maxFileSize = 5 * 1024 * 1024;
             if (file.Length > maxFileSize)
                 throw new ArgumentException($"File size exceeds maximum allowed size of {maxFileSize / (1024 * 1024)}MB");
 
@@ -68,8 +68,8 @@ namespace Infrastructure.Services
             if (!allowedExtensions.Contains(fileExtension))
                 throw new ArgumentException($"Invalid file type. Allowed types: {string.Join(", ", allowedExtensions)}");
 
-            // Validate file size (max 1000MB for videos)
-            const long maxFileSize = 1000 * 1024 * 1024;
+            // Validate file size (max 500MB for videos)
+            const long maxFileSize = 500 * 1024 * 1024;
             if (file.Length > maxFileSize)
                 throw new ArgumentException($"File size exceeds maximum allowed size of {maxFileSize / (1024 * 1024)}MB");
 
@@ -91,34 +91,6 @@ namespace Infrastructure.Services
             return result.SecureUrl?.ToString() ?? string.Empty;
         }
 
-
-        public async Task<string> EditMediaAsync(string publicId, string filePath, UsageCategory usageCategory, string? folder = null)
-        {
-            if (string.IsNullOrWhiteSpace(publicId))
-                throw new ArgumentException("Public ID is required", nameof(publicId));
-
-            try
-            {
-                // Upload new file
-                var newMediaUrl = await UploadMediaAsync(filePath, usageCategory, folder);
-
-                // Delete old file only after successful upload
-                var deleted = await DeleteSingleMediaAsync(publicId);
-                if (!deleted)
-                {
-                    // Log warning but don't fail - new file is already uploaded
-                    Console.WriteLine($"Warning: Could not delete old media with ID: {publicId}");
-                }
-
-                return newMediaUrl;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to edit media: {ex.Message}", ex);
-            }
-        }
-
-
         /// <summary>
         /// Edit media from IFormFile (for Flutter/mobile app uploads)
         /// </summary>
@@ -137,6 +109,8 @@ namespace Infrastructure.Services
                 if (!deleted)
                 {
                     Console.WriteLine($"Warning: Could not delete old media with ID: {publicId}");
+                    await DeleteSingleMediaAsync(newMediaUrl); // Rollback new upload
+
                 }
 
                 return newMediaUrl;
@@ -147,7 +121,7 @@ namespace Infrastructure.Services
             }
         }
 
-
+        #region Private Methods
         /// <summary>
         /// Upload image from Stream (flexible method for various sources)
         /// </summary>
@@ -162,33 +136,6 @@ namespace Infrastructure.Services
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(fileName, fileStream),
-                Folder = GetFolderPath(usageCategory, folder),
-                UseFilename = true,
-                UniqueFilename = true,
-                Overwrite = false,
-                Transformation = GetTransformation(usageCategory)
-            };
-
-            var result = await _cloudinary.UploadAsync(uploadParams);
-
-            if (result.Error != null)
-                throw new Exception($"Cloudinary upload failed: {result.Error.Message}");
-
-            return result.SecureUrl?.ToString() ?? _noImageUrl;
-        }
-
-
-        private async Task<string> UploadMediaAsync(string filePath, UsageCategory usageCategory, string? folder = null)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-                throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
-
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException($"File not found at path: {filePath}");
-
-            var uploadParams = new ImageUploadParams
-            {
-                File = new FileDescription(filePath),
                 Folder = GetFolderPath(usageCategory, folder),
                 UseFilename = true,
                 UniqueFilename = true,
@@ -253,5 +200,7 @@ namespace Infrastructure.Services
                 _ => throw new ArgumentException($"Invalid usage category: {imageType}", nameof(imageType))
             };
         }
+
+        #endregion
     }
 }
