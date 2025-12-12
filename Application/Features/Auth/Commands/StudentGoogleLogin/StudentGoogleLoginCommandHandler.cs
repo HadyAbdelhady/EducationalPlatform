@@ -100,6 +100,21 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         {
                             user.Student.DeviceId = request.DeviceId;
                         }
+
+                        user.FullName = googleUserInfo.FullName;
+                        user.Ssn = request.Ssn; // Will be updated later if needed
+                        user.PhoneNumber = request.PhoneNumber;
+                        user.GmailExternal = googleUserInfo.Email;
+                        user.PersonalPictureUrl = googleUserInfo.PictureUrl;
+                        user.DateOfBirth = request.DateOfBirth;
+                        user.Gender = request.Gender;
+                        user.EducationYear = request.EducationYear;
+                        user.LocationMaps = request.LocationMaps;
+                        user.CreatedAt = DateTimeOffset.UtcNow;
+                        user.UpdatedAt = DateTimeOffset.UtcNow;
+                        user.IsDeleted = false;
+
+                        await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
                     }
 
                     user.UpdatedAt = DateTimeOffset.UtcNow;
