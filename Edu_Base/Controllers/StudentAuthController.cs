@@ -1,6 +1,7 @@
 using Application.DTOs.Auth;
 using Application.Features.Auth.Commands.GoogleLogout;
 using Application.Features.Auth.Commands.StudentGoogleLogin;
+using Application.Features.Auth.Commands.UserLoginWithRefreshToken;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,22 +27,25 @@ namespace Edu_Base.Controllers
             // Use the consolidated login command which handles both signup and login
             var command = new StudentGoogleLoginCommand
             {
-                IdToken = request.IdToken,
+                GoogleUserInfo = new GoogleUserInfo
+                {
+                    IdToken = request.IdToken,
+                    FullName = request.FullName,
+                    Email = request.Email,
+                    PictureUrl = request.PictureUrl,
+                    DateOfBirth = request.DateOfBirth,
+                    Gender = request.Gender,
+                    PhoneNumber = request.PhoneNumber
+                },
+                ParentPhoneNumber = request.ParentPhoneNumber,
                 DeviceId = request.DeviceId,
                 Ssn = request.Ssn,
-                PhoneNumber = request.PhoneNumber,
-                DateOfBirth = request.DateOfBirth,
-                Gender = request.Gender,
                 EducationYear = request.EducationYear,
                 LocationMaps = request.LocationMaps
             };
 
             var result = await _mediator.Send(command, cancellationToken);
 
-            _logger.LogInformation(
-                "Student Google authentication successful. UserId: {UserId}, IsNewUser: {IsNewUser}",
-                result.Value.UserId,
-                result.Value.IsNewUser);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
 
@@ -65,5 +69,19 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
 
         }
+
+        [HttpPatch("update-token")]
+        public async Task<IActionResult> UpdateJwtToken(LoginWithRefreshTokenCommand loginWithRefreshToken, CancellationToken cancellationToken)
+        {
+            if (loginWithRefreshToken == null)
+                throw new ArgumentNullException(nameof(loginWithRefreshToken));
+
+            var result = await _mediator.Send(loginWithRefreshToken, cancellationToken);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+
+        }
+
+
     }
 }

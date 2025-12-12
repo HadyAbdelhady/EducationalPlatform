@@ -9,6 +9,10 @@ namespace Infrastructure.Repositories
     {
         public async Task<User?> GetByGoogleEmailAsync(string email, CancellationToken cancellationToken = default)
         {
+            var User = await _context.Users.Select(s => new { s.Id, s.GmailExternal })
+                                            .FirstOrDefaultAsync(u => u.GmailExternal == email, cancellationToken);
+            if (User == null) return null;
+
             return await _context.Users
                 .Include(u => u.Student)
                 .Include(u => u.Instructor)

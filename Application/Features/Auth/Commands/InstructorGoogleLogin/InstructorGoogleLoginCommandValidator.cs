@@ -31,9 +31,9 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 .Must(g => g == "Male" || g == "Female")
                 .WithMessage("Gender must be Male, Female.");
 
-            RuleFor(x => x.EducationYear)
-                .NotEmpty()
-                .WithMessage("Education year/qualification is required.");
+            //RuleFor(x => x.EducationYear)
+            //    .NotEmpty()
+            //    .WithMessage("Education year/qualification is required.");
         }
 
         private bool BeAValidAge(DateOnly dateOfBirth)

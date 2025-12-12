@@ -27,7 +27,7 @@ namespace Edu_Base.Controllers
                 PhoneNumber = request.PhoneNumber,
                 DateOfBirth = request.DateOfBirth,
                 Gender = request.Gender,
-                EducationYear = request.EducationYear,
+                //EducationYear = request.EducationYear,
                 LocationMaps = request.LocationMaps
             };
 

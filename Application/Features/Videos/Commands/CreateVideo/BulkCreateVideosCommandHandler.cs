@@ -1,27 +1,16 @@
-﻿using Application.DTOs.Section;
-using Application.DTOs.Videos;
+﻿using Application.DTOs.Videos;
 using Application.Interfaces;
 using Application.ResultWrapper;
-using CloudinaryDotNet;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Videos.Commands.CreateVideo
 {
-    public class BulkCreateVideosCommandHandler : IRequestHandler<BulkCreateVideosCommand, Result<List<VideoCreationResponse>>>
+    public class BulkCreateVideosCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<BulkCreateVideosCommand, Result<List<VideoCreationResponse>>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public BulkCreateVideosCommandHandler(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
         public async Task<Result<List<VideoCreationResponse>>> Handle(BulkCreateVideosCommand request, CancellationToken cancellationToken)
         {
             try
@@ -29,7 +18,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
                 var videoRepo = _unitOfWork.Repository<Video>();
                 var sectionRepo = _unitOfWork.Repository<Domain.Entities.Section>();
 
-                List<Video> videosTobeAdded = new List<Video>();
+                List<Video> videosTobeAdded = [];
                 var responses = new List<VideoCreationResponse>();
 
                 var Result = 0;

@@ -25,7 +25,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.PersonalPictureUrl).HasColumnName("personal_picture_url");
                 b.Property(x => x.DateOfBirth).HasColumnName("date_of_birth");
                 b.Property(x => x.Gender).HasColumnName("gender").IsRequired();
-                b.Property(x => x.EducationYear).HasColumnName("education_year").IsRequired();
+                //b.Property(x => x.EducationYear).HasColumnName("education_year").IsRequired();
                 b.Property(x => x.LocationMaps).HasColumnName("location_maps");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
@@ -120,6 +120,7 @@ namespace Infrastructure.Data
                 b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Section).WithMany(x => x.Sheets).HasForeignKey(x => x.SectionId).HasConstraintName("sheets_section_id_fkey");
                 b.HasOne(x => x.Video).WithMany().HasForeignKey(x => x.VideoId).HasConstraintName("sheets_video_id_fkey");
+
             });
 
             modelBuilder.Entity<Exam>(b =>
@@ -141,8 +142,13 @@ namespace Infrastructure.Data
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.Property(x => x.IsRandomized).HasColumnName("is_randomized");
                 b.HasQueryFilter(x => !x.IsDeleted);
+                b.HasMany(x => x.ExamResults).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId).OnDelete(DeleteBehavior.Cascade);
+                b.HasMany(x => x.ExamQuestions).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId).OnDelete(DeleteBehavior.Cascade);
+                b.HasMany(x => x.InstructorExams).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId).OnDelete(DeleteBehavior.Cascade);
+                b.HasMany(x => x.StudentExams).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId).OnDelete(DeleteBehavior.Cascade);
                 b.HasOne(x => x.Course).WithMany(x => x.Exams).HasForeignKey(x => x.CourseId).HasConstraintName("exams_course_id_fkey");
                 b.HasOne(x => x.Section).WithMany(x => x.Exams).HasForeignKey(x => x.SectionId).HasConstraintName("exams_section_id_fkey");
+
             });
 
             modelBuilder.Entity<Question>(b =>

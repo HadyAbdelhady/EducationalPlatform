@@ -9,35 +9,35 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
     {
         public StudentGoogleLoginCommandValidator()
         {
-            RuleFor(x => x.IdToken)
-                .NotEmpty()
-                .WithMessage("Google ID token is required.");
+            //RuleFor(x => x.IdToken)
+            //    .NotEmpty()
+            //    .WithMessage("Google ID token is required.");
 
-            RuleFor(x => x.DeviceId)
-                .NotEmpty()
-                .WithMessage("Device ID is required for student accounts.");
+            //RuleFor(x => x.DeviceId)
+            //    .NotEmpty()
+            //    .WithMessage("Device ID is required for student accounts.");
 
-            RuleFor(x => x.PhoneNumber)
-                .NotEmpty()
-                .WithMessage("Phone number is required.")
-                .Matches(@"^\+?[1-9]\d{1,14}$")
-                .WithMessage("Phone number must be in a valid format.");
+            //RuleFor(x => x.PhoneNumber)
+            //    .NotEmpty()
+            //    .WithMessage("Phone number is required.")
+            //    .Matches(@"^\+?[1-9]\d{1,14}$")
+            //    .WithMessage("Phone number must be in a valid format.");
 
-            RuleFor(x => x.DateOfBirth)
-                .NotEmpty()
-                .WithMessage("Date of birth is required.")
-                .Must(BeAValidAge)
-                .WithMessage("Student must be at least 10 years old.");
+            //RuleFor(x => x.DateOfBirth)
+            //    .NotEmpty()
+            //    .WithMessage("Date of birth is required.")
+            //    .Must(BeAValidAge)
+            //    .WithMessage("Student must be at least 10 years old.");
 
-            RuleFor(x => x.Gender)
-                .NotEmpty()
-                .WithMessage("Gender is required.")
-                .Must(g => g == "Male" || g == "Female")
-                .WithMessage("Gender must be Male, Female.");
+            //RuleFor(x => x.Gender)
+            //    .NotEmpty()
+            //    .WithMessage("Gender is required.")
+            //    .Must(g => g == "Male" || g == "Female")
+            //    .WithMessage("Gender must be Male, Female.");
 
-            RuleFor(x => x.EducationYear)
-                .NotEmpty()
-                .WithMessage("Education year is required.");
+            //RuleFor(x => x.EducationYear)
+            //    .NotEmpty()
+            //    .WithMessage("Education year is required.");
         }
 
         private bool BeAValidAge(DateOnly dateOfBirth)
