@@ -40,7 +40,7 @@ namespace Edu_Base.Controllers
                 ParentPhoneNumber = request.ParentPhoneNumber,
                 DeviceId = request.DeviceId,
                 Ssn = request.Ssn,
-                EducationYear = request.EducationYear,
+                EducationYearId = request.EducationYearId,
                 LocationMaps = request.LocationMaps
             };
 

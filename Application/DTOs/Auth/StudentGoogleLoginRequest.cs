@@ -12,7 +12,7 @@ namespace Application.DTOs.Auth
         public string ParentPhoneNumber { get; set; } = string.Empty;
         public DateOnly DateOfBirth { get; set; }
         public string Gender { get; set; } = string.Empty;
-        public string EducationYear { get; set; } = string.Empty;
+        public Guid EducationYearId { get; set; }
         public string? LocationMaps { get; set; }
     }
 }

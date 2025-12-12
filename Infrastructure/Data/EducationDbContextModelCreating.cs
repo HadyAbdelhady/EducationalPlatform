@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
@@ -25,7 +26,6 @@ namespace Infrastructure.Data
                 b.Property(x => x.PersonalPictureUrl).HasColumnName("personal_picture_url");
                 b.Property(x => x.DateOfBirth).HasColumnName("date_of_birth");
                 b.Property(x => x.Gender).HasColumnName("gender").IsRequired();
-                //b.Property(x => x.EducationYear).HasColumnName("education_year").IsRequired();
                 b.Property(x => x.LocationMaps).HasColumnName("location_maps");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
@@ -41,8 +41,22 @@ namespace Infrastructure.Data
                 b.Property(x => x.UserId).HasColumnName("user_id");
                 b.Property(x => x.DeviceId).HasColumnName("device_id");
                 b.Property(x => x.TriedScreenshot).HasColumnName("tried_screenshot");
+                b.Property(x => x.EducationYearId).HasColumnName("education_year_id").IsRequired();
                 b.Property(x => x.ParentPhoneNumber).HasColumnName("parent_phone_number").IsRequired();
+                b.HasOne(x => x.EducationYear).WithMany(e => e.Students).HasForeignKey(s => s.EducationYearId).IsRequired();
                 b.HasOne(x => x.User).WithOne(x => x.Student).HasForeignKey<Student>(x => x.UserId).HasConstraintName("students_user_id_fkey");
+            });
+
+            modelBuilder.Entity<EducationYear>(b =>
+            {
+                b.ToTable("education_years");
+                b.HasKey(x => x.Id).HasName("education_years_pkey");
+                b.Property(x => x.Id).HasColumnName("id");
+                b.Property(x => x.EducationYearName).HasColumnName("education_year_name").IsRequired();
+                b.Property(x => x.CreatedAt).HasColumnName("created_at");
+                b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+                b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
             });
 
             modelBuilder.Entity<Instructor>(b =>
@@ -137,6 +151,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.TotalMark).HasColumnName("total_mark");
                 b.Property(x => x.CourseId).HasColumnName("course_id");
                 b.Property(x => x.SectionId).HasColumnName("section_id");
+                b.Property(x => x.NumberOfQuestions).HasColumnName("number_of_questions");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");

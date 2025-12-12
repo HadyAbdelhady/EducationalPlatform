@@ -34,6 +34,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
                                                          .GetByGoogleEmailAsync(request.GoogleUserInfo.Email, cancellationToken);
 
+
                 bool isNewUser = existingUser == null;
                 User user;
 
@@ -50,11 +51,9 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         PersonalPictureUrl = request.GoogleUserInfo.PictureUrl,
                         DateOfBirth = request.GoogleUserInfo.DateOfBirth,
                         Gender = request.GoogleUserInfo.Gender,
-                        //EducationYear = request.EducationYear,
                         LocationMaps = request.LocationMaps,
                         CreatedAt = DateTimeOffset.UtcNow,
                         UpdatedAt = DateTimeOffset.UtcNow,
-
                         IsDeleted = false
                     };
 
@@ -63,7 +62,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         UserId = user.Id,
                         DeviceId = request.DeviceId,
                         ParentPhoneNumber = request.ParentPhoneNumber,
-
+                        EducationYearId = request.EducationYearId,
                         TriedScreenshot = false
                     };
 
@@ -100,7 +99,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         user.PersonalPictureUrl = request.GoogleUserInfo.PictureUrl;
                         user.DateOfBirth = request.GoogleUserInfo.DateOfBirth;
                         user.Gender = request.GoogleUserInfo.Gender;
-                        //user.Student.EducationYear = request.EducationYear;
+                        user.Student.EducationYearId = request.EducationYearId;
                         user.LocationMaps = request.LocationMaps;
                         user.CreatedAt = DateTimeOffset.UtcNow;
                         user.UpdatedAt = DateTimeOffset.UtcNow;

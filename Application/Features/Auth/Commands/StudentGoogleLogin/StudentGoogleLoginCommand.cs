@@ -8,7 +8,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
     {
         public string DeviceId { get; set; } = string.Empty;
         public string ParentPhoneNumber { get; set; } = string.Empty;
-        public string EducationYear { get; set; } = string.Empty;
+        public Guid EducationYearId { get; set; }
         public string Ssn { get; set; } = string.Empty;
         public string? LocationMaps { get; set; }
         public GoogleUserInfo GoogleUserInfo { get; set; } = null!;
