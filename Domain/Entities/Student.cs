@@ -7,7 +7,7 @@ namespace Domain.Entities
         public bool TriedScreenshot { get; set; }
         public string ParentPhoneNumber { get; set; } = string.Empty;
 
-        //public Guid EducationYear { get; set; } 
+        //public Guid EducationYear { get; set; }
         //public EducationYear EducationYear{ get; set; }
 
         public User User { get; set; } = null!;

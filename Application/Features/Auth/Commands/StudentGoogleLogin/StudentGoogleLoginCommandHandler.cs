@@ -93,14 +93,14 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                             user.Student.DeviceId = request.DeviceId;
                         }
 
-                        user.FullName = googleUserInfo.FullName;
+                        user.FullName = request.GoogleUserInfo.FullName;
                         user.Ssn = request.Ssn; // Will be updated later if needed
-                        user.PhoneNumber = request.PhoneNumber;
-                        user.GmailExternal = googleUserInfo.Email;
-                        user.PersonalPictureUrl = googleUserInfo.PictureUrl;
-                        user.DateOfBirth = request.DateOfBirth;
-                        user.Gender = request.Gender;
-                        user.EducationYear = request.EducationYear;
+                        user.PhoneNumber = request.GoogleUserInfo.PhoneNumber;
+                        user.GmailExternal = request.GoogleUserInfo.Email;
+                        user.PersonalPictureUrl = request.GoogleUserInfo.PictureUrl;
+                        user.DateOfBirth = request.GoogleUserInfo.DateOfBirth;
+                        user.Gender = request.GoogleUserInfo.Gender;
+                        //user.Student.EducationYear = request.EducationYear;
                         user.LocationMaps = request.LocationMaps;
                         user.CreatedAt = DateTimeOffset.UtcNow;
                         user.UpdatedAt = DateTimeOffset.UtcNow;
