@@ -1,7 +1,8 @@
-﻿using Application.Features.Exam.Command.DeleteExam;
-using Application.Features.Exam.Command.GenerateExam;
-using MediatR;
+﻿using Application.Features.Exam.Command.GenerateExam;
+using Application.Features.Exam.Command.DeleteExam;
+using Application.Features.Exam.Command.StartExam;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
 
 namespace Edu_Base.Controllers
 {
@@ -11,17 +12,19 @@ namespace Edu_Base.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpGet]
-        public IActionResult GetExams()
+        [HttpPost("Start")]
+        public async Task<IActionResult> StartExam([FromBody] StartExamCommand command, CancellationToken cancellationToken)
         {
-            return Ok("Exam endpoint is working.");
+            var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
         }
+
 
         [HttpPost("Generate")]
         public async Task<IActionResult> GenerateExam([FromBody] GenerateExamCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
         }
 
         [HttpDelete("Delete/{examId}")]

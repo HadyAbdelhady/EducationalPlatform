@@ -60,7 +60,7 @@ namespace Domain.Entities
         public Guid ExamId { get; set; }
         public DateTimeOffset TakenAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public Student Student { get; set; } = null!;
         public Exam Exam { get; set; } = null!;
@@ -93,6 +93,7 @@ namespace Domain.Entities
         public Guid InstructorId { get; set; }
         public Guid ExamId { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
 
         public Instructor Instructor { get; set; } = null!;
         public Exam Exam { get; set; } = null!;

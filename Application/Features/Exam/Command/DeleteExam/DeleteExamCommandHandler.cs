@@ -30,9 +30,16 @@ namespace Application.Features.Exam.Command.DeleteExam
             if (relativeEntities is null)
                 return Result<string>.Success("Exam does not exist");
 
-            ExamRepo.Remove(exam);
 
-            await _unitOfWork.SaveChangesAsync();
+            exam.IsDeleted = true;
+
+            foreach (var result in exam.ExamResults) result.IsDeleted = true;
+            foreach (var bank in exam.ExamQuestions) bank.IsDeleted = true;
+            foreach (var studentExam in exam.StudentExams) studentExam.IsDeleted = true;
+            foreach (var instructorExam in exam.InstructorExams) instructorExam.IsDeleted = true;
+            
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<string>.Success("Successfully deleted the exams and its relations");
         }

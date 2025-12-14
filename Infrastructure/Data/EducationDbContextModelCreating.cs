@@ -1,6 +1,8 @@
 using Domain.Entities;
+using Domain.enums;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Data
 {
@@ -52,7 +54,7 @@ namespace Infrastructure.Data
                 b.ToTable("education_years");
                 b.HasKey(x => x.Id).HasName("education_years_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
-                b.Property(x => x.EducationYearName).HasColumnName("education_year_name").IsRequired();
+                b.Property(x => x.EducationYearName).HasColumnName("year_name").IsRequired();
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
@@ -147,7 +149,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.StartTime).HasColumnName("start_time");
                 b.Property(x => x.EndTime).HasColumnName("end_time");
                 b.Property(x => x.DurationInMinutes).HasColumnName("duration");
-                b.Property(x => x.ExamType).HasColumnName("exam_type");
+                b.Property(x => x.ExamType).HasColumnName("exam_type").HasConversion<EnumToStringConverter<ExamType>>();
                 b.Property(x => x.TotalMark).HasColumnName("total_mark");
                 b.Property(x => x.CourseId).HasColumnName("course_id");
                 b.Property(x => x.SectionId).HasColumnName("section_id");
@@ -157,10 +159,10 @@ namespace Infrastructure.Data
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.Property(x => x.IsRandomized).HasColumnName("is_randomized");
                 b.HasQueryFilter(x => !x.IsDeleted);
-                b.HasMany(x => x.ExamResults).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId).OnDelete(DeleteBehavior.Cascade);
-                b.HasMany(x => x.ExamQuestions).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId).OnDelete(DeleteBehavior.Cascade);
-                b.HasMany(x => x.InstructorExams).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId).OnDelete(DeleteBehavior.Cascade);
-                b.HasMany(x => x.StudentExams).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId).OnDelete(DeleteBehavior.Cascade);
+                b.HasMany(x => x.ExamResults).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId);
+                b.HasMany(x => x.ExamQuestions).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId);
+                b.HasMany(x => x.InstructorExams).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId);
+                b.HasMany(x => x.StudentExams).WithOne(r => r.Exam).HasForeignKey(r => r.ExamId);
                 b.HasOne(x => x.Course).WithMany(x => x.Exams).HasForeignKey(x => x.CourseId).HasConstraintName("exams_course_id_fkey");
                 b.HasOne(x => x.Section).WithMany(x => x.Exams).HasForeignKey(x => x.SectionId).HasConstraintName("exams_section_id_fkey");
 
@@ -191,6 +193,7 @@ namespace Infrastructure.Data
                 b.Property(eq => eq.QuestionId)
                        .HasColumnName("question_id")
                        .IsRequired();
+
                 b.Property(x => x.QuestionMark).HasColumnName("question_mark");
             });
             modelBuilder.Entity<Answer>(b =>
@@ -315,6 +318,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.InstructorId).HasColumnName("instructor_id");
                 b.Property(x => x.ExamId).HasColumnName("exam_id");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Instructor).WithMany(x => x.InstructorExams).HasForeignKey(x => x.InstructorId).HasConstraintName("instructor_exams_instructor_id_fkey");
                 b.HasOne(x => x.Exam).WithMany(x => x.InstructorExams).HasForeignKey(x => x.ExamId).HasConstraintName("instructor_exams_exam_id_fkey");

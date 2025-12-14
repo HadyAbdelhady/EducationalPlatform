@@ -6,6 +6,7 @@
         public Guid QuestionId { get; set; }
         public decimal QuestionMark { get; set; }
 
+        public bool IsDeleted { get; set; } = false;
 
         // Navigation Properties
         public Exam Exam { get; set; } = null!;

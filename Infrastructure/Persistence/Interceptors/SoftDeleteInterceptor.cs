@@ -19,6 +19,7 @@ namespace Infrastructure.Persistence.Interceptors
                 softDeleteEntity.IsDeleted = true;
                 entry.Property("IsDeleted").IsModified = true;
 
+                
                 // Mark all other properties as not modified to prevent overwriting
                 foreach (var property in entry.Properties)
                 {

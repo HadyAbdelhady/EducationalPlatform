@@ -105,7 +105,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         user.UpdatedAt = DateTimeOffset.UtcNow;
                         user.IsDeleted = false;
 
-                        await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
+                        //await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
                     }
                 }
 
