@@ -17,7 +17,7 @@ namespace Application.Features.Course.Query.GetAllCoursesForStudent
             {
 
                 var courses = await _unitOfWork.GetRepository<ICourseRepository>()
-                                               .GetAllCoursesByStudentIdAsync(request.StudentId, cancellationToken);
+                                               .GetAllCoursesByStudentIdAsync(request, cancellationToken);
 
                 var response = courses.Select(course => new CourseByUserIdResponse
                 {

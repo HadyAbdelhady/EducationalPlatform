@@ -5,8 +5,8 @@ using Application.Features.Section.Commands.UpdateSection;
 using Application.Features.Section.Query.GetSectionsForCourse;
 using Application.Features.Section.Query.GetSectionByID;
 using Application.Features.Section.Query.GetSectionDetails;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
 
 namespace Edu_Base.Controllers
 {
@@ -89,7 +89,7 @@ namespace Edu_Base.Controllers
         [HttpDelete("bulk-delete")]
         public async Task<IActionResult> BulkDeleteSections(BulkDeleteSectionRequest request, CancellationToken cancellationToken)
         {
-            var command = new BulkDeleteSectionCommand(request.SectionIds);
+            var command = new BulkDeleteSectionCommand(request.CourseId,request.SectionIds);
 
             var result = await _mediator.Send(command, cancellationToken);
 

@@ -14,7 +14,7 @@ namespace Domain.Entities
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-
+        public int NumberOfExams { get; set; }
         public Course? Course { get; set; }
 
         public ICollection<Video> Videos { get; set; } = [];

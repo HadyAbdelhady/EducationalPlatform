@@ -37,7 +37,7 @@ namespace Edu_Base.Controllers
                 IntroVideoUrl = courseCreationRequest.IntroVideoUrl
             };
             var result = await _mediator.Send(createCourseCommand, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
 
         }
 
@@ -47,7 +47,7 @@ namespace Edu_Base.Controllers
             _logger.LogInformation("Fetching course detail for CourseId: {CourseId}", courseId);
             var query = new GetCourseByIdQuery { CourseId = courseId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpGet("GetAllCourses")]
@@ -56,17 +56,20 @@ namespace Edu_Base.Controllers
             _logger.LogInformation("Fetching all courses");
             var query = new GetAllCoursesQuery();
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
-        [HttpGet("GetAllCoursesEnrolledByStudent/{studentId}")]
-        public async Task<IActionResult> GetAllCoursesEnrolledByStudent(Guid studentId, CancellationToken cancellationToken)
+        [HttpGet("GetAllCoursesEnrolledByStudent")]
+        public async Task<IActionResult> GetAllCoursesEnrolledByStudent([FromQuery] CourseByStudentRequest requset, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Fetching courses for StudentId: {StudentId}", studentId);
-            var query = new GetAllCoursesEnrolledByStudentQuery { StudentId = studentId };
+            var query = new GetAllCoursesEnrolledByStudentQuery
+            {
+                StudentId = requset.StudentId,
+                FirstThreeCoursesOnly = requset.FirstThreeCoursesOnly
+            };
             var result = await _mediator.Send(query, cancellationToken);
 
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpGet("GetAllCoursesByInstructor/{instructorId}")]
@@ -75,7 +78,7 @@ namespace Edu_Base.Controllers
             _logger.LogInformation("Fetching courses for InstructorId: {InstructorId}", instructorId);
             var query = new GetAllCoursesByInstructorQuery { InstructorId = instructorId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpPatch("update")]

@@ -1,13 +1,16 @@
 ﻿using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.enums;
+using Domain.Events;
 using MediatR;
 
 namespace Application.Features.Exam.Command.DeleteExam
 {
-    public class DeleteExamCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteExamCommand, Result<string>>
+    public class DeleteExamCommandHandler(IUnitOfWork unitOfWork, IMediator mediator) : IRequestHandler<DeleteExamCommand, Result<string>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMediator _mediator = mediator;
+
 
         public async Task<Result<string>> Handle(DeleteExamCommand request, CancellationToken cancellationToken)
         {
@@ -37,7 +40,8 @@ namespace Application.Features.Exam.Command.DeleteExam
             foreach (var bank in exam.ExamQuestions) bank.IsDeleted = true;
             foreach (var studentExam in exam.StudentExams) studentExam.IsDeleted = true;
             foreach (var instructorExam in exam.InstructorExams) instructorExam.IsDeleted = true;
-            
+
+            await _mediator.Publish(new ExamDeletedEvent(request.CourseId,request.SectionId), cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

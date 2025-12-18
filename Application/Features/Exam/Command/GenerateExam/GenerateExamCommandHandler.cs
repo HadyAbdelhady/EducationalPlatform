@@ -4,13 +4,16 @@ using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
+using Domain.Events;
 using MediatR;
 
 namespace Application.Features.Exam.Command.GenerateExam
 {
-    public class GenerateExamCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<GenerateExamCommand, Result<string>>
+    public class GenerateExamCommandHandler(IUnitOfWork unitOfWork, IMediator mediator) : IRequestHandler<GenerateExamCommand, Result<string>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMediator _mediator = mediator;
+
 
         public async Task<Result<string>> Handle(GenerateExamCommand request, CancellationToken cancellationToken)
         {
@@ -86,6 +89,7 @@ namespace Application.Features.Exam.Command.GenerateExam
                     );
                 }
             }
+            await _mediator.Publish(new ExamAddedEvent(request.CourseId, request.SectionId), cancellationToken);
 
             await _unitOfWork.Repository<Domain.Entities.Exam>().AddAsync(newExam, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

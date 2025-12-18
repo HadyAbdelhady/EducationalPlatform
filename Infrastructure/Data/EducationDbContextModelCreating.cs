@@ -81,6 +81,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.IntroVideoUrl).HasColumnName("intro_video_url");
                 b.Property(x => x.NumberOfSections).HasColumnName("number_of_sections");
                 b.Property(x => x.NumberOfVideos).HasColumnName("number_of_videos");
+                b.Property(x => x.NumberOfExams).HasColumnName("number_of_exams");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
@@ -96,6 +97,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.Description).HasColumnName("description");
                 b.Property(x => x.Price).HasColumnName("price");
                 b.Property(x => x.NumberOfVideos).HasColumnName("number_of_videos");
+                b.Property(x=> x.NumberOfExams).HasColumnName("number_of_exams");
                 b.Property(x => x.Rating).HasColumnName("rating");
                 b.Property(x => x.CourseId).HasColumnName("course_id");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");

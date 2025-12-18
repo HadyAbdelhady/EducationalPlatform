@@ -32,9 +32,9 @@ namespace Application.Features.Section.Commands.CreateSection
                 await _unitOfWork.Repository<Domain.Entities.Section>()
                     .AddAsync(newSection, cancellationToken);
 
-                await _mediator.Publish(new SectionAddedEvent(newSection.Id, request.CourseId), cancellationToken);
+                await _mediator.Publish(new SectionAddedEvent(request.CourseId, 1), cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-                
+
                 return Result<CreateSectionResponse>.Success(new CreateSectionResponse
                 {
                     SectionId = newSection.Id,

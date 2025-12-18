@@ -12,6 +12,7 @@ namespace Domain.Entities
         public string? IntroVideoUrl { get; set; }
         public int NumberOfVideos { get; set; } = 0;
         public int NumberOfSections { get; set; } = 0;
+        public int NumberOfExams { get; set; } = 0;
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }

@@ -117,7 +117,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                     fullName: user.FullName
                 );
 
-                var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+                var tokenExpiration = DateTime.UtcNow.AddMinutes(1); // 24 hours -> 1440 minutes
 
                 // Generate refresh token
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();
