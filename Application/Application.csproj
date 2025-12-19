@@ -51,18 +51,17 @@
   <ItemGroup>
     <Folder Include="Features\Answer\Command\AnswerQuestion\" />
     <Folder Include="Features\Answer\Command\ClearAnswer\" />
-    <Folder Include="Features\Exam\Command\PublishExamResults\" />
-    <Folder Include="Features\Exam\Command\ProcessTimedOutExams\" />
-    <Folder Include="Features\Exam\Command\RemoveQuestionFromExam\" />
-    <Folder Include="Features\Exam\Query\GetExamById\" />
-    <Folder Include="Features\Exam\Query\GetAllStudentExams\" />
-    <Folder Include="Features\Exam\Query\GetAllInstructorExams\" />
-    <Folder Include="Features\Exam\Query\GetActiveExamAttempt\" />
-    <Folder Include="Features\Exam\Query\GetStudentExamResult\" />
-    <Folder Include="Features\Exam\Query\GetExamSubmissionsList\" />
-    <Folder Include="Features\Exam\Query\CanStudentTakeExam\" />
-    <Folder Include="Features\Exam\Query\GetExamStatistics\" />
-    <Folder Include="Features\Exam\Command\UpdateExam\" />
+    <Folder Include="Features\Exams\Command\PublishExamResults\" />
+    <Folder Include="Features\Exams\Command\ProcessTimedOutExams\" />
+    <Folder Include="Features\Exams\Command\RemoveQuestionFromExam\" />
+    <Folder Include="Features\Exams\Query\GetExamById\" />
+    <Folder Include="Features\Exams\Query\GetAllStudentExams\" />
+    <Folder Include="Features\Exams\Query\GetAllInstructorExams\" />
+    <Folder Include="Features\Exams\Query\GetActiveExamAttempt\" />
+    <Folder Include="Features\Exams\Query\GetStudentExamResult\" />
+    <Folder Include="Features\Exams\Query\GetExamSubmissionsList\" />
+    <Folder Include="Features\Exams\Query\CanStudentTakeExam\" />
+    <Folder Include="Features\Exams\Query\GetExamStatistics\" />
     <Folder Include="Features\Sheets\Queries\" />
   </ItemGroup>
 
