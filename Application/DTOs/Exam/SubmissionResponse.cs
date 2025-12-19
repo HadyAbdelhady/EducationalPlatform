@@ -2,8 +2,8 @@
 {
     public record SubmissionResponse
     {
-        public Guid StudentName { get; set; }
-        public Guid ExamName { get; set; }
+        public string StudentName { get; set; } = string.Empty;
+        public string ExamName { get; set; } = string.Empty;
         public decimal TotalMark { get; set; }
         public decimal ObtainedMark { get; set; }
         public string StatusMessage { get; set; } = string.Empty;

@@ -4,6 +4,8 @@
     {
         public Guid ExamId { get; set; }
 
+        public string Title { get; set; } = string.Empty;
+
         public decimal TotalMark { get; set; }
         public int PassMarkPercentage { get; set; }
 

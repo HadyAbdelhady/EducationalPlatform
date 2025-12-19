@@ -1,8 +1,9 @@
-﻿using Application.Features.Exam.Command.GenerateExam;
-using Application.Features.Exam.Command.DeleteExam;
+﻿using Application.Features.Exam.Command.DeleteExam;
+using Application.Features.Exam.Command.GenerateExam;
 using Application.Features.Exam.Command.StartExam;
-using Microsoft.AspNetCore.Mvc;
+using Application.Features.Exam.Command.SubmitExam;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Edu_Base.Controllers
 {
@@ -36,6 +37,13 @@ namespace Edu_Base.Controllers
             var result = await _mediator.Send(command, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
 
+        }
+
+        [HttpPost("Submit")]
+        public async Task<IActionResult> SubmitExam([FromBody] SubmitExamCommand command, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
         }
     }
 }

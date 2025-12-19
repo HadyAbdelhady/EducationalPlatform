@@ -18,6 +18,6 @@ namespace Domain.Entities
         public Student Student { get; set; } = null!;
         public Exam Exam { get; set; } = null!;
 
-        public IQueryable<StudentSubmission> StudentSubmissions { get; set; } = null!;
+        public ICollection<StudentSubmission> StudentSubmissions { get; set; } = null!;
     }
 }

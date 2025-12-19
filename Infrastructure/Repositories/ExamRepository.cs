@@ -1,4 +1,7 @@
-﻿using Application.DTOs.Exam;
+﻿using Application.DTOs.Answer;
+using Application.DTOs.Exam;
+using Application.DTOs.Question;
+using Application.Features.Exam.Command.UpdateExam;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
@@ -16,6 +19,7 @@ namespace Infrastructure.Repositories
                                   .Select(e => new ExamModelAnswer
                                   {
                                       ExamId = e.Id,
+                                      Title = e.Name,
                                       PassMarkPercentage = e.PassMarkPercentage,
                                       TotalMark = e.TotalMark,
                                       Questions = e.ExamQuestions
@@ -31,6 +35,58 @@ namespace Infrastructure.Repositories
                                   })
                                   .FirstOrDefaultAsync(cancellationToken);
         }
+
+        public async Task<ExamEditDto?> GetExamByIdWithQuestionsAndAnswersAsync(UpdateExamCommand request, CancellationToken cancellationToken = default)
+        {
+            if (request.ExamId == Guid.Empty)
+            {
+                throw new ArgumentException("ExamId cannot be empty.");
+            }
+            return await _context.Exams
+                                 .Include(e => e.ExamQuestions!)
+                                    .ThenInclude(eq => eq.Question)
+                                        .ThenInclude(q => q.Answers)
+                                 .Select(e => new ExamEditDto
+                                 {
+                                     ExamId = e.Id,
+                                     Title = e.Name,
+                                     Description = e.Description,
+                                     ScheduledDate = e.StartTime,
+                                     DurationInMinutes = e.DurationInMinutes,
+                                     TotalMark = e.TotalMark,
+                                     NumberOfQuestions = e.NumberOfQuestions,
+                                     PassMarkPercentage = e.PassMarkPercentage,
+                                     ModifiedQuestions = e.ExamQuestions
+                                                        .Select(eq => new ModifiedQuestionsDto
+                                                        {
+                                                            Id = eq.Question.Id,
+                                                            QuestionText = eq.Question.QuestionString,
+                                                            ImageUrl = eq.Question.QuestionImageUrl ?? string.Empty,
+                                                            Mark = eq.QuestionMark,
+                                                            Answers = eq.Question.Answers
+                                                                        .Select(a => new UpdateAnswerDto
+                                                                        {
+                                                                            Id = a.Id,
+                                                                            AnswerText = a.AnswerText,
+                                                                            IsCorrect = a.IsCorrect,
+                                                                            Explanation = a.Explanation
+                                                                        })
+                                                                        .ToList()
+                                                        })
+                                                        .ToList()
+                                 })
+                                 .FirstOrDefaultAsync(e => e.ExamId == request.ExamId, cancellationToken);
+        }
+
+        public async Task<Exam?> GetExamEntityByIdAsync(Guid examId, CancellationToken ct)
+        {
+            return await _context.Exams
+                .Include(e => e.ExamQuestions)
+                    .ThenInclude(eq => eq.Question)
+                        .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(e => e.Id == examId, ct);
+        }
+
     }
 
 }

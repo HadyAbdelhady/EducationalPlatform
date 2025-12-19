@@ -17,6 +17,15 @@ namespace Application.Features.Exam.Command.SubmitExam
         {
             ExamModelAnswer? ExamModelAnswer = await CollectExamModelAnswer(request.Exam, cancellationToken);
 
+            var studentExamResultRepository = unitOfWork.Repository<User>();
+         
+            var Student = await studentExamResultRepository.GetByIdAsync(request.Student, cancellationToken);
+
+            if (Student == null)
+            {
+                return Result<SubmissionResponse>.FailureStatusCode("Student not found", ErrorType.NotFound);
+            }
+
             if (ExamModelAnswer == null)
             {
                 return Result<SubmissionResponse>.FailureStatusCode("Exam not found", ErrorType.NotFound);
@@ -38,7 +47,8 @@ namespace Application.Features.Exam.Command.SubmitExam
                     Id = Guid.NewGuid(),
                     QuestionId = answer.QuestionId,
                     ChosenAnswerId = answer.ChosenAnswerId,
-                    ExamResultId = examResult.Id
+                    ExamResultId = examResult.Id,
+                    StudentId = request.Student
                 };
 
                 await unitOfWork.Repository<StudentSubmission>().AddAsync(submission, cancellationToken);
@@ -52,8 +62,8 @@ namespace Application.Features.Exam.Command.SubmitExam
 
             return Result<SubmissionResponse>.Success(new SubmissionResponse
             {
-                StudentName = request.Student,
-                ExamName = request.Exam,
+                StudentName = Student.FullName,
+                ExamName = ExamModelAnswer.Title,
                 TotalMark = ExamModelAnswer.TotalMark,
                 ObtainedMark = StudentActualMark,
                 StatusMessage = $"Exam submitted successfully with {StudentPercentage} % obtained.",
@@ -71,6 +81,9 @@ namespace Application.Features.Exam.Command.SubmitExam
             var examModelAnswer = new ExamModelAnswer
             {
                 ExamId = exam.ExamId,
+                TotalMark = exam.TotalMark,
+                Title = exam.Title,
+                PassMarkPercentage = exam.PassMarkPercentage,
                 Questions = [.. exam.Questions.Select(q => new QuestionModelAnswer
                 {
                     QuestionId = q.QuestionId,
