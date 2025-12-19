@@ -28,7 +28,7 @@ namespace Application.Features.Review.Query.GetReviewById
                         StarRating = courseReview.StarRating,
                         Comment = courseReview.Comment,
                         CreatedAt = courseReview.CreatedAt,
-                        UpdatedAt = courseReview.UpdatedAt,
+                        UpdatedAt = courseReview.UpdatedAt ?? courseReview.CreatedAt,
                         Student = courseReview.Student?.User != null ? new StudentReviewInfo
                         {
                             StudentId = courseReview.StudentId,

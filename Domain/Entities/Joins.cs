@@ -42,17 +42,17 @@ namespace Domain.Entities
         public Video Video { get; set; } = null!;
     }
 
-    public class StudentSheet
-    {
-        public Guid StudentId { get; set; }
-        public Guid SheetId { get; set; }
-        public DateTimeOffset ViewedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+    //public class StudentSheet
+    //{
+    //    public Guid StudentId { get; set; }
+    //    public Guid SheetId { get; set; }
+    //    public DateTimeOffset ViewedAt { get; set; }
+    //    public DateTimeOffset UpdatedAt { get; set; }
+    //    public bool IsDeleted { get; set; }
 
-        public Student Student { get; set; } = null!;
-        public Sheet Sheet { get; set; } = null!;
-    }
+    //    public Student Student { get; set; } = null!;
+    //    public SheetBase SheetBase { get; set; } = null!;
+    //}
 
     public class StudentExam
     {
@@ -98,16 +98,16 @@ namespace Domain.Entities
         public Exam Exam { get; set; } = null!;
     }
 
-    public class VideoSheet
-    {
-        public Guid VideoId { get; set; }
-        public Guid SheetId { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+    //public class VideoSheet
+    //{
+    //    public Guid CourseId { get; set; }
+    //    public Guid SheetId { get; set; }
+    //    public DateTimeOffset UpdatedAt { get; set; }
+    //    public bool IsDeleted { get; set; }
 
-        public Video Video { get; set; } = null!;
-        public Sheet Sheet { get; set; } = null!;
-    }
+    //    public Video Video { get; set; } = null!;
+    //    public SheetBase SheetBase { get; set; } = null!;
+    //}
 }
 
 

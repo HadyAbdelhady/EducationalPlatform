@@ -10,7 +10,7 @@ namespace Domain.Entities
         public int StarRating { get; set; } = 1;
         public string Comment { get; set; } = string.Empty;
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
-        public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
 
         public Student Student { get; set; } = null!;

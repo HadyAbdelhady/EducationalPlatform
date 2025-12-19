@@ -82,7 +82,7 @@ namespace Application.Features.Course.Query.GetCourseById
                     NumberOfStudents = course.StudentCourses?.Count ?? 0,
                     NumberOfSections = sections.Count,
                     CreatedAt = course.CreatedAt,
-                    UpdatedAt = course.UpdatedAt,
+                    UpdatedAt = course.UpdatedAt ?? course.CreatedAt,
                     Instructors = instructors,
                     Sections = sections,
                     Reviews = reviews

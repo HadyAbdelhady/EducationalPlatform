@@ -10,7 +10,7 @@ namespace Domain.Entities
         public bool IsCorrect { get; set; }
         public string? Explanation { get; set; }
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
-        public DateTimeOffset UpdatedAt { get; set; }= DateTimeOffset.UtcNow;
+        public DateTimeOffset? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
 
         public Question? Question { get; set; }

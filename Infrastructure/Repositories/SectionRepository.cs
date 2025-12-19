@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
                     NumberOfVideos = section.Videos.Count,
                     Rating = section.Rating,
                     CreatedAt = section.CreatedAt,
-                    UpdatedAt = section.UpdatedAt,
+                    UpdatedAt = section.UpdatedAt ?? section.CreatedAt,
                     CourseId = section.CourseId ?? Guid.Empty,
                     Videos = section.Videos.Select(video => new VideoInfo
                     {

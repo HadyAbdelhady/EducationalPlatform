@@ -13,7 +13,7 @@ namespace Domain.Entities
         public DateTimeOffset SubmittingDate { get; set; }
         public ExamStatus Status { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
         public Student Student { get; set; } = null!;

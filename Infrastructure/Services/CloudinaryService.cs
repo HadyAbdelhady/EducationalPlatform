@@ -1,8 +1,10 @@
+using Application.DTOs.Media;
 using Application.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Domain.enums;
 using Microsoft.AspNetCore.Http;
+using System.Text.RegularExpressions;
 
 namespace Infrastructure.Services
 {
@@ -12,6 +14,72 @@ namespace Infrastructure.Services
         private readonly string _noImageUrl = "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg";
 
         public Task<Cloudinary> GetClientAsync() => Task.FromResult(_cloudinary);
+
+        public async Task<CloudinaryMediaResult> UploadPdfAsync(IFormFile file, string? folder = null)
+        {
+            if (file == null || file.Length == 0)
+                throw new ArgumentException("File is required and cannot be empty", nameof(file));
+
+            // Validate file type
+            var allowedExtensions = new[] { ".pdf" };
+            var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(fileExtension))
+                throw new ArgumentException("Only PDF files are allowed.");
+
+            // Validate file size (max 20MB – adjust if needed)
+            const long maxFileSize = 20 * 1024 * 1024;
+            if (file.Length > maxFileSize)
+                throw new ArgumentException("PDF file size exceeds 20MB limit.");
+
+            using var stream = file.OpenReadStream();
+
+            var uploadParams = new RawUploadParams
+            {
+
+                File = new FileDescription(file.FileName, stream),
+                Folder = folder ?? "educational_platform/pdfs",
+                UseFilename = true,
+                UniqueFilename = true,
+                Overwrite = false
+            };
+
+            var result = await _cloudinary.UploadAsync(uploadParams);
+
+            if (result.Error != null)
+                throw new Exception($"Cloudinary PDF upload failed: {result.Error.Message}");
+
+            return new CloudinaryMediaResult
+            {
+                Url = result.SecureUrl.ToString(),
+                PublicId = result.PublicId
+            };
+        }
+
+        public async Task<CloudinaryMediaResult> UpdatePdfAsync(string publicId, IFormFile newPdf)
+        {
+            if (string.IsNullOrWhiteSpace(publicId))
+                throw new ArgumentException("Public ID is required", nameof(publicId));
+
+            try
+            {
+                // Upload new pdf
+                var newPdfUploadResult = await UploadPdfAsync(newPdf);
+
+                // Delete old pdf only after successful upload
+                var deleted = await DeleteSingleMediaAsync(publicId);
+                if (!deleted)
+                {
+                    Console.WriteLine($"Warning: Could not delete old pdf with ID: {publicId}");
+                }
+
+                return newPdfUploadResult;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to edit pdf: {ex.Message}", ex);
+            }
+        }
 
         public async Task<bool> DeleteMediaAsync(IEnumerable<string> Url)
         {

@@ -66,6 +66,7 @@
     <Folder Include="Features\Exam\Query\CanStudentTakeExam\" />
     <Folder Include="Features\Exam\Query\GetExamStatistics\" />
     <Folder Include="Features\Exam\Command\UpdateExam\" />
+    <Folder Include="Features\Sheet\Queries\" />
   </ItemGroup>
 
 </Project>

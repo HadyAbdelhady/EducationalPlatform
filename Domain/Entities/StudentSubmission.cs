@@ -10,7 +10,7 @@ namespace Domain.Entities
         public Guid QuestionId { get; set; }
         public Guid? ChosenAnswerId { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
         public Question Question { get; set; } = null!;

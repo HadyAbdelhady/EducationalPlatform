@@ -25,10 +25,11 @@ namespace Application.Features.Videos.Queries.GetAllVideos
                     VideoUrl = v.VideoUrl,
                     //DateOfCreation = v.DateOfCreation,
                     Description = v.Description,
-                    NumberOfSheets = v.VideoSheets?.Count ?? 0,
+                    NumberOfTutorialSheets = v.Sheets.Where(sh => sh.Type == SheetType.TutorialSheet)?.ToList().Count ?? 0,
+                    NumberOfQuestionsSheets = v.Sheets.Where(sh => sh.Type == SheetType.QuestionSheet)?.ToList().Count ?? 0,
                     SectionId = v.SectionId,
                     CreatedAt = v.CreatedAt,
-                    UpdatedAt = v.UpdatedAt,
+                    UpdatedAt = v.UpdatedAt ?? v.CreatedAt,
                 }).ToList();
 
                 return Result<PaginatedResult<VideoByUserIdResponse>>.Success(new PaginatedResult<VideoByUserIdResponse>
