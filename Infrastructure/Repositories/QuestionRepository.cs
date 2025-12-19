@@ -1,4 +1,4 @@
-using Application.DTOs.Question;
+using Application.DTOs.Questions;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;

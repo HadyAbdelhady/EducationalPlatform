@@ -23,7 +23,6 @@ namespace Application.Features.Videos.Queries.GetAllVideos
                     Id = v.Id,
                     Name = v.Name,
                     VideoUrl = v.VideoUrl,
-                    //DateOfCreation = v.DateOfCreation,
                     Description = v.Description,
                     NumberOfTutorialSheets = v.Sheets.Where(sh => sh.Type == SheetType.TutorialSheet)?.ToList().Count ?? 0,
                     NumberOfQuestionsSheets = v.Sheets.Where(sh => sh.Type == SheetType.QuestionSheet)?.ToList().Count ?? 0,

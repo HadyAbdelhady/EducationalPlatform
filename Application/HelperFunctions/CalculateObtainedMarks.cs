@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Exam;
-using Application.Features.Exam.Command.SubmitExam;
+using Application.Features.Exams.Command.SubmitExam;
 
 namespace Application.HelperFunctions
 {

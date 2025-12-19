@@ -1,5 +1,5 @@
-using Application.DTOs.Course;
-using Application.Features.Course.Query.GetAllCoursesForStudent;
+using Application.DTOs.Courses;
+using Application.Features.Courses.Query.GetAllCoursesForStudent;
 using Domain.Entities;
 
 namespace Application.Interfaces

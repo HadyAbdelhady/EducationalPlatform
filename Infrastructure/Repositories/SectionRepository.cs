@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Section;
+﻿using Application.DTOs.Sections;
 using Application.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

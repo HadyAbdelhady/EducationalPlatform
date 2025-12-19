@@ -1,11 +1,11 @@
-using Application.DTOs.Sheet;
+using Application.DTOs.Sheets;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.AnswersSheet.Commands.UpdateAnswersSheet
+namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
 {
     public class UpdateAnswersSheetCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService) 
         : IRequestHandler<UpdateAnswersSheetCommand, Result<AnswersSheetUpdateResponse>>
@@ -17,7 +17,7 @@ namespace Application.Features.AnswersSheet.Commands.UpdateAnswersSheet
         {
             try
             {
-                var answersSheet = await _unitOfWork.Repository<Domain.Entities.AnswersSheet>().GetByIdAsync(request.AnswersSheetId, cancellationToken, x => x.QuestionsSheet);
+                var answersSheet = await _unitOfWork.Repository<AnswersSheet>().GetByIdAsync(request.AnswersSheetId, cancellationToken, x => x.QuestionsSheet);
                 if (answersSheet == null)
                 {
                     return Result<AnswersSheetUpdateResponse>.FailureStatusCode("Answers sheet not found", ErrorType.NotFound);
@@ -37,8 +37,8 @@ namespace Application.Features.AnswersSheet.Commands.UpdateAnswersSheet
                 answersSheet.Name = request.Name;
                 answersSheet.UpdatedAt = DateTimeOffset.UtcNow;
 
-                _unitOfWork.Repository<Domain.Entities.AnswersSheet>().Update(answersSheet);
-                await _unitOfWork.Repository<Domain.Entities.AnswersSheet>().SaveChangesAsync(cancellationToken);
+                _unitOfWork.Repository<AnswersSheet>().Update(answersSheet);
+                await _unitOfWork.Repository<AnswersSheet>().SaveChangesAsync(cancellationToken);
 
                 return Result<AnswersSheetUpdateResponse>.Success(new AnswersSheetUpdateResponse
                 {

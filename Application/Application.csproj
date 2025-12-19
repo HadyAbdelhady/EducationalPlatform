@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,33 +7,33 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Features\Section\**" />
+    <Compile Remove="Features\Sections\**" />
     <Compile Remove="Persistence\**" />
-    <EmbeddedResource Remove="Features\Section\**" />
+    <EmbeddedResource Remove="Features\Sections\**" />
     <EmbeddedResource Remove="Persistence\**" />
-    <None Remove="Features\Section\**" />
+    <None Remove="Features\Sections\**" />
     <None Remove="Persistence\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Features\Section\Commands\CreateSection\BulkCreateSectionCommand.cs" />
-    <Compile Include="Features\Section\Commands\CreateSection\BulkCreateSectionCommandHandler.cs" />
-    <Compile Include="Features\Section\Commands\CreateSection\CreateSectionCommand.cs" />
-    <Compile Include="Features\Section\Commands\CreateSection\CreateSectionCommandHandler.cs" />
-    <Compile Include="Features\Section\Commands\DeleteSection\BulkDeleteSectionCommand.cs" />
-    <Compile Include="Features\Section\Commands\DeleteSection\BulkDeleteSectionCommandHandler.cs" />
-    <Compile Include="Features\Section\Commands\DeleteSection\DeleteSectionCommand.cs" />
-    <Compile Include="Features\Section\Commands\DeleteSection\DeleteSectionCommandHandler.cs" />
-    <Compile Include="Features\Section\Commands\UpdateSection\UpdateSectionCommand.cs" />
-    <Compile Include="Features\Section\Commands\UpdateSection\UpdateSectionCommandHandler.cs" />
-    <Compile Include="Features\Section\Query\GetAllSectionsByCourse\GetAllSectionsByCourseQuery.cs" />
-    <Compile Include="Features\Section\Query\GetAllSectionsByCourse\GetAllSectionsByCourseQueryHandler.cs" />
-    <Compile Include="Features\Section\Query\GetSectionByID\GetSectionByIDQuery.cs" />
-    <Compile Include="Features\Section\Query\GetSectionByID\GetSectionByIDQueryHandler.cs" />
-    <Compile Include="Features\Section\Query\GetSectionDetails\GetSectionDetailsQuery.cs" />
-    <Compile Include="Features\Section\Query\GetSectionDetails\GetSectionDetailsQueryHandler.cs" />
-    <Compile Include="Features\Section\Query\GetSectionsForCourse\GetSectionsForCourseQuery.cs" />
-    <Compile Include="Features\Section\Query\GetSectionsForCourse\GetSectionsForCourseQueryHandler.cs" />
+    <Compile Include="Features\Sections\Commands\CreateSection\BulkCreateSectionCommand.cs" />
+    <Compile Include="Features\Sections\Commands\CreateSection\BulkCreateSectionCommandHandler.cs" />
+    <Compile Include="Features\Sections\Commands\CreateSection\CreateSectionCommand.cs" />
+    <Compile Include="Features\Sections\Commands\CreateSection\CreateSectionCommandHandler.cs" />
+    <Compile Include="Features\Sections\Commands\DeleteSection\BulkDeleteSectionCommand.cs" />
+    <Compile Include="Features\Sections\Commands\DeleteSection\BulkDeleteSectionCommandHandler.cs" />
+    <Compile Include="Features\Sections\Commands\DeleteSection\DeleteSectionCommand.cs" />
+    <Compile Include="Features\Sections\Commands\DeleteSection\DeleteSectionCommandHandler.cs" />
+    <Compile Include="Features\Sections\Commands\UpdateSection\UpdateSectionCommand.cs" />
+    <Compile Include="Features\Sections\Commands\UpdateSection\UpdateSectionCommandHandler.cs" />
+    <Compile Include="Features\Sections\Query\GetAllSectionsByCourse\GetAllSectionsByCourseQuery.cs" />
+    <Compile Include="Features\Sections\Query\GetAllSectionsByCourse\GetAllSectionsByCourseQueryHandler.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionByID\GetSectionByIDQuery.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionByID\GetSectionByIDQueryHandler.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQuery.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQueryHandler.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQuery.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQueryHandler.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,7 +51,6 @@
   <ItemGroup>
     <Folder Include="Features\Answer\Command\AnswerQuestion\" />
     <Folder Include="Features\Answer\Command\ClearAnswer\" />
-    <Folder Include="Features\Course\Query\GetCourseById\" />
     <Folder Include="Features\Exam\Command\PublishExamResults\" />
     <Folder Include="Features\Exam\Command\ProcessTimedOutExams\" />
     <Folder Include="Features\Exam\Command\RemoveQuestionFromExam\" />
@@ -64,7 +63,7 @@
     <Folder Include="Features\Exam\Query\CanStudentTakeExam\" />
     <Folder Include="Features\Exam\Query\GetExamStatistics\" />
     <Folder Include="Features\Exam\Command\UpdateExam\" />
-    <Folder Include="Features\Sheet\Queries\" />
+    <Folder Include="Features\Sheets\Queries\" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.AnswersSheet.Commands.DeleteAnswersSheet
+namespace Application.Features.AnswersSheets.Commands.DeleteAnswersSheet
 {
     public class DeleteAnswersSheetCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService) 
         : IRequestHandler<DeleteAnswersSheetCommand, Result<string>>
@@ -16,7 +16,7 @@ namespace Application.Features.AnswersSheet.Commands.DeleteAnswersSheet
         {
             try
             {
-                var answersSheet = await _unitOfWork.Repository<Domain.Entities.AnswersSheet>().GetByIdAsync(request.AnswersSheetId, cancellationToken);
+                var answersSheet = await _unitOfWork.Repository<AnswersSheet>().GetByIdAsync(request.AnswersSheetId, cancellationToken);
                 if (answersSheet == null)
                 {
                     return Result<string>.FailureStatusCode("Answers sheet not found", ErrorType.NotFound);
@@ -25,8 +25,8 @@ namespace Application.Features.AnswersSheet.Commands.DeleteAnswersSheet
                 var isDeleted = await _cloudinaryService.DeleteSingleMediaAsync(answersSheet.SheetPublicId);
                 if (isDeleted)
                 {
-                    await _unitOfWork.Repository<Domain.Entities.AnswersSheet>().RemoveAsync(request.AnswersSheetId, cancellationToken);
-                    await _unitOfWork.Repository<Domain.Entities.AnswersSheet>().SaveChangesAsync(cancellationToken);
+                    await _unitOfWork.Repository<AnswersSheet>().RemoveAsync(request.AnswersSheetId, cancellationToken);
+                    await _unitOfWork.Repository<AnswersSheet>().SaveChangesAsync(cancellationToken);
 
                     return Result<string>.Success("Answers sheet deleted successfully");
                 }

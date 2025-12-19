@@ -16,7 +16,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
             try
             {
                 var videoRepo = _unitOfWork.Repository<Video>();
-                var sectionRepo = _unitOfWork.Repository<Domain.Entities.Section>();
+                var sectionRepo = _unitOfWork.Repository<Section>();
 
                 List<Video> videosTobeAdded = [];
                 var responses = new List<VideoCreationResponse>();
@@ -31,8 +31,6 @@ namespace Application.Features.Videos.Commands.CreateVideo
                         Name = video.Name,
                         Description = video.Description,
                         VideoUrl = video.VideoUrl,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         SectionId = video.SectionId,
 
                     };

@@ -1,20 +1,48 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Interfaces;
 
 namespace Domain.Entities
 {
+    [Table("sections", Schema = "public")]
     public class Section : ISoftDeletableEntity
     {
+        [Key]
+        [Column("id")]
         public Guid Id { get; set; }
+
+        [Required]
+        [Column("name")]
         public string Name { get; set; } = string.Empty;
+
+        [Column("description")]
         public string Description { get; set; } = string.Empty;
+
+        [Column("price")]
         public decimal Price { get; set; }
+
+        [Column("number_of_videos")]
         public int NumberOfVideos { get; set; }
-        public decimal? Rating { get; set; }
-        public Guid? CourseId { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset? UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+
+        [Column("number_of_exams")]
         public int NumberOfExams { get; set; }
+
+        [Column("rating")]
+        public decimal? Rating { get; set; }
+
+        [Column("course_id")]
+        [ForeignKey(nameof(Course))]
+        public Guid? CourseId { get; set; }
+
+        [Column("created_at")]
+        public DateTimeOffset CreatedAt { get; set; }
+
+        [Column("updated_at")]
+        public DateTimeOffset? UpdatedAt { get; set; }
+
+        [Column("is_deleted")]
+        public bool IsDeleted { get; set; }
+
         public Course? Course { get; set; }
 
         public ICollection<Video> Videos { get; set; } = [];

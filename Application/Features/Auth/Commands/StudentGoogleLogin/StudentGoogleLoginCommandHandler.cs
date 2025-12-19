@@ -20,8 +20,6 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
         {
             try
             {
-
-
                 // Validate Google ID token
                 var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.GoogleUserInfo.IdToken, cancellationToken);
 

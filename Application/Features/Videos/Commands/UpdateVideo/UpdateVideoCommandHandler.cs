@@ -16,7 +16,7 @@ namespace Application.Features.Videos.Commands.UpdateVideo
             {
                 var video = await _unitOfWork.Repository<Video>().GetByIdAsync(request.VideoId, cancellationToken) ?? throw new KeyNotFoundException("Video Not Found");
 
-                var section = await _unitOfWork.Repository<Domain.Entities.Section>().GetByIdAsync(request.SectionId.Value, cancellationToken);
+                var section = await _unitOfWork.Repository<Section>().GetByIdAsync(request.SectionId.Value, cancellationToken);
 
 
                 video.Name = request.Name;

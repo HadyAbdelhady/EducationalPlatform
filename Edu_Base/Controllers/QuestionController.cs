@@ -1,9 +1,9 @@
-﻿using Application.Features.Question.Command.AddQuestion;
-using Application.Features.Question.Command.DeleteQuestion;
-using Application.Features.Question.Command.UpdateQuestion;
-using Application.Features.Question.Query.GetQuestionById;
-using Application.Features.Question.Query.GetAllQuestionsInBank;
-using Application.Features.Question.Query.GetAllQuestionsInExam;
+﻿using Application.Features.Questions.Command.AddQuestion;
+using Application.Features.Questions.Command.DeleteQuestion;
+using Application.Features.Questions.Command.UpdateQuestion;
+using Application.Features.Questions.Query.GetQuestionById;
+using Application.Features.Questions.Query.GetAllQuestionsInBank;
+using Application.Features.Questions.Query.GetAllQuestionsInExam;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

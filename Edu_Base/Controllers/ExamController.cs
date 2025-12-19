@@ -1,7 +1,7 @@
-﻿using Application.Features.Exam.Command.DeleteExam;
-using Application.Features.Exam.Command.GenerateExam;
-using Application.Features.Exam.Command.StartExam;
-using Application.Features.Exam.Command.SubmitExam;
+﻿using Application.Features.Exams.Command.DeleteExam;
+using Application.Features.Exams.Command.GenerateExam;
+using Application.Features.Exams.Command.StartExam;
+using Application.Features.Exams.Command.SubmitExam;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

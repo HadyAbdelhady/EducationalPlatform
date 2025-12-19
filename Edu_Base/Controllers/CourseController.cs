@@ -1,11 +1,11 @@
-﻿using Application.DTOs.Course;
-using Application.Features.Course.Commands.CreateCourse;
-using Application.Features.Course.Commands.DeleteCourse;
-using Application.Features.Course.Commands.UpdateCourse;
-using Application.Features.Course.Query.GetAllCourses;
-using Application.Features.Course.Query.GetAllCoursesByInstructor;
-using Application.Features.Course.Query.GetAllCoursesForStudent;
-using Application.Features.Course.Query.GetCourseById;
+using Application.DTOs.Courses;
+using Application.Features.Courses.Commands.CreateCourse;
+using Application.Features.Courses.Commands.DeleteCourse;
+using Application.Features.Courses.Commands.UpdateCourse;
+using Application.Features.Courses.Query.GetAllCourses;
+using Application.Features.Courses.Query.GetAllCoursesByInstructor;
+using Application.Features.Courses.Query.GetAllCoursesForStudent;
+using Application.Features.Courses.Query.GetCourseById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

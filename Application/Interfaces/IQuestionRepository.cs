@@ -1,4 +1,4 @@
-using Application.DTOs.Question;
+using Application.DTOs.Questions;
 using Domain.Entities;
 
 namespace Application.Interfaces

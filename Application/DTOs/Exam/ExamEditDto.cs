@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Answer;
-using Application.DTOs.Question;
+using Application.DTOs.Questions;
 
 namespace Application.DTOs.Exam
 {

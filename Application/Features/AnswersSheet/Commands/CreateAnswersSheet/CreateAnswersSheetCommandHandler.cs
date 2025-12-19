@@ -1,13 +1,13 @@
-using Application.DTOs.Sheet;
+using Application.DTOs.Sheets;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.AnswersSheet.Commands.CreateAnswersSheet
+namespace Application.Features.AnswersSheets.Commands.CreateAnswersSheet
 {
-    public class CreateAnswersSheetCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService) 
+    public class CreateAnswersSheetCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService)
         : IRequestHandler<CreateAnswersSheetCommand, Result<AnswersSheetCreationResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -18,13 +18,13 @@ namespace Application.Features.AnswersSheet.Commands.CreateAnswersSheet
             try
             {
                 // Validate QuestionsSheet exists
-                var questionsSheet = await _unitOfWork.Repository<Domain.Entities.Sheet>().GetByIdAsync(request.QuestionsSheetId, cancellationToken);
+                var questionsSheet = await _unitOfWork.Repository<Sheet>().GetByIdAsync(request.QuestionsSheetId, cancellationToken);
                 if (questionsSheet is null)
                 {
                     return Result<AnswersSheetCreationResponse>.FailureStatusCode("Questions sheet not found", ErrorType.NotFound);
                 }
 
-                if(DateTime.Now >= questionsSheet.DueDate)
+                if (DateTime.Now >= questionsSheet.DueDate)
                 {
                     return Result<AnswersSheetCreationResponse>.FailureStatusCode("The submission deadline has passed!",
                         ErrorType.BadRequest);
@@ -39,8 +39,8 @@ namespace Application.Features.AnswersSheet.Commands.CreateAnswersSheet
 
                 // Upload PDF to Cloudinary
                 var cloudinaryResult = await _cloudinaryService.UploadPdfAsync(request.SheetFile);
-                
-                var newAnswersSheet = new Domain.Entities.AnswersSheet()
+
+                var newAnswersSheet = new AnswersSheet()
                 {
                     Id = Guid.NewGuid(),
                     Name = request.Name,
@@ -52,7 +52,7 @@ namespace Application.Features.AnswersSheet.Commands.CreateAnswersSheet
                     IsDeleted = false
                 };
 
-                await _unitOfWork.Repository<Domain.Entities.AnswersSheet>().AddAsync(newAnswersSheet, cancellationToken);
+                await _unitOfWork.Repository<AnswersSheet>().AddAsync(newAnswersSheet, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<AnswersSheetCreationResponse>.Success(new AnswersSheetCreationResponse

@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Section;
+﻿using Application.DTOs.Sections;
 using Domain.Entities;
 
 namespace Application.Interfaces

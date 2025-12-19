@@ -1,9 +1,9 @@
-using Application.DTOs.Sheet;
+using Application.DTOs.Sheets;
 using Application.ResultWrapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Features.AnswersSheet.Commands.UpdateAnswersSheet
+namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
 {
     public class UpdateAnswersSheetCommand : IRequest<Result<AnswersSheetUpdateResponse>>
     {

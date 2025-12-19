@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Media;
+using Application.DTOs.Media;
 using Application.Interfaces;
 using CloudinaryDotNet;
 using FluentValidation;
@@ -92,6 +92,7 @@ namespace Edu_Base
             builder.Services.AddScoped<IReviewService, SectionReviewService>();
             builder.Services.AddScoped<IReviewService, InstructorReviewService>();
             builder.Services.AddScoped<IReviewService, VideoReviewService>();
+            builder.Services.AddScoped<IQuestionUpdateService, QuestionUpdateService>();
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>

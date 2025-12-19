@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Exam;
-using Application.Features.Exam.Command.UpdateExam;
+using Application.Features.Exams.Command.UpdateExam;
 using Domain.Entities;
 
 namespace Application.Interfaces

@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.Answer;
 using Application.DTOs.Exam;
-using Application.DTOs.Question;
-using Application.Features.Exam.Command.UpdateExam;
+using Application.DTOs.Questions;
+using Application.Features.Exams.Command.UpdateExam;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;

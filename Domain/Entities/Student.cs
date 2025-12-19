@@ -1,12 +1,29 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Domain.Entities
 {
+    [Table("students", Schema = "public")]
     public class Student
     {
+        [Key]
+        [Column("user_id")]
+        [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
+
+        [Column("device_id")]
         public string? DeviceId { get; set; }
+
+        [Column("tried_screenshot")]
         public bool TriedScreenshot { get; set; }
+
+        [Required]
+        [Column("parent_phone_number")]
         public string ParentPhoneNumber { get; set; } = string.Empty;
 
+        [Required]
+        [Column("education_year_id")]
+        [ForeignKey(nameof(EducationYear))]
         public Guid EducationYearId { get; set; }
 
         public User User { get; set; } = null!;

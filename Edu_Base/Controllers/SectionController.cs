@@ -1,10 +1,10 @@
-﻿using Application.DTOs.Section;
-using Application.Features.Section.Commands.CreateSection;
-using Application.Features.Section.Commands.DeleteSection;
-using Application.Features.Section.Commands.UpdateSection;
-using Application.Features.Section.Query.GetSectionsForCourse;
-using Application.Features.Section.Query.GetSectionByID;
-using Application.Features.Section.Query.GetSectionDetails;
+﻿using Application.DTOs.Sections;
+using Application.Features.Sections.Commands.CreateSection;
+using Application.Features.Sections.Commands.DeleteSection;
+using Application.Features.Sections.Commands.UpdateSection;
+using Application.Features.Sections.Query.GetSectionsForCourse;
+using Application.Features.Sections.Query.GetSectionByID;
+using Application.Features.Sections.Query.GetSectionDetails;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 
