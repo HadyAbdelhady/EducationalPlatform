@@ -23,7 +23,7 @@ namespace Domain.Entities
         public Guid CourseId { get; set; }
         public Guid? SectionId { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         public bool IsDeleted { get; set; } = false;
         public Course? Course { get; set; }

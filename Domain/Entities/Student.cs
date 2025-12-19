@@ -15,7 +15,7 @@ namespace Domain.Entities
         public ICollection<StudentCourse> StudentCourses { get; set; } = [];
         public ICollection<StudentSection> StudentSections { get; set; } = [];
         public ICollection<StudentVideo> StudentVideos { get; set; } = [];
-        public ICollection<StudentSheet> StudentSheets { get; set; } = [];
+        public ICollection<AnswersSheet> AnswersSheets { get; set; } = [];
         public ICollection<StudentExam> StudentExams { get; set; } = [];
         public ICollection<CourseReview> CourseReviews { get; set; } = [];
         public ICollection<SectionReview> SectionReviews { get; set; } = [];

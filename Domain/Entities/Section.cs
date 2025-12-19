@@ -12,13 +12,14 @@ namespace Domain.Entities
         public decimal? Rating { get; set; }
         public Guid? CourseId { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
         public int NumberOfExams { get; set; }
         public Course? Course { get; set; }
 
         public ICollection<Video> Videos { get; set; } = [];
         public ICollection<Sheet> Sheets { get; set; } = [];
+        //public ICollection<QuestionsSheet> QuestionsSheets { get; set; } = [];
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];
         public ICollection<StudentSection> StudentSections { get; set; } = [];
         public ICollection<SectionReview> SectionReviews { get; set; } = [];

@@ -34,7 +34,7 @@ namespace Application.Features.Section.Commands.UpdateSection
                 {
                     SectionId = section.Id,
                     Name = section.Name,
-                    UpdatedAt = section.UpdatedAt.UtcDateTime
+                    UpdatedAt = section.UpdatedAt?.UtcDateTime ?? DateTime.UtcNow
                 });
             }
             catch (UnauthorizedAccessException auth)

@@ -34,7 +34,7 @@ namespace Application.Features.Section.Query.GetSectionByID
                     Rating = section.Rating,
                     CourseId = section.CourseId ?? Guid.Empty,
                     CreatedAt = section.CreatedAt,
-                    UpdatedAt = section.UpdatedAt
+                    UpdatedAt = section.UpdatedAt ?? section.CreatedAt
                 };
 
                 return Result<GetSectionByIDResponse>.Success(response);

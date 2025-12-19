@@ -27,7 +27,7 @@ namespace Application.Features.Course.Query.GetAllCourses
                     NumberOfSections = course.Sections?.Count ?? 0,
                     ThumbnailUrl = course.IntroVideoUrl!,
                     CreatedAt = course.CreatedAt,
-                    UpdatedAt = course.UpdatedAt
+                    UpdatedAt = course.UpdatedAt ?? course.CreatedAt
                 }).ToList();
 
                 return Result<PaginatedResult<CourseByUserIdResponse>>.Success(new PaginatedResult<CourseByUserIdResponse>

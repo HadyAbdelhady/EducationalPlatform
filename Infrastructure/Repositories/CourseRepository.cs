@@ -80,7 +80,7 @@ namespace Infrastructure.Repositories
                     ThumbnailUrl = c.IntroVideoUrl ?? string.Empty,
 
                     CreatedAt = c.CreatedAt,
-                    UpdatedAt = c.UpdatedAt
+                    UpdatedAt = c.UpdatedAt ?? c.CreatedAt
                 })
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);

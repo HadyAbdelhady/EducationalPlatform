@@ -13,6 +13,8 @@ namespace Domain.Entities
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];
         public ICollection<InstructorExam> InstructorExams { get; set; } = [];
         public ICollection<InstructorReview> InstructorReviews { get; set; } = [];
+        public ICollection<Sheet> Sheets { get; set; } = [];
+        //public ICollection<QuestionsSheet> QuestionsSheets { get; set; } = [];
     }
 }
 

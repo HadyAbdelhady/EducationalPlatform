@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
                     QuestionString = q.QuestionString,
                     QuestionImageUrl = q.QuestionImageUrl,
                     CreatedAt = q.CreatedAt,
-                    UpdatedAt = q.UpdatedAt,
+                    UpdatedAt = q.UpdatedAt ?? q.CreatedAt,
                     Answers = q.Answers
                         .Where(a => !a.IsDeleted)
                         .Select(a => new AnswerResponse

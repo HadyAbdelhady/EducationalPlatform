@@ -14,7 +14,7 @@ namespace Domain.Entities
         public string Gender { get; set; } = string.Empty;
         public string? LocationMaps { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
         public Student? Student { get; set; }

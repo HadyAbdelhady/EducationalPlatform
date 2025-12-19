@@ -123,21 +123,66 @@ namespace Infrastructure.Data
                 b.HasOne(x => x.Section).WithMany(x => x.Videos).HasForeignKey(x => x.SectionId).HasConstraintName("videos_section_id_fkey");
             });
 
+            //modelBuilder.Entity<SheetBase>(b =>
+            //{
+            //    b.ToTable("sheets");
+            //    b.HasKey(x => x.Id).HasName("sheets_pkey");
+            //    b.Property(x => x.Id).HasColumnName("id");
+            //    b.Property(x => x.Name).HasColumnName("name").IsRequired();
+            //    b.Property(x => x.SheetFile).HasColumnName("sheet_url");
+            //    b.Property(x => x.SectionId).HasColumnName("section_id");
+            //    b.Property(x => x.CourseId).HasColumnName("video_id");
+            //    b.Property(x => x.CreatedAt).HasColumnName("created_at");
+            //    b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+            //    b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+            //    b.HasQueryFilter(x => !x.IsDeleted);
+            //    b.HasOne(x => x.Section).WithMany(x => x.Sheets).HasForeignKey(x => x.SectionId).HasConstraintName("sheets_section_id_fkey");
+            //    b.HasOne(x => x.Video).WithMany().HasForeignKey(x => x.CourseId).HasConstraintName("sheets_video_id_fkey");
+
+            //});
+
             modelBuilder.Entity<Sheet>(b =>
             {
                 b.ToTable("sheets");
                 b.HasKey(x => x.Id).HasName("sheets_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.Name).HasColumnName("name").IsRequired();
+                b.Property(x => x.Type).HasColumnName("type").HasConversion<EnumToStringConverter<SheetType>>();
                 b.Property(x => x.SheetUrl).HasColumnName("sheet_url");
+                b.Property(x => x.SheetPublicId).HasColumnName("sheet_public_id");
+                b.Property(x => x.DueDate).HasColumnName("due_date");
                 b.Property(x => x.SectionId).HasColumnName("section_id");
+                b.Property(x => x.CourseId).HasColumnName("course_id");
                 b.Property(x => x.VideoId).HasColumnName("video_id");
+                b.Property(x => x.InstructorId).HasColumnName("instructor_id");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
                 b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
                 b.HasQueryFilter(x => !x.IsDeleted);
                 b.HasOne(x => x.Section).WithMany(x => x.Sheets).HasForeignKey(x => x.SectionId).HasConstraintName("sheets_section_id_fkey");
-                b.HasOne(x => x.Video).WithMany().HasForeignKey(x => x.VideoId).HasConstraintName("sheets_video_id_fkey");
+                b.HasOne(x => x.Video).WithMany(x => x.Sheets).HasForeignKey(x => x.VideoId).HasConstraintName("sheets_video_id_fkey");
+                b.HasOne(x => x.Course).WithMany(x => x.Sheets).HasForeignKey(x => x.CourseId).HasConstraintName("sheets_course_id_fkey");
+                b.HasOne(x => x.Instructor).WithMany(x => x.Sheets).HasForeignKey(x => x.InstructorId).HasConstraintName("sheets_instructor_id_fkey");
+                b.HasMany(x => x.AnswersSheets).WithOne(r => r.QuestionsSheet).HasForeignKey(r => r.QuestionsSheetId).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<AnswersSheet>(b =>
+            {
+                b.ToTable("answers_sheets");
+                b.HasKey(x => x.Id).HasName("answers_sheets_pkey");
+                b.Property(x => x.Id).HasColumnName("id");
+                b.Property(x => x.Name).HasColumnName("name").IsRequired();
+                b.Property(x => x.SheetUrl).HasColumnName("sheet_url");
+                b.Property(x => x.SheetPublicId).HasColumnName("sheet_public_id");
+                b.Property(x => x.IsApproved).HasColumnName("is_approved");
+                b.Property(x => x.StudentId).HasColumnName("student_id");
+                b.Property(x => x.QuestionsSheetId).HasColumnName("questions_sheets_id");
+                b.Property(x => x.CreatedAt).HasColumnName("created_at");
+                b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+                b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+                b.HasQueryFilter(x => !x.IsDeleted);
+                b.HasOne(x => x.Student).WithMany(x => x.AnswersSheets).HasForeignKey(x => x.StudentId).HasConstraintName("answers_sheets_student_id_fkey");
+                b.HasOne(x => x.QuestionsSheet).WithMany(x => x.AnswersSheets).HasForeignKey(x => x.QuestionsSheetId).HasConstraintName("answers_sheets_questions_sheet_id_fkey");
 
             });
 
@@ -262,19 +307,19 @@ namespace Infrastructure.Data
                 b.HasOne(x => x.Video).WithMany(x => x.StudentVideos).HasForeignKey(x => x.VideoId).HasConstraintName("student_videos_video_id_fkey");
             });
 
-            modelBuilder.Entity<StudentSheet>(b =>
-            {
-                b.ToTable("student_sheets");
-                b.HasKey(x => new { x.StudentId, x.SheetId }).HasName("student_sheets_pkey");
-                b.Property(x => x.StudentId).HasColumnName("student_id");
-                b.Property(x => x.SheetId).HasColumnName("sheet_id");
-                b.Property(x => x.ViewedAt).HasColumnName("viewed_at");
-                b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
-                b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
-                b.HasQueryFilter(x => !x.IsDeleted);
-                b.HasOne(x => x.Student).WithMany(x => x.StudentSheets).HasForeignKey(x => x.StudentId).HasConstraintName("student_sheets_student_id_fkey");
-                b.HasOne(x => x.Sheet).WithMany(x => x.StudentSheets).HasForeignKey(x => x.SheetId).HasConstraintName("student_sheets_sheet_id_fkey");
-            });
+            //modelBuilder.Entity<StudentSheet>(b =>
+            //{
+            //    b.ToTable("student_sheets");
+            //    b.HasKey(x => new { x.StudentId, x.SheetId }).HasName("student_sheets_pkey");
+            //    b.Property(x => x.StudentId).HasColumnName("student_id");
+            //    b.Property(x => x.SheetId).HasColumnName("sheet_id");
+            //    b.Property(x => x.ViewedAt).HasColumnName("viewed_at");
+            //    b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+            //    b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+            //    b.HasQueryFilter(x => !x.IsDeleted);
+            //    b.HasOne(x => x.Student).WithMany(x => x.StudentSheets).HasForeignKey(x => x.StudentId).HasConstraintName("student_sheets_student_id_fkey");
+            //    b.HasOne(x => x.SheetBase).WithMany(x => x.StudentSheets).HasForeignKey(x => x.SheetId).HasConstraintName("student_sheets_sheet_id_fkey");
+            //});
 
             modelBuilder.Entity<StudentExam>(b =>
             {
@@ -329,18 +374,18 @@ namespace Infrastructure.Data
                 b.HasOne(x => x.Exam).WithMany(x => x.InstructorExams).HasForeignKey(x => x.ExamId).HasConstraintName("instructor_exams_exam_id_fkey");
             });
 
-            modelBuilder.Entity<VideoSheet>(b =>
-            {
-                b.ToTable("video_sheets");
-                b.HasKey(x => new { x.VideoId, x.SheetId }).HasName("video_sheets_pkey");
-                b.Property(x => x.VideoId).HasColumnName("video_id");
-                b.Property(x => x.SheetId).HasColumnName("sheet_id");
-                b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
-                b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
-                b.HasQueryFilter(x => !x.IsDeleted);
-                b.HasOne(x => x.Video).WithMany(x => x.VideoSheets).HasForeignKey(x => x.VideoId).HasConstraintName("video_sheets_video_id_fkey");
-                b.HasOne(x => x.Sheet).WithMany(x => x.VideoSheets).HasForeignKey(x => x.SheetId).HasConstraintName("video_sheets_sheet_id_fkey");
-            });
+            //modelBuilder.Entity<VideoSheet>(b =>
+            //{
+            //    b.ToTable("video_sheets");
+            //    b.HasKey(x => new { x.CourseId, x.SheetId }).HasName("video_sheets_pkey");
+            //    b.Property(x => x.CourseId).HasColumnName("video_id");
+            //    b.Property(x => x.SheetId).HasColumnName("sheet_id");
+            //    b.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+            //    b.Property(x => x.IsDeleted).HasColumnName("is_deleted");
+            //    b.HasQueryFilter(x => !x.IsDeleted);
+            //    b.HasOne(x => x.Video).WithMany(x => x.VideoSheets).HasForeignKey(x => x.CourseId).HasConstraintName("video_sheets_video_id_fkey");
+            //    b.HasOne(x => x.SheetBase).WithMany(x => x.VideoSheets).HasForeignKey(x => x.SheetId).HasConstraintName("video_sheets_sheet_id_fkey");
+            //});
 
             modelBuilder.Entity<CourseReview>(b =>
             {
