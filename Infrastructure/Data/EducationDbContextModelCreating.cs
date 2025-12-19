@@ -97,7 +97,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.Description).HasColumnName("description");
                 b.Property(x => x.Price).HasColumnName("price");
                 b.Property(x => x.NumberOfVideos).HasColumnName("number_of_videos");
-                b.Property(x=> x.NumberOfExams).HasColumnName("number_of_exams");
+                b.Property(x => x.NumberOfExams).HasColumnName("number_of_exams");
                 b.Property(x => x.Rating).HasColumnName("rating");
                 b.Property(x => x.CourseId).HasColumnName("course_id");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
@@ -151,6 +151,7 @@ namespace Infrastructure.Data
                 b.Property(x => x.StartTime).HasColumnName("start_time");
                 b.Property(x => x.EndTime).HasColumnName("end_time");
                 b.Property(x => x.DurationInMinutes).HasColumnName("duration");
+                b.Property(x => x.PassMarkPercentage).HasColumnName("pass_mark_percentage");
                 b.Property(x => x.ExamType).HasColumnName("exam_type").HasConversion<EnumToStringConverter<ExamType>>();
                 b.Property(x => x.TotalMark).HasColumnName("total_mark");
                 b.Property(x => x.CourseId).HasColumnName("course_id");
@@ -464,15 +465,14 @@ namespace Infrastructure.Data
                 b.HasOne(x => x.Section).WithMany(x => x.Payments).HasForeignKey(x => x.SectionId).HasConstraintName("payments_section_id_fkey");
             });
 
-            modelBuilder.Entity<ExamResult>(b =>
+            modelBuilder.Entity<StudentExamResult>(b =>
             {
-                b.ToTable("exam_results");
+                b.ToTable("student_exam_results");
                 b.HasKey(x => x.Id).HasName("exam_results_pkey");
                 b.Property(x => x.Id).HasColumnName("id");
                 b.Property(x => x.StudentId).HasColumnName("student_id");
                 b.Property(x => x.ExamId).HasColumnName("exam_id");
-                b.Property(x => x.TotalMark).HasColumnName("total_mark");
-                b.Property(x => x.SubmittingDate).HasColumnName("submitting_date");
+                b.Property(x => x.StudentMark).HasColumnName("obtained_marks");
                 b.Property(x => x.Status).HasColumnName("status");
                 b.Property(x => x.CreatedAt).HasColumnName("created_at");
                 b.Property(x => x.UpdatedAt).HasColumnName("updated_at");

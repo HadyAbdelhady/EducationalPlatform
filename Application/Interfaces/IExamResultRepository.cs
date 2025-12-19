@@ -2,7 +2,7 @@ using Domain.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IExamResultRepository : IRepository<ExamResult>
+    public interface IExamResultRepository : IRepository<StudentExamResult>
     {
     }
 }

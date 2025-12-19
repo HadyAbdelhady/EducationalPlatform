@@ -13,6 +13,8 @@ namespace Application.Features.Exam.Command.GenerateExam
         public string Description { get; set; } = string.Empty;
         public int NumberOfQuestions { get; set; } = 0;
         public int ExamTotalMark { get; set; }
+        public int PassMarkPercentage { get; set; }
+
         public DateTimeOffset ExamStartTime { get; set; }
         public DateTimeOffset ExamEndTime { get; set; }
         public int DurationInMinutes { get; set; }

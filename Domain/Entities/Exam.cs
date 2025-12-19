@@ -8,10 +8,12 @@ namespace Domain.Entities
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public decimal? TotalMark { get; set; } = 0;
+        public decimal TotalMark { get; set; } = 0;
         public int NumberOfQuestions { get; set; } = 0;
         public int? DurationInMinutes { get; set; }
         public bool IsRandomized { get; set; } = false;
+
+        public int PassMarkPercentage { get; set; }
 
         public ExamType ExamType { get; set; } = ExamType.FixedTimeExam;
 
@@ -28,9 +30,8 @@ namespace Domain.Entities
         public Section? Section { get; set; }
         public ICollection<ExamBank> ExamQuestions { get; set; } = [];
         public ICollection<InstructorExam> InstructorExams { get; set; } = [];
-        //public ICollection<Question> Questions { get; set; } = [];
         public ICollection<StudentExam> StudentExams { get; set; } = [];
-        public ICollection<ExamResult> ExamResults { get; set; } = [];
+        public ICollection<StudentExamResult> ExamResults { get; set; } = [];
     }
 }
 

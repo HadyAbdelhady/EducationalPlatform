@@ -15,6 +15,6 @@ namespace Domain.Entities
 
         public Question Question { get; set; } = null!;
         public Answer? ChosenAnswer { get; set; }
-        public ExamResult ExamResult { get; set; } = null!;
+        public StudentExamResult ExamResult { get; set; } = null!;
     }
 }

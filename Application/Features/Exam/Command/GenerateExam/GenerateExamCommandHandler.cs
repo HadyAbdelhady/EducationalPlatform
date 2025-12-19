@@ -51,8 +51,7 @@ namespace Application.Features.Exam.Command.GenerateExam
                 ExamType = request.ExamType,
                 IsRandomized = request.IsRandomized,
                 DurationInMinutes = request.DurationInMinutes,
-                UpdatedAt = DateTime.UtcNow,
-                CreatedAt = DateTime.UtcNow
+                PassMarkPercentage = request.PassMarkPercentage
             };
 
             newExam.InstructorExams.Add(new InstructorExam

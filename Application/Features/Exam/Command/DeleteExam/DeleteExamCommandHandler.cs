@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.ResultWrapper;
-using Domain.enums;
+using Domain.Entities;
 using Domain.Events;
 using MediatR;
 
@@ -15,13 +15,21 @@ namespace Application.Features.Exam.Command.DeleteExam
         public async Task<Result<string>> Handle(DeleteExamCommand request, CancellationToken cancellationToken)
         {
             var ExamRepo = _unitOfWork.Repository<Domain.Entities.Exam>();
+            var StudentSubmissionRepo = _unitOfWork.Repository<StudentSubmission>();
+
 
             var exam = await ExamRepo.GetByIdAsync(request.ExamId, cancellationToken);
 
             if (exam is null)
             {
-                return Result<string>.FailureStatusCode("Question does not exist.", ErrorType.NotFound);
+                return Result<string>.Success("Exam does not exist");
             }
+
+            var ExamSubmissions = await StudentSubmissionRepo
+                                                                .FindAsync(ss => ss.ExamResult.ExamId == request.ExamId,
+                                                                cancellationToken);
+
+
 
             var relativeEntities = await ExamRepo.GetByIdAsync(request.ExamId,
                                                         cancellationToken,
@@ -30,18 +38,15 @@ namespace Application.Features.Exam.Command.DeleteExam
                                                         c => c.InstructorExams,
                                                         c => c.ExamQuestions);
 
-            if (relativeEntities is null)
-                return Result<string>.Success("Exam does not exist");
-
-
             exam.IsDeleted = true;
 
             foreach (var result in exam.ExamResults) result.IsDeleted = true;
             foreach (var bank in exam.ExamQuestions) bank.IsDeleted = true;
             foreach (var studentExam in exam.StudentExams) studentExam.IsDeleted = true;
             foreach (var instructorExam in exam.InstructorExams) instructorExam.IsDeleted = true;
+            foreach (var submission in ExamSubmissions) submission.IsDeleted = true;
 
-            await _mediator.Publish(new ExamDeletedEvent(request.CourseId,request.SectionId), cancellationToken);
+            await _mediator.Publish(new ExamDeletedEvent(request.CourseId, request.SectionId), cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

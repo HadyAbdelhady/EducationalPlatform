@@ -19,7 +19,6 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
         }
 
-
         [HttpPost("Generate")]
         public async Task<IActionResult> GenerateExam([FromBody] GenerateExamCommand command, CancellationToken cancellationToken)
         {

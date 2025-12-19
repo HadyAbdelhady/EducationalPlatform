@@ -55,7 +55,6 @@
     <Folder Include="Features\Exam\Command\PublishExamResults\" />
     <Folder Include="Features\Exam\Command\ProcessTimedOutExams\" />
     <Folder Include="Features\Exam\Command\RemoveQuestionFromExam\" />
-    <Folder Include="Features\Exam\Command\SubmitExam\" />
     <Folder Include="Features\Exam\Query\GetExamById\" />
     <Folder Include="Features\Exam\Query\GetAllStudentExams\" />
     <Folder Include="Features\Exam\Query\GetAllInstructorExams\" />

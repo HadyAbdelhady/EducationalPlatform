@@ -4,13 +4,12 @@ using Domain.Interfaces;
 namespace Domain.Entities
 {
 
-    public class ExamResult : ISoftDeletableEntity
+    public class StudentExamResult : ISoftDeletableEntity
     {
         public Guid Id { get; set; }
         public Guid StudentId { get; set; }
         public Guid ExamId { get; set; }
-        public decimal? TotalMark { get; set; }
-        public DateTimeOffset SubmittingDate { get; set; }
+        public decimal? StudentMark { get; set; }
         public ExamStatus Status { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }

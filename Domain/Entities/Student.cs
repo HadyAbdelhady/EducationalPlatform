@@ -21,7 +21,7 @@ namespace Domain.Entities
         public ICollection<SectionReview> SectionReviews { get; set; } = [];
         public ICollection<VideoReview> VideoReviews { get; set; } = [];
         public ICollection<InstructorReview> InstructorReviews { get; set; } = [];
-        public ICollection<ExamResult> ExamResults { get; set; } = [];
+        public ICollection<StudentExamResult> ExamResults { get; set; } = [];
         public ICollection<Payment> Payments { get; set; } = [];
         public ICollection<StudentSubmission> StudentSubmissions { get; set; } = [];
     }
