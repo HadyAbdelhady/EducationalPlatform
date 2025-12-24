@@ -37,9 +37,6 @@ namespace Application.EventHandlers
 
             // Apply update (EF Core tracks changes if using change tracking)
             courseRepo.Update(course);
-
-            // Save via UnitOfWork if needed
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

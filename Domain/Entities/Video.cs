@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
+using Domain.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Domain.Interfaces;
 
 namespace Domain.Entities
 {
@@ -26,7 +24,7 @@ namespace Domain.Entities
 
         [Column("section_id")]
         [ForeignKey(nameof(Section))]
-        public Guid? SectionId { get; set; }
+        public Guid SectionId { get; set; }
 
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }
@@ -40,8 +38,8 @@ namespace Domain.Entities
         public Section? Section { get; set; }
 
         public ICollection<Sheet> Sheets { get; set; } = [];
-        public ICollection<StudentVideo> StudentVideos { get; set; } = new List<StudentVideo>();
-        public ICollection<VideoReview> VideoReviews { get; set; } = new List<VideoReview>();
+        public ICollection<StudentVideo> StudentVideos { get; set; } = [];
+        public ICollection<VideoReview> VideoReviews { get; set; } = [];
     }
 }
 

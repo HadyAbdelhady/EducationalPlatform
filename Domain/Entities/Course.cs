@@ -36,6 +36,9 @@ namespace Domain.Entities
         [Column("number_of_exams")]
         public int NumberOfExams { get; set; } = 0;
 
+        [Column("number_of_question_sheets")]
+        public int NumberOfQuestionSheets { get; set; } = 0;
+
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }
 
@@ -50,7 +53,6 @@ namespace Domain.Entities
         public ICollection<StudentCourse> StudentCourses { get; set; } = [];
         public ICollection<CourseReview> CourseReviews { get; set; } = [];
         public ICollection<Sheet> Sheets { get; set; } = [];
-        //public ICollection<QuestionsSheet> QuestionsSheets { get; set; } = [];
         public ICollection<Exam> Exams { get; set; } = [];
         public ICollection<Payment> Payments { get; set; } = [];
     }

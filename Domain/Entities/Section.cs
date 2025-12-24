@@ -27,6 +27,9 @@ namespace Domain.Entities
         [Column("number_of_exams")]
         public int NumberOfExams { get; set; }
 
+        [Column("number_of_question_sheets")]
+        public int NumberOfQuestionSheets { get; set; }
+
         [Column("rating")]
         public decimal? Rating { get; set; }
 

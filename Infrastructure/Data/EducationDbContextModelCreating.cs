@@ -60,6 +60,105 @@ namespace Infrastructure.Data
                 .Property(x => x.Status)
                 .HasConversion<EnumToStringConverter<ExamStatus>>();
 
+            // Configure join tables with composite keys and relationships
+            // StudentCourse
+            modelBuilder.Entity<StudentCourse>()
+                .HasKey(e => new { e.StudentId, e.CourseId });
+            
+            modelBuilder.Entity<StudentCourse>()
+                .HasOne(sc => sc.Student)
+                .WithMany(s => s.StudentCourses)
+                .HasForeignKey(sc => sc.StudentId);
+                
+            modelBuilder.Entity<StudentCourse>()
+                .HasOne(sc => sc.Course)
+                .WithMany(c => c.StudentCourses)
+                .HasForeignKey(sc => sc.CourseId);
+
+            // StudentSection
+            modelBuilder.Entity<StudentSection>()
+                .HasKey(e => new { e.StudentId, e.SectionId });
+                
+            modelBuilder.Entity<StudentSection>()
+                .HasOne(ss => ss.Student)
+                .WithMany(s => s.StudentSections)
+                .HasForeignKey(ss => ss.StudentId);
+                
+            modelBuilder.Entity<StudentSection>()
+                .HasOne(ss => ss.Section)
+                .WithMany(s => s.StudentSections)
+                .HasForeignKey(ss => ss.SectionId);
+
+            // StudentVideo
+            modelBuilder.Entity<StudentVideo>()
+                .HasKey(e => new { e.StudentId, e.VideoId });
+                
+            modelBuilder.Entity<StudentVideo>()
+                .HasOne(sv => sv.Student)
+                .WithMany(s => s.StudentVideos)
+                .HasForeignKey(sv => sv.StudentId);
+                
+            modelBuilder.Entity<StudentVideo>()
+                .HasOne(sv => sv.Video)
+                .WithMany(v => v.StudentVideos)
+                .HasForeignKey(sv => sv.VideoId);
+
+            // StudentExam
+            modelBuilder.Entity<StudentExam>()
+                .HasKey(e => new { e.StudentId, e.ExamId });
+                
+            modelBuilder.Entity<StudentExam>()
+                .HasOne(se => se.Student)
+                .WithMany(s => s.StudentExams)
+                .HasForeignKey(se => se.StudentId);
+                
+            modelBuilder.Entity<StudentExam>()
+                .HasOne(se => se.Exam)
+                .WithMany(e => e.StudentExams)
+                .HasForeignKey(se => se.ExamId);
+
+            // InstructorCourse
+            modelBuilder.Entity<InstructorCourse>()
+                .HasKey(e => new { e.InstructorId, e.CourseId });
+                
+            modelBuilder.Entity<InstructorCourse>()
+                .HasOne(ic => ic.Instructor)
+                .WithMany(i => i.InstructorCourses)
+                .HasForeignKey(ic => ic.InstructorId);
+                
+            modelBuilder.Entity<InstructorCourse>()
+                .HasOne(ic => ic.Course)
+                .WithMany(c => c.InstructorCourses)
+                .HasForeignKey(ic => ic.CourseId);
+
+            // InstructorSection
+            modelBuilder.Entity<InstructorSection>()
+                .HasKey(e => new { e.InstructorId, e.SectionId });
+                
+            modelBuilder.Entity<InstructorSection>()
+                .HasOne(ins => ins.Instructor)
+                .WithMany(i => i.InstructorSections)
+                .HasForeignKey(ins => ins.InstructorId);
+                
+            modelBuilder.Entity<InstructorSection>()
+                .HasOne(ins => ins.Section)
+                .WithMany(s => s.InstructorSections)
+                .HasForeignKey(ins => ins.SectionId);
+
+            // InstructorExam
+            modelBuilder.Entity<InstructorExam>()
+                .HasKey(e => new { e.InstructorId, e.ExamId });
+                
+            modelBuilder.Entity<InstructorExam>()
+                .HasOne(ie => ie.Instructor)
+                .WithMany(i => i.InstructorExams)
+                .HasForeignKey(ie => ie.InstructorId);
+                
+            modelBuilder.Entity<InstructorExam>()
+                .HasOne(ie => ie.Exam)
+                .WithMany(e => e.InstructorExams)
+                .HasForeignKey(ie => ie.ExamId);
+
             // Complex relationship configurations
             modelBuilder.Entity<Student>(b =>
             {
@@ -67,11 +166,16 @@ namespace Infrastructure.Data
                     .WithMany(e => e.Students)
                     .HasForeignKey(s => s.EducationYearId)
                     .IsRequired();
-                
+
                 b.HasOne(x => x.User)
                     .WithOne(x => x.Student)
                     .HasForeignKey<Student>(x => x.UserId)
                     .HasConstraintName("students_user_id_fkey");
+            });
+
+            modelBuilder.Entity<ExamBank>(entity =>
+            {
+                entity.HasKey(e => new { e.QuestionId, e.ExamId });
             });
 
             modelBuilder.Entity<Instructor>(b =>
@@ -114,17 +218,17 @@ namespace Infrastructure.Data
                     .WithMany(x => x.Sheets)
                     .HasForeignKey(x => x.SectionId)
                     .HasConstraintName("sheets_section_id_fkey");
-                
+
                 b.HasOne(x => x.Video)
                     .WithMany(x => x.Sheets)
                     .HasForeignKey(x => x.VideoId)
                     .HasConstraintName("sheets_video_id_fkey");
-                
+
                 b.HasOne(x => x.Course)
                     .WithMany(x => x.Sheets)
                     .HasForeignKey(x => x.CourseId)
                     .HasConstraintName("sheets_course_id_fkey");
-                
+
                 b.HasOne(x => x.Instructor)
                     .WithMany(x => x.Sheets)
                     .HasForeignKey(x => x.InstructorId)
@@ -137,7 +241,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.AnswersSheets)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("answers_sheets_student_id_fkey");
-                
+
                 b.HasOne(x => x.QuestionsSheet)
                     .WithMany(x => x.AnswersSheets)
                     .HasForeignKey(x => x.QuestionsSheetId)
@@ -150,7 +254,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.Exams)
                     .HasForeignKey(x => x.CourseId)
                     .HasConstraintName("exams_course_id_fkey");
-                
+
                 b.HasOne(x => x.Section)
                     .WithMany(x => x.Exams)
                     .HasForeignKey(x => x.SectionId)
@@ -171,7 +275,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.StudentCourses)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("student_courses_student_id_fkey");
-                
+
                 b.HasOne(x => x.Course)
                     .WithMany(x => x.StudentCourses)
                     .HasForeignKey(x => x.CourseId)
@@ -184,7 +288,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.StudentSections)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("student_sections_student_id_fkey");
-                
+
                 b.HasOne(x => x.Section)
                     .WithMany(x => x.StudentSections)
                     .HasForeignKey(x => x.SectionId)
@@ -197,7 +301,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.StudentVideos)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("student_videos_student_id_fkey");
-                
+
                 b.HasOne(x => x.Video)
                     .WithMany(x => x.StudentVideos)
                     .HasForeignKey(x => x.VideoId)
@@ -210,7 +314,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.StudentExams)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("student_exams_student_id_fkey");
-                
+
                 b.HasOne(x => x.Exam)
                     .WithMany(x => x.StudentExams)
                     .HasForeignKey(x => x.ExamId)
@@ -223,11 +327,15 @@ namespace Infrastructure.Data
                     .WithMany(x => x.InstructorCourses)
                     .HasForeignKey(x => x.InstructorId)
                     .HasConstraintName("instructor_courses_instructor_id_fkey");
-                
+
                 b.HasOne(x => x.Course)
                     .WithMany(x => x.InstructorCourses)
                     .HasForeignKey(x => x.CourseId)
                     .HasConstraintName("instructor_courses_course_id_fkey");
+
+                b.HasKey(e => new { e.InstructorId, e.CourseId });
+
+
             });
 
             modelBuilder.Entity<InstructorSection>(b =>
@@ -236,7 +344,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.InstructorSections)
                     .HasForeignKey(x => x.InstructorId)
                     .HasConstraintName("instructor_sections_instructor_id_fkey");
-                
+
                 b.HasOne(x => x.Section)
                     .WithMany(x => x.InstructorSections)
                     .HasForeignKey(x => x.SectionId)
@@ -249,7 +357,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.InstructorExams)
                     .HasForeignKey(x => x.InstructorId)
                     .HasConstraintName("instructor_exams_instructor_id_fkey");
-                
+
                 b.HasOne(x => x.Exam)
                     .WithMany(x => x.InstructorExams)
                     .HasForeignKey(x => x.ExamId)
@@ -262,7 +370,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.CourseReviews)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("course_reviews_student_id_fkey");
-                
+
                 b.HasOne(x => x.Course)
                     .WithMany(x => x.CourseReviews)
                     .HasForeignKey(x => x.EntityId)
@@ -275,7 +383,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.SectionReviews)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("section_reviews_student_id_fkey");
-                
+
                 b.HasOne(x => x.Section)
                     .WithMany(x => x.SectionReviews)
                     .HasForeignKey(x => x.EntityId)
@@ -288,7 +396,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.VideoReviews)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("video_reviews_student_id_fkey");
-                
+
                 b.HasOne(x => x.Video)
                     .WithMany(x => x.VideoReviews)
                     .HasForeignKey(x => x.EntityId)
@@ -301,7 +409,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.InstructorReviews)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("instructor_reviews_student_id_fkey");
-                
+
                 b.HasOne(x => x.Instructor)
                     .WithMany(x => x.InstructorReviews)
                     .HasForeignKey(x => x.EntityId)
@@ -314,7 +422,7 @@ namespace Infrastructure.Data
                     .WithMany()
                     .HasForeignKey(x => x.User1Id)
                     .HasConstraintName("chat_rooms_user1_id_fkey");
-                
+
                 b.HasOne(x => x.User2)
                     .WithMany()
                     .HasForeignKey(x => x.User2Id)
@@ -327,7 +435,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.Messages)
                     .HasForeignKey(x => x.ChatRoomId)
                     .HasConstraintName("chat_messages_chat_room_id_fkey");
-                
+
                 b.HasOne(x => x.Sender)
                     .WithMany()
                     .HasForeignKey(x => x.SenderId)
@@ -340,12 +448,12 @@ namespace Infrastructure.Data
                     .WithMany(x => x.Payments)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("payments_student_id_fkey");
-                
+
                 b.HasOne(x => x.Course)
                     .WithMany(x => x.Payments)
                     .HasForeignKey(x => x.CourseId)
                     .HasConstraintName("payments_course_id_fkey");
-                
+
                 b.HasOne(x => x.Section)
                     .WithMany(x => x.Payments)
                     .HasForeignKey(x => x.SectionId)
@@ -358,7 +466,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.ExamResults)
                     .HasForeignKey(x => x.StudentId)
                     .HasConstraintName("exam_results_student_id_fkey");
-                
+
                 b.HasOne(x => x.Exam)
                     .WithMany(x => x.ExamResults)
                     .HasForeignKey(x => x.ExamId)
@@ -371,12 +479,12 @@ namespace Infrastructure.Data
                     .WithMany(x => x.StudentSubmissions)
                     .HasForeignKey(x => x.ExamResultId)
                     .HasConstraintName("student_submissions_exam_result_id_fkey");
-                
+
                 b.HasOne(x => x.Question)
                     .WithMany(x => x.StudentSubmissions)
                     .HasForeignKey(x => x.QuestionId)
                     .HasConstraintName("student_submissions_question_id_fkey");
-                
+
                 b.HasOne(x => x.ChosenAnswer)
                     .WithMany()
                     .HasForeignKey(x => x.ChosenAnswerId)

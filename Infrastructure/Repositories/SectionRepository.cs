@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Sections;
+using Application.DTOs.Videos;
 using Application.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +20,14 @@ namespace Infrastructure.Repositories
                     Description = section.Description,
                     Price = section.Price,
                     NumberOfVideos = section.Videos.Count,
+                    NumberOfQuestionSheets = section.NumberOfQuestionSheets,
                     Rating = section.Rating,
                     CreatedAt = section.CreatedAt,
                     UpdatedAt = section.UpdatedAt ?? section.CreatedAt,
                     CourseId = section.CourseId ?? Guid.Empty,
-                    Videos = section.Videos.Select(video => new VideoInfo
+                    Videos = section.Videos.Select(video => new VideoResponse
                     {
-                        Id = video.Id,
+                        VideoId = video.Id,
                         Name = video.Name,
                         Description = video.Description,
                         VideoUrl = video.VideoUrl,

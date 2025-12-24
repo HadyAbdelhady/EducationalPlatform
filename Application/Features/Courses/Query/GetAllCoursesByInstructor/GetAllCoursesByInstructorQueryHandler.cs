@@ -32,6 +32,7 @@ namespace Application.Features.Courses.Query.GetAllCoursesByInstructor
                     NumberOfSections = course.Sections?.Count ?? 0,
                     ThumbnailUrl = course.IntroVideoUrl ?? string.Empty,
                     CreatedAt = course.CreatedAt,
+                    NumberOfSheets = course.NumberOfQuestionSheets,
                     UpdatedAt = course.UpdatedAt ?? course.CreatedAt
                 }).ToList();
 

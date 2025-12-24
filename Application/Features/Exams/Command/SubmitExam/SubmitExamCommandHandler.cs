@@ -1,7 +1,7 @@
-﻿using Application.DTOs.Exam;
-using Application.HelperFunctions;
-using Application.Interfaces;
+﻿using Application.HelperFunctions;
 using Application.ResultWrapper;
+using Application.Interfaces;
+using Application.DTOs.Exam;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;

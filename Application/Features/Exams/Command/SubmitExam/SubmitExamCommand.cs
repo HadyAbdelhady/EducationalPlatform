@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Exam;
-using Application.ResultWrapper;
+﻿using Application.ResultWrapper;
+using Application.DTOs.Exam;
 using MediatR;
 
 namespace Application.Features.Exams.Command.SubmitExam

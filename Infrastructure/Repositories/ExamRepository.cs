@@ -60,18 +60,8 @@ namespace Infrastructure.Repositories
                                                         .Select(eq => new ModifiedQuestionsDto
                                                         {
                                                             Id = eq.Question.Id,
-                                                            QuestionText = eq.Question.QuestionString,
-                                                            ImageUrl = eq.Question.QuestionImageUrl ?? string.Empty,
                                                             Mark = eq.QuestionMark,
-                                                            Answers = eq.Question.Answers
-                                                                        .Select(a => new UpdateAnswerDto
-                                                                        {
-                                                                            Id = a.Id,
-                                                                            AnswerText = a.AnswerText,
-                                                                            IsCorrect = a.IsCorrect,
-                                                                            Explanation = a.Explanation
-                                                                        })
-                                                                        .ToList()
+
                                                         })
                                                         .ToList()
                                  })

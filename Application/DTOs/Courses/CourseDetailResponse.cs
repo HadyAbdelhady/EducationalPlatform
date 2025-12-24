@@ -12,6 +12,8 @@ namespace Application.DTOs.Courses
         public double Rating { get; set; }
         public int TotalReviews { get; set; }
         public int NumberOfStudents { get; set; }
+        public int NumberOfSheets { get; set; }
+
         public int NumberOfSections { get; set; }
         public DateTimeOffset DateOfCreation { get; set; }
         public DateTimeOffset LastUpdatedDate { get; set; }

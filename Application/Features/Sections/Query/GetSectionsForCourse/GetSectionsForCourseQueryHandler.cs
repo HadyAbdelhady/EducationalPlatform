@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Sections;
+using Application.DTOs.Videos;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
@@ -16,7 +17,7 @@ namespace Application.Features.Sections.Query.GetSectionsForCourse
             CancellationToken cancellationToken)
         {
             var sections = await _unitOfWork.Repository<Section>()
-                                                             .FindAsync(s => s.CourseId == request.CourseId, cancellationToken);
+                                                             .FindAsync(s => s.CourseId == request.CourseId, cancellationToken,v=>v.Videos);
 
             if (sections == null || !sections.Any())
                 return Result<List<GetSectionResponse>>
@@ -28,7 +29,16 @@ namespace Application.Features.Sections.Query.GetSectionsForCourse
                 Name = s.Name,
                 Description = s.Description,
                 Price = s.Price,
-                CreatedAt = s.CreatedAt
+                NumberOfQuestionSheets = s.NumberOfQuestionSheets,
+                CreatedAt = s.CreatedAt,
+                VideoInfo = [.. s.Videos.Select(v => new VideoResponse
+                {
+                    VideoId = v.Id,
+                    Name = v.Name,
+                    VideoUrl = v.VideoUrl,
+                    CreatedAt = v.CreatedAt,
+                    Description = v.Description
+                })]
             }).ToList();
 
             return Result<List<GetSectionResponse>>.Success(response);

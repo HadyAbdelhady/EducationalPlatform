@@ -85,6 +85,7 @@ namespace Application.Features.Courses.Query.GetCourseById
                     UpdatedAt = course.UpdatedAt ?? course.CreatedAt,
                     Instructors = instructors,
                     Sections = sections,
+                    NumberOfSheets = course.NumberOfQuestionSheets,
                     Reviews = reviews
                 };
 

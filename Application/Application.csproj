@@ -7,10 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Answer\**" />
+    <Compile Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
+    <Compile Remove="Features\Exams\Command\PublishExamResults\**" />
+    <Compile Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
     <Compile Remove="Features\Sections\**" />
     <Compile Remove="Persistence\**" />
+    <EmbeddedResource Remove="Features\Answer\**" />
+    <EmbeddedResource Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
+    <EmbeddedResource Remove="Features\Exams\Command\PublishExamResults\**" />
+    <EmbeddedResource Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
     <EmbeddedResource Remove="Features\Sections\**" />
     <EmbeddedResource Remove="Persistence\**" />
+    <None Remove="Features\Answer\**" />
+    <None Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
+    <None Remove="Features\Exams\Command\PublishExamResults\**" />
+    <None Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
     <None Remove="Features\Sections\**" />
     <None Remove="Persistence\**" />
   </ItemGroup>
@@ -26,8 +38,6 @@
     <Compile Include="Features\Sections\Commands\DeleteSection\DeleteSectionCommandHandler.cs" />
     <Compile Include="Features\Sections\Commands\UpdateSection\UpdateSectionCommand.cs" />
     <Compile Include="Features\Sections\Commands\UpdateSection\UpdateSectionCommandHandler.cs" />
-    <Compile Include="Features\Sections\Query\GetAllSectionsByCourse\GetAllSectionsByCourseQuery.cs" />
-    <Compile Include="Features\Sections\Query\GetAllSectionsByCourse\GetAllSectionsByCourseQueryHandler.cs" />
     <Compile Include="Features\Sections\Query\GetSectionByID\GetSectionByIDQuery.cs" />
     <Compile Include="Features\Sections\Query\GetSectionByID\GetSectionByIDQueryHandler.cs" />
     <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQuery.cs" />
@@ -49,11 +59,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Answer\Command\AnswerQuestion\" />
-    <Folder Include="Features\Answer\Command\ClearAnswer\" />
-    <Folder Include="Features\Exams\Command\PublishExamResults\" />
-    <Folder Include="Features\Exams\Command\ProcessTimedOutExams\" />
-    <Folder Include="Features\Exams\Command\RemoveQuestionFromExam\" />
     <Folder Include="Features\Exams\Query\GetExamById\" />
     <Folder Include="Features\Exams\Query\GetAllStudentExams\" />
     <Folder Include="Features\Exams\Query\GetAllInstructorExams\" />

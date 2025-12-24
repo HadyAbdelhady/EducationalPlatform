@@ -48,7 +48,11 @@ namespace Edu_Base.Controllers
             if (bulkCreateVideosRequest is null)
                 return BadRequest("Creation Request Of Videos Must Be Send");
 
-            var bulkCreateVideosCommand = new BulkCreateVideosCommand(bulkCreateVideosRequest.Videos);
+            var bulkCreateVideosCommand = new BulkCreateVideosCommand
+            {
+                SectionId = bulkCreateVideosRequest.SectionId,
+                Videos = bulkCreateVideosRequest.Videos
+            };
 
             var result = await _mediator.Send(bulkCreateVideosCommand, cancellationToken);
 

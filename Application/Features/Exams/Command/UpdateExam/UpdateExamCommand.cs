@@ -16,7 +16,6 @@ namespace Application.Features.Exams.Command.UpdateExam
         public int? NumberOfQuestions { get; set; } = 0;
         public int? PassMarkPercentage { get; set; } = 0;
 
-        public ICollection<UpdateAnswerDto> ModifiedAnswerDto { get; set; } = [];
         public ICollection<ModifiedQuestionsDto> ModifiedQuestions { get; set; } = [];
     }
 

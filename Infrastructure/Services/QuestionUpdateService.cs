@@ -4,9 +4,6 @@ using Domain.Entities;
 
 namespace Infrastructure.Services
 {
-    /// <summary>
-    /// Service implementation for updating question entities and their associated answers.
-    /// </summary>
     public class QuestionUpdateService : IQuestionUpdateService
     {
         public void UpdateQuestion(Question question, string questionString, string? questionImageUrl, List<UpdateAnswerDto> answers)

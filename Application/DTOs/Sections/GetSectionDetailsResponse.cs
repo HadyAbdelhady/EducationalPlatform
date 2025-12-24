@@ -1,3 +1,5 @@
+using Application.DTOs.Videos;
+
 namespace Application.DTOs.Sections
 {
     public class GetSectionDetailsResponse
@@ -7,19 +9,15 @@ namespace Application.DTOs.Sections
         public string? Description { get; set; }
         public decimal? Price { get; set; }
         public int NumberOfVideos { get; set; }
+        public int NumberOfQuestionSheets { get; set; }
+
         public decimal? Rating { get; set; }
         public Guid CourseId { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
-        public List<VideoInfo>? Videos { get; set; }
+        public List<VideoResponse>? Videos { get; set; }
     }
 
-    public class VideoInfo
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string? VideoUrl { get; set; }
-        public string? Description { get; set; }
-    }
+    
 }
 

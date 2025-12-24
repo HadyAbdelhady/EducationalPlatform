@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using Domain.Interfaces;
 
 namespace Domain.Entities
@@ -39,7 +39,7 @@ namespace Domain.Entities
     {
         [Column("course_id")]
         [ForeignKey(nameof(Course))]
-        public Guid EntityId { get; set; }
+        public new Guid EntityId { get; set; }
 
         public Course Course { get; set; } = null!;
     }
@@ -49,7 +49,7 @@ namespace Domain.Entities
     {
         [Column("section_id")]
         [ForeignKey(nameof(Section))]
-        public Guid EntityId { get; set; }
+        public new Guid EntityId { get; set; }
 
         public Section Section { get; set; } = null!;
     }
@@ -59,7 +59,7 @@ namespace Domain.Entities
     {
         [Column("video_id")]
         [ForeignKey(nameof(Video))]
-        public Guid EntityId { get; set; }
+        public new Guid EntityId { get; set; }
 
         public Video Video { get; set; } = null!;
 
@@ -74,7 +74,7 @@ namespace Domain.Entities
     {
         [Column("instructor_id")]
         [ForeignKey(nameof(Instructor))]
-        public Guid EntityId { get; set; }
+        public new Guid EntityId { get; set; }
 
         public Instructor Instructor { get; set; } = null!;
     }

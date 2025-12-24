@@ -4,7 +4,9 @@ using MediatR;
 
 namespace Application.Features.Videos.Commands.CreateVideo
 {
-    public record BulkCreateVideosCommand(List<VideoCreationRequest> Videos) : IRequest<Result<List<VideoCreationResponse>>>
+    public record BulkCreateVideosCommand : IRequest<Result<List<VideoResponse>>>
     {
+        public Guid SectionId { get; set; }
+        public List<VideoCreationRequest> Videos { get; set; } = [];
     }
 }

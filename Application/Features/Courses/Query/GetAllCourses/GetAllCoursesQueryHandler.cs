@@ -27,6 +27,7 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     NumberOfSections = course.Sections?.Count ?? 0,
                     ThumbnailUrl = course.IntroVideoUrl!,
                     CreatedAt = course.CreatedAt,
+                    NumberOfSheets = course.NumberOfQuestionSheets,
                     UpdatedAt = course.UpdatedAt ?? course.CreatedAt
                 }).ToList();
 

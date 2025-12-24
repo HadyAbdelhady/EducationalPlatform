@@ -3,20 +3,24 @@ using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
+using Domain.Events;
 using MediatR;
 
 namespace Application.Features.Sheets.Commands.CreateSheet
 {
-    public class CreateSheetCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService) : IRequestHandler<CreateSheetCommand, Result<SheetCreationResponse>>
+    public class CreateSheetCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService, IMediator mediator) : IRequestHandler<CreateSheetCommand, Result<SheetCreationResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly ICloudinaryCore _cloudinaryService = cloudinaryService;
+        private readonly IMediator _mediator = mediator;
 
         public async Task<Result<SheetCreationResponse>> Handle(CreateSheetCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 var instructorExists = await _unitOfWork.Repository<User>().AnyAsync(i => i.Id == request.InstructorId, cancellationToken);
+                EntityType EntityType = EntityType.None;
+                Guid EventEntity = Guid.Empty;
 
                 if (!instructorExists)
                 {
@@ -26,30 +30,32 @@ namespace Application.Features.Sheets.Commands.CreateSheet
                 if (request.SectionId is not null)
                 {
                     var sectionExists = await _unitOfWork.Repository<Section>().AnyAsync(s => s.Id == request.SectionId, cancellationToken);
-
+                    EntityType = EntityType.Section;
                     if (!sectionExists)
                     {
                         return Result<SheetCreationResponse>.FailureStatusCode("Section not found", ErrorType.NotFound);
                     }
+                    EventEntity = (Guid)request.SectionId!;
                 }
                 else if (request.VideoId is not null)
                 {
                     var videoExists = await _unitOfWork.Repository<Video>().AnyAsync(v => v.Id == request.VideoId, cancellationToken);
-
                     if (!videoExists)
                     {
                         return Result<SheetCreationResponse>.FailureStatusCode("Video not found", ErrorType.NotFound);
                     }
+                    EventEntity = (Guid)request.VideoId!;
+
                 }
                 else if (request.CourseId is not null)
                 {
                     var courseExists = await _unitOfWork.Repository<Course>().AnyAsync(c => c.Id == request.CourseId, cancellationToken);
-
+                    EntityType = EntityType.Course;
                     if (!courseExists)
                     {
                         return Result<SheetCreationResponse>.FailureStatusCode("Course not found", ErrorType.NotFound);
                     }
-
+                    EventEntity = (Guid)request.CourseId!;
                 }
 
                 var cloudianryResult = await _cloudinaryService.UploadPdfAsync(request.SheetUrl);
@@ -68,6 +74,10 @@ namespace Application.Features.Sheets.Commands.CreateSheet
                     CreatedAt = DateTimeOffset.UtcNow,
                     IsDeleted = false
                 };
+
+                if (request.Type == SheetType.QuestionSheet)
+                    await _mediator.Publish(new QuestionSheetAddedEvent(EventEntity, EntityType), cancellationToken);
+
 
                 await _unitOfWork.Repository<Sheet>().AddAsync(newSheet, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -3,23 +3,24 @@ using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
+using Domain.Events;
 using MediatR;
 
 namespace Application.Features.Videos.Commands.CreateVideo
 {
-    public class BulkCreateVideosCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<BulkCreateVideosCommand, Result<List<VideoCreationResponse>>>
+    public class BulkCreateVideosCommandHandler(IUnitOfWork unitOfWork, IMediator mediator) : IRequestHandler<BulkCreateVideosCommand, Result<List<VideoResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMediator _mediator = mediator;
 
-        public async Task<Result<List<VideoCreationResponse>>> Handle(BulkCreateVideosCommand request, CancellationToken cancellationToken)
+        public async Task<Result<List<VideoResponse>>> Handle(BulkCreateVideosCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 var videoRepo = _unitOfWork.Repository<Video>();
-                var sectionRepo = _unitOfWork.Repository<Section>();
 
                 List<Video> videosTobeAdded = [];
-                var responses = new List<VideoCreationResponse>();
+                var responses = new List<VideoResponse>();
 
                 var Result = 0;
 
@@ -31,8 +32,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
                         Name = video.Name,
                         Description = video.Description,
                         VideoUrl = video.VideoUrl,
-                        SectionId = video.SectionId,
-
+                        SectionId = request.SectionId,
                     };
                     videosTobeAdded.Add(newVideo);
 
@@ -41,37 +41,29 @@ namespace Application.Features.Videos.Commands.CreateVideo
 
                 foreach (var video in videosTobeAdded)
                 {
-                    responses.Add(new VideoCreationResponse()
+                    responses.Add(new VideoResponse()
                     {
                         VideoId = video.Id,
                         Name = video.Name,
                         CreatedAt = video.CreatedAt.UtcDateTime,
                         Description = video.Description,
                         VideoUrl = video.VideoUrl,
-
                     });
-
-                    var section = await sectionRepo.GetByIdAsync(video.SectionId.Value);
-                    if (section is not null)
-                    {
-                        section.NumberOfVideos++;
-                        section.UpdatedAt = DateTimeOffset.UtcNow;
-                        sectionRepo.Update(section);
-                    }
                 }
 
+                await _mediator.Publish(new VideoAddedEvent(request.SectionId, videosTobeAdded.Count), cancellationToken);
                 Result = await _unitOfWork.SaveChangesAsync(cancellationToken);
                 if (Result > 0)
                 {
-                    return Result<List<VideoCreationResponse>>.Success(responses);
+                    return Result<List<VideoResponse>>.Success(responses);
 
                 }
-                return Result<List<VideoCreationResponse>>.FailureStatusCode("Error While Inserting Videos", ErrorType.BadRequest);
+                return Result<List<VideoResponse>>.FailureStatusCode("Error While Inserting Videos", ErrorType.BadRequest);
 
             }
             catch (Exception ex)
             {
-                return Result<List<VideoCreationResponse>>
+                return Result<List<VideoResponse>>
                     .FailureStatusCode($"Error in bulk create for videos: {ex.Message}", ErrorType.InternalServerError);
             }
 

@@ -34,6 +34,7 @@ namespace Application.Features.Sections.Query.GetSectionByID
                     NumberOfVideos = section.NumberOfVideos,
                     Rating = section.Rating,
                     CourseId = section.CourseId ?? Guid.Empty,
+                    NumberOfQuestionSheets = section.NumberOfQuestionSheets,
                     CreatedAt = section.CreatedAt,
                     UpdatedAt = section.UpdatedAt ?? section.CreatedAt
                 };

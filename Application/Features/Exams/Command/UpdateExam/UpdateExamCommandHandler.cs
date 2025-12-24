@@ -1,20 +1,30 @@
-using Application.Interfaces;
+using Application.DTOs.Questions;
 using Application.ResultWrapper;
+using Application.Interfaces;
 using Domain.Entities;
+using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Exams.Command.UpdateExam
 {
-    public class UpdateExamCommandHandler(IUnitOfWork unitOfWork, IQuestionUpdateService questionUpdateService) : IRequestHandler<UpdateExamCommand, Result<bool>>
+    public class UpdateExamCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateExamCommand, Result<bool>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IQuestionUpdateService _questionUpdateService = questionUpdateService;
 
         public async Task<Result<bool>> Handle(UpdateExamCommand request, CancellationToken cancellationToken)
         {
             var examRepository = _unitOfWork.GetRepository<IExamRepository>();
             var Exam = await examRepository.GetExamEntityByIdAsync(request.ExamId, cancellationToken)
                                                 ?? throw new ArgumentException("Exam not found.");
+
+            var DeletedQuestions = Exam.ExamQuestions
+                                                    .Where(eq => request.ModifiedQuestions.All(mq => mq.Id != eq.QuestionId))
+                                                    .ToList();
+
+            if (Exam.StartTime <= DateTimeOffset.Now)
+            {
+                return Result<bool>.FailureStatusCode("Sorry, the exam has already started.", ErrorType.BadRequest);
+            }
 
             if (request.Title is not null)
             {
@@ -44,31 +54,26 @@ namespace Application.Features.Exams.Command.UpdateExam
             {
                 Exam.PassMarkPercentage = (int)request.PassMarkPercentage;
             }
+           
             if (request.ModifiedQuestions is not null && request.ModifiedQuestions.Count != 0)
             {
-                // Update questions using the reusable service
-                foreach (var dto in request.ModifiedQuestions)
+                foreach (ModifiedQuestionsDto NewQuestionsList in request.ModifiedQuestions)
                 {
-                    ExamBank? questionLink = Exam.ExamQuestions.FirstOrDefault(eq => eq.QuestionId == dto.Id);
-                    if (questionLink != null)
+                    var questionLink = Exam.ExamQuestions.Any(x => x.QuestionId == NewQuestionsList.Id);
+
+                    if (!questionLink)
                     {
-                        var q = questionLink.Question;
-                        
-                        // Use the service to update question properties and manage answers
-                        _questionUpdateService.UpdateQuestion(
-                            q,
-                            dto.QuestionText,
-                            dto.ImageUrl,
-                            [.. dto.Answers]);
-                        
-                        // Update the exam-specific question mark
-                        questionLink.QuestionMark = dto.Mark;
+                        Exam.ExamQuestions.Add(new ExamBank
+                        {
+                            ExamId = Exam.Id,
+                            QuestionId = NewQuestionsList.Id,
+                            QuestionMark = NewQuestionsList.Mark
+                        });
                     }
-                    else
-                    {
-                        // new question link so i need to create it and link it to the exam
-                        // This case would require additional logic to create the question and link it
-                    }
+                }
+                foreach (var deletedQuestion in DeletedQuestions)
+                {
+                    Exam.ExamQuestions.Remove(deletedQuestion);
                 }
             }
             await _unitOfWork.SaveChangesAsync(cancellationToken);

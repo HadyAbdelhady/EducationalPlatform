@@ -30,6 +30,7 @@ namespace Application.Features.Courses.Query.GetAllCoursesForStudent
                     NumberOfSections = course.NumberOfSections,
                     NumberOfWatchedVideos = course.NumberOfWatchedVideos,
                     ThumbnailUrl = course.ThumbnailUrl,
+                    NumberOfSheets = course.NumberOfSheets,
                     CreatedAt = course.CreatedAt,
                     UpdatedAt = course.UpdatedAt
                 }).ToList();
