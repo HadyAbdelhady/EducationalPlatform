@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.Sections;
 using Application.DTOs.Videos;
-using Application.Features.Sections.Query.GetSectionByID;
+using Application.Features.Sections.Query.GetSectionDetails;
 using Application.Features.Sections.Query.GetSectionsForCourse;
 using Application.Interfaces;
 using Domain.Entities;
@@ -11,7 +11,7 @@ namespace Infrastructure.Repositories
 {
     public class SectionRepository(EducationDbContext context) : Repository<Section>(context), ISectionRepository
     {
-        public async Task<GetSectionDetailsResponse> GetSectionDetailsResponse(GetSectionByIDQuery Request, CancellationToken cancellationToken)
+        public async Task<GetSectionDetailsResponse> GetSectionDetailsResponse(GetSectionDetailsQuery Request, CancellationToken cancellationToken)
         {
             GetSectionDetailsResponse? sectionDto = await _context.Sections
                 .AsNoTracking()

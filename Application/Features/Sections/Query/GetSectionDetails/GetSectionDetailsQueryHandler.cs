@@ -15,7 +15,7 @@ namespace Application.Features.Sections.Query.GetSectionDetails
             try
             {
                 var response = await _unitOfWork.GetRepository<ISectionRepository>()
-                                                                     .GetSectionDetailsResponse(request.SectionId, cancellationToken);
+                                                                     .GetSectionDetailsResponse(request, cancellationToken);
 
                 return Result<GetSectionDetailsResponse>.Success(response);
             }

@@ -7,5 +7,7 @@ namespace Application.Features.Sections.Query.GetSectionDetails
     public class GetSectionDetailsQuery : IRequest<Result<GetSectionDetailsResponse>>
     {
         public Guid SectionId { get; set; }
+        public Guid UserId { get; set; }
+
     }
 }

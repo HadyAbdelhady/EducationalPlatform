@@ -46,7 +46,6 @@ namespace Application.Features.Videos.Commands.CreateVideo
                         VideoId = video.Id,
                         Name = video.Name,
                         CreatedAt = video.CreatedAt.UtcDateTime,
-                        Description = video.Description,
                         VideoUrl = video.VideoUrl,
                     });
                 }

@@ -21,7 +21,7 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     Id = course.Id,
                     Title = course.Name,
                     Price = (decimal)course.Price!,
-                    Rating = course.CourseReviews.Count > 0 ? course.CourseReviews.Average(r => r.StarRating) : 0,
+                    Rating = course.Rating,
                     NumberOfStudents = course.StudentCourses?.Count ?? 0,
                     NumberOfVideos = course.NumberOfVideos,
                     NumberOfSections = course.Sections?.Count ?? 0,

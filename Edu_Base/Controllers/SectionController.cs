@@ -2,11 +2,10 @@
 using Application.Features.Sections.Commands.CreateSection;
 using Application.Features.Sections.Commands.DeleteSection;
 using Application.Features.Sections.Commands.UpdateSection;
-using Application.Features.Sections.Query.GetSectionsForCourse;
-using Application.Features.Sections.Query.GetSectionByID;
 using Application.Features.Sections.Query.GetSectionDetails;
-using Microsoft.AspNetCore.Mvc;
+using Application.Features.Sections.Query.GetSectionsForCourse;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Edu_Base.Controllers
 {
@@ -100,7 +99,8 @@ namespace Edu_Base.Controllers
         [HttpGet("{sectionId}")]
         public async Task<IActionResult> GetSectionById(Guid sectionId, CancellationToken cancellationToken)
         {
-            var query = new GetSectionByIDQuery { SectionId = sectionId };
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            var query = new GetSectionDetailsQuery { SectionId = sectionId, UserId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
         }
