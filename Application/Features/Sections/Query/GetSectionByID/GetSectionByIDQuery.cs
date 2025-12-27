@@ -7,5 +7,6 @@ namespace Application.Features.Sections.Query.GetSectionByID
     public class GetSectionByIDQuery : IRequest<Result<GetSectionByIDResponse>>
     {
         public Guid SectionId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

@@ -4,5 +4,6 @@ using MediatR;
 
 namespace Application.Features.Sections.Query.GetSectionsForCourse
 {
-    public record GetSectionsForCourseQuery(Guid CourseId) : IRequest<Result<List<GetSectionResponse>>>;
+    public record GetSectionsForCourseQuery(Guid CourseId, Guid UserId) : IRequest<Result<List<GetSectionResponse>>>;
+
 }

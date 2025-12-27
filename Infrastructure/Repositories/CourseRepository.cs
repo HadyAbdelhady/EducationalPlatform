@@ -30,15 +30,13 @@ namespace Infrastructure.Repositories
                     Title = c.Name,
                     Price = c.Price ?? 0,
 
-                    Rating = c.CourseReviews.Any()
-                        ? c.CourseReviews.Average(r => r.StarRating)
-                        : 0,
+                    Rating = c.Rating,
 
-                    NumberOfStudents = c.StudentCourses.Count(),
+                    NumberOfStudents = c.NumberOfStudentsEnrolled,
 
                     NumberOfVideos = c.NumberOfVideos,
 
-                    NumberOfSections = c.Sections.Count(),
+                    NumberOfSections = c.NumberOfSections,
 
                     NumberOfWatchedVideos = c.StudentCourses
                             .Where(sc => sc.StudentId == req.StudentId)
@@ -62,15 +60,13 @@ namespace Infrastructure.Repositories
                     Title = c.Name,
                     Price = c.Price ?? 0,
 
-                    Rating = c.CourseReviews.Any()
-                        ? c.CourseReviews.Average(r => r.StarRating)
-                        : 0,
+                    Rating = c.Rating,
 
-                    NumberOfStudents = c.StudentCourses.Count(),
+                    NumberOfStudents = c.NumberOfStudentsEnrolled,
 
                     NumberOfVideos = c.NumberOfVideos,
 
-                    NumberOfSections = c.Sections.Count(),
+                    NumberOfSections = c.NumberOfSections,
 
                     NumberOfWatchedVideos = c.StudentCourses
                             .Where(sc => sc.StudentId == req.StudentId)
@@ -86,24 +82,73 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Course?> GetCourseDetailByIdAsync(Guid courseId, CancellationToken cancellationToken = default)
+        public async Task<CourseDetailResponse?> GetCourseDetailResponseByIdAsync(Guid courseId, CancellationToken cancellationToken = default)
         {
-            // First, check if the course exists without loading all related entities 
+            var query = from course in _context.Courses
+                        where course.Id == courseId
+                        select new CourseDetailResponse
+                        {
+                            Id = course.Id,
+                            Title = course.Name,
+                            Description = course.Description,
+                            Price = course.Price ?? 0,
+                            PictureUrl = course.PictureUrl,
+                            IntroVideoUrl = course.IntroVideoUrl,
+                            NumberOfVideos = course.NumberOfVideos,
+                            NumberOfSheets = course.NumberOfQuestionSheets,
+                            CreatedAt = course.CreatedAt,
+                            UpdatedAt = course.UpdatedAt ?? course.CreatedAt,
+                            NumberOfSections = course.NumberOfSections,
+                            NumberOfStudents = course.NumberOfStudentsEnrolled,
+                            Rating = course.Rating,
+                            // Sections
+                            Sections = course.Sections.Select(s => new SectionDetailDto
+                            {
+                                Id = s.Id,
+                                Name = s.Name,
+                                Description = s.Description,
+                                NumberOfVideos = s.NumberOfVideos,
+                                Rating = s.Rating,
+                                Price = s.Price
+                            }).ToList(),
 
-            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId, cancellationToken: cancellationToken);
-            if (course == null) return null;
+                            // Instructors
+                            Instructors = course.InstructorCourses
+                                .Where(ic => ic.Instructor != null && ic.Instructor.User != null)
+                                .Select(ic => new InstructorInfoDto
+                                {
+                                    InstructorId = ic.InstructorId,
+                                    FullName = ic.Instructor.User.FullName,
+                                    PersonalPictureUrl = ic.Instructor.User.PersonalPictureUrl,
+                                    GmailExternal = ic.Instructor.User.GmailExternal
+                                }).ToList(),
 
+                            // Reviews + Student info
+                            Reviews = course.CourseReviews
+                                .Where(r => r.Student != null && r.Student.User != null)
+                                .OrderByDescending(r => r.CreatedAt)
+                                .Select(r => new CourseReviewDto
+                                {
+                                    Id = r.Id,
+                                    StarRating = r.StarRating,
+                                    Comment = r.Comment,
+                                    CreatedAt = r.CreatedAt,
+                                    Student = new StudentReviewInfoDto
+                                    {
+                                        StudentId = r.StudentId,
+                                        FullName = r.Student.User.FullName,
+                                        PersonalPictureUrl = r.Student.User.PersonalPictureUrl
+                                    }
+                                }).ToList()
+                        };
 
-            return await _context.Courses
-                .Include(c => c.Sections)
-                .Include(c => c.InstructorCourses)
-                    .ThenInclude(ic => ic.Instructor)
-                    .ThenInclude(i => i.User)
-                .Include(c => c.StudentCourses)
-                .Include(c => c.CourseReviews)
-                    .ThenInclude(r => r.Student)
-                    .ThenInclude(s => s.User)
-                .FirstOrDefaultAsync(c => c.Id == courseId, cancellationToken);
+            var result = await query.FirstOrDefaultAsync(cancellationToken);
+            if (result == null) return null;
+
+            // Calculate rating and counts in-memory (minimal overhead)
+            result.TotalReviews = result.Reviews.Count;
+
+            return result;
         }
     }
 }

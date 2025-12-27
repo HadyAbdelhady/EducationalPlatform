@@ -1,11 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Domain.Interfaces;
 
 namespace Domain.Entities
 {
     [Table("student_courses", Schema = "public")]
-    public class StudentCourse 
+    public class StudentCourse
     {
         [Column("student_id")]
         [ForeignKey(nameof(Student))]
@@ -72,8 +71,9 @@ namespace Domain.Entities
         [Column("watched_at")]
         public DateTimeOffset WatchedAt { get; set; }
 
-        [Column("is_watched")]
-        public bool IsWatched { get; set; }
+        [Column("progress")]
+        [Range(0, 100)]
+        public int Progress { get; set; }
 
         [Column("updated_at")]
         public DateTimeOffset UpdatedAt { get; set; }
@@ -84,7 +84,7 @@ namespace Domain.Entities
         public Student Student { get; set; } = null!;
         public Video Video { get; set; } = null!;
     }
-    
+
     [Table("student_exams", Schema = "public")]
     public class StudentExam
     {
@@ -110,7 +110,7 @@ namespace Domain.Entities
     }
 
     [Table("instructor_courses", Schema = "public")]
-    public class InstructorCourse 
+    public class InstructorCourse
     {
         [Column("instructor_id")]
         [ForeignKey(nameof(Instructor))]

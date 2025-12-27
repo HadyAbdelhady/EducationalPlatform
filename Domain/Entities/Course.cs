@@ -36,8 +36,14 @@ namespace Domain.Entities
         [Column("number_of_exams")]
         public int NumberOfExams { get; set; } = 0;
 
+        [Column("number_of_students_enrolled")]
+        public int NumberOfStudentsEnrolled { get; set; } = 0;
+
         [Column("number_of_question_sheets")]
         public int NumberOfQuestionSheets { get; set; } = 0;
+
+        [Column("rating")]
+        public decimal? Rating { get; set; } = 1;
 
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }

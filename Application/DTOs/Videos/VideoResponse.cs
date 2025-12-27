@@ -5,8 +5,8 @@
         public Guid VideoId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string VideoUrl { get; set; } = string.Empty;
-
         public DateTimeOffset CreatedAt { get; set; }
-        public string? Description { get; set; }
+        public int WatchProgress { get; set; }
+        public decimal? Rating { get; set; }
     }
 }

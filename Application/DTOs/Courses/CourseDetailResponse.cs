@@ -9,7 +9,7 @@ namespace Application.DTOs.Courses
         public string? PictureUrl { get; set; }
         public string? IntroVideoUrl { get; set; }
         public int NumberOfVideos { get; set; }
-        public double Rating { get; set; }
+        public decimal? Rating { get; set; }
         public int TotalReviews { get; set; }
         public int NumberOfStudents { get; set; }
         public int NumberOfSheets { get; set; }

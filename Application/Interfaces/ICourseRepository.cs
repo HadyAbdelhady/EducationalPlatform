@@ -8,6 +8,6 @@ namespace Application.Interfaces
     {
         Task<IEnumerable<Course>> GetAllCoursesByInstructorIdAsync(Guid instructorId, CancellationToken cancellationToken = default);
         Task<IEnumerable<CourseByUserIdResponse>> GetAllCoursesByStudentIdAsync(GetAllCoursesEnrolledByStudentQuery req, CancellationToken cancellationToken = default);
-        Task<Course?> GetCourseDetailByIdAsync(Guid courseId, CancellationToken cancellationToken = default);
+        Task<CourseDetailResponse?> GetCourseDetailResponseByIdAsync(Guid courseId, CancellationToken cancellationToken = default);
     }
 }

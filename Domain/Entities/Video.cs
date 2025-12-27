@@ -26,6 +26,9 @@ namespace Domain.Entities
         [ForeignKey(nameof(Section))]
         public Guid SectionId { get; set; }
 
+        [Column("rating")]
+        public decimal? Rating { get; set; } = 1;
+
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }
 

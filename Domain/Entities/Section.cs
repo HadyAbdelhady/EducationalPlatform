@@ -31,7 +31,7 @@ namespace Domain.Entities
         public int NumberOfQuestionSheets { get; set; }
 
         [Column("rating")]
-        public decimal? Rating { get; set; }
+        public int Rating { get; set; } = 1;
 
         [Column("course_id")]
         [ForeignKey(nameof(Course))]

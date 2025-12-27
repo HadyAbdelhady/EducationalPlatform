@@ -48,7 +48,8 @@ namespace Edu_Base.Controllers
         [HttpGet("course/{courseId}")]
         public async Task<IActionResult> GetSectionsForCourse(Guid courseId)
         {
-            var result = await _mediator.Send(new GetSectionsForCourseQuery(courseId));
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            var result = await _mediator.Send(new GetSectionsForCourseQuery(courseId, UserId));
 
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
@@ -89,7 +90,7 @@ namespace Edu_Base.Controllers
         [HttpDelete("bulk-delete")]
         public async Task<IActionResult> BulkDeleteSections(BulkDeleteSectionRequest request, CancellationToken cancellationToken)
         {
-            var command = new BulkDeleteSectionCommand(request.CourseId,request.SectionIds);
+            var command = new BulkDeleteSectionCommand(request.CourseId, request.SectionIds);
 
             var result = await _mediator.Send(command, cancellationToken);
 

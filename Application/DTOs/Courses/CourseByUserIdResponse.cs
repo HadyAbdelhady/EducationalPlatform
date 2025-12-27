@@ -5,7 +5,7 @@ namespace Application.DTOs.Courses
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public decimal Price { get; set; }
-        public double Rating { get; set; }
+        public decimal? Rating { get; set; }
         public int NumberOfStudents { get; set; }
         public int NumberOfVideos{ get; set; }
         public int NumberOfWatchedVideos { get; set; }
