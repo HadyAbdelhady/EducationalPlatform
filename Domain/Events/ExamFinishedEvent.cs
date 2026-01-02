@@ -2,5 +2,5 @@
 
 namespace Domain.Events
 {
-    public record ExamFinishedEvent(Guid ExamId, Guid StudentId) : INotification;
+    public record ExamFinishedEvent(Guid ExamId, Guid StudentId, Guid ExamResultId) : INotification;
 }

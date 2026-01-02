@@ -15,16 +15,16 @@ namespace Domain.Entities
         public Guid CourseId { get; set; }
 
         [Column("enrolled_at")]
-        public DateTimeOffset EnrolledAt { get; set; }
+        public DateTimeOffset EnrolledAt { get; set; } = DateTimeOffset.UtcNow;
 
         [Column("updated_at")]
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         [Column("is_deleted")]
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         [Column("number_of_course_videos_watched")]
-        public int NumberOfCourseVideosWatched { get; set; }
+        public int NumberOfCourseVideosWatched { get; set; } = 0;
 
         public Student Student { get; set; } = null!;
         public Course Course { get; set; } = null!;
@@ -42,16 +42,16 @@ namespace Domain.Entities
         public Guid SectionId { get; set; }
 
         [Column("enrolled_at")]
-        public DateTimeOffset EnrolledAt { get; set; }
+        public DateTimeOffset EnrolledAt { get; set; } = DateTimeOffset.UtcNow;
 
         [Column("updated_at")]
         public DateTimeOffset UpdatedAt { get; set; }
 
         [Column("number_of_section_videos_watched")]
-        public int NumberOfSectionVideosWatched { get; set; }
+        public int NumberOfSectionVideosWatched { get; set; } = 0;
 
         [Column("is_deleted")]
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public Student Student { get; set; } = null!;
         public Section Section { get; set; } = null!;

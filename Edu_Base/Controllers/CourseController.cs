@@ -60,12 +60,12 @@ namespace Edu_Base.Controllers
         }
 
         [HttpGet("GetAllCoursesEnrolledByStudent")]
-        public async Task<IActionResult> GetAllCoursesEnrolledByStudent([FromQuery] CourseByStudentRequest requset, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllCoursesEnrolledByStudent(CourseByStudentRequest requset, CancellationToken cancellationToken)
         {
             var query = new GetAllCoursesEnrolledByStudentQuery
             {
                 StudentId = requset.StudentId,
-                FirstThreeCoursesOnly = requset.FirstThreeCoursesOnly
+                //FirstThreeCoursesOnly = requset.FirstThreeCoursesOnly
             };
             var result = await _mediator.Send(query, cancellationToken);
 

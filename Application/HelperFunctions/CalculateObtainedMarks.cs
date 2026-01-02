@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Exam;
 using Application.Features.Exams.Command.SubmitExam;
+using Domain.Entities;
 
 namespace Application.HelperFunctions
 {
@@ -22,6 +23,29 @@ namespace Application.HelperFunctions
                     if (isCorrect)
                     {
                         obtainedMarks += ModelAnswer.QuestionMark;
+                    }
+                }
+            }
+
+            return obtainedMarks;
+        }
+
+        public static decimal Calculate(ExamModelAnswer examModelAnswer, IEnumerable<StudentSubmission> studentSubmissions)
+        {
+            var correctAnswers = examModelAnswer.Questions
+                .ToDictionary(q => q.QuestionId, q => q);
+
+            decimal obtainedMarks = 0;
+
+            foreach (var submission in studentSubmissions)
+            {
+                if (correctAnswers.TryGetValue(submission.QuestionId, out QuestionModelAnswer? modelAnswer))
+                {
+                    bool isCorrect = submission.ChosenAnswerId == modelAnswer.CorrectAnswerId;
+
+                    if (isCorrect)
+                    {
+                        obtainedMarks += modelAnswer.QuestionMark;
                     }
                 }
             }

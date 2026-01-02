@@ -1,4 +1,6 @@
+using Application.HelperFunctions;
 using Application.Interfaces;
+using Application.DTOs.Exam;
 using Domain.Entities;
 using Domain.Events;
 using MediatR;
@@ -11,19 +13,36 @@ namespace Application.EventHandlers
 
         public async Task Handle(ExamFinishedEvent notification, CancellationToken cancellationToken)
         {
-            // ExamFinishedEvent is typically used for side effects like:
-            // - Sending notifications
-            // - Updating statistics
-            // - Triggering follow-up actions
-            
-            // For now, we'll keep this handler minimal as the exam result
-            // is already saved in the SubmitExamCommandHandler
-            // This handler can be extended later for additional side effects
-            
-            // Example: Could update exam statistics, send notifications, etc.
-            // var examRepo = _unitOfWork.Repository<Exam>();
-            // var exam = await examRepo.GetByIdAsync(notification.ExamId, cancellationToken);
-            // if (exam != null) { ... }
+            // Get the exam result with student submissions
+            var examResultRepo = _unitOfWork.Repository<StudentExamResult>();
+            var examResult = await examResultRepo.FirstOrDefaultAsync(
+                predicate: er => er.Id == notification.ExamResultId,
+                cancellationToken: cancellationToken,
+                includes: er => er.StudentSubmissions
+            );
+
+            if (examResult == null)
+            {
+                return;
+            }
+
+            // Get the exam with questions and answers
+            var examRepository = _unitOfWork.GetRepository<IExamRepository>();
+            var examModelAnswer = await examRepository.GetExamWithQuestionsAndAnswersByIdAsync(notification.ExamId, cancellationToken);
+
+            if (examModelAnswer == null)
+            {
+                return;
+            }
+
+            // Calculate obtained marks using student submissions
+            var obtainedMarks = CalculateObtainedMarks.Calculate(examModelAnswer, examResult.StudentSubmissions);
+
+            // Update the exam result with calculated marks
+            examResult.StudentMark = obtainedMarks;
+            examResultRepo.Update(examResult);
+
+            //await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

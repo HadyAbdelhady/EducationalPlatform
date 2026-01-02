@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Application.DTOs.Exam;
 using Domain.Entities;
 using Domain.enums;
+using Domain.Events;
 using MediatR;
 
 namespace Application.Features.Exams.Command.SubmitExam
@@ -31,13 +32,15 @@ namespace Application.Features.Exams.Command.SubmitExam
                 return Result<SubmissionResponse>.FailureStatusCode("Exam not found", ErrorType.NotFound);
             }
 
+            var examResultId = Guid.NewGuid();
+            
             StudentExamResult examResult = new()
             {
-                Id = Guid.NewGuid(),
+                Id = examResultId,
                 StudentId = request.Student,
                 ExamId = request.Exam,
                 Status = ExamStatus.Submitted,
-                StudentMark = CalculateObtainedMarks.Calculate(ExamModelAnswer, request),
+                StudentMark = null, // Will be calculated in the event handler
             };
 
             foreach (var answer in request.Answers)
@@ -55,19 +58,23 @@ namespace Application.Features.Exams.Command.SubmitExam
             }
 
             await unitOfWork.Repository<StudentExamResult>().AddAsync(examResult, cancellationToken);
+
+            // Publish event to trigger calculation in the event handler
+            await mediator.Publish(new ExamFinishedEvent(request.Exam, request.Student, examResultId), cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var StudentActualMark = CalculateObtainedMarks.Calculate(ExamModelAnswer, request);
-            var StudentPercentage = (StudentActualMark / ExamModelAnswer.TotalMark) * 100;
+            // Calculate marks for response (event handler will persist the result)
+            var studentActualMark = CalculateObtainedMarks.Calculate(ExamModelAnswer, request);
+            var studentPercentage = (studentActualMark / ExamModelAnswer.TotalMark) * 100;
 
             return Result<SubmissionResponse>.Success(new SubmissionResponse
             {
                 StudentName = Student.FullName,
                 ExamName = ExamModelAnswer.Title,
                 TotalMark = ExamModelAnswer.TotalMark,
-                ObtainedMark = StudentActualMark,
-                StatusMessage = $"Exam submitted successfully with {StudentPercentage} % obtained.",
-                IsSuccessful = StudentPercentage >= ExamModelAnswer.PassMarkPercentage
+                ObtainedMark = studentActualMark,
+                StatusMessage = $"Exam submitted successfully with {studentPercentage} % obtained.",
+                IsSuccessful = studentPercentage >= ExamModelAnswer.PassMarkPercentage
             });
         }
 
@@ -87,7 +94,8 @@ namespace Application.Features.Exams.Command.SubmitExam
                 Questions = [.. exam.Questions.Select(q => new QuestionModelAnswer
                 {
                     QuestionId = q.QuestionId,
-                    CorrectAnswerId = q.CorrectAnswerId
+                    CorrectAnswerId = q.CorrectAnswerId,
+                    QuestionMark = q.QuestionMark
                 })]
             };
             return examModelAnswer;

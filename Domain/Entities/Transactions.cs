@@ -1,7 +1,7 @@
-using System;
+using Domain.enums;
+using Domain.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Domain.Interfaces;
 
 namespace Domain.Entities
 {
@@ -14,7 +14,7 @@ namespace Domain.Entities
 
         [Column("student_id")]
         [ForeignKey(nameof(Student))]
-        public Guid? StudentId { get; set; }
+        public Guid StudentId { get; set; }
 
         [Column("status")]
         public PaymentStatus Status { get; set; }
@@ -40,9 +40,6 @@ namespace Domain.Entities
 
         [Column("commission_account2")]
         public string? CommissionAccount2 { get; set; }
-
-        [Column("time_of_payment")]
-        public DateTimeOffset TimeOfPayment { get; set; }
 
         [Column("amount")]
         public decimal Amount { get; set; }

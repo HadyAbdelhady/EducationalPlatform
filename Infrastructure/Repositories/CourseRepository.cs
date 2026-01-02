@@ -21,37 +21,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<CourseByUserIdResponse>> GetAllCoursesByStudentIdAsync(GetAllCoursesEnrolledByStudentQuery req, CancellationToken cancellationToken = default)
         {
-            return req.FirstThreeCoursesOnly ?
-                await _context.Courses
-                .Where(c => c.StudentCourses.Any(sc => sc.StudentId == req.StudentId))
-                .Select(c => new CourseByUserIdResponse
-                {
-                    Id = c.Id,
-                    Title = c.Name,
-                    Price = c.Price ?? 0,
-
-                    Rating = c.Rating,
-
-                    NumberOfStudents = c.NumberOfStudentsEnrolled,
-
-                    NumberOfVideos = c.NumberOfVideos,
-
-                    NumberOfSections = c.NumberOfSections,
-
-                    NumberOfWatchedVideos = c.StudentCourses
-                            .Where(sc => sc.StudentId == req.StudentId)
-                            .Select(sc => sc.NumberOfCourseVideosWatched)
-                            .FirstOrDefault(),
-
-                    ThumbnailUrl = c.IntroVideoUrl ?? string.Empty,
-
-                    CreatedAt = c.CreatedAt,
-                    UpdatedAt = c.UpdatedAt ?? c.CreatedAt
-                })
-                .Take(3)
-                .AsNoTracking()
-                .ToListAsync(cancellationToken)
-                :
+            return
              await _context.Courses
                 .Where(c => c.StudentCourses.Any(sc => sc.StudentId == req.StudentId))
                 .Select(c => new CourseByUserIdResponse
