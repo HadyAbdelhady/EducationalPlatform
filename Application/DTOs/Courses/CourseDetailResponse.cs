@@ -15,8 +15,6 @@ namespace Application.DTOs.Courses
         public int NumberOfSheets { get; set; }
 
         public int NumberOfSections { get; set; }
-        public DateTimeOffset DateOfCreation { get; set; }
-        public DateTimeOffset LastUpdatedDate { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 

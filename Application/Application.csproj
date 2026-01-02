@@ -67,6 +67,7 @@
     <Folder Include="Features\Exams\Query\GetExamSubmissionsList\" />
     <Folder Include="Features\Exams\Query\CanStudentTakeExam\" />
     <Folder Include="Features\Exams\Query\GetExamStatistics\" />
+    <Folder Include="Features\HomeScreen\InstructorHomeScreen\" />
     <Folder Include="Features\Sheets\Queries\" />
   </ItemGroup>
 

@@ -91,13 +91,13 @@ namespace Infrastructure.Repositories
                             Id = course.Id,
                             Title = course.Name,
                             Description = course.Description,
-                            Price = course.Price ?? 0,
                             PictureUrl = course.PictureUrl,
+                            CreatedAt = course.CreatedAt,
+                            UpdatedAt = course.UpdatedAt ?? course.CreatedAt,
+                            Price = course.Price ?? 0,
                             IntroVideoUrl = course.IntroVideoUrl,
                             NumberOfVideos = course.NumberOfVideos,
                             NumberOfSheets = course.NumberOfQuestionSheets,
-                            CreatedAt = course.CreatedAt,
-                            UpdatedAt = course.UpdatedAt ?? course.CreatedAt,
                             NumberOfSections = course.NumberOfSections,
                             NumberOfStudents = course.NumberOfStudentsEnrolled,
                             Rating = course.Rating,
@@ -110,7 +110,9 @@ namespace Infrastructure.Repositories
                                 NumberOfVideos = s.NumberOfVideos,
                                 Rating = s.Rating,
                                 Price = s.Price
-                            }).ToList(),
+                            })
+                            //.Take(3)
+                            .ToList(),
 
                             // Instructors
                             Instructors = course.InstructorCourses
@@ -139,7 +141,9 @@ namespace Infrastructure.Repositories
                                         FullName = r.Student.User.FullName,
                                         PersonalPictureUrl = r.Student.User.PersonalPictureUrl
                                     }
-                                }).ToList()
+                                })
+                                .Take(3)
+                                .ToList()
                         };
 
             var result = await query.FirstOrDefaultAsync(cancellationToken);
