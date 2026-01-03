@@ -3,6 +3,6 @@
     public class BulkCreateVideosRequest
     {
         public Guid SectionId { get; set; }
-        public List<VideoCreationRequest> Videos { get; set; } = [];
+        public List<VideoBulkCreationRequest> Videos { get; set; } = [];
     }
 }

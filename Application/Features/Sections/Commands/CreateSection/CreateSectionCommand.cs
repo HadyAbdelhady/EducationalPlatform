@@ -12,4 +12,5 @@ namespace Application.Features.Sections.Commands.CreateSection
         public int NumberOfVideos { get; set; }
         public Guid CourseId { get; set; }
     }
+
 }

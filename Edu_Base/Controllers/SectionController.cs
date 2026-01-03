@@ -37,7 +37,11 @@ namespace Edu_Base.Controllers
         [HttpPost("bulk-create")]
         public async Task<IActionResult> BulkCreateSections(BulkCreateSectionRequest request, CancellationToken cancellationToken)
         {
-            var command = new BulkCreateSectionCommand(request.Sections);
+            var command = new BulkCreateSectionCommand
+            {
+                CourseId = request.CourseId,
+                Sections = request.Sections
+            };
 
             var result = await _mediator.Send(command, cancellationToken);
 
