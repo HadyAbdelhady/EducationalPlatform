@@ -38,8 +38,6 @@
     <Compile Include="Features\Sections\Commands\DeleteSection\DeleteSectionCommandHandler.cs" />
     <Compile Include="Features\Sections\Commands\UpdateSection\UpdateSectionCommand.cs" />
     <Compile Include="Features\Sections\Commands\UpdateSection\UpdateSectionCommandHandler.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionByID\GetSectionByIDQuery.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionByID\GetSectionByIDQueryHandler.cs" />
     <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQuery.cs" />
     <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQueryHandler.cs" />
     <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQuery.cs" />

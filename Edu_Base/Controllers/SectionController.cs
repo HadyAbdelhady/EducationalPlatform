@@ -100,19 +100,11 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpGet("{sectionId}")]
-        public async Task<IActionResult> GetSectionById(Guid sectionId, CancellationToken cancellationToken)
-        {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            var query = new GetSectionDetailsQuery { SectionId = sectionId, UserId = UserId };
-            var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
-        }
-
         [HttpGet("{sectionId}/details")]
         public async Task<IActionResult> GetSectionDetails(Guid sectionId, CancellationToken cancellationToken)
         {
-            var query = new GetSectionDetailsQuery { SectionId = sectionId };
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            var query = new GetSectionDetailsQuery { SectionId = sectionId, UserId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
         }

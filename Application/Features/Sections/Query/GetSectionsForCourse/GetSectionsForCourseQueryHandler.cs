@@ -5,17 +5,17 @@ using MediatR;
 
 namespace Application.Features.Sections.Query.GetSectionsForCourse
 {
-    public class GetSectionsForCourseQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetSectionsForCourseQuery, Result<List<GetSectionResponse>>>
+    public class GetSectionsForCourseQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetSectionsForCourseQuery, Result<List<GetSectionDetailsResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<Result<List<GetSectionResponse>>> Handle(GetSectionsForCourseQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<GetSectionDetailsResponse>>> Handle(GetSectionsForCourseQuery request, CancellationToken cancellationToken)
         {
             var sections = await _unitOfWork.GetRepository<ISectionRepository>()
                                                                     .GetSectionInnerData(request, cancellationToken);
 
 
-            return Result<List<GetSectionResponse>>.Success(sections);
+            return Result<List<GetSectionDetailsResponse>>.Success(sections);
         }
     }
 }

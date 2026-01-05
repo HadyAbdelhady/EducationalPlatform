@@ -46,14 +46,14 @@ namespace Infrastructure.Repositories
             return sectionDto ?? throw new Exception($"Section with ID {Request.SectionId} not found.");
         }
 
-        public async Task<List<GetSectionResponse>> GetSectionInnerData(GetSectionsForCourseQuery Request, CancellationToken cancellationToken)
+        public async Task<List<GetSectionDetailsResponse>> GetSectionInnerData(GetSectionsForCourseQuery Request, CancellationToken cancellationToken)
         {
             return await _context.Sections
                                 .AsNoTracking()
                                 .Where(s => s.CourseId == Request.CourseId)
                                 .Include(v => v.Videos)
                                     .ThenInclude(v => v.StudentVideos)
-                                .Select(s => new GetSectionResponse
+                                .Select(s => new GetSectionDetailsResponse
                                 {
                                     SectionId = s.Id,
                                     Name = s.Name,
@@ -62,7 +62,7 @@ namespace Infrastructure.Repositories
                                     NumberOfQuestionSheets = s.NumberOfQuestionSheets,
                                     Rating = s.Rating,
                                     CreatedAt = s.CreatedAt,
-                                    VideoInfo = s.Videos.Select(v => new VideoResponse
+                                    Videos = s.Videos.Select(v => new VideoResponse
                                     {
                                         VideoId = v.Id,
                                         Name = v.Name,
@@ -71,7 +71,10 @@ namespace Infrastructure.Repositories
                                         WatchProgress = v.StudentVideos.Where(sv => sv.VideoId == v.Id && sv.StudentId == Request.UserId)
                                                                            .Select(sv => sv.Progress)
                                                                            .FirstOrDefault(),
-                                    }).ToList()
+                                    }).ToList(),
+                                    CourseId = Request.CourseId,
+                                    NumberOfVideos = s.NumberOfVideos,
+                                    UpdatedAt = s.UpdatedAt ?? s.CreatedAt,
                                 }
                                 ).ToListAsync(cancellationToken);
 

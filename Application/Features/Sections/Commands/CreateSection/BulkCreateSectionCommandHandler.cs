@@ -3,14 +3,16 @@ using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
+using Domain.Events;
 using MediatR;
 
 namespace Application.Features.Sections.Commands.CreateSection
 {
-    public class BulkCreateSectionCommandHandler(IUnitOfWork unitOfWork)
+    public class BulkCreateSectionCommandHandler(IUnitOfWork unitOfWork, IMediator mediator)
         : IRequestHandler<BulkCreateSectionCommand, Result<List<CreateSectionResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMediator _mediator = mediator;
 
         public async Task<Result<List<CreateSectionResponse>>> Handle(BulkCreateSectionCommand request, CancellationToken cancellationToken)
         {
@@ -28,10 +30,7 @@ namespace Application.Features.Sections.Commands.CreateSection
                         Id = Guid.NewGuid(),
                         Name = section.Name,
                         Description = section.Description,
-                        Price = section.Price,
-                        CourseId = section.CourseId,
-                        CreatedAt = DateTimeOffset.UtcNow,
-                        UpdatedAt = DateTimeOffset.UtcNow
+                        Price = section.Price
                     };
 
                     await sectionRepo.AddAsync(newSection, cancellationToken);
@@ -41,16 +40,8 @@ namespace Application.Features.Sections.Commands.CreateSection
                         Name = newSection.Name,
                         CreatedAt = newSection.CreatedAt.UtcDateTime
                     });
-
-                    var course = await courseRepo.GetByIdAsync(section.CourseId, cancellationToken);
-                    if (course != null)
-                    {
-                        course.NumberOfSections += 1;
-                        course.UpdatedAt = DateTimeOffset.UtcNow;
-                        courseRepo.Update(course);
-                    }
                 }
-
+                await _mediator.Publish(new SectionAddedEvent ( request.CourseId, responses.Count ), cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<List<CreateSectionResponse>>.Success(responses);

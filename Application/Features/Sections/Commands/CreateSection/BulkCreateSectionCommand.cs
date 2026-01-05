@@ -7,7 +7,7 @@ namespace Application.Features.Sections.Commands.CreateSection
     public record BulkCreateSectionCommand: IRequest<Result<List<CreateSectionResponse>>>
     {
         public Guid CourseId { get; set; }
-        public List<CreateSectionRequest> Sections { get; set; } = [];
+        public List<BulkSectionDataForCreation> Sections { get; set; } = [];
 
     }
 }
