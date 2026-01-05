@@ -24,15 +24,15 @@ namespace Application.Features.AnswersSheets.Commands.CreateAnswersSheet
                     return Result<AnswersSheetCreationResponse>.FailureStatusCode("Questions sheet not found", ErrorType.NotFound);
                 }
 
-                if (DateTime.Now >= questionsSheet.DueDate)
+                if (questionsSheet.DueDate.HasValue && DateTimeOffset.UtcNow >= questionsSheet.DueDate.Value)
                 {
                     return Result<AnswersSheetCreationResponse>.FailureStatusCode("The submission deadline has passed!",
                         ErrorType.BadRequest);
                 }
 
                 // Validate Student exists
-                var studentExists = await _unitOfWork.Repository<User>().AnyAsync(s => s.Id == request.StudentId, cancellationToken);
-                if (!studentExists)
+                var student = await _unitOfWork.GetRepository<IUserRepository>().GetStudentByIdWithRelationsAsync(request.StudentId, cancellationToken);
+                if (student is null)
                 {
                     return Result<AnswersSheetCreationResponse>.FailureStatusCode("Student not found", ErrorType.NotFound);
                 }
@@ -73,5 +73,7 @@ namespace Application.Features.AnswersSheets.Commands.CreateAnswersSheet
         }
     }
 }
+
+
 
 

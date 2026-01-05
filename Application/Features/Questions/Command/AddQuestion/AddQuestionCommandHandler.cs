@@ -37,7 +37,7 @@ namespace Application.Features.Questions.Command.AddQuestion
                     };
                     question.Answers.Add(answer);
                 }
-                await _unitOfWork.Repository<Domain.Entities.Question>().AddAsync(question, cancellationToken);
+                await _unitOfWork.Repository<Question>().AddAsync(question, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<Guid>.Success(question.Id);

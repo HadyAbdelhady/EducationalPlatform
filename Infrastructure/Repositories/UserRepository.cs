@@ -43,6 +43,18 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         }
 
+        public async Task<bool> DoesInstructorExistAsync(Guid instructorId, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .Include(u => u.Instructor).Where(u => u.Id == instructorId).AnyAsync(cancellationToken);
+        }
+
+        public async Task<bool> DoesStudentExistAsync(Guid studentId, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .Include(u => u.Student).Where(u => u.Id == studentId).AnyAsync(cancellationToken);
+        }
+
 
 
     }

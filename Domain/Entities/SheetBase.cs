@@ -74,7 +74,7 @@ namespace Domain.Entities
         public SheetType Type { get; set; }
 
         [Column("due_date")]
-        public DateTime? DueDate { get; set; }
+        public DateTimeOffset? DueDate { get; set; }
 
         public Section? Section { get; set; }
         public Video? Video { get; set; }

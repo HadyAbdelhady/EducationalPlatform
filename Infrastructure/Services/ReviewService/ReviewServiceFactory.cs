@@ -44,7 +44,7 @@ namespace Infrastructure.Services.ReviewService
 
         public override async Task<Result<ReviewResponse>> CreateReviewAsync(ReviewCreationRequest request, CancellationToken cancellationToken = default)
         {
-            var instructor = await _unitOfWork.Repository<User>().AnyAsync(i => i.Id == request.EntityId, cancellationToken);
+            var instructor = await _unitOfWork.GetRepository<IUserRepository>().DoesInstructorExistAsync(request.EntityId, cancellationToken);
             if (!instructor)
                 return Result<ReviewResponse>.FailureStatusCode("Instructor not found.", ErrorType.NotFound);
 

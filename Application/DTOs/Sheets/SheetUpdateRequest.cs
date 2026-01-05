@@ -13,6 +13,6 @@ namespace Application.DTOs.Sheets
         public Guid SheetId { get; set; }
         public string Name { get; set; } = string.Empty;
         public IFormFile? SheetFile { get; set; } = null!;
-        public DateTime? DueDate { get; set; }
+        public DateTimeOffset? DueDate { get; set; }
     }
 }

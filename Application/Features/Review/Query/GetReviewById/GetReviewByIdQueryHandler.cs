@@ -1,6 +1,7 @@
 using Application.DTOs.Review;
 using Application.Interfaces;
 using Application.ResultWrapper;
+using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
@@ -15,7 +16,7 @@ namespace Application.Features.Review.Query.GetReviewById
             try
             {
                 // Try to find as CourseReview first
-                var courseReview = await _unitOfWork.Repository<Domain.Entities.CourseReview>()
+                var courseReview = await _unitOfWork.Repository<CourseReview>()
                     .GetByIdAsync(request.ReviewId, cancellationToken, r => r.Student!.User!);
 
                 if (courseReview != null && !courseReview.IsDeleted)

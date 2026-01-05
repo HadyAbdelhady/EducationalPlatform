@@ -13,7 +13,7 @@ namespace Application.DTOs.Sheets
         public string Name { get; set; } = string.Empty;
         public IFormFile SheetFile { get; set; } = null!;
         public SheetType Type { get; set; }
-        public DateTime? DueDate { get; set; }
+        public DateTimeOffset? DueDate { get; set; }
         public Guid? SectionId { get; set; }
         public Guid? CourseId { get; set; }
         public Guid? VideoId { get; set; }

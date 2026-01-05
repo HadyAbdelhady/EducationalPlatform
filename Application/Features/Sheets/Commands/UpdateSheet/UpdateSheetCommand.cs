@@ -10,6 +10,6 @@ namespace Application.Features.Sheets.Commands.UpdateSheet
         public Guid SheetId { get; set; }
         public string Name { get; set; } = string.Empty;
         public IFormFile? SheetUrl { get; set; }
-        public DateTime? DueDate { get; set; }
+        public DateTimeOffset? DueDate { get; set; }
     }
 }

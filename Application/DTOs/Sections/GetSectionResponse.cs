@@ -9,7 +9,7 @@ namespace Application.DTOs.Sections
         public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public int NumberOfQuestionSheets { get; set; }
-        public int Rating { get; set; }
+        public int? Rating { get; set; }
 
         public DateTimeOffset CreatedAt { get; set; }
 
