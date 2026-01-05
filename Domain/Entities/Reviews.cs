@@ -23,10 +23,10 @@ namespace Domain.Entities
         public string Comment { get; set; } = string.Empty;
 
         [Column("created_at")]
-        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
         [Column("updated_at")]
-        public DateTimeOffset? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
         [Column("is_deleted")]
         public bool IsDeleted { get; set; } = false;
@@ -37,45 +37,25 @@ namespace Domain.Entities
     [Table("course_reviews", Schema = "public")]
     public class CourseReview : Review
     {
-        [Column("course_id")]
-        [ForeignKey(nameof(Course))]
-        public new Guid EntityId { get; set; }
-
         public Course Course { get; set; } = null!;
     }
 
     [Table("section_reviews", Schema = "public")]
     public class SectionReview : Review
     {
-        [Column("section_id")]
-        [ForeignKey(nameof(Section))]
-        public new Guid EntityId { get; set; }
-
         public Section Section { get; set; } = null!;
     }
 
     [Table("video_reviews", Schema = "public")]
     public class VideoReview : Review
     {
-        [Column("video_id")]
-        [ForeignKey(nameof(Video))]
-        public new Guid EntityId { get; set; }
-
         public Video Video { get; set; } = null!;
 
-        public VideoReview()
-        {
-
-        }
     }
 
     [Table("instructor_reviews", Schema = "public")]
     public class InstructorReview : Review
     {
-        [Column("instructor_id")]
-        [ForeignKey(nameof(Instructor))]
-        public new Guid EntityId { get; set; }
-
         public Instructor Instructor { get; set; } = null!;
     }
 }

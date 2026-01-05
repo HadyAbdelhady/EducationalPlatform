@@ -21,7 +21,9 @@ namespace Infrastructure.Services.ReviewService
                     return Result<ReviewResponse>.FailureStatusCode("Student not found.", ErrorType.NotFound);
                 }
 
-                var reviewAlreadyExists = await _unitOfWork.Repository<TReview>().AnyAsync(r => r.StudentId == request.StudentId && r.EntityId == request.EntityId, cancellationToken);
+                var reviewAlreadyExists = await _unitOfWork.Repository<TReview>().AnyAsync(r => r.StudentId == request.StudentId &&
+                                                                                           r.EntityId == request.EntityId,
+                                                                                           cancellationToken);
                 if (reviewAlreadyExists)
                 {
                     return Result<ReviewResponse>.FailureStatusCode("You have already submitted a review.", ErrorType.BadRequest);
@@ -32,10 +34,8 @@ namespace Infrastructure.Services.ReviewService
                     Id = Guid.NewGuid(),
                     Comment = request.Comment,
                     StarRating = request.StarRating,
-                    EntityId = request.EntityId,
                     StudentId = request.StudentId,
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    UpdatedAt = DateTimeOffset.UtcNow,
+                    EntityId = request.EntityId
                 };
 
                 await _unitOfWork.Repository<TReview>().AddAsync(newReview, cancellationToken);

@@ -366,6 +366,8 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<CourseReview>(b =>
             {
+
+                b.Property(x => x.EntityId).HasColumnName("course_id");
                 b.HasOne(x => x.Student)
                     .WithMany(x => x.CourseReviews)
                     .HasForeignKey(x => x.StudentId)
@@ -379,6 +381,8 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<SectionReview>(b =>
             {
+                b.Property(x => x.EntityId).HasColumnName("section_id");
+
                 b.HasOne(x => x.Student)
                     .WithMany(x => x.SectionReviews)
                     .HasForeignKey(x => x.StudentId)
@@ -392,6 +396,8 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<VideoReview>(b =>
             {
+                b.Property(x => x.EntityId).HasColumnName("video_id");
+
                 b.HasOne(x => x.Student)
                     .WithMany(x => x.VideoReviews)
                     .HasForeignKey(x => x.StudentId)
@@ -405,6 +411,8 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<InstructorReview>(b =>
             {
+                b.Property(x => x.EntityId).HasColumnName("instructor_id");
+
                 b.HasOne(x => x.Student)
                     .WithMany(x => x.InstructorReviews)
                     .HasForeignKey(x => x.StudentId)
