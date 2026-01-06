@@ -9,15 +9,15 @@ namespace Application.DTOs.Sections
         public string? Description { get; set; }
         public decimal? Price { get; set; }
         public int NumberOfVideos { get; set; }
+        public int NumberOfSectionVideosWatched { get; set; }
         public decimal? Rating { get; set; }
         public int NumberOfQuestionSheets { get; set; }
-
         public Guid CourseId { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public List<VideoResponse>? Videos { get; set; }
     }
 
-    
+
 }
 
