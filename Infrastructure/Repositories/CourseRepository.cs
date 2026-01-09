@@ -1,5 +1,4 @@
 using Application.DTOs.Courses;
-using Application.Features.Courses.Query.GetAllCoursesForStudent;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
@@ -9,49 +8,6 @@ namespace Infrastructure.Repositories
 {
     public class CourseRepository(EducationDbContext context) : Repository<Course>(context), ICourseRepository
     {
-        public async Task<IEnumerable<Course>> GetAllCoursesByInstructorIdAsync(Guid instructorId, CancellationToken cancellationToken = default)
-        {
-            return await _context.Courses
-                .Where(c => c.InstructorCourses.Any(ic => ic.InstructorId == instructorId))
-                .Include(c => c.CourseReviews)
-                .Include(c => c.Sections)
-                .Include(c => c.StudentCourses)
-                .ToListAsync(cancellationToken);
-        }
-
-        public async Task<IEnumerable<CourseByUserIdResponse>> GetAllCoursesByStudentIdAsync(GetAllCoursesEnrolledByStudentQuery req, CancellationToken cancellationToken = default)
-        {
-            return
-             await _context.Courses
-                .Where(c => c.StudentCourses.Any(sc => sc.StudentId == req.StudentId))
-                .Select(c => new CourseByUserIdResponse
-                {
-                    Id = c.Id,
-                    Title = c.Name,
-                    Price = c.Price ?? 0,
-
-                    Rating = c.Rating,
-
-                    NumberOfStudents = c.NumberOfStudentsEnrolled,
-
-                    NumberOfVideos = c.NumberOfVideos,
-
-                    NumberOfSections = c.NumberOfSections,
-
-                    NumberOfWatchedVideos = c.StudentCourses
-                            .Where(sc => sc.StudentId == req.StudentId)
-                            .Select(sc => sc.NumberOfCourseVideosWatched)
-                            .FirstOrDefault(),
-
-                    ThumbnailUrl = c.IntroVideoUrl ?? string.Empty,
-
-                    CreatedAt = c.CreatedAt,
-                    UpdatedAt = c.UpdatedAt ?? c.CreatedAt
-                })
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
-        }
-
         public async Task<CourseDetailResponse?> GetCourseDetailResponseByIdAsync(Guid courseId, CancellationToken cancellationToken = default)
         {
             var query = from course in _context.Courses

@@ -14,8 +14,38 @@ namespace Application.Features.Sections.Query.GetSectionDetails
         {
             try
             {
-                var response = await _unitOfWork.GetRepository<ISectionRepository>()
+                var data = await _unitOfWork.GetRepository<ISectionRepository>()
                                                                      .GetSectionDetailsResponse(request, cancellationToken);
+
+                var response = new GetSectionDetailsResponse
+                {
+                    SectionId = data.Section.Id,
+                    Name = data.Section.Name,
+                    Description = data.Section.Description,
+                    Price = data.Section.Price,
+                    Rating = data.Section.Rating,
+                    CreatedAt = data.Section.CreatedAt,
+                    UpdatedAt = data.Section.UpdatedAt ?? data.Section.CreatedAt,
+                    CourseId = data.Section.CourseId ?? Guid.Empty,
+                    NumberOfVideos = data.Videos.Count,
+                    NumberOfQuestionSheets = data.Section.NumberOfQuestionSheets,
+                    NumberOfSectionVideosWatched = data.StudentSection?.NumberOfSectionVideosWatched ?? 0,
+
+                    Videos = [.. data.Videos.Select(v => new VideoData
+                    {
+                        Id = v.Id,
+                        Name = v.Name,
+                        VideoUrl = v.VideoUrl,
+                        Rating = v.Rating,
+                        StudentVideo = data.StudentSection is null
+                            ? null
+                            : new StudentVideoData
+                            {
+                                WatchedAt = v.StudentVideo?.WatchedAt,
+                                Progress = v.StudentVideo?.Progress ?? 0
+                            }
+                    })]
+                };
 
                 return Result<GetSectionDetailsResponse>.Success(response);
             }

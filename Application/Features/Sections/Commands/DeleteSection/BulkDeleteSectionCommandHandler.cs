@@ -27,8 +27,8 @@ namespace Application.Features.Sections.Commands.DeleteSection
             var sectionRepo = _unitOfWork.Repository<Section>();
 
             // Optional: Validate that all sections belong to this course (defensive)
-            var sections = await sectionRepo
-                                .FindAsync(s => request.SectionIds.Contains(s.Id) && s.CourseId == request.CourseId, cancellationToken);
+            var sections =  sectionRepo
+                                .Find(s => request.SectionIds.Contains(s.Id) && s.CourseId == request.CourseId, cancellationToken);
 
             var SectionList = sections.ToList();
 

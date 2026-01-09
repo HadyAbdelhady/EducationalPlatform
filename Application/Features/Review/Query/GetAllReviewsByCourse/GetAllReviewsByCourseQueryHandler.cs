@@ -15,8 +15,8 @@ namespace Application.Features.Review.Query.GetAllReviewsByCourse
         {
             try
             {
-                var reviews = await _unitOfWork.Repository<CourseReview>()
-                    .FindAsync(r => r.EntityId == request.CourseId && !r.IsDeleted, 
+                var reviews = _unitOfWork.Repository<CourseReview>()
+                    .Find(r => r.EntityId == request.CourseId && !r.IsDeleted, 
                         cancellationToken, r => r.Student!.User!);
 
                 var reviewsList = reviews.ToList();

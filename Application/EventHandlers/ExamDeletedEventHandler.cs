@@ -14,8 +14,8 @@ namespace Application.EventHandlers
             var courseRepo = _unitOfWork.Repository<Course>();
 
             // Load course + the specific section that owns the exam
-            var CoueseList = await courseRepo
-                .FindAsync(
+            var CoueseList =  courseRepo
+                .Find(
                     predicate: c => c.Id == notification.CourseId,
                     cancellationToken: cancellationToken,
                     includes: c => c.Sections.Where(s => s.Id == notification.SectionId)

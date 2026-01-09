@@ -20,7 +20,7 @@ namespace Application.Features.Exams.Command.GenerateExam
             var QuestionRepository = _unitOfWork.Repository<Question>();
 
 
-            var question = await QuestionRepository.FindAsync(q => q.CourseId == request.CourseId &&
+            var question =  QuestionRepository.Find(q => q.CourseId == request.CourseId &&
                                                                                         (!request.SectionId.HasValue || q.SectionId == request.SectionId)
                                                                                         , cancellationToken);
 

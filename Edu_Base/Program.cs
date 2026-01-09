@@ -1,9 +1,12 @@
 using Application.DTOs.Media;
 using Application.Interfaces;
+using Application.Interfaces.BaseFilters;
 using CloudinaryDotNet;
+using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Data;
 using Infrastructure.Middleware;
+using Infrastructure.Persistence.HelperFunctions;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -93,6 +96,7 @@ namespace Edu_Base
             builder.Services.AddScoped<IReviewService, InstructorReviewService>();
             builder.Services.AddScoped<IReviewService, VideoReviewService>();
             builder.Services.AddScoped<IQuestionUpdateService, QuestionUpdateService>();
+            builder.Services.AddScoped(typeof(IBaseFilterRegistry<Course>), typeof(CourseFilterRegistry));
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>

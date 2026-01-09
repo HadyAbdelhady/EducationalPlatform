@@ -3,8 +3,6 @@ using Application.Features.Courses.Commands.CreateCourse;
 using Application.Features.Courses.Commands.DeleteCourse;
 using Application.Features.Courses.Commands.UpdateCourse;
 using Application.Features.Courses.Query.GetAllCourses;
-using Application.Features.Courses.Query.GetAllCoursesByInstructor;
-using Application.Features.Courses.Query.GetAllCoursesForStudent;
 using Application.Features.Courses.Query.GetCourseById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -50,33 +48,16 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
-        [HttpGet("GetAllCourses")]
-        public async Task<IActionResult> GetAllCourses(CancellationToken cancellationToken)
+        [HttpGet("GetCoursesList")]
+        public async Task<IActionResult> GetCoursesList([FromQuery] GetAllCoursesQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Fetching all courses");
-            var query = new GetAllCoursesQuery();
-            var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
-        }
-
-        [HttpGet("GetAllCoursesEnrolledByStudent")]
-        public async Task<IActionResult> GetAllCoursesEnrolledByStudent(CourseByStudentRequest requset, CancellationToken cancellationToken)
-        {
-            var query = new GetAllCoursesEnrolledByStudentQuery
+            _logger.LogInformation(message: "Fetching all courses");
+            var query = new GetAllCoursesQuery
             {
-                StudentId = requset.StudentId,
-                //FirstThreeCoursesOnly = requset.FirstThreeCoursesOnly
+                Filters = request.Filters,
+                SortBy = request.SortBy,
+                IsDescending = request.IsDescending
             };
-            var result = await _mediator.Send(query, cancellationToken);
-
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
-        }
-
-        [HttpGet("GetAllCoursesByInstructor/{instructorId}")]
-        public async Task<IActionResult> GetAllCoursesByInstructor(Guid instructorId, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Fetching courses for InstructorId: {InstructorId}", instructorId);
-            var query = new GetAllCoursesByInstructorQuery { InstructorId = instructorId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }

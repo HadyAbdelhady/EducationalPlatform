@@ -25,8 +25,8 @@ namespace Application.Features.Exams.Command.DeleteExam
                 return Result<string>.Success("Exam does not exist");
             }
 
-            var ExamSubmissions = await StudentSubmissionRepo
-                                                                .FindAsync(ss => ss.ExamResult.ExamId == request.ExamId,
+            var ExamSubmissions =  StudentSubmissionRepo
+                                                                .Find(ss => ss.ExamResult.ExamId == request.ExamId,
                                                                 cancellationToken);
 
 

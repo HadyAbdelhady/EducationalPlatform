@@ -7,8 +7,7 @@ namespace Application.Interfaces
 {
     public interface ISectionRepository : IRepository<Section>
     {
-        //Task<GetSectionDetailsResponse> GetEnrolledSectionDetails(GetSectionDetailsQuery Request, CancellationToken cancellationToken);
-        public Task<GetSectionDetailsResponse> GetSectionDetailsResponse(GetSectionDetailsQuery Request, CancellationToken cancellationToken);
-        public Task<List<GetSectionDetailsResponse>> GetSectionInnerData(GetSectionsForCourseQuery Request, CancellationToken cancellationToken);
+        public Task<SectionDetailsQueryModel> GetSectionDetailsResponse(GetSectionDetailsQuery Request, CancellationToken cancellationToken);
+        public Task<List<SectionDetailsQueryModel>> GetSectionInnerData(GetSectionsForCourseQuery Request, CancellationToken cancellationToken);
     }
 }
