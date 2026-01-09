@@ -19,8 +19,8 @@ namespace Application.Features.Courses.Query.GetAllCourses
             {
                 var Courses = _unitOfWork.Repository<Course>().GetAll(cancellationToken);
 
-                Courses = _courseFilterRegistry.ApplyFilter(Courses, request.Filters);
-                Courses = _courseFilterRegistry.ApplySort(Courses, request.SortBy, request.IsDescending);
+                Courses = Courses.ApplyFilters(request.Filters, _courseFilterRegistry.Filters)
+                                 .ApplySort(request.SortBy, request.IsDescending, _courseFilterRegistry.Sorts);
 
                 var response = Courses.Select(course => new CourseResponse
                 {

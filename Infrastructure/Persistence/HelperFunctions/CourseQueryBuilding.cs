@@ -18,26 +18,5 @@ namespace Infrastructure.Persistence.HelperFunctions
             ["price"] = (q, desc) => desc ? q.OrderByDescending(c => c.Price) : q.OrderBy(c => c.Price),
             ["createdat"] = (q, desc) => desc ? q.OrderByDescending(c => c.CreatedAt) : q.OrderBy(c => c.CreatedAt)
         };
-
-        public IQueryable<Course> ApplyFilter(IQueryable<Course> query, Dictionary<string, string> incomingParams)
-        {
-            foreach (var (key, value) in incomingParams)
-            {
-                if (Filters.TryGetValue(key, out var filterFunc))
-                {
-                    query = filterFunc(query, value);
-                }
-            }
-            return query;
-        }
-
-        public virtual IQueryable<Course> ApplySort(IQueryable<Course> query, string sortBy, bool isDescending)
-        {
-            if (Sorts.TryGetValue(sortBy.ToLower(), out var sortFunc))
-            {
-                return sortFunc(query, isDescending);
-            }
-            return query; // Or a default order
-        }
     }
 }

@@ -53,19 +53,4 @@ namespace Application.HelperFunctions
             return obtainedMarks;
         }
     }
-
-    public static class  ApplyFilters
-    {
-        public static IQueryable<Course> ApplyFilter(IQueryable<Course> query, Dictionary<string, string> incomingParams)
-        {
-            foreach (var (key, value) in incomingParams)
-            {
-                if (Filters.TryGetValue(key, out var filterFunc))
-                {
-                    query = filterFunc(query, value);
-                }
-            }
-            return query;
-        }
-    }
 }
