@@ -27,6 +27,8 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     Id = course.Id,
                     Title = course.Name,
                     Price = course.Price ?? 0,
+                    Description = course.Description ?? string.Empty,
+                    PictureUrl = course.PictureUrl,
                     Rating = course.Rating,
                     NumberOfStudents = course.NumberOfStudentsEnrolled,
                     NumberOfVideos = course.NumberOfVideos,
