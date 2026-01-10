@@ -14,6 +14,6 @@ namespace Application.DTOs.Courses
         public string ThumbnailUrl { get; set; } = string.Empty;
 
         public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
     }
 }

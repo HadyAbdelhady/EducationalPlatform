@@ -3,7 +3,6 @@ using Application.Features.AnswersSheets.Commands.ApproveAnswersSheet;
 using Application.Features.AnswersSheets.Commands.CreateAnswersSheet;
 using Application.Features.AnswersSheets.Commands.DeleteAnswersSheet;
 using Application.Features.AnswersSheets.Commands.UpdateAnswersSheet;
-using Application.Features.Courses.Query.GetAllCoursesByInstructor;
 using Application.Features.Sheets.Commands.CreateSheet;
 using Application.Features.Sheets.Commands.DeleteSheet;
 using Application.Features.Sheets.Commands.UpdateSheet;
@@ -13,10 +12,7 @@ using Application.Features.Sheets.Queries.GetAllTutorialSheetsBySection;
 using Application.Features.Sheets.Queries.GetAllQuestionSheetsByCourse;
 using Application.Features.Sheets.Queries.GetAllQuestionSheetsByVideo;
 using Application.Features.Sheets.Queries.GetAllQuestionSheetsBySection;
-using Application.ResultWrapper;
-using Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Application.Features.AnswersSheets.Queries.GetAllAnswersSheetsByStudentId;
 

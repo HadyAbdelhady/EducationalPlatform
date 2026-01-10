@@ -18,8 +18,8 @@ namespace Application.Features.AnswersSheets.Queries.GetAllAnswersSheetsByStuden
         {
             try
             {
-                var answersSheets = await _unitOfWork.Repository<AnswersSheet>()
-                    .FindAsync(
+                var answersSheets = _unitOfWork.Repository<AnswersSheet>()
+                    .Find(
                        x => x.StudentId == request.StudentId,
                        cancellationToken,
                        x => x.QuestionsSheet
