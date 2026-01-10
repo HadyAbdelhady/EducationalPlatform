@@ -18,11 +18,11 @@ namespace Application.Features.Sheets.Commands.CreateSheet
         {
             try
             {
-                var instructorExists = await _unitOfWork.Repository<User>().AnyAsync(i => i.Id == request.InstructorId, cancellationToken);
+                var instructor = await _unitOfWork.GetRepository<IUserRepository>().DoesInstructorExistAsync(request.InstructorId, cancellationToken);
                 EntityType EntityType = EntityType.None;
                 Guid EventEntity = Guid.Empty;
 
-                if (!instructorExists)
+                if (!instructor)
                 {
                     return Result<SheetCreationResponse>.FailureStatusCode("Instructor not found", ErrorType.NotFound);
                 }
@@ -59,12 +59,16 @@ namespace Application.Features.Sheets.Commands.CreateSheet
                 }
 
                 var cloudianryResult = await _cloudinaryService.UploadPdfAsync(request.SheetUrl);
+                
+                // Convert DueDate to UTC if provided (PostgreSQL requires UTC for timestamp with time zone)
+                var dueDateUtc = request.DueDate?.ToUniversalTime();
+                
                 var newSheet = new Sheet()
                 {
                     Id = new Guid(),
                     Name = request.Name,
                     Type = request.Type,
-                    DueDate = request.DueDate,
+                    DueDate = dueDateUtc,
                     SheetUrl = cloudianryResult.Url,
                     SheetPublicId = cloudianryResult.PublicId,
                     InstructorId = request.InstructorId,

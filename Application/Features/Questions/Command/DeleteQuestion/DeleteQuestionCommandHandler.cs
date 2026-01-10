@@ -36,7 +36,7 @@ namespace Application.Features.Questions.Command.DeleteQuestion
                     }
                 }
 
-                await _unitOfWork.Repository<Domain.Entities.Question>().RemoveAsync(question.Id, cancellationToken);
+                await _unitOfWork.Repository<Question>().RemoveAsync(question.Id, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<Guid>.Success(question.Id);

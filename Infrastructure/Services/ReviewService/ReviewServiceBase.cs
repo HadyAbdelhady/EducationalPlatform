@@ -15,7 +15,7 @@ namespace Infrastructure.Services.ReviewService
         {
             try
             {
-                var student = await _unitOfWork.Repository<User>().AnyAsync(s => s.Id == request.StudentId, cancellationToken);
+                var student = await _unitOfWork.GetRepository<IUserRepository>().DoesStudentExistAsync(request.StudentId, cancellationToken);
                 if (!student)
                 {
                     return Result<ReviewResponse>.FailureStatusCode("Student not found.", ErrorType.NotFound);

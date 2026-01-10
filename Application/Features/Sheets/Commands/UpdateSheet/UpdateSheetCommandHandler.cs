@@ -29,7 +29,9 @@ namespace Application.Features.Sheets.Commands.UpdateSheet
                     sheet.SheetPublicId = cloudinaryResult.PublicId;
                 }
               
-                sheet.DueDate = request.DueDate;
+                // Convert DueDate to UTC if provided (PostgreSQL requires UTC for timestamp with time zone)
+                sheet.DueDate = request.DueDate?.ToUniversalTime();
+                
                 sheet.Name = request.Name;
                 sheet.UpdatedAt = DateTimeOffset.UtcNow;
 

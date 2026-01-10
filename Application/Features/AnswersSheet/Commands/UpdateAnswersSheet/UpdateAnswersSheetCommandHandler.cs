@@ -23,7 +23,7 @@ namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
                     return Result<AnswersSheetUpdateResponse>.FailureStatusCode("Answers sheet not found", ErrorType.NotFound);
                 }
 
-                if (DateTime.Now >= answersSheet.QuestionsSheet.DueDate)
+                if (answersSheet.QuestionsSheet.DueDate.HasValue && DateTimeOffset.UtcNow >= answersSheet.QuestionsSheet.DueDate.Value)
                 {
                     return Result<AnswersSheetUpdateResponse>.FailureStatusCode("The submission deadline has passed!",
                         ErrorType.BadRequest);
@@ -58,5 +58,7 @@ namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
         }
     }
 }
+
+
 
 
