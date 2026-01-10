@@ -51,6 +51,10 @@ namespace Domain.Entities
         [ForeignKey(nameof(Section))]
         public Guid? SectionId { get; set; }
 
+        [Column("instructor_id")]
+        [ForeignKey(nameof(Instructor))]
+        public Guid InstructorId { get; set; }
+
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }
 
@@ -62,8 +66,8 @@ namespace Domain.Entities
 
         public Course? Course { get; set; }
         public Section? Section { get; set; }
+        public Instructor Instructor { get; set; } = null!;
         public ICollection<ExamBank> ExamQuestions { get; set; } = [];
-        public ICollection<InstructorExam> InstructorExams { get; set; } = [];
         public ICollection<StudentExam> StudentExams { get; set; } = [];
         public ICollection<StudentExamResult> ExamResults { get; set; } = [];
     }

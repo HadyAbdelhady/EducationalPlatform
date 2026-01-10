@@ -8,7 +8,7 @@ namespace Application.DTOs.Courses
         public decimal? Rating { get; set; }
         public int NumberOfStudents { get; set; }
         public int NumberOfVideos{ get; set; }
-        public int NumberOfWatchedVideos { get; set; }
+        public int? NumberOfWatchedVideos { get; set; }
         public int NumberOfSections { get; set; }
         public int NumberOfSheets { get; set; }
         public string ThumbnailUrl { get; set; } = string.Empty;

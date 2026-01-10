@@ -14,6 +14,10 @@ namespace Domain.Entities
         [ForeignKey(nameof(Course))]
         public Guid CourseId { get; set; }
 
+
+        [Column("number_of_course_videos_watched")]
+        public int NumberOfCourseVideosWatched { get; set; } = 0;
+
         [Column("enrolled_at")]
         public DateTimeOffset EnrolledAt { get; set; } = DateTimeOffset.UtcNow;
 
@@ -22,9 +26,6 @@ namespace Domain.Entities
 
         [Column("is_deleted")]
         public bool IsDeleted { get; set; } = false;
-
-        [Column("number_of_course_videos_watched")]
-        public int NumberOfCourseVideosWatched { get; set; } = 0;
 
         public Student Student { get; set; } = null!;
         public Course Course { get; set; } = null!;
@@ -149,27 +150,6 @@ namespace Domain.Entities
 
         public Instructor Instructor { get; set; } = null!;
         public Section Section { get; set; } = null!;
-    }
-
-    [Table("instructor_exams", Schema = "public")]
-    public class InstructorExam
-    {
-        [Column("instructor_id")]
-        [ForeignKey(nameof(Instructor))]
-        public Guid InstructorId { get; set; }
-
-        [Column("exam_id")]
-        [ForeignKey(nameof(Exam))]
-        public Guid ExamId { get; set; }
-
-        [Column("is_deleted")]
-        public bool IsDeleted { get; set; }
-
-        [Column("updated_at")]
-        public DateTimeOffset UpdatedAt { get; set; }
-
-        public Instructor Instructor { get; set; } = null!;
-        public Exam Exam { get; set; } = null!;
     }
 }
 

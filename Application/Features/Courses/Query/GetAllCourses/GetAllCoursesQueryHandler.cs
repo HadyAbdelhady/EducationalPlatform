@@ -1,7 +1,7 @@
-using Application.DTOs.Courses;
-using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
 using Application.ResultWrapper;
+using Application.DTOs.Courses;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
@@ -28,13 +28,14 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     Title = course.Name,
                     Price = course.Price ?? 0,
                     Rating = course.Rating,
-                    NumberOfStudents = course.StudentCourses.Count,
+                    NumberOfStudents = course.NumberOfStudentsEnrolled,
                     NumberOfVideos = course.NumberOfVideos,
-                    NumberOfSections = course.Sections.Count,
+                    NumberOfSections = course.NumberOfSections,
+                    NumberOfWatchedVideos = course.StudentCourses.Select(xc => xc.NumberOfCourseVideosWatched).FirstOrDefault(), 
                     ThumbnailUrl = course.IntroVideoUrl!,
                     CreatedAt = course.CreatedAt,
                     NumberOfSheets = course.NumberOfQuestionSheets,
-                    UpdatedAt = course.UpdatedAt ?? course.CreatedAt
+                    UpdatedAt = course.UpdatedAt
                 }).ToList();
 
                 // Pagination

@@ -1,6 +1,6 @@
+using Application.ResultWrapper;
 using Application.DTOs.Courses;
 using Application.Interfaces;
-using Application.ResultWrapper;
 using Domain.enums;
 using MediatR;
 
@@ -14,8 +14,9 @@ namespace Application.Features.Courses.Query.GetCourseById
         {
             try
             {
-                var response = await _unitOfWork.GetRepository<ICourseRepository>().GetCourseDetailResponseByIdAsync(request.CourseId, cancellationToken)
-      ?? throw new KeyNotFoundException($"Course with ID {request.CourseId} not found.");
+                var response = await _unitOfWork.GetRepository<ICourseRepository>()
+                                                                 .GetCourseDetailResponseByIdAsync(request.CourseId, cancellationToken)
+                                                                        ?? throw new KeyNotFoundException($"Course with ID {request.CourseId} not found.");
 
                 return Result<CourseDetailResponse>.Success(response);
             }

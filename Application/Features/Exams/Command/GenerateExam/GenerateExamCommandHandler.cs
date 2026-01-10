@@ -1,7 +1,7 @@
-﻿using Application.DTOs.Questions;
-using Application.HelperFunctions;
-using Application.Interfaces;
+﻿using Application.HelperFunctions;
+using Application.DTOs.Questions;
 using Application.ResultWrapper;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.enums;
 using Domain.Events;
@@ -51,14 +51,9 @@ namespace Application.Features.Exams.Command.GenerateExam
                 ExamType = request.ExamType,
                 IsRandomized = request.IsRandomized,
                 DurationInMinutes = request.DurationInMinutes,
-                PassMarkPercentage = request.PassMarkPercentage
-            };
-
-            newExam.InstructorExams.Add(new InstructorExam
-            {
-                ExamId = newExam.Id,
+                PassMarkPercentage = request.PassMarkPercentage,
                 InstructorId = request.CreatedBy,
-            });
+            };
 
             if (request.IsRandomized)
             {

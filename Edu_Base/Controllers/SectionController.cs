@@ -1,9 +1,9 @@
 ﻿using Application.DTOs.Sections;
+using Application.Features.Sections.Query.GetSectionsForCourse;
 using Application.Features.Sections.Commands.CreateSection;
 using Application.Features.Sections.Commands.DeleteSection;
 using Application.Features.Sections.Commands.UpdateSection;
 using Application.Features.Sections.Query.GetSectionDetails;
-using Application.Features.Sections.Query.GetSectionsForCourse;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,8 +51,8 @@ namespace Edu_Base.Controllers
         [HttpGet("course/{courseId}")]
         public async Task<IActionResult> GetSectionsForCourse(Guid courseId)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            //var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
             var result = await _mediator.Send(new GetSectionsForCourseQuery(courseId, UserId));
 
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
@@ -104,8 +104,8 @@ namespace Edu_Base.Controllers
         [HttpGet("{sectionId}/details")]
         public async Task<IActionResult> GetSectionDetails(Guid sectionId, CancellationToken cancellationToken)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            //var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
             var query = new GetSectionDetailsQuery { SectionId = sectionId, UserId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);

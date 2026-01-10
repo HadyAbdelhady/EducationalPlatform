@@ -17,7 +17,19 @@ namespace Infrastructure.Repositories
                                    .Where(s => s.Id == Request.SectionId)
                                    .Select(s => new SectionDetailsQueryModel
                                    {
-                                       Section = s,
+                                       Section = new SectionData
+                                       {
+                                           Id = s.Id,
+                                           Name = s.Name,
+                                           Description = s.Description,
+                                           Price = s.Price,
+                                           NumberOfVideos = s.NumberOfVideos,
+                                           NumberOfQuestionSheets = s.NumberOfQuestionSheets,
+                                           NumberOfExams = s.NumberOfExams,
+                                           Rating = s.Rating,
+                                           CourseId = s.CourseId,
+                                           CreatedAt = s.CreatedAt
+                                       },
                                        StudentSection = s.StudentSections
                                            .Where(ss => ss.StudentId == Request.UserId)
                                            .Select(ss => new StudentSectionData
@@ -46,14 +58,26 @@ namespace Infrastructure.Repositories
                                    .FirstOrDefaultAsync(cancellationToken) ?? throw new Exception("Section not found");
         }
 
-        public async Task<List<SectionDetailsQueryModel>> GetSectionInnerData(GetSectionsForCourseQuery Request, CancellationToken cancellationToken)
+        public async Task<List<SectionDetailsQueryModel>> GetSectionList(GetSectionsForCourseQuery Request, CancellationToken cancellationToken)
         {
             return await _context.Sections
-                                .AsNoTrackingWithIdentityResolution()
+                                .AsNoTracking()
                                 .Where(s => s.CourseId == Request.CourseId)
                                 .Select(s => new SectionDetailsQueryModel
                                 {
-                                    Section = s,
+                                    Section = new SectionData
+                                    {
+                                        Id = s.Id,
+                                        Name = s.Name,
+                                        Description = s.Description,
+                                        Price = s.Price,
+                                        NumberOfVideos = s.NumberOfVideos,
+                                        NumberOfQuestionSheets = s.NumberOfQuestionSheets,
+                                        NumberOfExams = s.NumberOfExams,
+                                        Rating = s.Rating,
+                                        CourseId = s.CourseId,
+                                        CreatedAt = s.CreatedAt
+                                    },
                                     StudentSection = s.StudentSections
                                            .Where(ss => ss.StudentId == Request.UserId)
                                            .Select(ss => new StudentSectionData

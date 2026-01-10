@@ -11,10 +11,9 @@ namespace Edu_Base.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CourseController(IMediator mediator, ILogger<CourseController> logger) : ControllerBase
+    public class CourseController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
-        private readonly ILogger<CourseController> _logger = logger;
 
         [HttpPost("create")]
         //[ValidateAntiForgeryToken]
@@ -42,7 +41,6 @@ namespace Edu_Base.Controllers
         [HttpGet("GetCourseDetailById/{courseId}")]
         public async Task<IActionResult> GetCourseDetailById(Guid courseId, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Fetching course detail for CourseId: {CourseId}", courseId);
             var query = new GetCourseByIdQuery { CourseId = courseId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
@@ -51,7 +49,6 @@ namespace Edu_Base.Controllers
         [HttpGet("GetCoursesList")]
         public async Task<IActionResult> GetCoursesList([FromQuery] GetAllCoursesQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation(message: "Fetching all courses");
             var query = new GetAllCoursesQuery
             {
                 Filters = request.Filters,
@@ -85,7 +82,6 @@ namespace Edu_Base.Controllers
         //[Authorize(Roles = "Instructor")]
         public async Task<IActionResult> DeleteCourse(Guid courseId, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Deleting course with CourseId: {CourseId}", courseId);
             var command = new DeleteCourseCommand
             {
                 CourseId = courseId

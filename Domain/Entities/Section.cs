@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using Domain.Interfaces;
 
 namespace Domain.Entities
@@ -35,7 +35,7 @@ namespace Domain.Entities
 
         [Column("course_id")]
         [ForeignKey(nameof(Course))]
-        public Guid? CourseId { get; set; }
+        public Guid CourseId { get; set; }
 
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }

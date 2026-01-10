@@ -1,5 +1,5 @@
-﻿using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.ResultWrapper;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Events;
 using MediatR;
@@ -35,7 +35,6 @@ namespace Application.Features.Exams.Command.DeleteExam
                                                         cancellationToken,
                                                         c => c.ExamResults,
                                                         c => c.StudentExams,
-                                                        c => c.InstructorExams,
                                                         c => c.ExamQuestions);
 
             exam.IsDeleted = true;
@@ -43,7 +42,6 @@ namespace Application.Features.Exams.Command.DeleteExam
             foreach (var result in exam.ExamResults) result.IsDeleted = true;
             foreach (var bank in exam.ExamQuestions) bank.IsDeleted = true;
             foreach (var studentExam in exam.StudentExams) studentExam.IsDeleted = true;
-            foreach (var instructorExam in exam.InstructorExams) instructorExam.IsDeleted = true;
             foreach (var submission in ExamSubmissions) submission.IsDeleted = true;
 
             await _mediator.Publish(new ExamDeletedEvent(request.CourseId, request.SectionId), cancellationToken);

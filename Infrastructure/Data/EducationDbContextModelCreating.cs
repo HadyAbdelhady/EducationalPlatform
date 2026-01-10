@@ -36,7 +36,6 @@ namespace Infrastructure.Data
             modelBuilder.Entity<StudentExam>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<InstructorCourse>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<InstructorSection>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<InstructorExam>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<CourseReview>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<SectionReview>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<VideoReview>().HasQueryFilter(x => !x.IsDeleted);
@@ -144,20 +143,6 @@ namespace Infrastructure.Data
                 .HasOne(ins => ins.Section)
                 .WithMany(s => s.InstructorSections)
                 .HasForeignKey(ins => ins.SectionId);
-
-            // InstructorExam
-            modelBuilder.Entity<InstructorExam>()
-                .HasKey(e => new { e.InstructorId, e.ExamId });
-                
-            modelBuilder.Entity<InstructorExam>()
-                .HasOne(ie => ie.Instructor)
-                .WithMany(i => i.InstructorExams)
-                .HasForeignKey(ie => ie.InstructorId);
-                
-            modelBuilder.Entity<InstructorExam>()
-                .HasOne(ie => ie.Exam)
-                .WithMany(e => e.InstructorExams)
-                .HasForeignKey(ie => ie.ExamId);
 
             // Complex relationship configurations
             modelBuilder.Entity<Student>(b =>
@@ -349,19 +334,6 @@ namespace Infrastructure.Data
                     .WithMany(x => x.InstructorSections)
                     .HasForeignKey(x => x.SectionId)
                     .HasConstraintName("instructor_sections_section_id_fkey");
-            });
-
-            modelBuilder.Entity<InstructorExam>(b =>
-            {
-                b.HasOne(x => x.Instructor)
-                    .WithMany(x => x.InstructorExams)
-                    .HasForeignKey(x => x.InstructorId)
-                    .HasConstraintName("instructor_exams_instructor_id_fkey");
-
-                b.HasOne(x => x.Exam)
-                    .WithMany(x => x.InstructorExams)
-                    .HasForeignKey(x => x.ExamId)
-                    .HasConstraintName("instructor_exams_exam_id_fkey");
             });
 
             modelBuilder.Entity<CourseReview>(b =>

@@ -12,7 +12,7 @@ namespace Application.Features.Sections.Query.GetSectionsForCourse
         public async Task<Result<List<SectionDetailsQueryModel>>> Handle(GetSectionsForCourseQuery request, CancellationToken cancellationToken)
         {
             var sections = await _unitOfWork.GetRepository<ISectionRepository>()
-                                                                    .GetSectionInnerData(request, cancellationToken);
+                                                                    .GetSectionList(request, cancellationToken);
 
 
             return Result<List<SectionDetailsQueryModel>>.Success(sections);

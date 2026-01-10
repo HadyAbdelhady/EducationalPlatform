@@ -20,17 +20,31 @@ namespace Application.DTOs.Sections
 
     public sealed class SectionDetailsQueryModel
     {
-        public Section Section { get; init; } = default!;
+        public SectionData Section { get; init; } = default!;
         public StudentSectionData? StudentSection { get; init; }
         public List<VideoData> Videos { get; init; } = [];
     }
 
+    public sealed class SectionData
+    {
+        public Guid Id { get; init; }
+        public string Name { get; init; } = string.Empty;
+        public string? Description { get; init; }
+        public decimal? Price { get; init; }
+        public int NumberOfVideos { get; init; }
+        public int NumberOfQuestionSheets { get; init; }
+        public int NumberOfExams { get; set; }
+        public decimal? Rating { get; init; }
+        public Guid CourseId { get; init; }
+        public DateTimeOffset CreatedAt { get; init; }
+    }
+
     public sealed class StudentSectionData
     {
+
         public DateTimeOffset EnrolledAt { get; init; }
         public int NumberOfSectionVideosWatched { get; init; }
     }
-
     public sealed class VideoData
     {
         public Guid Id { get; init; }

@@ -20,10 +20,7 @@ namespace Application.Features.Sections.Commands.DeleteSection
                 var section = await sectionRepo.GetByIdAsync(request.SectionId, cancellationToken)
                     ?? throw new KeyNotFoundException("Section not found");
 
-                if (section.CourseId == null)
-                    return Result<string>.FailureStatusCode("Section has no assigned course.", ErrorType.BadRequest);
-
-                var course = await courseRepo.GetByIdAsync(section.CourseId.Value, cancellationToken)
+                var course = await courseRepo.GetByIdAsync(section.CourseId, cancellationToken)
                     ?? throw new KeyNotFoundException("Course not found for this section");
 
                 if (course.NumberOfSections > 0)
