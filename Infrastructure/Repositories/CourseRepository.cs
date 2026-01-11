@@ -47,7 +47,7 @@ namespace Infrastructure.Repositories
             if (result == null) return null;
 
             result.ProgressPercentage = result.NumberOfWatchedVideos > 0 && result.NumberOfVideos > 0
-                                        ? Math.Round((decimal)result.NumberOfWatchedVideos / result.NumberOfVideos * 100, 2)
+                                        ? result.NumberOfWatchedVideos / result.NumberOfVideos * 100
                                         : 0;
 
             return result;

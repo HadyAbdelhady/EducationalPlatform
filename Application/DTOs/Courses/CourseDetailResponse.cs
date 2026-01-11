@@ -15,7 +15,7 @@ namespace Application.DTOs.Courses
         public int NumberOfSheets { get; set; }
         public int NumberOfWatchedVideos { get; set; }
         public int NumberOfSections { get; set; }
-        public decimal ProgressPercentage { get; set; }
+        public int ProgressPercentage { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public List<InstructorInfoDto> Instructors { get; set; } = [];

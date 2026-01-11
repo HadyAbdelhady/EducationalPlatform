@@ -8,7 +8,8 @@ using MediatR;
 
 namespace Application.Features.Courses.Query.GetAllCourses
 {
-    public class GetAllCoursesQueryHandler(IUnitOfWork unitOfWork, IBaseFilterRegistry<Course> courseFilterRegistry) : IRequestHandler<GetAllCoursesQuery, Result<PaginatedResult<CourseResponse>>>
+    public class GetAllCoursesQueryHandler(IUnitOfWork unitOfWork, IBaseFilterRegistry<Course> courseFilterRegistry)
+        : IRequestHandler<GetAllCoursesQuery, Result<PaginatedResult<CourseResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IBaseFilterRegistry<Course> _courseFilterRegistry = courseFilterRegistry;
@@ -30,25 +31,47 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     Description = course.Description ?? string.Empty,
                     PictureUrl = course.PictureUrl,
                     Rating = course.Rating,
+                    IsEnrolled = course.StudentCourses.Any(sc => sc.StudentId == request.UserID),
                     NumberOfStudents = course.NumberOfStudentsEnrolled,
                     NumberOfVideos = course.NumberOfVideos,
                     NumberOfSections = course.NumberOfSections,
-                    NumberOfWatchedVideos = course.StudentCourses.Select(xc => xc.NumberOfCourseVideosWatched).FirstOrDefault(), 
+
+                    NumberOfWatchedVideos = course.StudentCourses
+                        .Where(sc => sc.StudentId == request.UserID)
+                        .Select(sc => sc.NumberOfCourseVideosWatched)
+                        .FirstOrDefault(),
+
+                    NumberOfSubscriptedSections = course.StudentCourses.Any(sc => sc.StudentId == request.UserID)
+                        ? null
+                        : course.Sections
+                            .SelectMany(s => s.StudentSections)
+                            .Where(ss => ss.StudentId == request.UserID)
+                            .Select(ss => ss.SectionId)
+                            .Distinct()
+                            .Count(),
+
+                    ProgressPercentage = course.StudentCourses.Any(sc => sc.StudentId == request.UserID) && course.NumberOfVideos > 0
+                        ? ((decimal?)course.StudentCourses
+                            .Where(sc => sc.StudentId == request.UserID)
+                            .Select(sc => sc.NumberOfCourseVideosWatched)
+                            .FirstOrDefault() / course.NumberOfVideos) * 100
+                        : (decimal?)null,
+
                     ThumbnailUrl = course.IntroVideoUrl!,
                     CreatedAt = course.CreatedAt,
-                    NumberOfSheets = course.NumberOfQuestionSheets,
-                    UpdatedAt = course.UpdatedAt
+                    UpdatedAt = course.UpdatedAt,
+                    NumberOfSheets = course.NumberOfQuestionSheets
                 }).ToList();
 
-                // Pagination
-                int skip = (request.PageNumber - 1) * 10;
-                var PagenatedResponse = response.Skip(skip).Take(10).ToList();
+                int pageSize = 10;
+                int skip = (request.PageNumber - 1) * pageSize;
+                var PaginatedResponse = response.Skip(skip).Take(pageSize).ToList();
 
                 return Result<PaginatedResult<CourseResponse>>.Success(new PaginatedResult<CourseResponse>
                 {
-                    Items = PagenatedResponse,
+                    Items = PaginatedResponse,
                     PageNumber = request.PageNumber,
-                    PageSize = 10,
+                    PageSize = pageSize,
                     TotalCount = response.Count
                 });
             }
