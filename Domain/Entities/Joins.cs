@@ -18,6 +18,9 @@ namespace Domain.Entities
         [Column("number_of_course_videos_watched")]
         public int NumberOfCourseVideosWatched { get; set; } = 0;
 
+        [Column("progress")]
+        public decimal? Progress { get; set; }
+
         [Column("enrolled_at")]
         public DateTimeOffset EnrolledAt { get; set; } = DateTimeOffset.UtcNow;
 
@@ -50,6 +53,9 @@ namespace Domain.Entities
 
         [Column("number_of_section_videos_watched")]
         public int NumberOfSectionVideosWatched { get; set; } = 0;
+
+        [Column("progress")]
+        public decimal? Progress { get; set; }
 
         [Column("is_deleted")]
         public bool IsDeleted { get; set; } = false;

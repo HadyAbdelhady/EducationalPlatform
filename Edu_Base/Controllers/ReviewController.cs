@@ -1,13 +1,12 @@
-﻿using Application.DTOs.Review;
+﻿using Application.Features.Review.Query.GetAllReviewsByCourse;
 using Application.Features.Review.Commands.CreateReview;
 using Application.Features.Review.Commands.DeleteReview;
 using Application.Features.Review.Commands.UpdateReview;
-using Application.Features.Review.Query.GetAllReviewsByCourse;
 using Application.Features.Review.Query.GetReviewById;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Application.DTOs.Review;
+using MediatR;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Edu_Base.Controllers
 {
@@ -86,7 +85,7 @@ namespace Edu_Base.Controllers
 
             var query = new GetReviewByIdQuery { ReviewId = reviewId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("course/{courseId}")]
@@ -99,7 +98,7 @@ namespace Edu_Base.Controllers
 
             var query = new GetAllReviewsByCourseQuery { CourseId = courseId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
     }

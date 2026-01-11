@@ -23,45 +23,50 @@ namespace Application.Features.Courses.Query.GetAllCourses
                 Courses = Courses.ApplyFilters(request.Filters, _courseFilterRegistry.Filters)
                                  .ApplySort(request.SortBy, request.IsDescending, _courseFilterRegistry.Sorts);
 
-                var response = Courses.Select(course => new CourseResponse
+                var response = Courses
+                .Select(course => new
                 {
-                    Id = course.Id,
-                    Title = course.Name,
-                    Price = course.Price ?? 0,
-                    Description = course.Description ?? string.Empty,
-                    PictureUrl = course.PictureUrl,
-                    Rating = course.Rating,
-                    IsEnrolled = course.StudentCourses.Any(sc => sc.StudentId == request.UserID),
-                    NumberOfStudents = course.NumberOfStudentsEnrolled,
-                    NumberOfVideos = course.NumberOfVideos,
-                    NumberOfSections = course.NumberOfSections,
+                    course,
 
-                    NumberOfWatchedVideos = course.StudentCourses
-                        .Where(sc => sc.StudentId == request.UserID)
-                        .Select(sc => sc.NumberOfCourseVideosWatched)
-                        .FirstOrDefault(),
+                    StudentCourse = course.StudentCourses.Where(sc => sc.StudentId == request.UserID && sc.CourseId == course.Id),
 
-                    NumberOfSubscriptedSections = course.StudentCourses.Any(sc => sc.StudentId == request.UserID)
-                        ? null
-                        : course.Sections
-                            .SelectMany(s => s.StudentSections)
-                            .Where(ss => ss.StudentId == request.UserID)
-                            .Select(ss => ss.SectionId)
-                            .Distinct()
-                            .Count(),
+                    SubscribedSections = course.Sections.SelectMany(s => s.StudentSections)
+                                                        .Where(ss => ss.StudentId == request.UserID)
+                })
+                .Select(x => new CourseResponse
+                {
+                    Id = x.course.Id,
+                    Title = x.course.Name,
+                    Description = x.course.Description ?? string.Empty,
+                    PictureUrl = x.course.PictureUrl,
+                    Price = x.course.Price ?? 0,
+                    Rating = x.course.Rating,
 
-                    ProgressPercentage = course.StudentCourses.Any(sc => sc.StudentId == request.UserID) && course.NumberOfVideos > 0
-                        ? ((decimal?)course.StudentCourses
-                            .Where(sc => sc.StudentId == request.UserID)
-                            .Select(sc => sc.NumberOfCourseVideosWatched)
-                            .FirstOrDefault() / course.NumberOfVideos) * 100
-                        : (decimal?)null,
+                    IsEnrolled = x.StudentCourse.Any(),
 
-                    ThumbnailUrl = course.IntroVideoUrl!,
-                    CreatedAt = course.CreatedAt,
-                    UpdatedAt = course.UpdatedAt,
-                    NumberOfSheets = course.NumberOfQuestionSheets
+                    NumberOfStudents = x.course.NumberOfStudentsEnrolled,
+                    NumberOfVideos = x.course.NumberOfVideos,
+                    NumberOfSections = x.course.NumberOfSections,
+                    NumberOfSheets = x.course.NumberOfQuestionSheets,
+
+                    NumberOfWatchedVideos = x.StudentCourse.Any()
+                                                            ? x.StudentCourse.Select(xx => xx.NumberOfCourseVideosWatched)
+                                                                                .FirstOrDefault()
+                                                            : 0,
+
+                    NumberOfSubscriptedSections = x.StudentCourse.Any()
+                                                                  ? 0
+                                                                  : x.SubscribedSections.Distinct().Count(),
+
+                    ProgressPercentage = x.StudentCourse.Any()
+                                                             ? x.StudentCourse.Select(xx => xx.Progress).FirstOrDefault()
+                                                             : x.SubscribedSections.Select(ss => ss.Progress).Average(),
+
+                    ThumbnailUrl = x.course.IntroVideoUrl!,
+                    CreatedAt = x.course.CreatedAt,
+                    UpdatedAt = x.course.UpdatedAt
                 }).ToList();
+
 
                 int pageSize = 10;
                 int skip = (request.PageNumber - 1) * pageSize;
