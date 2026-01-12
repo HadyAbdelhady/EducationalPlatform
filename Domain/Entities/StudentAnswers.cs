@@ -5,14 +5,15 @@ using Domain.Interfaces;
 namespace Domain.Entities
 {
 
-    [Table("student_submissions", Schema = "public")]
-    public class StudentSubmission : ISoftDeletableEntity
+    [Table("student_answers", Schema = "public")]
+    public class StudentAnswers : ISoftDeletableEntity
     {
         [Key]
         [Column("id")]
         public Guid Id { get; set; }
 
         [Column("student_id")]
+        [ForeignKey(nameof(Student))]
         public Guid StudentId { get; set; }
 
         [Column("exam_result_id")]

@@ -49,8 +49,8 @@ namespace Edu_Base.Controllers
         [HttpGet("GetCoursesList")]
         public async Task<IActionResult> GetCoursesList([FromQuery] GetAllCoursesRequest request, CancellationToken cancellationToken)
         {
-            //var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
             var query = new GetAllCoursesQuery
             {
                 Filters = request.Filters,

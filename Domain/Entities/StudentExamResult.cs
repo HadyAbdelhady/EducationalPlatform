@@ -23,9 +23,8 @@ namespace Domain.Entities
 
         [Column("obtained_marks")]
         public decimal? StudentMark { get; set; }
-
-        [Column("status")]
-        public ExamStatus Status { get; set; }
+        [Column("exam_result_status")]
+        public ExamResultStatus Status { get; set; }
 
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }
@@ -39,6 +38,6 @@ namespace Domain.Entities
         public Student Student { get; set; } = null!;
         public Exam Exam { get; set; } = null!;
 
-        public ICollection<StudentSubmission> StudentSubmissions { get; set; } = null!;
+        public ICollection<StudentAnswers> StudentSubmissions { get; set; } = null!;
     }
 }

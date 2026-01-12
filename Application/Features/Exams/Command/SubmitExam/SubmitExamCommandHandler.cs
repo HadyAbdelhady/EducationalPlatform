@@ -39,13 +39,12 @@ namespace Application.Features.Exams.Command.SubmitExam
                 Id = examResultId,
                 StudentId = request.Student,
                 ExamId = request.Exam,
-                Status = ExamStatus.Submitted,
                 StudentMark = null, // Will be calculated in the event handler
             };
 
             foreach (var answer in request.Answers)
             {
-                StudentSubmission submission = new()
+                Domain.Entities.StudentAnswers submission = new()
                 {
                     Id = Guid.NewGuid(),
                     QuestionId = answer.QuestionId,
@@ -54,7 +53,7 @@ namespace Application.Features.Exams.Command.SubmitExam
                     StudentId = request.Student
                 };
 
-                await unitOfWork.Repository<StudentSubmission>().AddAsync(submission, cancellationToken);
+                await unitOfWork.Repository<Domain.Entities.StudentAnswers>().AddAsync(submission, cancellationToken);
             }
 
             await unitOfWork.Repository<StudentExamResult>().AddAsync(examResult, cancellationToken);

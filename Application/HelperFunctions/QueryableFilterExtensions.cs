@@ -1,4 +1,4 @@
-namespace Application.Interfaces.BaseFilters
+namespace Application.HelperFunctions
 {
     public static class QueryableFilterExtensions
     {

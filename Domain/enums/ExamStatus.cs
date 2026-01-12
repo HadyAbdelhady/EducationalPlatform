@@ -2,9 +2,11 @@ namespace Domain.enums
 {
     public enum ExamStatus
     {
-        Submitted,
-        Graded,
-        Pending
+        Draft, // instructor is creating the exam
+        Scheduled, // exam is scheduled but not yet started
+        Started, // exam is currently ongoing
+        Finished, // exam has ended
+
     }
 }
 

@@ -37,6 +37,9 @@ namespace Domain.Entities
         [Column("exam_type")]
         public ExamType ExamType { get; set; } = ExamType.FixedTimeExam;
 
+        [Column("status")]
+        public ExamStatus Status { get; set; } = ExamStatus.Draft;
+
         [Column("start_time")]
         public DateTimeOffset? StartTime { get; set; }
 

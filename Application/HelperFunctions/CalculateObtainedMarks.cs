@@ -30,7 +30,7 @@ namespace Application.HelperFunctions
             return obtainedMarks;
         }
 
-        public static decimal Calculate(ExamModelAnswer examModelAnswer, IEnumerable<StudentSubmission> studentSubmissions)
+        public static decimal Calculate(ExamModelAnswer examModelAnswer, IEnumerable<Domain.Entities.StudentAnswers> studentSubmissions)
         {
             var correctAnswers = examModelAnswer.Questions
                 .ToDictionary(q => q.QuestionId, q => q);

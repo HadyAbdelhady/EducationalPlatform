@@ -79,7 +79,6 @@ namespace Edu_Base.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteVideo(Guid videoId, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Deleting video with Id: {videoId}");
             var command = new DeleteVideoCommand
             {
                 VideoId = videoId
@@ -92,7 +91,6 @@ namespace Edu_Base.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllVideos(CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Reterving All Videos");
             var query = new GetAllVideosQuery();
 
             var result = await _mediator.Send(query, cancellationToken);
@@ -103,8 +101,8 @@ namespace Edu_Base.Controllers
         [HttpPatch("MarkVideoWatched/{VideoId}")]
         public async Task<IActionResult> MarkVideoWatched(Guid VideoId, CancellationToken cancellationToken)
         {
-            //var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
 
             var command = new VideoWatchedCommand(VideoId, UserId);
 

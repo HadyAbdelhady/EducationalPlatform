@@ -40,7 +40,7 @@ namespace Domain.Entities
         public Section? Section { get; set; } = null;
         public Course? Course { get; set; } = null;
         public ICollection<Answer> Answers { get; set; } = [];
-        public ICollection<StudentSubmission> StudentSubmissions { get; set; } = [];
+        public ICollection<StudentAnswers> StudentSubmissions { get; set; } = [];
     }
 }
 

@@ -107,5 +107,50 @@ namespace Infrastructure.Services.ReviewService
                 Comment = request.Comment,
             });
         }
+
+        public virtual async Task<Result<List<GetAllReviewsResponse>>> GetAllReviewsAsync(Guid entityId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var reviews = _unitOfWork.Repository<TReview>()
+                    .Find(r => r.EntityId == entityId && !r.IsDeleted, 
+                        cancellationToken, r => r.Student!.User!);
+
+                var reviewsList = reviews.ToList();
+
+                if (reviewsList.Count == 0)
+                {
+                    return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
+                        $"No reviews found for entity with ID {entityId}.",
+                        ErrorType.NotFound);
+                }
+
+                var response = reviewsList
+                    .OrderByDescending(r => r.CreatedAt)
+                    .Select(r => new GetAllReviewsResponse
+                    {
+                        Id = r.Id,
+                        StudentId = r.StudentId,
+                        StarRating = r.StarRating,
+                        Comment = r.Comment,
+                        CreatedAt = r.CreatedAt,
+                        UpdatedAt = r.UpdatedAt ?? r.CreatedAt,
+                        Student = r.Student?.User != null ? new StudentReviewInfo
+                        {
+                            StudentId = r.StudentId,
+                            FullName = r.Student.User.FullName,
+                            PersonalPictureUrl = r.Student.User.PersonalPictureUrl
+                        } : null
+                    }).ToList();
+
+                return Result<List<GetAllReviewsResponse>>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
+                    $"An error occurred while retrieving reviews: {ex.Message}",
+                    ErrorType.InternalServerError);
+            }
+        }
     }
 }

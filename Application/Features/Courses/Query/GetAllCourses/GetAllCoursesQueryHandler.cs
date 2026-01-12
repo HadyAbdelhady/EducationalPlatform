@@ -5,6 +5,7 @@ using Application.Interfaces;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
+using Application.HelperFunctions;
 
 namespace Application.Features.Courses.Query.GetAllCourses
 {

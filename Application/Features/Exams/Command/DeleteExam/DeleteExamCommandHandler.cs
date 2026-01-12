@@ -15,7 +15,7 @@ namespace Application.Features.Exams.Command.DeleteExam
         public async Task<Result<string>> Handle(DeleteExamCommand request, CancellationToken cancellationToken)
         {
             var ExamRepo = _unitOfWork.Repository<Exam>();
-            var StudentSubmissionRepo = _unitOfWork.Repository<StudentSubmission>();
+            var StudentSubmissionRepo = _unitOfWork.Repository<StudentAnswers>();
 
 
             var exam = await ExamRepo.GetByIdAsync(request.ExamId, cancellationToken);

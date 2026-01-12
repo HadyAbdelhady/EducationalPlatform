@@ -1,10 +1,11 @@
-﻿using Application.Features.Review.Query.GetAllReviewsByCourse;
+﻿using Application.Features.Review.Query.GetAllReviews;
 using Application.Features.Review.Commands.CreateReview;
 using Application.Features.Review.Commands.DeleteReview;
 using Application.Features.Review.Commands.UpdateReview;
 using Application.Features.Review.Query.GetReviewById;
 using Microsoft.AspNetCore.Mvc;
 using Application.DTOs.Review;
+using Domain.enums;
 using MediatR;
 
 
@@ -82,24 +83,28 @@ namespace Edu_Base.Controllers
             {
                 return BadRequest("Review ID cannot be empty");
             }
-
             var query = new GetReviewByIdQuery { ReviewId = reviewId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpGet("course/{courseId}")]
-        public async Task<IActionResult> GetAllReviewsByCourse(Guid courseId, CancellationToken cancellationToken)
+        [HttpGet("GetAllReviewsInEntity")]
+        public async Task<IActionResult> GetAllReviews([FromQuery] ReviewGettingRequest request, CancellationToken cancellationToken)
         {
-            if (courseId == Guid.Empty)
+            if (request.EntityId == Guid.Empty)
             {
-                return BadRequest("Course ID cannot be empty");
+                return BadRequest("Entity ID cannot be empty");
             }
 
-            var query = new GetAllReviewsByCourseQuery { CourseId = courseId };
+            var query = new GetAllReviewsQuery 
+            { 
+                EntityId = request.EntityId, 
+                EntityType = request.EntityType 
+            };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
     }
+
 }

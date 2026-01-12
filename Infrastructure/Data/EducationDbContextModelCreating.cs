@@ -44,31 +44,32 @@ namespace Infrastructure.Data
             modelBuilder.Entity<ChatMessage>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Payment>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<StudentExamResult>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<StudentSubmission>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<StudentAnswers>().HasQueryFilter(x => !x.IsDeleted);
 
             // Enum conversions (cannot be done with Data Annotations)
             modelBuilder.Entity<Sheet>()
                 .Property(x => x.Type)
                 .HasConversion<EnumToStringConverter<SheetType>>();
 
-            modelBuilder.Entity<Exam>()
-                .Property(x => x.ExamType)
+            modelBuilder.Entity<Exam>(e =>
+            {
+                e.Property(x => x.Status)
+                .HasConversion<EnumToStringConverter<ExamStatus>>();
+                e.Property(x => x.ExamType)
                 .HasConversion<EnumToStringConverter<ExamType>>();
 
-            modelBuilder.Entity<StudentExamResult>()
-                .Property(x => x.Status)
-                .HasConversion<EnumToStringConverter<ExamStatus>>();
+            });
 
             // Configure join tables with composite keys and relationships
             // StudentCourse
             modelBuilder.Entity<StudentCourse>()
                 .HasKey(e => new { e.StudentId, e.CourseId });
-            
+
             modelBuilder.Entity<StudentCourse>()
                 .HasOne(sc => sc.Student)
                 .WithMany(s => s.StudentCourses)
                 .HasForeignKey(sc => sc.StudentId);
-                
+
             modelBuilder.Entity<StudentCourse>()
                 .HasOne(sc => sc.Course)
                 .WithMany(c => c.StudentCourses)
@@ -77,12 +78,12 @@ namespace Infrastructure.Data
             // StudentSection
             modelBuilder.Entity<StudentSection>()
                 .HasKey(e => new { e.StudentId, e.SectionId });
-                
+
             modelBuilder.Entity<StudentSection>()
                 .HasOne(ss => ss.Student)
                 .WithMany(s => s.StudentSections)
                 .HasForeignKey(ss => ss.StudentId);
-                
+
             modelBuilder.Entity<StudentSection>()
                 .HasOne(ss => ss.Section)
                 .WithMany(s => s.StudentSections)
@@ -91,12 +92,12 @@ namespace Infrastructure.Data
             // StudentVideo
             modelBuilder.Entity<StudentVideo>()
                 .HasKey(e => new { e.StudentId, e.VideoId });
-                
+
             modelBuilder.Entity<StudentVideo>()
                 .HasOne(sv => sv.Student)
                 .WithMany(s => s.StudentVideos)
                 .HasForeignKey(sv => sv.StudentId);
-                
+
             modelBuilder.Entity<StudentVideo>()
                 .HasOne(sv => sv.Video)
                 .WithMany(v => v.StudentVideos)
@@ -105,12 +106,12 @@ namespace Infrastructure.Data
             // StudentExam
             modelBuilder.Entity<StudentExam>()
                 .HasKey(e => new { e.StudentId, e.ExamId });
-                
+
             modelBuilder.Entity<StudentExam>()
                 .HasOne(se => se.Student)
                 .WithMany(s => s.StudentExams)
                 .HasForeignKey(se => se.StudentId);
-                
+
             modelBuilder.Entity<StudentExam>()
                 .HasOne(se => se.Exam)
                 .WithMany(e => e.StudentExams)
@@ -119,12 +120,12 @@ namespace Infrastructure.Data
             // InstructorCourse
             modelBuilder.Entity<InstructorCourse>()
                 .HasKey(e => new { e.InstructorId, e.CourseId });
-                
+
             modelBuilder.Entity<InstructorCourse>()
                 .HasOne(ic => ic.Instructor)
                 .WithMany(i => i.InstructorCourses)
                 .HasForeignKey(ic => ic.InstructorId);
-                
+
             modelBuilder.Entity<InstructorCourse>()
                 .HasOne(ic => ic.Course)
                 .WithMany(c => c.InstructorCourses)
@@ -133,12 +134,12 @@ namespace Infrastructure.Data
             // InstructorSection
             modelBuilder.Entity<InstructorSection>()
                 .HasKey(e => new { e.InstructorId, e.SectionId });
-                
+
             modelBuilder.Entity<InstructorSection>()
                 .HasOne(ins => ins.Instructor)
                 .WithMany(i => i.InstructorSections)
                 .HasForeignKey(ins => ins.InstructorId);
-                
+
             modelBuilder.Entity<InstructorSection>()
                 .HasOne(ins => ins.Section)
                 .WithMany(s => s.InstructorSections)
@@ -451,9 +452,12 @@ namespace Infrastructure.Data
                     .WithMany(x => x.ExamResults)
                     .HasForeignKey(x => x.ExamId)
                     .HasConstraintName("exam_results_exam_id_fkey");
+
+                b.Property(e => e.Status)
+                    .HasConversion<EnumToStringConverter<ExamResultStatus>>();
             });
 
-            modelBuilder.Entity<StudentSubmission>(b =>
+            modelBuilder.Entity<StudentAnswers>(b =>
             {
                 b.HasOne(x => x.ExamResult)
                     .WithMany(x => x.StudentSubmissions)
