@@ -4,7 +4,7 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Review.Commands.DeleteReview
+namespace Application.Features.Reviews.Commands.DeleteReview
 {
     public class DeleteReviewCommandHandler(IReviewServiceFactory reviewServiceFactory) : IRequestHandler<DeleteReviewCommand, Result<string>>
     {

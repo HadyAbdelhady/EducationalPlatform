@@ -1,8 +1,8 @@
-﻿using Application.Features.Review.Query.GetAllReviews;
-using Application.Features.Review.Commands.CreateReview;
-using Application.Features.Review.Commands.DeleteReview;
-using Application.Features.Review.Commands.UpdateReview;
-using Application.Features.Review.Query.GetReviewById;
+﻿using Application.Features.Reviews.Query.GetAllReviews;
+using Application.Features.Reviews.Commands.CreateReview;
+using Application.Features.Reviews.Commands.DeleteReview;
+using Application.Features.Reviews.Commands.UpdateReview;
+using Application.Features.Reviews.Query.GetReviewById;
 using Microsoft.AspNetCore.Mvc;
 using Application.DTOs.Review;
 using Domain.enums;
@@ -83,6 +83,7 @@ namespace Edu_Base.Controllers
             {
                 return BadRequest("Review ID cannot be empty");
             }
+
             var query = new GetReviewByIdQuery { ReviewId = reviewId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
@@ -99,7 +100,10 @@ namespace Edu_Base.Controllers
             var query = new GetAllReviewsQuery 
             { 
                 EntityId = request.EntityId, 
-                EntityType = request.EntityType 
+                EntityType = request.EntityType,
+                Filters = request.Filters,
+                SortBy = request.SortBy,
+                IsDescending = request.IsDescending
             };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);

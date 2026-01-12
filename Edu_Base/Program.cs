@@ -97,7 +97,10 @@ namespace Edu_Base
             builder.Services.AddScoped<IReviewService, VideoReviewService>();
             builder.Services.AddScoped<IQuestionUpdateService, QuestionUpdateService>();
             builder.Services.AddScoped<IBaseFilterRegistry<Course>, CourseFilterRegistry>();
-            builder.Services.AddScoped<IBaseFilterRegistry<Review>, ReviewFilterRegistry<Review>>();
+            builder.Services.AddScoped<IBaseFilterRegistry<CourseReview>, CourseReviewFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<SectionReview>, SectionReviewFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<VideoReview>, VideoReviewFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<InstructorReview>, InstructorReviewFilterRegistry>();
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>

@@ -2,7 +2,7 @@ using Application.DTOs.Review;
 using Application.ResultWrapper;
 using MediatR;
 
-namespace Application.Features.Review.Query.GetAllReviewsByCourse
+namespace Application.Features.Reviews.Query.GetAllReviewsByCourse
 {
     public class GetAllReviewsByCourseQuery : IRequest<Result<List<GetAllReviewsByCourseResponse>>>
     {

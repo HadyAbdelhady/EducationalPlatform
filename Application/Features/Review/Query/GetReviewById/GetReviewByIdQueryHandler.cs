@@ -5,7 +5,7 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Review.Query.GetReviewById
+namespace Application.Features.Reviews.Query.GetReviewById
 {
     public class GetReviewByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetReviewByIdQuery, Result<GetReviewByIdResponse>>
     {
@@ -54,4 +54,3 @@ namespace Application.Features.Review.Query.GetReviewById
         }
     }
 }
-

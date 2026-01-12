@@ -1,5 +1,7 @@
 ﻿using Application.DTOs.Review;
+using Application.HelperFunctions;
 using Application.Interfaces;
+using Application.Interfaces.BaseFilters;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
@@ -7,9 +9,10 @@ using Domain.enums;
 namespace Infrastructure.Services.ReviewService
 {
 
-    public class ReviewServiceBase<TReview>(IUnitOfWork unitOfWork) : IReviewService where TReview : Review, new()
+    public class ReviewServiceBase<TReview>(IUnitOfWork unitOfWork, IBaseFilterRegistry<TReview> filterRegistry) : IReviewService where TReview : Review, new()
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IBaseFilterRegistry<TReview> _filterRegistry = filterRegistry;
 
         public virtual async Task<Result<ReviewResponse>> CreateReviewAsync(ReviewCreationRequest request, CancellationToken cancellationToken = default)
         {
@@ -108,25 +111,38 @@ namespace Infrastructure.Services.ReviewService
             });
         }
 
-        public virtual async Task<Result<List<GetAllReviewsResponse>>> GetAllReviewsAsync(Guid entityId, CancellationToken cancellationToken = default)
+        public virtual async Task<Result<List<GetAllReviewsResponse>>> GetAllReviewsAsync(ReviewGettingRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
                 var reviews = _unitOfWork.Repository<TReview>()
-                    .Find(r => r.EntityId == entityId && !r.IsDeleted, 
+                    .Find(r => r.EntityId == request.EntityId, 
                         cancellationToken, r => r.Student!.User!);
+
+                if (request.Filters != null && request.Filters.Count > 0)
+                {
+                    reviews = reviews.ApplyFilters(request.Filters, _filterRegistry.Filters);
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.SortBy))
+                {
+                    reviews = reviews.ApplySort(request.SortBy, request.IsDescending, _filterRegistry.Sorts);
+                }
+                else
+                {
+                    reviews = reviews.OrderByDescending(r => r.CreatedAt);
+                }
 
                 var reviewsList = reviews.ToList();
 
                 if (reviewsList.Count == 0)
                 {
                     return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
-                        $"No reviews found for entity with ID {entityId}.",
+                        $"No reviews found for entity with ID {request.EntityId}.",
                         ErrorType.NotFound);
                 }
 
                 var response = reviewsList
-                    .OrderByDescending(r => r.CreatedAt)
                     .Select(r => new GetAllReviewsResponse
                     {
                         Id = r.Id,
@@ -149,6 +165,47 @@ namespace Infrastructure.Services.ReviewService
             {
                 return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
                     $"An error occurred while retrieving reviews: {ex.Message}",
+                    ErrorType.InternalServerError);
+            }
+        }
+
+        public virtual async Task<Result<GetReviewByIdResponse>> GetReviewByIdAsync(Guid reviewId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var review = await _unitOfWork.Repository<TReview>()
+                    .GetByIdAsync(reviewId, cancellationToken, r => r.Student!.User!);
+
+                if (review is null || review.IsDeleted)
+                {
+                    return Result<GetReviewByIdResponse>.FailureStatusCode(
+                        $"Review with ID {reviewId} not found.",
+                        ErrorType.NotFound);
+                }
+
+                var response = new GetReviewByIdResponse
+                {
+                    Id = review.Id,
+                    StudentId = review.StudentId,
+                    EntityId = review.EntityId,
+                    StarRating = review.StarRating,
+                    Comment = review.Comment,
+                    CreatedAt = review.CreatedAt,
+                    UpdatedAt = review.UpdatedAt ?? review.CreatedAt,
+                    Student = review.Student?.User != null ? new StudentReviewInfo
+                    {
+                        StudentId = review.StudentId,
+                        FullName = review.Student.User.FullName,
+                        PersonalPictureUrl = review.Student.User.PersonalPictureUrl
+                    } : null
+                };
+
+                return Result<GetReviewByIdResponse>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                return Result<GetReviewByIdResponse>.FailureStatusCode(
+                    $"An error occurred while retrieving the review: {ex.Message}",
                     ErrorType.InternalServerError);
             }
         }

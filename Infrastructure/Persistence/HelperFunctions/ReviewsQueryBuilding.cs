@@ -24,4 +24,20 @@ namespace Infrastructure.Persistence.HelperFunctions
                 : q.OrderBy(r => r.StarRating)
         };
     }
+
+    public class CourseReviewFilterRegistry : ReviewFilterRegistry<CourseReview>
+    {
+    }
+
+    public class SectionReviewFilterRegistry : ReviewFilterRegistry<SectionReview>
+    {
+    }
+
+    public class VideoReviewFilterRegistry : ReviewFilterRegistry<VideoReview>
+    {
+    }
+
+    public class InstructorReviewFilterRegistry : ReviewFilterRegistry<InstructorReview>
+    {
+    }
 }

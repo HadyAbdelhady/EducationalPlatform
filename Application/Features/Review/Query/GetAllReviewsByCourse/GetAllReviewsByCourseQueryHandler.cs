@@ -5,7 +5,7 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Review.Query.GetAllReviewsByCourse
+namespace Application.Features.Reviews.Query.GetAllReviewsByCourse
 {
     public class GetAllReviewsByCourseQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllReviewsByCourseQuery, Result<List<GetAllReviewsByCourseResponse>>>
     {

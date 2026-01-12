@@ -5,7 +5,7 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Review.Commands.UpdateReview
+namespace Application.Features.Reviews.Commands.UpdateReview
 {
     public class UpdateReviewCommandHandler(IReviewServiceFactory reviewServiceFactory) : IRequestHandler<UpdateReviewCommand, Result<ReviewResponse>>
     {

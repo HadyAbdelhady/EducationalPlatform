@@ -4,9 +4,9 @@ using Application.ResultWrapper;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Review.Query.GetAllReviews
+namespace Application.Features.Reviews.Query.GetAllReviews
 {
-    public class GetAllReviewsQueryHandler(IReviewServiceFactory reviewServiceFactory) 
+    public class GetAllReviewsQueryHandler(IReviewServiceFactory reviewServiceFactory)
         : IRequestHandler<GetAllReviewsQuery, Result<List<GetAllReviewsResponse>>>
     {
         private readonly IReviewServiceFactory _reviewServiceFactory = reviewServiceFactory;
@@ -15,13 +15,19 @@ namespace Application.Features.Review.Query.GetAllReviews
         {
             try
             {
-                var reviewService = _reviewServiceFactory.GetReviewService(request.EntityType);
-                return await reviewService.GetAllReviewsAsync(request.EntityId, cancellationToken);
+                IReviewService reviewService = _reviewServiceFactory.GetReviewService(request.EntityType);
+                return await reviewService.GetAllReviewsAsync(new ReviewGettingRequest(
+                    request.EntityId,
+                    request.EntityType,
+                    request.Filters,
+                    request.SortBy,
+                    request.IsDescending),
+                    cancellationToken);
             }
-            catch (NotImplementedException)
+            catch (NotImplementedException ex)
             {
                 return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
-                    $"Review entity type {request.EntityType} is not supported.",
+                    ex.Message,
                     ErrorType.BadRequest);
             }
             catch (Exception ex)
