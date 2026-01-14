@@ -4,7 +4,7 @@ using Application.ResultWrapper;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Reviews.Query.GetAllReviews
+namespace Application.Features.Review.Query.GetAllReviews
 {
     public class GetAllReviewsQueryHandler(IReviewServiceFactory reviewServiceFactory)
         : IRequestHandler<GetAllReviewsQuery, Result<List<GetAllReviewsResponse>>>

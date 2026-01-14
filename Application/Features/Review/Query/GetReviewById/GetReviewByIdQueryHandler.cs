@@ -1,49 +1,23 @@
 using Application.DTOs.Review;
 using Application.Interfaces;
 using Application.ResultWrapper;
-using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Reviews.Query.GetReviewById
+namespace Application.Features.Review.Query.GetReviewById
 {
-    public class GetReviewByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetReviewByIdQuery, Result<GetReviewByIdResponse>>
+    public class GetReviewByIdQueryHandler(IUnitOfWork unitOfWork, IReviewServiceFactory reviewServiceFactory) : IRequestHandler<GetReviewByIdQuery, Result<GetReviewByIdResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IReviewServiceFactory _reviewServiceFactory = reviewServiceFactory;
+
 
         public async Task<Result<GetReviewByIdResponse>> Handle(GetReviewByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                // Try to find as CourseReview first
-                var courseReview = await _unitOfWork.Repository<CourseReview>()
-                    .GetByIdAsync(request.ReviewId, cancellationToken, r => r.Student!.User!);
-
-                if (courseReview != null && !courseReview.IsDeleted)
-                {
-                    var response = new GetReviewByIdResponse
-                    {
-                        Id = courseReview.Id,
-                        StudentId = courseReview.StudentId,
-                        EntityId = courseReview.EntityId,
-                        StarRating = courseReview.StarRating,
-                        Comment = courseReview.Comment,
-                        CreatedAt = courseReview.CreatedAt,
-                        UpdatedAt = courseReview.UpdatedAt ?? courseReview.CreatedAt,
-                        Student = courseReview.Student?.User != null ? new StudentReviewInfo
-                        {
-                            StudentId = courseReview.StudentId,
-                            FullName = courseReview.Student.User.FullName,
-                            PersonalPictureUrl = courseReview.Student.User.PersonalPictureUrl
-                        } : null
-                    };
-
-                    return Result<GetReviewByIdResponse>.Success(response);
-                }
-
-                return Result<GetReviewByIdResponse>.FailureStatusCode(
-                    $"Review with ID {request.ReviewId} not found.",
-                    ErrorType.NotFound);
+                IReviewService reviewService = _reviewServiceFactory.GetReviewService(request.EntityType);
+                return await reviewService.GetReviewByIdAsync(request.ReviewId, cancellationToken);
             }
             catch (Exception ex)
             {

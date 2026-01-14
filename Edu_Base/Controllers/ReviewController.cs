@@ -1,12 +1,12 @@
-﻿using Application.Features.Reviews.Query.GetAllReviews;
+﻿using Application.DTOs.Review;
+using Application.Features.Review.Query.GetReviewById;
 using Application.Features.Reviews.Commands.CreateReview;
 using Application.Features.Reviews.Commands.DeleteReview;
 using Application.Features.Reviews.Commands.UpdateReview;
-using Application.Features.Reviews.Query.GetReviewById;
-using Microsoft.AspNetCore.Mvc;
-using Application.DTOs.Review;
+using Application.Features.Reviews.Query.GetAllReviews;
 using Domain.enums;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace Edu_Base.Controllers
@@ -76,15 +76,19 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpGet("{reviewId}")]
-        public async Task<IActionResult> GetReviewById(Guid reviewId, CancellationToken cancellationToken)
+        [HttpGet]
+        public async Task<IActionResult> GetReviewById([FromQuery] GetReviewByIdRequest request, CancellationToken cancellationToken)
         {
-            if (reviewId == Guid.Empty)
+            if (request.reviewId == Guid.Empty)
             {
                 return BadRequest("Review ID cannot be empty");
             }
 
-            var query = new GetReviewByIdQuery { ReviewId = reviewId };
+            var query = new GetReviewByIdQuery
+            {
+                ReviewId = request.reviewId,
+                EntityType = request.EntityType
+            };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
@@ -97,9 +101,9 @@ namespace Edu_Base.Controllers
                 return BadRequest("Entity ID cannot be empty");
             }
 
-            var query = new GetAllReviewsQuery 
-            { 
-                EntityId = request.EntityId, 
+            var query = new GetAllReviewsQuery
+            {
+                EntityId = request.EntityId,
                 EntityType = request.EntityType,
                 Filters = request.Filters,
                 SortBy = request.SortBy,
