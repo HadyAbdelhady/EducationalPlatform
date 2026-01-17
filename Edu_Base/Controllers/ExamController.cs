@@ -2,6 +2,7 @@
 using Application.Features.Exams.Command.GenerateExam;
 using Application.Features.Exams.Command.StartExam;
 using Application.Features.Exams.Command.SubmitExam;
+using Application.Features.Exams.Query.Get_Exam_List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,5 +46,28 @@ namespace Edu_Base.Controllers
             var result = await _mediator.Send(command, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
         }
+
+
+        [HttpGet("GetExamsList")]
+        public async Task<IActionResult> GetExamsList([FromQuery] GetAllExamsRequest request,CancellationToken cancellationToken)
+        {
+            //var userId = Guid.Parse(
+            //    User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
+            //);
+            var userId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+
+            var query = new GetAllExamsQuery
+            {
+                Filters = request.Filters,
+                SortBy = request.SortBy,
+                IsDescending = request.IsDescending,
+                PageNumber = request.PageNumber,
+                UserId = userId
+            };
+
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+        }
+
     }
 }
