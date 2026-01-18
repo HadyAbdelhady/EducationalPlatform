@@ -1,4 +1,5 @@
-﻿using Application.Features.Exams.Command.DeleteExam;
+﻿using Application.DTOs;
+using Application.Features.Exams.Command.DeleteExam;
 using Application.Features.Exams.Command.GenerateExam;
 using Application.Features.Exams.Command.StartExam;
 using Application.Features.Exams.Command.SubmitExam;
@@ -49,19 +50,18 @@ namespace Edu_Base.Controllers
 
 
         [HttpGet("GetExamsList")]
-        public async Task<IActionResult> GetExamsList([FromQuery] GetAllExamsRequest request,CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExamsList([FromQuery] GetAllEntityRequestSkeleton request,CancellationToken cancellationToken)
         {
             //var userId = Guid.Parse(
             //    User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
             //);
             var userId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            //var userId = Guid.Parse("1664700f-6eac-46cd-be2a-1a6b96bdb04f");
+
 
             var query = new GetAllExamsQuery
             {
-                Filters = request.Filters,
-                SortBy = request.SortBy,
-                IsDescending = request.IsDescending,
-                PageNumber = request.PageNumber,
+                RequestSkeleton = request,
                 UserId = userId
             };
 

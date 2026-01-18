@@ -8,66 +8,71 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-public class GetAllExamsQueryHandler(IUnitOfWork unitOfWork,IBaseFilterRegistry<Exam> examFilterRegistry): IRequestHandler<GetAllExamsQuery, Result<PaginatedResult<ExamListDto>>>
+namespace Application.Features.Exams.Query.GetAllExams
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IBaseFilterRegistry<Exam> _examFilterRegistry = examFilterRegistry;
-
-    public async Task<Result<PaginatedResult<ExamListDto>>> Handle(
-        GetAllExamsQuery request,
-        CancellationToken cancellationToken)
+    public class GetAllExamsQueryHandler(IUnitOfWork unitOfWork,
+                                        IBaseFilterRegistry<Exam> examFilterRegistry) : IRequestHandler<GetAllExamsQuery, Result<PaginatedResult<ExamListDto>>>
     {
-        var exams = _unitOfWork.Repository<Exam>()
-            .GetAll(cancellationToken)
-            .ApplyFilters(request.Filters, _examFilterRegistry.Filters)
-            .ApplySort(request.SortBy, request.IsDescending, _examFilterRegistry.Sorts);
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IBaseFilterRegistry<Exam> _examFilterRegistry = examFilterRegistry;
 
-        var response = exams.Select(e => new ExamListDto
+        public async Task<Result<PaginatedResult<ExamListDto>>> Handle(
+            GetAllExamsQuery request,
+            CancellationToken cancellationToken)
         {
-            ExamId = e.Id,
-            Name = e.Name,
-            Description = e.Description,
-            ExamStatus = e.Status,
-            StudentExamStatusResult = e.ExamResults
-                .Where(se => se.StudentId == request.UserId)
-                .Select(se => (ExamResultStatus?)se.Status)
-                .FirstOrDefault(),
-            StartTime = e.StartTime,
-            EndTime = e.EndTime,
-            IsTaken = e.ExamResults.Any(),
-            TotalMark = e.TotalMark,
-            NumberOfQuestions = e.NumberOfQuestions,
-            DurationInMinutes = e.DurationInMinutes,
-            IsRandomized = e.IsRandomized,
-            ExamType = e.ExamType,
-            PassMarkPercentage = e.PassMarkPercentage,
-            NotStartedCount = e.ExamResults
-                .Count(r => r.Status == ExamResultStatus.NotStarted),
+            var exams = _unitOfWork.Repository<Exam>()
+                .GetAll(cancellationToken)
+                .ApplyFilters(request.RequestSkeleton.Filters, _examFilterRegistry.Filters)
+                .ApplySort(request.RequestSkeleton.SortBy, request.RequestSkeleton.IsDescending, _examFilterRegistry.Sorts);
 
-            InProgressCount = e.ExamResults
-                .Count(r =>  r.Status == ExamResultStatus.InProgress),
-
-            PassedCount = e.ExamResults
-                .Count(r =>  r.Status == ExamResultStatus.Passed),
-
-            FailedCount = e.ExamResults
-                .Count(r => r.Status == ExamResultStatus.Failed),
-
-            CompletedCount = e.ExamResults
-                .Count(r => r.Status == ExamResultStatus.Passed || r.Status == ExamResultStatus.Failed)
-        })
-        .ToList();
-
-        int pageSize = 10;
-        int skip = (request.PageNumber - 1) * pageSize;
-
-        return Result<PaginatedResult<ExamListDto>>.Success(
-            new PaginatedResult<ExamListDto>
+            var response = exams.Select(e => new ExamListDto
             {
-                Items = response.Skip(skip).Take(pageSize).ToList(),
-                PageNumber = request.PageNumber,
-                PageSize = pageSize,
-                TotalCount = response.Count
-            });
+                ExamId = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                ExamStatus = e.Status,
+                StudentExamStatusResult = e.ExamResults
+                    .Where(se => se.StudentId == request.UserId)
+                    .Select(se => (ExamResultStatus?)se.Status)
+                    .FirstOrDefault(),
+                StartTime = e.StartTime,
+                EndTime = e.EndTime,
+                IsTaken = e.ExamResults.Any(er => er.StudentId == request.UserId),
+                TotalMark = e.TotalMark,
+                NumberOfQuestions = e.NumberOfQuestions,
+                DurationInMinutes = e.DurationInMinutes,
+                IsRandomized = e.IsRandomized,
+                ExamType = e.ExamType,
+                PassMarkPercentage = e.PassMarkPercentage,
+                NotStartedCount = e.ExamResults
+                    .Count(r => r.Status == ExamResultStatus.NotStarted),
+
+                InProgressCount = e.ExamResults
+                    .Count(r => r.Status == ExamResultStatus.InProgress),
+
+                PassedCount = e.ExamResults
+                    .Count(r => r.Status == ExamResultStatus.Passed),
+
+                FailedCount = e.ExamResults
+                    .Count(r => r.Status == ExamResultStatus.Failed),
+
+                CompletedCount = e.ExamResults
+                    .Count(r => r.Status == ExamResultStatus.Passed || r.Status == ExamResultStatus.Failed)
+            })
+            .ToList();
+
+            int pageSize = 10;
+            int skip = (request.RequestSkeleton.PageNumber - 1) * pageSize;
+
+            return Result<PaginatedResult<ExamListDto>>.Success(
+                new PaginatedResult<ExamListDto>
+                {
+                    Items = [.. response.Skip(skip).Take(pageSize)],
+                    PageNumber = request.RequestSkeleton.PageNumber,
+                    PageSize = pageSize,
+                    TotalCount = response.Count
+                });
+        }
     }
+
 }

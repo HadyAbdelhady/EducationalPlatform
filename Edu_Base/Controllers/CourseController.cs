@@ -1,3 +1,4 @@
+using Application.DTOs;
 using Application.DTOs.Courses;
 using Application.Features.Courses.Commands.CreateCourse;
 using Application.Features.Courses.Commands.DeleteCourse;
@@ -47,15 +48,13 @@ namespace Edu_Base.Controllers
         }
 
         [HttpGet("GetCoursesList")]
-        public async Task<IActionResult> GetCoursesList([FromQuery] GetAllCoursesRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCoursesList([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
             var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
             //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
             var query = new GetAllCoursesQuery
             {
-                Filters = request.Filters,
-                SortBy = request.SortBy,
-                IsDescending = request.IsDescending,
+                GetAllEntityRequestSkeleton = request,
                 UserID = UserId,
             };
             var result = await _mediator.Send(query, cancellationToken);

@@ -21,8 +21,8 @@ namespace Application.Features.Courses.Query.GetAllCourses
             {
                 var Courses = _unitOfWork.Repository<Course>().GetAll(cancellationToken);
 
-                Courses = Courses.ApplyFilters(request.Filters, _courseFilterRegistry.Filters)
-                                 .ApplySort(request.SortBy, request.IsDescending, _courseFilterRegistry.Sorts);
+                Courses = Courses.ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _courseFilterRegistry.Filters)
+                                 .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _courseFilterRegistry.Sorts);
 
                 var response = Courses
                 .Select(course => new
@@ -70,13 +70,13 @@ namespace Application.Features.Courses.Query.GetAllCourses
 
 
                 int pageSize = 10;
-                int skip = (request.PageNumber - 1) * pageSize;
+                int skip = (request.GetAllEntityRequestSkeleton.PageNumber - 1) * pageSize;
                 var PaginatedResponse = response.Skip(skip).Take(pageSize).ToList();
 
                 return Result<PaginatedResult<CourseResponse>>.Success(new PaginatedResult<CourseResponse>
                 {
                     Items = PaginatedResponse,
-                    PageNumber = request.PageNumber,
+                    PageNumber = request.GetAllEntityRequestSkeleton.PageNumber,
                     PageSize = pageSize,
                     TotalCount = response.Count
                 });
