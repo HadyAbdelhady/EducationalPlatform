@@ -19,6 +19,7 @@ namespace Infrastructure.Repositories
                             Description = course.Description,
                             PictureUrl = course.PictureUrl,
                             CreatedAt = course.CreatedAt,
+                            IsEnrolled = course.StudentCourses.Any(),
                             UpdatedAt = course.UpdatedAt ?? course.CreatedAt,
                             Price = course.Price ?? 0,
                             IntroVideoUrl = course.IntroVideoUrl,
