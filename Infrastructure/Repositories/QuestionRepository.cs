@@ -1,8 +1,9 @@
-using Application.DTOs.Questions;
-using Application.Interfaces;
-using Domain.Entities;
-using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Application.DTOs.Questions;
+using Application.DTOs.Answer;
+using Application.Interfaces;
+using Infrastructure.Data;
+using Domain.Entities;
 
 namespace Infrastructure.Repositories
 {
@@ -51,7 +52,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<GetAllQuestionsInExamResponse>> GetAllQuestionsInExamAsync(Guid examId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<QuestionsInExamResponse>> GetAllQuestionsInExamAsync(Guid examId, CancellationToken cancellationToken = default)
         {
             // First check if exam exists
             var examExists = await _context.Exams
@@ -64,17 +65,26 @@ namespace Infrastructure.Repositories
 
             // Single query with join to get all questions for the exam
             return await _context.Set<ExamBank>()
+                .AsNoTracking()
                 .Where(eb => eb.ExamId == examId)
-                .Select(eb => new GetAllQuestionsInExamResponse
+                .Select(eb => new QuestionsInExamResponse
                 {
                     Id = eb.Question.Id,
                     QuestionString = eb.Question.QuestionString,
                     QuestionImageUrl = eb.Question.QuestionImageUrl,
-                    QuestionMark = (decimal)eb.QuestionMark,
+                    QuestionMark = eb.QuestionMark,
                     SectionId = eb.Question.SectionId,
-                    CourseId = eb.Question.CourseId
+                    CourseId = eb.Question.CourseId,
+                    AllAnswersInExam = eb.Question.Answers
+                                                    .Where(a => !a.IsDeleted)
+                                                    .Select(a => new AnswerDto
+                                                    {
+                                                        Id = a.Id,
+                                                        AnswerString = a.AnswerText,
+                                                        IsCorrect = a.IsCorrect
+                                                    })
+                                                    .ToList()
                 })
-                .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }
     }

@@ -2,6 +2,7 @@
 using Application.Features.Exams.Command.GenerateExam;
 using Application.Features.Exams.Command.StartExam;
 using Application.Features.Exams.Command.SubmitExam;
+using Application.Features.Exams.Query.GetExamById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,6 +44,17 @@ namespace Edu_Base.Controllers
         public async Task<IActionResult> SubmitExam([FromBody] SubmitExamCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+        }
+
+        [HttpGet("GetExamById/{examId}")]
+        public async Task<IActionResult> GetExamById(Guid examId, CancellationToken cancellationToken)
+        {
+
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            var query = new GetExamByIdQuery { Id = examId, UserId = UserId };
+            var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
         }
     }

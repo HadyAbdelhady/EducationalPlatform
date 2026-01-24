@@ -57,7 +57,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Exams\Query\GetExamById\" />
     <Folder Include="Features\Exams\Query\GetAllStudentExams\" />
     <Folder Include="Features\Exams\Query\GetAllInstructorExams\" />
     <Folder Include="Features\Exams\Query\GetActiveExamAttempt\" />
