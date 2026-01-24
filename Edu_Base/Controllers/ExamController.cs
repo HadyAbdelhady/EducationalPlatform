@@ -3,7 +3,7 @@ using Application.Features.Exams.Command.DeleteExam;
 using Application.Features.Exams.Command.GenerateExam;
 using Application.Features.Exams.Command.StartExam;
 using Application.Features.Exams.Command.SubmitExam;
-using Application.Features.Exams.Query.Get_Exam_List;
+using Application.Features.Exams.Query.GetExamById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,26 +48,15 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
         }
 
-
-        [HttpGet("GetExamsList")]
-        public async Task<IActionResult> GetExamsList([FromQuery] GetAllEntityRequestSkeleton request,CancellationToken cancellationToken)
+        [HttpGet("GetExamById/{examId}")]
+        public async Task<IActionResult> GetExamById(Guid examId, CancellationToken cancellationToken)
         {
-            //var userId = Guid.Parse(
-            //    User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
-            //);
-            var userId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
-            //var userId = Guid.Parse("1664700f-6eac-46cd-be2a-1a6b96bdb04f");
 
-
-            var query = new GetAllExamsQuery
-            {
-                RequestSkeleton = request,
-                UserId = userId
-            };
-
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            var query = new GetExamByIdQuery { Id = examId, UserId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
         }
-
     }
 }

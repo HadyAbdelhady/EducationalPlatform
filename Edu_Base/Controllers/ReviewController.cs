@@ -4,7 +4,6 @@ using Application.Features.Review.Query.GetReviewById;
 using Application.Features.Reviews.Commands.CreateReview;
 using Application.Features.Reviews.Commands.DeleteReview;
 using Application.Features.Reviews.Commands.UpdateReview;
-using Domain.enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

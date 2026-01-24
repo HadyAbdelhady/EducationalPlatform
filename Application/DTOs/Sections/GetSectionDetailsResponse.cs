@@ -21,6 +21,7 @@ namespace Application.DTOs.Sections
     public sealed class SectionDetailsQueryModel
     {
         public SectionData Section { get; init; } = default!;
+        public bool IsEnrolled { get; init; }
         public StudentSectionData? StudentSection { get; init; }
         public List<VideoData> Videos { get; init; } = [];
     }

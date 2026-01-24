@@ -6,11 +6,11 @@ using MediatR;
 
 namespace Application.Features.Questions.Query.GetAllQuestionsInExam
 {
-    public class GetAllQuestionsInExamQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllQuestionsInExamQuery, Result<PaginatedResult<GetAllQuestionsInExamResponse>>>
+    public class GetAllQuestionsInExamQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllQuestionsInExamQuery, Result<PaginatedResult<QuestionsInExamResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<Result<PaginatedResult<GetAllQuestionsInExamResponse>>> Handle(GetAllQuestionsInExamQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PaginatedResult<QuestionsInExamResponse>>> Handle(GetAllQuestionsInExamQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -19,12 +19,12 @@ namespace Application.Features.Questions.Query.GetAllQuestionsInExam
 
                 if (responseList.Count == 0)
                 {
-                    return Result<PaginatedResult<GetAllQuestionsInExamResponse>>.FailureStatusCode(
+                    return Result<PaginatedResult<QuestionsInExamResponse>>.FailureStatusCode(
                         $"No questions found for exam with ID {request.ExamId}.",
                         ErrorType.NotFound);
                 }
 
-                return Result<PaginatedResult<GetAllQuestionsInExamResponse>>.Success(new PaginatedResult<GetAllQuestionsInExamResponse>
+                return Result<PaginatedResult<QuestionsInExamResponse>>.Success(new PaginatedResult<QuestionsInExamResponse>
                 {
                     Items = responseList,
                     PageNumber = 1,
@@ -34,7 +34,7 @@ namespace Application.Features.Questions.Query.GetAllQuestionsInExam
             }
             catch (Exception ex)
             {
-                return Result<PaginatedResult<GetAllQuestionsInExamResponse>>.FailureStatusCode(
+                return Result<PaginatedResult<QuestionsInExamResponse>>.FailureStatusCode(
                     $"An error occurred while retrieving exam questions: {ex.Message}",
                     ErrorType.InternalServerError);
             }

@@ -86,6 +86,7 @@ namespace Infrastructure.Repositories
                                                NumberOfSectionVideosWatched = ss.NumberOfSectionVideosWatched
                                            })
                                            .FirstOrDefault(),
+                                    IsEnrolled = s.StudentSections.Any(ss => ss.StudentId == Request.UserId),
 
                                     Videos = s.Videos.Select(v => new VideoData
                                     {

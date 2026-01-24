@@ -1,5 +1,4 @@
-﻿using Application.DTOs.Answer;
-using Application.DTOs.Questions;
+﻿using Application.DTOs.Questions;
 using Application.ResultWrapper;
 using MediatR;
 
@@ -19,5 +18,5 @@ namespace Application.Features.Exams.Command.UpdateExam
         public ICollection<ModifiedQuestionsDto> ModifiedQuestions { get; set; } = [];
     }
 
-   
+
 }

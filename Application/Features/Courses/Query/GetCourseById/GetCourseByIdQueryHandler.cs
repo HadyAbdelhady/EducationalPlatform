@@ -15,7 +15,7 @@ namespace Application.Features.Courses.Query.GetCourseById
             try
             {
                 var response = await _unitOfWork.GetRepository<ICourseRepository>()
-                                                                 .GetCourseDetailResponseByIdAsync(request.CourseId, cancellationToken)
+                                                                 .GetCourseDetailResponseByIdAsync(request, cancellationToken)
                                                                         ?? throw new KeyNotFoundException($"Course with ID {request.CourseId} not found.");
 
                 return Result<CourseDetailResponse>.Success(response);
