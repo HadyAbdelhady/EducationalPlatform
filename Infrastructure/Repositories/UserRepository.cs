@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
 
             return await _context.Users
                 .Include(u => u.Student)
-                .ThenInclude(s => s!.StudentExams)
+                .ThenInclude(s => s!.ExamResults)
                     .ThenInclude(se => se.Exam)
                 .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         }

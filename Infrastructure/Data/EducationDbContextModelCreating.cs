@@ -33,7 +33,6 @@ namespace Infrastructure.Data
             modelBuilder.Entity<StudentCourse>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<StudentSection>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<StudentVideo>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<StudentExam>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<InstructorCourse>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<InstructorSection>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<CourseReview>().HasQueryFilter(x => !x.IsDeleted);
@@ -102,20 +101,6 @@ namespace Infrastructure.Data
                 .HasOne(sv => sv.Video)
                 .WithMany(v => v.StudentVideos)
                 .HasForeignKey(sv => sv.VideoId);
-
-            // StudentExam
-            modelBuilder.Entity<StudentExam>()
-                .HasKey(e => new { e.StudentId, e.ExamId });
-
-            modelBuilder.Entity<StudentExam>()
-                .HasOne(se => se.Student)
-                .WithMany(s => s.StudentExams)
-                .HasForeignKey(se => se.StudentId);
-
-            modelBuilder.Entity<StudentExam>()
-                .HasOne(se => se.Exam)
-                .WithMany(e => e.StudentExams)
-                .HasForeignKey(se => se.ExamId);
 
             // InstructorCourse
             modelBuilder.Entity<InstructorCourse>()
@@ -294,18 +279,6 @@ namespace Infrastructure.Data
                     .HasConstraintName("student_videos_video_id_fkey");
             });
 
-            modelBuilder.Entity<StudentExam>(b =>
-            {
-                b.HasOne(x => x.Student)
-                    .WithMany(x => x.StudentExams)
-                    .HasForeignKey(x => x.StudentId)
-                    .HasConstraintName("student_exams_student_id_fkey");
-
-                b.HasOne(x => x.Exam)
-                    .WithMany(x => x.StudentExams)
-                    .HasForeignKey(x => x.ExamId)
-                    .HasConstraintName("student_exams_exam_id_fkey");
-            });
 
             modelBuilder.Entity<InstructorCourse>(b =>
             {

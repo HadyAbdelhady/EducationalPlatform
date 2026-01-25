@@ -27,15 +27,17 @@ namespace Application.DTOs.Exam
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public ExamStatus ExamStatus { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public ExamResultStatus? StudentExamStatusResult { get; set; }
+        public ExamResultStatus StudentExamStatusResult { get; set; }
         public DateTimeOffset? StartTime { get; set; }
         public DateTimeOffset? EndTime { get; set; }
-        public bool IsTaken {get; set; }
-        public int NotStartedCount { get; set; }
-        public int InProgressCount { get; set; }
-        public int PassedCount { get; set; }
-        public int FailedCount { get; set; }
-        public int CompletedCount { get; set; }
+        public DateTimeOffset? TakenAt { get; set; }
+        public decimal ObtainedMarks { get; set; }
+        public bool IsTaken {get; set; } 
+        //public int NotStartedCount { get; set; }
+        //public int InProgressCount { get; set; }
+        //public int PassedCount { get; set; }
+        //public int FailedCount { get; set; }
+        //public int CompletedCount { get; set; }
     }
 
 }

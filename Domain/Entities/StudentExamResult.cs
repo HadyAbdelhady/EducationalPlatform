@@ -32,6 +32,9 @@ namespace Domain.Entities
         [Column("updated_at")]
         public DateTimeOffset? UpdatedAt { get; set; }
 
+        [Column("taken_at")]
+        public DateTimeOffset? TakenAt { get; set; }
+
         [Column("is_deleted")]
         public bool IsDeleted { get; set; }
 

@@ -71,7 +71,6 @@ namespace Domain.Entities
         public Section? Section { get; set; }
         public Instructor Instructor { get; set; } = null!;
         public ICollection<ExamBank> ExamQuestions { get; set; } = [];
-        public ICollection<StudentExam> StudentExams { get; set; } = [];
         public ICollection<StudentExamResult> ExamResults { get; set; } = [];
     }
 }

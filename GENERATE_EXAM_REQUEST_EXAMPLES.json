@@ -1,0 +1,100 @@
+{
+  "examples": {
+    "randomized_exam": {
+      "description": "Example request for a randomized exam (questions are selected randomly)",
+      "request": {
+        "courseId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "sectionId": null,
+        "createdBy": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "title": "Midterm Exam - Mathematics 101",
+        "description": "Comprehensive midterm examination covering chapters 1-5",
+        "numberOfQuestions": 20,
+        "examTotalMark": 100,
+        "passMarkPercentage": 60,
+        "examStartTime": "2026-02-01T09:00:00.000Z",
+        "examEndTime": "2026-02-01T11:00:00.000Z",
+        "durationInMinutes": 120,
+        "isRandomized": true,
+        "examType": 0,
+        "questionIdsWithMarks": null
+      },
+      "notes": [
+        "When isRandomized is true, questionIdsWithMarks should be null",
+        "examType: 0 = FixedTimeExam, 1 = FlexibleTimeExam",
+        "sectionId can be null for course-level exams",
+        "examStartTime and examEndTime should be in ISO 8601 format (UTC)"
+      ]
+    },
+    "non_randomized_exam": {
+      "description": "Example request for a non-randomized exam (specific questions with custom marks)",
+      "request": {
+        "courseId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "sectionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "createdBy": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "title": "Final Exam - Advanced Physics",
+        "description": "Final examination with selected questions from section 3",
+        "numberOfQuestions": 15,
+        "examTotalMark": 150,
+        "passMarkPercentage": 70,
+        "examStartTime": "2026-02-15T10:00:00.000Z",
+        "examEndTime": "2026-02-15T13:00:00.000Z",
+        "durationInMinutes": 180,
+        "isRandomized": false,
+        "examType": 1,
+        "questionIdsWithMarks": {
+          "a1b2c3d4-e5f6-7890-abcd-ef1234567890": 10.5,
+          "b2c3d4e5-f6a7-8901-bcde-f12345678901": 15.0,
+          "c3d4e5f6-a7b8-9012-cdef-123456789012": 12.5,
+          "d4e5f6a7-b8c9-0123-defa-234567890123": 8.0,
+          "e5f6a7b8-c9d0-1234-efab-345678901234": 20.0
+        }
+      },
+      "notes": [
+        "When isRandomized is false, questionIdsWithMarks is required",
+        "Each question ID (Guid) maps to its mark (decimal)",
+        "The sum of all marks in questionIdsWithMarks should equal examTotalMark",
+        "examType: 0 = FixedTimeExam, 1 = FlexibleTimeExam"
+      ]
+    },
+    "minimal_request": {
+      "description": "Minimal valid request example",
+      "request": {
+        "courseId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "sectionId": null,
+        "createdBy": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "title": "Quick Quiz",
+        "description": "Short quiz",
+        "numberOfQuestions": 5,
+        "examTotalMark": 50,
+        "passMarkPercentage": 50,
+        "examStartTime": "2026-01-26T00:00:00.000Z",
+        "examEndTime": "2026-01-26T23:59:59.000Z",
+        "durationInMinutes": 30,
+        "isRandomized": true,
+        "examType": 0,
+        "questionIdsWithMarks": null
+      }
+    }
+  },
+  "field_descriptions": {
+    "courseId": "Required. The ID of the course this exam belongs to (Guid)",
+    "sectionId": "Optional. The ID of the section if this is a section-specific exam (Guid?). Set to null for course-level exams",
+    "createdBy": "Required. The ID of the instructor creating this exam (Guid)",
+    "title": "Required. The title/name of the exam (string)",
+    "description": "Required. Description of the exam (string)",
+    "numberOfQuestions": "Required. Number of questions in the exam (int). Must match available questions in course/section",
+    "examTotalMark": "Required. Total marks for the exam (int)",
+    "passMarkPercentage": "Required. Minimum percentage required to pass (int, 0-100)",
+    "examStartTime": "Required. When the exam becomes available (DateTimeOffset, ISO 8601 format)",
+    "examEndTime": "Required. When the exam closes (DateTimeOffset, ISO 8601 format)",
+    "durationInMinutes": "Required. How long students have to complete the exam (int)",
+    "isRandomized": "Required. If true, questions are randomly selected. If false, use questionIdsWithMarks (bool)",
+    "examType": "Required. 0 = FixedTimeExam, 1 = FlexibleTimeExam (int/enum)",
+    "questionIdsWithMarks": "Optional. Dictionary of question IDs to their marks. Required if isRandomized is false (Dictionary<Guid, decimal>?)"
+  },
+  "endpoint_info": {
+    "method": "POST",
+    "url": "/api/Exam/Generate",
+    "content_type": "application/json"
+  }
+}

@@ -34,14 +34,12 @@ namespace Application.Features.Exams.Command.DeleteExam
             var relativeEntities = await ExamRepo.GetByIdAsync(request.ExamId,
                                                         cancellationToken,
                                                         c => c.ExamResults,
-                                                        c => c.StudentExams,
                                                         c => c.ExamQuestions);
 
             exam.IsDeleted = true;
 
             foreach (var result in exam.ExamResults) result.IsDeleted = true;
             foreach (var bank in exam.ExamQuestions) bank.IsDeleted = true;
-            foreach (var studentExam in exam.StudentExams) studentExam.IsDeleted = true;
             foreach (var submission in ExamSubmissions) submission.IsDeleted = true;
 
             await _mediator.Publish(new ExamDeletedEvent(request.CourseId, request.SectionId), cancellationToken);
