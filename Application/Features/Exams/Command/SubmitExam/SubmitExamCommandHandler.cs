@@ -1,4 +1,4 @@
-﻿using Application.HelperFunctions;
+using Application.HelperFunctions;
 using Application.ResultWrapper;
 using Application.Interfaces;
 using Application.DTOs.Exam;
@@ -18,9 +18,10 @@ namespace Application.Features.Exams.Command.SubmitExam
         {
             ExamModelAnswer? ExamModelAnswer = await CollectExamModelAnswer(request.Exam, cancellationToken);
 
-            var studentExamResultRepository = unitOfWork.Repository<User>();
+            var userRepository = unitOfWork.Repository<User>();
+            var studentExamResultRepository = unitOfWork.Repository<StudentExamResult>();
          
-            var Student = await studentExamResultRepository.GetByIdAsync(request.Student, cancellationToken);
+            var Student = await userRepository.GetByIdAsync(request.Student, cancellationToken);
 
             if (Student == null)
             {
@@ -32,16 +33,37 @@ namespace Application.Features.Exams.Command.SubmitExam
                 return Result<SubmissionResponse>.FailureStatusCode("Exam not found", ErrorType.NotFound);
             }
 
-            var examResultId = Guid.NewGuid();
-            
-            StudentExamResult examResult = new()
-            {
-                Id = examResultId,
-                StudentId = request.Student,
-                ExamId = request.Exam,
-                StudentMark = null, // Will be calculated in the event handler
-            };
+            // Find the existing StudentExamResult (created during exam generation)
+            var examResult = await studentExamResultRepository
+                .FirstOrDefaultAsync(ser => ser.ExamId == request.Exam && ser.StudentId == request.Student, cancellationToken);
 
+            if (examResult == null)
+            {
+                return Result<SubmissionResponse>.FailureStatusCode("Exam not found for this student", ErrorType.NotFound);
+            }
+
+            // Check if exam is in progress (student must have started the exam)
+            if (examResult.Status != ExamResultStatus.InProgress)
+            {
+                return Result<SubmissionResponse>.FailureStatusCode(
+                    examResult.Status == ExamResultStatus.NotStarted 
+                        ? "Exam has not been started yet" 
+                        : "Exam has already been submitted",
+                    ErrorType.Conflict);
+            }
+
+            // Calculate marks
+            var studentActualMark = CalculateObtainedMarks.Calculate(ExamModelAnswer, request);
+            var studentPercentage = (studentActualMark / ExamModelAnswer.TotalMark) * 100;
+            var isPassed = studentPercentage >= ExamModelAnswer.PassMarkPercentage;
+
+            // Update the existing StudentExamResult
+            examResult.StudentMark = studentActualMark;
+            examResult.Status = isPassed ? ExamResultStatus.Passed : ExamResultStatus.Failed;
+            examResult.UpdatedAt = DateTimeOffset.UtcNow;
+            studentExamResultRepository.Update(examResult);
+
+            // Add student answers
             foreach (var answer in request.Answers)
             {
                 Domain.Entities.StudentAnswers submission = new()
@@ -56,15 +78,9 @@ namespace Application.Features.Exams.Command.SubmitExam
                 await unitOfWork.Repository<Domain.Entities.StudentAnswers>().AddAsync(submission, cancellationToken);
             }
 
-            await unitOfWork.Repository<StudentExamResult>().AddAsync(examResult, cancellationToken);
-
-            // Publish event to trigger calculation in the event handler
-            await mediator.Publish(new ExamFinishedEvent(request.Exam, request.Student, examResultId), cancellationToken);
+            // Publish event to trigger any additional processing
+            await mediator.Publish(new ExamFinishedEvent(request.Exam, request.Student, examResult.Id), cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
-
-            // Calculate marks for response (event handler will persist the result)
-            var studentActualMark = CalculateObtainedMarks.Calculate(ExamModelAnswer, request);
-            var studentPercentage = (studentActualMark / ExamModelAnswer.TotalMark) * 100;
 
             return Result<SubmissionResponse>.Success(new SubmissionResponse
             {
@@ -72,8 +88,8 @@ namespace Application.Features.Exams.Command.SubmitExam
                 ExamName = ExamModelAnswer.Title,
                 TotalMark = ExamModelAnswer.TotalMark,
                 ObtainedMark = studentActualMark,
-                StatusMessage = $"Exam submitted successfully with {studentPercentage} % obtained.",
-                IsSuccessful = studentPercentage >= ExamModelAnswer.PassMarkPercentage
+                StatusMessage = $"Exam submitted successfully with {studentPercentage:F2}% obtained.",
+                IsSuccessful = isPassed
             });
         }
 

@@ -33,31 +33,41 @@ namespace Application.Features.Exams.Query.GetAllExams
                 ExamStatus = e.Status,
                 StudentExamStatusResult = e.ExamResults
                     .Where(se => se.StudentId == request.UserId)
-                    .Select(se => (ExamResultStatus?)se.Status)
+                    .Select(se => se.Status)
                     .FirstOrDefault(),
                 StartTime = e.StartTime,
                 EndTime = e.EndTime,
-                IsTaken = e.ExamResults.Any(er => er.StudentId == request.UserId),
+                IsTaken = e.ExamResults.Any(se =>
+                    se.StudentId == request.UserId &&
+                    se.Status != ExamResultStatus.NotStarted),
                 TotalMark = e.TotalMark,
                 NumberOfQuestions = e.NumberOfQuestions,
                 DurationInMinutes = e.DurationInMinutes,
                 IsRandomized = e.IsRandomized,
                 ExamType = e.ExamType,
                 PassMarkPercentage = e.PassMarkPercentage,
-                NotStartedCount = e.ExamResults
-                    .Count(r => r.Status == ExamResultStatus.NotStarted),
+                ObtainedMarks = e.ExamResults
+                    .Where(se => se.StudentId == request.UserId)
+                    .Select(se => se.StudentMark)
+                    .FirstOrDefault() ?? 0m,
+                TakenAt = e.ExamResults
+                    .Where(se => se.StudentId == request.UserId)
+                    .Select(se => se.TakenAt)
+                    .FirstOrDefault(),
+                //NotStartedCount = e.ExamResults
+                //    .Count(r => r.Status == ExamResultStatus.NotStarted),
 
-                InProgressCount = e.ExamResults
-                    .Count(r => r.Status == ExamResultStatus.InProgress),
+                //InProgressCount = e.ExamResults
+                //    .Count(r => r.Status == ExamResultStatus.InProgress),
 
-                PassedCount = e.ExamResults
-                    .Count(r => r.Status == ExamResultStatus.Passed),
+                //PassedCount = e.ExamResults
+                //    .Count(r => r.Status == ExamResultStatus.Passed),
 
-                FailedCount = e.ExamResults
-                    .Count(r => r.Status == ExamResultStatus.Failed),
+                //FailedCount = e.ExamResults
+                //    .Count(r => r.Status == ExamResultStatus.Failed),
 
-                CompletedCount = e.ExamResults
-                    .Count(r => r.Status == ExamResultStatus.Passed || r.Status == ExamResultStatus.Failed)
+                //CompletedCount = e.ExamResults
+                //    .Count(r => r.Status == ExamResultStatus.Passed || r.Status == ExamResultStatus.Failed)
             })
             .ToList();
 

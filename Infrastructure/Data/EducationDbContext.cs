@@ -25,7 +25,6 @@ namespace Infrastructure.Data
         public DbSet<StudentCourse> StudentCourses => Set<StudentCourse>();
         public DbSet<StudentSection> StudentSections => Set<StudentSection>();
         public DbSet<StudentVideo> StudentVideos => Set<StudentVideo>();
-        public DbSet<StudentExam> StudentExams => Set<StudentExam>();
         public DbSet<InstructorCourse> InstructorCourses => Set<InstructorCourse>();
         public DbSet<InstructorSection> InstructorSections => Set<InstructorSection>();
         public DbSet<CourseReview> CourseReviews => Set<CourseReview>();

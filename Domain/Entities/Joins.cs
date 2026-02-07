@@ -92,30 +92,6 @@ namespace Domain.Entities
         public Video Video { get; set; } = null!;
     }
 
-    [Table("student_exams", Schema = "public")]
-    public class StudentExam
-    {
-        [Column("student_id")]
-        [ForeignKey(nameof(Student))]
-        public Guid StudentId { get; set; }
-
-        [Column("exam_id")]
-        [ForeignKey(nameof(Exam))]
-        public Guid ExamId { get; set; }
-
-        [Column("taken_at")]
-        public DateTimeOffset TakenAt { get; set; }
-
-        [Column("updated_at")]
-        public DateTimeOffset UpdatedAt { get; set; }
-
-        [Column("is_deleted")]
-        public bool IsDeleted { get; set; } = false;
-
-        public Student Student { get; set; } = null!;
-        public Exam Exam { get; set; } = null!;
-    }
-
     [Table("instructor_courses", Schema = "public")]
     public class InstructorCourse
     {

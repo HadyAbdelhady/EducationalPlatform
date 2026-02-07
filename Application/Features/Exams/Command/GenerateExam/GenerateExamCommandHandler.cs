@@ -1,4 +1,4 @@
-﻿using Application.HelperFunctions;
+using Application.HelperFunctions;
 using Application.DTOs.Questions;
 using Application.ResultWrapper;
 using Application.Interfaces;
@@ -37,6 +37,17 @@ namespace Application.Features.Exams.Command.GenerateExam
                 );
             }
 
+            // Determine exam status based on start time
+            ExamStatus examStatus = ExamStatus.Draft;
+            if (request.ExamStartTime <= DateTimeOffset.UtcNow && request.ExamEndTime >= DateTimeOffset.UtcNow)
+            {
+                examStatus = ExamStatus.Started; // Exam is currently available
+            }
+            else if (request.ExamStartTime > DateTimeOffset.UtcNow)
+            {
+                examStatus = ExamStatus.Scheduled; // Exam is scheduled for the future
+            }
+
             Exam newExam = new()
             {
                 Id = Guid.NewGuid(),
@@ -53,6 +64,7 @@ namespace Application.Features.Exams.Command.GenerateExam
                 DurationInMinutes = request.DurationInMinutes,
                 PassMarkPercentage = request.PassMarkPercentage,
                 InstructorId = request.CreatedBy,
+                Status = examStatus,
             };
 
             if (request.IsRandomized)
@@ -87,6 +99,56 @@ namespace Application.Features.Exams.Command.GenerateExam
 
             await _unitOfWork.Repository<Exam>().AddAsync(newExam, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var studentExamResultRepository = _unitOfWork.Repository<StudentExamResult>();
+            List<Guid> enrolledStudentIds = new();
+
+            if (request.SectionId.HasValue)
+            {
+                // Get students enrolled in the section through Section navigation property
+                var sectionRepository = _unitOfWork.Repository<Section>();
+                var section = await sectionRepository
+                    .FirstOrDefaultAsync(s => s.Id == request.SectionId, cancellationToken, s => s.StudentSections);
+                
+                if (section != null)
+                {
+                    enrolledStudentIds = section.StudentSections
+                        .Select(ss => ss.StudentId)
+                        .Distinct()
+                        .ToList();
+                }
+            }
+            else
+            {
+                // Get students enrolled in the course through Course navigation property
+                var courseRepository = _unitOfWork.Repository<Course>();
+                var course = await courseRepository
+                    .FirstOrDefaultAsync(c => c.Id == request.CourseId, cancellationToken, c => c.StudentCourses);
+                
+                if (course != null)
+                {
+                    enrolledStudentIds = course.StudentCourses
+                        .Select(sc => sc.StudentId)
+                        .Distinct()
+                        .ToList();
+                }
+            }
+
+            // Create StudentExamResult records for each enrolled student
+            var studentExamResults = enrolledStudentIds.Select(studentId => new StudentExamResult
+            {
+                Id = Guid.NewGuid(),
+                ExamId = newExam.Id,
+                StudentId = studentId,
+                Status = ExamResultStatus.NotStarted,
+                CreatedAt = DateTimeOffset.UtcNow
+            }).ToList();
+
+            if (studentExamResults.Any())
+            {
+                await studentExamResultRepository.AddRangeAsync(studentExamResults, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
 
             var response = new AddQuestionToExamBankResponse
             {
