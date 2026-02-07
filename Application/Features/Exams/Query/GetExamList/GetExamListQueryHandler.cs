@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Exam;
-using Application.Features.Exams.Query.Get_Exam_List;
+using Application.Features.Exams.Query.GetExamList;
 using Application.HelperFunctions;
 using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
