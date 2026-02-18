@@ -59,8 +59,6 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                         PersonalPictureUrl = googleUserInfo.PictureUrl,
                         DateOfBirth = request.DateOfBirth,
                         Gender = request.Gender,
-                        EducationYear = request.EducationYear,
-                        LocationMaps = request.LocationMaps,
                         CreatedAt = DateTimeOffset.UtcNow,
                         UpdatedAt = DateTimeOffset.UtcNow,
                         IsDeleted = false
@@ -72,7 +70,6 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                     };
 
                     user.Instructor = instructor;
-
                     await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
                 }
                 else
