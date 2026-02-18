@@ -3,8 +3,8 @@ using Application.Features.Exams.Command.DeleteExam;
 using Application.Features.Exams.Command.GenerateExam;
 using Application.Features.Exams.Command.StartExam;
 using Application.Features.Exams.Command.SubmitExam;
-using Application.Features.Exams.Query.Get_Exam_List;
 using Application.Features.Exams.Query.GetExamById;
+using Application.Features.Exams.Query.GetExamList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
