@@ -1,4 +1,6 @@
-﻿namespace Domain.Events
+﻿using MediatR;
+
+namespace Domain.Events
 {
-    public record CourseDeletedEvent(Guid CourseId, Guid InstructorId, Guid StudentId);
+    public record CourseDeletedEvent(Guid CourseId, Guid InstructorId, Guid StudentId) : INotification;
 }

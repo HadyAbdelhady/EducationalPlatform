@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.Features.Videos.Commands.CreateVideo
 {
-    public class CreateVideoCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateVideoCommand, Result<VideoCreationResponse>>
+    public class CreateVideoCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateVideoCommand, Result<VideoResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<Result<VideoCreationResponse>> Handle(CreateVideoCommand request, CancellationToken cancellationToken)
+        public async Task<Result<VideoResponse>> Handle(CreateVideoCommand request, CancellationToken cancellationToken)
         {
 
             try
@@ -24,7 +24,6 @@ namespace Application.Features.Videos.Commands.CreateVideo
                     Id = Guid.NewGuid(),
                     Name = request.Name,
                     VideoUrl = request.VideoUrl,
-                    //DateOfCreation = request.DateOfCreation,
                     SectionId = request.SectionId,
                     Description = request.Description,
                     CreatedAt = DateTime.UtcNow,
@@ -45,25 +44,24 @@ namespace Application.Features.Videos.Commands.CreateVideo
                 // }
                 if (Result > 0)
                 {
-                    return Result<VideoCreationResponse>.Success(new VideoCreationResponse
+                    return Result<VideoResponse>.Success(new VideoResponse
                     {
                         VideoId = video.Id,
                         Name = video.Name,
-                        Description = video.Description,
                         VideoUrl = video.VideoUrl,
                         CreatedAt = video.CreatedAt.DateTime
                     });
                 }
-                return Result<VideoCreationResponse>.FailureStatusCode($"Bad Request {StatusCodes.Status400BadRequest}", ErrorType.BadRequest);
+                return Result<VideoResponse>.FailureStatusCode($"Bad Request {StatusCodes.Status400BadRequest}", ErrorType.BadRequest);
 
             }
             catch (UnauthorizedAccessException auth)
             {
-                return Result<VideoCreationResponse>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
+                return Result<VideoResponse>.FailureStatusCode(auth.Message, ErrorType.UnAuthorized);
             }
             catch (Exception ex)
             {
-                return Result<VideoCreationResponse>.FailureStatusCode($"Error creating video: {ex.Message}", ErrorType.Conflict);
+                return Result<VideoResponse>.FailureStatusCode($"Error creating video: {ex.Message}", ErrorType.Conflict);
             }
         }
     }

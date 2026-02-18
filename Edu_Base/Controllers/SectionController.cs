@@ -1,10 +1,9 @@
-﻿using Application.DTOs.Section;
-using Application.Features.Section.Commands.CreateSection;
-using Application.Features.Section.Commands.DeleteSection;
-using Application.Features.Section.Commands.UpdateSection;
-using Application.Features.Section.Query.GetSectionsForCourse;
-using Application.Features.Section.Query.GetSectionByID;
-using Application.Features.Section.Query.GetSectionDetails;
+﻿using Application.DTOs.Sections;
+using Application.Features.Sections.Query.GetSectionsForCourse;
+using Application.Features.Sections.Commands.CreateSection;
+using Application.Features.Sections.Commands.DeleteSection;
+using Application.Features.Sections.Commands.UpdateSection;
+using Application.Features.Sections.Query.GetSectionDetails;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,7 +37,11 @@ namespace Edu_Base.Controllers
         [HttpPost("bulk-create")]
         public async Task<IActionResult> BulkCreateSections(BulkCreateSectionRequest request, CancellationToken cancellationToken)
         {
-            var command = new BulkCreateSectionCommand(request.Sections);
+            var command = new BulkCreateSectionCommand
+            {
+                CourseId = request.CourseId,
+                Sections = request.Sections
+            };
 
             var result = await _mediator.Send(command, cancellationToken);
 
@@ -48,7 +51,9 @@ namespace Edu_Base.Controllers
         [HttpGet("course/{courseId}")]
         public async Task<IActionResult> GetSectionsForCourse(Guid courseId)
         {
-            var result = await _mediator.Send(new GetSectionsForCourseQuery(courseId));
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            var result = await _mediator.Send(new GetSectionsForCourseQuery(courseId, UserId));
 
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
@@ -89,27 +94,21 @@ namespace Edu_Base.Controllers
         [HttpDelete("bulk-delete")]
         public async Task<IActionResult> BulkDeleteSections(BulkDeleteSectionRequest request, CancellationToken cancellationToken)
         {
-            var command = new BulkDeleteSectionCommand(request.SectionIds);
+            var command = new BulkDeleteSectionCommand(request.CourseId, request.SectionIds);
 
             var result = await _mediator.Send(command, cancellationToken);
 
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpGet("{sectionId}")]
-        public async Task<IActionResult> GetSectionById(Guid sectionId, CancellationToken cancellationToken)
-        {
-            var query = new GetSectionByIDQuery { SectionId = sectionId };
-            var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
-        }
-
         [HttpGet("{sectionId}/details")]
         public async Task<IActionResult> GetSectionDetails(Guid sectionId, CancellationToken cancellationToken)
         {
-            var query = new GetSectionDetailsQuery { SectionId = sectionId };
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            var query = new GetSectionDetailsQuery { SectionId = sectionId, UserId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
     }

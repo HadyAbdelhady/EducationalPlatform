@@ -1,8 +1,6 @@
-using System;
 using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Infrastructure.Persistence.Interceptors;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
@@ -21,19 +19,14 @@ namespace Infrastructure.Data
         public DbSet<Course> Courses => Set<Course>();
         public DbSet<Section> Sections => Set<Section>();
         public DbSet<Video> Videos => Set<Video>();
-        public DbSet<Sheet> Sheets => Set<Sheet>();
         public DbSet<Exam> Exams => Set<Exam>();
         public DbSet<Question> Questions => Set<Question>();
         public DbSet<Answer> Answers => Set<Answer>();
         public DbSet<StudentCourse> StudentCourses => Set<StudentCourse>();
         public DbSet<StudentSection> StudentSections => Set<StudentSection>();
         public DbSet<StudentVideo> StudentVideos => Set<StudentVideo>();
-        public DbSet<StudentSheet> StudentSheets => Set<StudentSheet>();
-        public DbSet<StudentExam> StudentExams => Set<StudentExam>();
         public DbSet<InstructorCourse> InstructorCourses => Set<InstructorCourse>();
         public DbSet<InstructorSection> InstructorSections => Set<InstructorSection>();
-        public DbSet<InstructorExam> InstructorExams => Set<InstructorExam>();
-        public DbSet<VideoSheet> VideoSheets => Set<VideoSheet>();
         public DbSet<CourseReview> CourseReviews => Set<CourseReview>();
         public DbSet<SectionReview> SectionReviews => Set<SectionReview>();
         public DbSet<VideoReview> VideoReviews => Set<VideoReview>();
@@ -41,10 +34,11 @@ namespace Infrastructure.Data
         public DbSet<ChatRoom> ChatRooms => Set<ChatRoom>();
         public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
         public DbSet<Payment> Payments => Set<Payment>();
-        public DbSet<ExamResult> ExamResults => Set<ExamResult>();
-        public DbSet<StudentSubmission> StudentSubmissions => Set<StudentSubmission>();
+        public DbSet<StudentExamResult> ExamResults => Set<StudentExamResult>();
+        public DbSet<StudentAnswers> StudentSubmissions => Set<StudentAnswers>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
-
+        public DbSet<Sheet> Sheets => Set<Sheet>();
+        public DbSet<AnswersSheet> AnswersSheets => Set<AnswersSheet>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

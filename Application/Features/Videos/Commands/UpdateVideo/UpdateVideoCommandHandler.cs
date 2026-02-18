@@ -14,9 +14,10 @@ namespace Application.Features.Videos.Commands.UpdateVideo
         {
             try
             {
-                var video = await _unitOfWork.Repository<Video>().GetByIdAsync(request.VideoId, cancellationToken) ?? throw new KeyNotFoundException("Video Not Found");
+                var video = await _unitOfWork.Repository<Video>().GetByIdAsync(request.VideoId, cancellationToken)
+                                                                    ?? throw new KeyNotFoundException("Video Not Found");
 
-                var section = await _unitOfWork.Repository<Domain.Entities.Section>().GetByIdAsync(request.SectionId.Value, cancellationToken);
+                var section = await _unitOfWork.Repository<Section>().GetByIdAsync(request.SectionId.Value, cancellationToken);
 
 
                 video.Name = request.Name;
@@ -26,7 +27,6 @@ namespace Application.Features.Videos.Commands.UpdateVideo
                 video.UpdatedAt = DateTime.UtcNow;
                 _unitOfWork.Repository<Video>().Update(video);
                 var Result = await _unitOfWork.SaveChangesAsync();
-                await _unitOfWork.CommitTransactionAsync();
 
                 if (Result > 0)
                     return Result<string>.Success("Video Updated Successfully");

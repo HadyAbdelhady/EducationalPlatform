@@ -1,36 +1,26 @@
-﻿using Application.DTOs.Section;
-using Application.DTOs.Videos;
+﻿using Application.DTOs.Videos;
 using Application.Interfaces;
 using Application.ResultWrapper;
-using CloudinaryDotNet;
 using Domain.Entities;
 using Domain.enums;
+using Domain.Events;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Videos.Commands.CreateVideo
 {
-    public class BulkCreateVideosCommandHandler : IRequestHandler<BulkCreateVideosCommand, Result<List<VideoCreationResponse>>>
+    public class BulkCreateVideosCommandHandler(IUnitOfWork unitOfWork, IMediator mediator) : IRequestHandler<BulkCreateVideosCommand, Result<List<VideoResponse>>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMediator _mediator = mediator;
 
-        public BulkCreateVideosCommandHandler(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
-        public async Task<Result<List<VideoCreationResponse>>> Handle(BulkCreateVideosCommand request, CancellationToken cancellationToken)
+        public async Task<Result<List<VideoResponse>>> Handle(BulkCreateVideosCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 var videoRepo = _unitOfWork.Repository<Video>();
-                var sectionRepo = _unitOfWork.Repository<Domain.Entities.Section>();
 
-                List<Video> videosTobeAdded = new List<Video>();
-                var responses = new List<VideoCreationResponse>();
+                List<Video> videosTobeAdded = [];
+                var responses = new List<VideoResponse>();
 
                 var Result = 0;
 
@@ -42,10 +32,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
                         Name = video.Name,
                         Description = video.Description,
                         VideoUrl = video.VideoUrl,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        SectionId = video.SectionId,
-
+                        SectionId = request.SectionId,
                     };
                     videosTobeAdded.Add(newVideo);
 
@@ -54,37 +41,28 @@ namespace Application.Features.Videos.Commands.CreateVideo
 
                 foreach (var video in videosTobeAdded)
                 {
-                    responses.Add(new VideoCreationResponse()
+                    responses.Add(new VideoResponse()
                     {
                         VideoId = video.Id,
                         Name = video.Name,
                         CreatedAt = video.CreatedAt.UtcDateTime,
-                        Description = video.Description,
                         VideoUrl = video.VideoUrl,
-
                     });
-
-                    var section = await sectionRepo.GetByIdAsync(video.SectionId.Value);
-                    if (section is not null)
-                    {
-                        section.NumberOfVideos++;
-                        section.UpdatedAt = DateTimeOffset.UtcNow;
-                        sectionRepo.Update(section);
-                    }
                 }
 
+                await _mediator.Publish(new VideoAddedEvent(request.SectionId, videosTobeAdded.Count), cancellationToken);
                 Result = await _unitOfWork.SaveChangesAsync(cancellationToken);
                 if (Result > 0)
                 {
-                    return Result<List<VideoCreationResponse>>.Success(responses);
+                    return Result<List<VideoResponse>>.Success(responses);
 
                 }
-                return Result<List<VideoCreationResponse>>.FailureStatusCode("Error While Inserting Videos", ErrorType.BadRequest);
+                return Result<List<VideoResponse>>.FailureStatusCode("Error While Inserting Videos", ErrorType.BadRequest);
 
             }
             catch (Exception ex)
             {
-                return Result<List<VideoCreationResponse>>
+                return Result<List<VideoResponse>>
                     .FailureStatusCode($"Error in bulk create for videos: {ex.Message}", ErrorType.InternalServerError);
             }
 

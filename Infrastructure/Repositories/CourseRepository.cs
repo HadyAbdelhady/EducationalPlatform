@@ -1,4 +1,5 @@
-using Application.DTOs.Course;
+using Application.DTOs.Courses;
+using Application.Features.Courses.Query.GetCourseById;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
@@ -8,68 +9,59 @@ namespace Infrastructure.Repositories
 {
     public class CourseRepository(EducationDbContext context) : Repository<Course>(context), ICourseRepository
     {
-        public async Task<IEnumerable<Course>> GetAllCoursesByInstructorIdAsync(Guid instructorId, CancellationToken cancellationToken = default)
+        public async Task<CourseDetailResponse?> GetCourseDetailResponseByIdAsync(GetCourseByIdQuery request, CancellationToken cancellationToken = default)
         {
-            return await _context.Courses
-                .Where(c => c.InstructorCourses.Any(ic => ic.InstructorId == instructorId))
-                .Include(c => c.CourseReviews)
-                .Include(c => c.Sections)
-                .Include(c => c.StudentCourses)
-                .ToListAsync(cancellationToken);
+            var query = from course in _context.Courses
+                        where course.Id == request.CourseId
+                        select new CourseDetailResponse
+                        {
+                            Id = course.Id,
+                            Title = course.Name,
+                            Description = course.Description,
+                            PictureUrl = course.PictureUrl,
+                            CreatedAt = course.CreatedAt,
+                            IsEnrolled = course.StudentCourses.Count != 0,
+                            UpdatedAt = course.UpdatedAt ?? course.CreatedAt,
+                            Price = course.Price ?? 0,
+                            IntroVideoUrl = course.IntroVideoUrl,
+                            NumberOfVideos = course.NumberOfVideos,
+                            NumberOfSheets = course.NumberOfQuestionSheets,
+                            NumberOfSections = course.NumberOfSections,
+                            NumberOfStudents = course.NumberOfStudentsEnrolled,
+                            NumberOfEnrolledSections = course.StudentCourses.Count != 0
+                                                                  ? 0
+                                                                  : course.Sections
+                                                                          .SelectMany(s => s.StudentSections)
+                                                                          .Where(ss => ss.StudentId == request.UserId)
+                                                                          .Distinct().Count(),
+
+                            Rating = course.Rating,
+                            NumberOfWatchedVideos = course.StudentCourses.Select(sc => sc.NumberOfCourseVideosWatched)
+                                                                         .FirstOrDefault(),
+
+                            // Instructors
+                            Instructors = course.InstructorCourses
+                                .Where(ic => ic.Instructor != null && ic.Instructor.User != null)
+                                .Select(ic => new InstructorInfoDto
+                                {
+                                    InstructorId = ic.InstructorId,
+                                    FullName = ic.Instructor.User.FullName,
+                                    PersonalPictureUrl = ic.Instructor.User.PersonalPictureUrl,
+                                    GmailExternal = ic.Instructor.User.GmailExternal
+                                }).ToList(),
+                        };
+
+
+            var result = await query.FirstOrDefaultAsync(cancellationToken);
+            if (result == null) return null;
+
+            result.ProgressPercentage = result.NumberOfWatchedVideos > 0 && result.NumberOfVideos > 0
+                                        ? result.NumberOfWatchedVideos / result.NumberOfVideos * 100
+                                        : 0;
+
+            return result;
         }
-        
-        public async Task<IEnumerable<CourseByUserIdResponse>>GetAllCoursesByStudentIdAsync(Guid studentId, CancellationToken cancellationToken = default)
-        {
-            return await _context.Courses
-                .Where(c => c.StudentCourses.Any(sc => sc.StudentId == studentId))
-                .Select(c => new CourseByUserIdResponse
-                {
-                    Id = c.Id,
-                    Title = c.Name,
-                    Price = c.Price ?? 0,
-
-                    Rating = c.CourseReviews.Any()
-                        ? c.CourseReviews.Average(r => r.StarRating)
-                        : 0,
-
-                    NumberOfStudents = c.StudentCourses.Count(),
-
-                    NumberOfVideos = c.NumberOfVideos,
-
-                    NumberOfSections = c.Sections.Count(),
-
-                    NumberOfWatchedVideos = c.StudentCourses
-                            .Where(sc => sc.StudentId == studentId)
-                            .Select(sc => sc.NumberOfCourseVideosWatched)
-                            .FirstOrDefault(),
-
-                    ThumbnailUrl = c.IntroVideoUrl ?? string.Empty,
-
-                    CreatedAt = c.CreatedAt,
-                    UpdatedAt = c.UpdatedAt
-                })
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
-        }
-
-        public async Task<Course?> GetCourseDetailByIdAsync(Guid courseId, CancellationToken cancellationToken = default)
-        {
-            // First, check if the course exists without loading all related entities 
-
-            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId, cancellationToken: cancellationToken);
-            if (course == null) return null;
 
 
-            return await _context.Courses
-                .Include(c => c.Sections)
-                .Include(c => c.InstructorCourses)
-                    .ThenInclude(ic => ic.Instructor)
-                    .ThenInclude(i => i.User)
-                .Include(c => c.StudentCourses)
-                .Include(c => c.CourseReviews)
-                    .ThenInclude(r => r.Student)
-                    .ThenInclude(s => s.User)
-                .FirstOrDefaultAsync(c => c.Id == courseId, cancellationToken);
-        }
     }
 }

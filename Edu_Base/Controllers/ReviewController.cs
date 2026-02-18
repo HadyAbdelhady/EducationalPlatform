@@ -1,13 +1,12 @@
 ﻿using Application.DTOs.Review;
-using Application.Features.Review.Commands.CreateReview;
-using Application.Features.Review.Commands.DeleteReview;
-using Application.Features.Review.Commands.UpdateReview;
-using Application.Features.Review.Query.GetAllReviewsByCourse;
+using Application.Features.Review.Query.GetAllReviews;
 using Application.Features.Review.Query.GetReviewById;
+using Application.Features.Reviews.Commands.CreateReview;
+using Application.Features.Reviews.Commands.DeleteReview;
+using Application.Features.Reviews.Commands.UpdateReview;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Edu_Base.Controllers
 {
@@ -76,31 +75,43 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpGet("{reviewId}")]
-        public async Task<IActionResult> GetReviewById(Guid reviewId, CancellationToken cancellationToken)
+        [HttpGet]
+        public async Task<IActionResult> GetReviewById([FromQuery] GetReviewByIdRequest request, CancellationToken cancellationToken)
         {
-            if (reviewId == Guid.Empty)
+            if (request.reviewId == Guid.Empty)
             {
                 return BadRequest("Review ID cannot be empty");
             }
 
-            var query = new GetReviewByIdQuery { ReviewId = reviewId };
+            var query = new GetReviewByIdQuery
+            {
+                ReviewId = request.reviewId,
+                EntityType = request.EntityType
+            };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpGet("course/{courseId}")]
-        public async Task<IActionResult> GetAllReviewsByCourse(Guid courseId, CancellationToken cancellationToken)
+        [HttpGet("GetAllReviewsInEntity")]
+        public async Task<IActionResult> GetAllReviews([FromQuery] ReviewGettingRequest request, CancellationToken cancellationToken)
         {
-            if (courseId == Guid.Empty)
+            if (request.EntityId == Guid.Empty)
             {
-                return BadRequest("Course ID cannot be empty");
+                return BadRequest("Entity ID cannot be empty");
             }
 
-            var query = new GetAllReviewsByCourseQuery { CourseId = courseId };
+            var query = new GetAllReviewsQuery
+            {
+                EntityId = request.EntityId,
+                EntityType = request.EntityType,
+                Filters = request.Filters,
+                SortBy = request.SortBy,
+                IsDescending = request.IsDescending
+            };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : StatusCode((int)result.ErrorType, result);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
     }
+
 }

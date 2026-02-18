@@ -34,14 +34,14 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 // Validate Google ID token
                 var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
 
-                if (googleUserInfo == null || !googleUserInfo.EmailVerified)
-                {
-                    throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
-                }
+                //if (googleUserInfo == null || !googleUserInfo.EmailVerified)
+                //{
+                //    throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
+                //}
 
                 // Check if user already exists
                 var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
-                                                         .GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
+                                                         .GetByGoogleEmailAsync(request.GoogleUserInfo.Email, cancellationToken);
 
                 bool isNewUser = existingUser == null;
                 User user;
@@ -52,11 +52,11 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                     user = new User
                     {
                         Id = Guid.NewGuid(),
-                        FullName = googleUserInfo.FullName,
+                        FullName = request.GoogleUserInfo.FullName,
                         Ssn = request.Ssn,
                         PhoneNumber = request.PhoneNumber,
-                        GmailExternal = googleUserInfo.Email,
-                        PersonalPictureUrl = googleUserInfo.PictureUrl,
+                        GmailExternal = request.GoogleUserInfo.Email,
+                        PersonalPictureUrl = request.GoogleUserInfo.PictureUrl,
                         DateOfBirth = request.DateOfBirth,
                         Gender = request.Gender,
                         CreatedAt = DateTimeOffset.UtcNow,
@@ -77,7 +77,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                     // Update existing user
                     user = existingUser;
                     user.UpdatedAt = DateTimeOffset.UtcNow;
-                    user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
+                    user.PersonalPictureUrl = request.GoogleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
 
                     _unitOfWork.Repository<User>().Update(user);
                 }
@@ -105,11 +105,11 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                     FullName = user.FullName,
                     Email = user.GmailExternal ?? string.Empty,
                     ProfilePictureUrl = user.PersonalPictureUrl,
-                    UserRole = "Instructor",
+                    //UserRole = "Instructor",
                     IsNewUser = isNewUser,
-                    AuthenticatedAt = DateTimeOffset.UtcNow,
-                    Token = token,
-                    TokenExpiresAt = tokenExpiration,
+                    //AuthenticatedAt = DateTimeOffset.UtcNow,
+                    //Token = token,
+                    //TokenExpiresAt = tokenExpiration,
                     RefreshToken = refreshToken
                 });
             }

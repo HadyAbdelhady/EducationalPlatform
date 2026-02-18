@@ -3,7 +3,7 @@ using Application.Interfaces;
 using Application.ResultWrapper;
 using MediatR;
 
-namespace Application.Features.Review.Commands.CreateReview
+namespace Application.Features.Reviews.Commands.CreateReview
 {
     public class CreateReviewCommandHandler(IReviewServiceFactory reviewServiceFactory) : IRequestHandler<CreateReviewCommand, Result<ReviewResponse>>
     {

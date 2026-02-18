@@ -14,7 +14,7 @@ namespace Application.EventHandlers
             var course = await courseRepo.GetByIdAsync(notification.CourseId, cancellationToken);
             if (course != null)
             {
-                course.NumberOfSections += 1;
+                course.NumberOfSections += notification.NumberOfSections;
                 courseRepo.Update(course);
             }
         }

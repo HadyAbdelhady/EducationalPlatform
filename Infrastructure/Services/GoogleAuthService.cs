@@ -1,56 +1,46 @@
 using Application.DTOs.Auth;
 using Application.Interfaces;
 using Google.Apis.Auth;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services
 {
-    public class GoogleAuthService(IConfiguration configuration) : IGoogleAuthService
+    public class GoogleAuthSettings
     {
-        private readonly IConfiguration _configuration = configuration;
+        public string[] ClientId { get; set; } = [];
+    }
+    public class GoogleAuthService(IOptions<GoogleAuthSettings> googleAuthOptions) : IGoogleAuthService
+    {
+        private readonly GoogleAuthSettings _settings = googleAuthOptions.Value;
 
-        public async Task<GoogleUserInfo?> ValidateGoogleTokenAsync(string idToken, CancellationToken cancellationToken = default)
+        public async Task<bool?> ValidateGoogleTokenAsync(string idToken, CancellationToken cancellationToken = default)
         {
             try
             {
-                var clientId = _configuration["Authentication:Google:ClientId"];
-                
-                if (string.IsNullOrEmpty(clientId))
-                {
-                    throw new InvalidOperationException("Google Client ID is not configured.");
-                }
+                if (_settings.ClientId == null || _settings.ClientId.Length == 0)
+                    throw new InvalidOperationException("Google Client IDs not configured.");
 
-                // Validate the token with Google
                 var validationSettings = new GoogleJsonWebSignature.ValidationSettings
                 {
-                    Audience = [clientId]
+                    Audience = _settings.ClientId
                 };
 
                 var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, validationSettings);
 
                 if (payload == null)
                 {
-                    return null;
+                    return false;
                 }
 
-                // Extract user information from the validated token
-                return new GoogleUserInfo
-                {
-                    GoogleId = payload.Subject,
-                    Email = payload.Email,
-                    FullName = payload.Name ?? string.Empty,
-                    PictureUrl = payload.Picture,
-                    EmailVerified = payload.EmailVerified
-                };
+                return true;
             }
             catch (InvalidJwtException)
             {
-                // Token is invalid
                 return null;
             }
             catch (Exception)
             {
-                // Log the exception in a real application
+                // Log in real app
                 return null;
             }
         }

@@ -1,4 +1,4 @@
-using Application.DTOs.Question;
+using Application.DTOs.Questions;
 using Domain.Entities;
 
 namespace Application.Interfaces
@@ -7,7 +7,7 @@ namespace Application.Interfaces
     {
         Task<QuestionDetailsResponse?> GetQuestionByIdAsync(Guid questionId, CancellationToken cancellationToken = default);
         Task<IEnumerable<AllQuestionsInBankResponse>> GetAllQuestionsInBankAsync(Guid bankId, CancellationToken cancellationToken = default);
-        Task<IEnumerable<GetAllQuestionsInExamResponse>> GetAllQuestionsInExamAsync(Guid examId, CancellationToken cancellationToken = default);
+        Task<IEnumerable<QuestionsInExamResponse>> GetAllQuestionsInExamAsync(Guid examId, CancellationToken cancellationToken = default);
     }
 }
 

@@ -1,4 +1,5 @@
 using Application.DTOs.Auth;
+using Application.Features.Auth.Commands.StudentGoogleLogin;
 using Application.ResultWrapper;
 using MediatR;
 
@@ -16,8 +17,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
         public string Gender { get; set; } = string.Empty;
 
-        public string EducationYear { get; set; } = string.Empty;
-
         public string? LocationMaps { get; set; }
+        public GoogleUserInfo GoogleUserInfo { get; set; } = null!;
+
     }
 }

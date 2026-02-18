@@ -1,9 +1,12 @@
-﻿using Application.DTOs.Media;
+using Application.DTOs.Media;
 using Application.Interfaces;
+using Application.Interfaces.BaseFilters;
 using CloudinaryDotNet;
+using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Data;
 using Infrastructure.Middleware;
+using Infrastructure.Persistence.HelperFunctions;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -51,6 +54,9 @@ namespace Edu_Base
             // Configure Cloudinary
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
+            builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google")
+                            );
+
             // Register Cloudinary instance
             builder.Services.AddSingleton(provider =>
             {
@@ -89,6 +95,13 @@ namespace Edu_Base
             builder.Services.AddScoped<IReviewService, SectionReviewService>();
             builder.Services.AddScoped<IReviewService, InstructorReviewService>();
             builder.Services.AddScoped<IReviewService, VideoReviewService>();
+            builder.Services.AddScoped<IQuestionUpdateService, QuestionUpdateService>();
+            builder.Services.AddScoped<IBaseFilterRegistry<Course>, CourseFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<CourseReview>, CourseReviewFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<SectionReview>, SectionReviewFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<VideoReview>, VideoReviewFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<InstructorReview>, InstructorReviewFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<Exam>, ExamFilterRegistry>();
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>

@@ -3,7 +3,7 @@ using Application.ResultWrapper;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Review.Commands.CreateReview
+namespace Application.Features.Reviews.Commands.CreateReview
 {
     public class CreateReviewCommand : IRequest<Result<ReviewResponse>>
     {

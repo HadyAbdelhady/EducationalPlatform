@@ -16,19 +16,19 @@ namespace Application.Features.Videos.Queries.GetAllVideos
 
             try
             {
-                var videos = await _unitOfWork.Repository<Video>().GetAllAsync(cancellationToken);
+                var videos =  _unitOfWork.Repository<Video>().GetAll(cancellationToken);
 
                 var response = videos.Select(v => new VideoByUserIdResponse()
                 {
                     Id = v.Id,
                     Name = v.Name,
                     VideoUrl = v.VideoUrl,
-                    //DateOfCreation = v.DateOfCreation,
                     Description = v.Description,
-                    NumberOfSheets = v.VideoSheets?.Count ?? 0,
+                    NumberOfTutorialSheets = v.Sheets.Where(sh => sh.Type == SheetType.TutorialSheet).ToList().Count,
+                    NumberOfQuestionsSheets = v.Sheets.Where(sh => sh.Type == SheetType.QuestionSheet).ToList().Count,
                     SectionId = v.SectionId,
                     CreatedAt = v.CreatedAt,
-                    UpdatedAt = v.UpdatedAt,
+                    UpdatedAt = v.UpdatedAt ?? v.CreatedAt,
                 }).ToList();
 
                 return Result<PaginatedResult<VideoByUserIdResponse>>.Success(new PaginatedResult<VideoByUserIdResponse>

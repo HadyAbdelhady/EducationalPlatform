@@ -1,30 +1,41 @@
 ﻿using Application.DTOs.Review;
 using Application.Interfaces;
+using Application.Interfaces.BaseFilters;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 
 namespace Infrastructure.Services.ReviewService
 {
-    public class ReviewServiceFactory(IUnitOfWork unitOfWork) : IReviewServiceFactory
+    public class ReviewServiceFactory(
+        IUnitOfWork unitOfWork,
+        IBaseFilterRegistry<CourseReview> courseReviewFilterRegistry,
+        IBaseFilterRegistry<SectionReview> sectionReviewFilterRegistry,
+        IBaseFilterRegistry<InstructorReview> instructorReviewFilterRegistry,
+        IBaseFilterRegistry<VideoReview> videoReviewFilterRegistry) : IReviewServiceFactory
     {
         private readonly IUnitOfWork unitOfWork = unitOfWork;
+        private readonly IBaseFilterRegistry<CourseReview> _courseReviewFilterRegistry = courseReviewFilterRegistry;
+        private readonly IBaseFilterRegistry<SectionReview> _sectionReviewFilterRegistry = sectionReviewFilterRegistry;
+        private readonly IBaseFilterRegistry<InstructorReview> _instructorReviewFilterRegistry = instructorReviewFilterRegistry;
+        private readonly IBaseFilterRegistry<VideoReview> _videoReviewFilterRegistry = videoReviewFilterRegistry;
 
         public IReviewService GetReviewService(ReviewEntityType reviewEntityType)
         {
             return reviewEntityType switch
             {
-                ReviewEntityType.Course => new CourseReviewService(unitOfWork),
-                ReviewEntityType.Section => new SectionReviewService(unitOfWork),
-                ReviewEntityType.Instructor => new InstructorReviewService(unitOfWork),
-                ReviewEntityType.Video => new VideoReviewService(unitOfWork),
+                ReviewEntityType.Course => new CourseReviewService(unitOfWork, _courseReviewFilterRegistry),
+                ReviewEntityType.Section => new SectionReviewService(unitOfWork, _sectionReviewFilterRegistry),
+                ReviewEntityType.Instructor => new InstructorReviewService(unitOfWork, _instructorReviewFilterRegistry),
+                ReviewEntityType.Video => new VideoReviewService(unitOfWork, _videoReviewFilterRegistry),
                 _ => throw new NotImplementedException(),
             };
         }
 
     }
 
-    public class VideoReviewService(IUnitOfWork unitOfWork) : ReviewServiceBase<VideoReview>(unitOfWork)
+    public class VideoReviewService(IUnitOfWork unitOfWork, IBaseFilterRegistry<VideoReview> filterRegistry)
+        : ReviewServiceBase<VideoReview>(unitOfWork, filterRegistry)
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
@@ -38,13 +49,14 @@ namespace Infrastructure.Services.ReviewService
         }
     }
 
-    public class InstructorReviewService(IUnitOfWork unitOfWork) : ReviewServiceBase<InstructorReview>(unitOfWork)
+    public class InstructorReviewService(IUnitOfWork unitOfWork, IBaseFilterRegistry<InstructorReview> filterRegistry)
+        : ReviewServiceBase<InstructorReview>(unitOfWork, filterRegistry)
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public override async Task<Result<ReviewResponse>> CreateReviewAsync(ReviewCreationRequest request, CancellationToken cancellationToken = default)
         {
-            var instructor = await _unitOfWork.Repository<User>().AnyAsync(i => i.Id == request.EntityId, cancellationToken);
+            var instructor = await _unitOfWork.GetRepository<IUserRepository>().DoesInstructorExistAsync(request.EntityId, cancellationToken);
             if (!instructor)
                 return Result<ReviewResponse>.FailureStatusCode("Instructor not found.", ErrorType.NotFound);
 
@@ -52,7 +64,8 @@ namespace Infrastructure.Services.ReviewService
         }
     }
 
-    public class SectionReviewService(IUnitOfWork unitOfWork) : ReviewServiceBase<SectionReview>(unitOfWork)
+    public class SectionReviewService(IUnitOfWork unitOfWork, IBaseFilterRegistry<SectionReview> filterRegistry)
+        : ReviewServiceBase<SectionReview>(unitOfWork, filterRegistry)
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
@@ -66,7 +79,8 @@ namespace Infrastructure.Services.ReviewService
         }
     }
 
-    public class CourseReviewService(IUnitOfWork unitOfWork) : ReviewServiceBase<CourseReview>(unitOfWork)
+    public class CourseReviewService(IUnitOfWork unitOfWork, IBaseFilterRegistry<CourseReview> filterRegistry)
+        : ReviewServiceBase<CourseReview>(unitOfWork, filterRegistry)
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 

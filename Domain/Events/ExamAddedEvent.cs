@@ -1,4 +1,6 @@
-﻿namespace Domain.Events
+﻿using MediatR;
+
+namespace Domain.Events
 {
-    public record ExamAddedEvent(Guid Id);
+    public record ExamAddedEvent(Guid CourseId, Guid? SectionId) : INotification;
 }

@@ -2,7 +2,7 @@
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Review.Commands.DeleteReview
+namespace Application.Features.Reviews.Commands.DeleteReview
 {
     public class DeleteReviewCommand : IRequest<Result<string>>
     {

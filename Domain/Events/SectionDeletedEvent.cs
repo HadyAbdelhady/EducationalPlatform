@@ -1,4 +1,6 @@
-﻿namespace Domain.Events
+﻿using MediatR;
+
+namespace Domain.Events
 {
-    public record SectionDeletedEvent(Guid SectionId, Guid CourseId);
+    public record SectionDeletedEvent(Guid CourseId, int NumberOfSections) : INotification;
 }

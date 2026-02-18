@@ -6,6 +6,6 @@ namespace Domain.Interfaces
     public interface IAuditableEntity : IEntity
     {
         DateTimeOffset CreatedAt { get; set; }
-        DateTimeOffset UpdatedAt { get; set; }
+        DateTimeOffset? UpdatedAt { get; set; }
     }
 }

@@ -6,10 +6,6 @@ using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories
 {
-    /// <summary>
-    /// Generic repository implementation providing common CRUD operations.
-    /// </summary>
-    /// <typeparam name="TEntity">The entity type that implements IEntity.</typeparam>
     public class Repository<TEntity>(EducationDbContext context) : IRepository<TEntity> where TEntity : class, IEntity
     {
         protected readonly EducationDbContext _context = context;
@@ -32,12 +28,12 @@ namespace Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+        public virtual IQueryable<TEntity> GetAll(CancellationToken cancellationToken = default)
         {
-            return await _dbSet.ToListAsync(cancellationToken);
+            return  _dbSet;
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includes)
+        public virtual IQueryable<TEntity> GetAllAsync(CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> query = _dbSet;
 
@@ -46,15 +42,15 @@ namespace Infrastructure.Repositories
                 query = query.Include(include);
             }
 
-            return await query.ToListAsync(cancellationToken);
+            return  query;
         }
 
-        public virtual async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        public virtual IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
+            return  _dbSet.Where(predicate);
         }
 
-        public virtual async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includes)
+        public virtual IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> query = _dbSet;
 
@@ -63,7 +59,7 @@ namespace Infrastructure.Repositories
                 query = query.Include(include);
             }
 
-            return await query.Where(predicate).ToListAsync(cancellationToken);
+            return  query.Where(predicate);
         }
 
         public virtual async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)

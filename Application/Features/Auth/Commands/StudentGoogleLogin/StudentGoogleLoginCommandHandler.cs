@@ -7,10 +7,6 @@ using MediatR;
 
 namespace Application.Features.Auth.Commands.StudentGoogleLogin
 {
-    /// <summary>
-    /// Handles the student Google login command.
-    /// Validates the Google token, creates or updates the student account, and returns authentication response.
-    /// </summary>
     public class StudentGoogleLoginCommandHandler(
         IGoogleAuthService googleAuthService,
         IUnitOfWork unitOfWork,
@@ -20,30 +16,22 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
-        /// <summary>
-        /// Handles the student Google login process.
-        /// </summary>
-        /// <param name="request">The student Google login command.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>Authentication response with user information.</returns>
-        /// <exception cref="UnauthorizedAccessException">Thrown when Google token is invalid.</exception>
         public async Task<Result<AuthenticationResponse>> Handle(StudentGoogleLoginCommand request, CancellationToken cancellationToken)
         {
             try
             {
-
-
                 // Validate Google ID token
-                var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
+                var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.GoogleUserInfo.IdToken, cancellationToken);
 
-                if (googleUserInfo == null || !googleUserInfo.EmailVerified)
+                if (googleUserInfo == false)
                 {
                     throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
                 }
 
                 // Check if user already exists
                 var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
-                                                         .GetByGoogleEmailAsync(googleUserInfo.Email, cancellationToken);
+                                                         .GetByGoogleEmailAsync(request.GoogleUserInfo.Email, cancellationToken);
+
 
                 bool isNewUser = existingUser == null;
                 User user;
@@ -54,14 +42,13 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                     user = new User
                     {
                         Id = Guid.NewGuid(),
-                        FullName = googleUserInfo.FullName,
+                        FullName = request.GoogleUserInfo.FullName,
                         Ssn = request.Ssn, // Will be updated later if needed
-                        PhoneNumber = request.PhoneNumber,
-                        GmailExternal = googleUserInfo.Email,
-                        PersonalPictureUrl = googleUserInfo.PictureUrl,
-                        DateOfBirth = request.DateOfBirth,
-                        Gender = request.Gender,
-                        EducationYear = request.EducationYear,
+                        PhoneNumber = request.GoogleUserInfo.PhoneNumber,
+                        GmailExternal = request.GoogleUserInfo.Email,
+                        PersonalPictureUrl = request.GoogleUserInfo.PictureUrl,
+                        DateOfBirth = request.GoogleUserInfo.DateOfBirth,
+                        Gender = request.GoogleUserInfo.Gender,
                         LocationMaps = request.LocationMaps,
                         CreatedAt = DateTimeOffset.UtcNow,
                         UpdatedAt = DateTimeOffset.UtcNow,
@@ -72,6 +59,8 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                     {
                         UserId = user.Id,
                         DeviceId = request.DeviceId,
+                        ParentPhoneNumber = request.ParentPhoneNumber,
+                        EducationYearId = request.EducationYearId,
                         TriedScreenshot = false
                     };
 
@@ -100,12 +89,22 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         {
                             user.Student.DeviceId = request.DeviceId;
                         }
+
+                        user.FullName = request.GoogleUserInfo.FullName;
+                        user.Ssn = request.Ssn; // Will be updated later if needed
+                        user.PhoneNumber = request.GoogleUserInfo.PhoneNumber;
+                        user.GmailExternal = request.GoogleUserInfo.Email;
+                        user.PersonalPictureUrl = request.GoogleUserInfo.PictureUrl;
+                        user.DateOfBirth = request.GoogleUserInfo.DateOfBirth;
+                        user.Gender = request.GoogleUserInfo.Gender;
+                        user.Student.EducationYearId = request.EducationYearId;
+                        user.LocationMaps = request.LocationMaps;
+                        user.CreatedAt = DateTimeOffset.UtcNow;
+                        user.UpdatedAt = DateTimeOffset.UtcNow;
+                        user.IsDeleted = false;
+
+                        //await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
                     }
-
-                    user.UpdatedAt = DateTimeOffset.UtcNow;
-                    user.PersonalPictureUrl = googleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
-
-                    _unitOfWork.Repository<User>().Update(user);
                 }
 
                 // Generate JWT token
@@ -116,7 +115,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                     fullName: user.FullName
                 );
 
-                var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+                var tokenExpiration = DateTime.UtcNow.AddMinutes(1); // 24 hours -> 1440 minutes
 
                 // Generate refresh token
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();
@@ -132,9 +131,9 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                     FullName = user.FullName,
                     Email = user.GmailExternal ?? string.Empty,
                     ProfilePictureUrl = user.PersonalPictureUrl,
-                    UserRole = "Student",
+                    //UserRole = "Student",
                     IsNewUser = isNewUser,
-                    AuthenticatedAt = DateTimeOffset.UtcNow,
+                    //AuthenticatedAt = DateTimeOffset.UtcNow,
                     Token = accesstoken,
                     TokenExpiresAt = tokenExpiration,
                     RefreshToken = refreshToken
