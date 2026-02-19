@@ -7,10 +7,6 @@ using MediatR;
 
 namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 {
-    /// <summary>
-    /// Handles the instructor Google login command.
-    /// Validates the Google token, creates or updates the instructor account, and returns authentication response.
-    /// </summary>
     public class InstructorGoogleLoginCommandHandler(
         IGoogleAuthService googleAuthService,
         IUnitOfWork unitOfWork,
@@ -20,13 +16,6 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
-        /// <summary>
-        /// Handles the instructor Google login process.
-        /// </summary>
-        /// <param name="request">The instructor Google login command.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>Authentication response with user information.</returns>
-        /// <exception cref="UnauthorizedAccessException">Thrown when Google token is invalid.</exception>
         public async Task<Result<AuthenticationResponse>> Handle(InstructorGoogleLoginCommand request, CancellationToken cancellationToken)
         {
             try
@@ -34,10 +23,6 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 // Validate Google ID token
                 var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
 
-                //if (googleUserInfo == null || !googleUserInfo.EmailVerified)
-                //{
-                //    throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
-                //}
 
                 // Check if user already exists
                 var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
@@ -57,7 +42,6 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                         PhoneNumber = request.PhoneNumber,
                         GmailExternal = request.GoogleUserInfo.Email,
                         PersonalPictureUrl = request.GoogleUserInfo.PictureUrl,
-                        DateOfBirth = request.DateOfBirth,
                         Gender = request.Gender,
                         CreatedAt = DateTimeOffset.UtcNow,
                         UpdatedAt = DateTimeOffset.UtcNow,
@@ -107,9 +91,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                     ProfilePictureUrl = user.PersonalPictureUrl,
                     //UserRole = "Instructor",
                     IsNewUser = isNewUser,
-                    //AuthenticatedAt = DateTimeOffset.UtcNow,
-                    //Token = token,
-                    //TokenExpiresAt = tokenExpiration,
+                    Token = token,
+                    TokenExpiresAt = tokenExpiration,
                     RefreshToken = refreshToken
                 });
             }

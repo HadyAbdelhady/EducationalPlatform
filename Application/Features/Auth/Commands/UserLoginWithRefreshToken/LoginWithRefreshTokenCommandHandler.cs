@@ -16,7 +16,6 @@ namespace Application.Features.Auth.Commands.UserLoginWithRefreshToken
         {
             try
             {
-
                 var refreshToken = await _unitOfWork.GetRepository<IRefreshTokenRepository>().GetRefreshTokenAsync(request.RefreshToken, cancellationToken)
                                                             ?? throw new UnauthorizedAccessException("Invalid refresh token");
 

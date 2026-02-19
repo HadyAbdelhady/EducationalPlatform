@@ -13,11 +13,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
         public string PhoneNumber { get; set; } = string.Empty;
 
-        public DateOnly DateOfBirth { get; set; }
-
         public string Gender { get; set; } = string.Empty;
 
-        public string? LocationMaps { get; set; }
         public GoogleUserInfo GoogleUserInfo { get; set; } = null!;
 
     }

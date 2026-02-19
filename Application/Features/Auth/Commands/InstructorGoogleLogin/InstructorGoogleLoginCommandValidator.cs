@@ -19,12 +19,6 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 .Matches(@"^\+?[1-9]\d{1,14}$")
                 .WithMessage("Phone number must be in a valid format.");
 
-            RuleFor(x => x.DateOfBirth)
-                .NotEmpty()
-                .WithMessage("Date of birth is required.")
-                .Must(BeAValidAge)
-                .WithMessage("Instructor must be at least 18 years old.");
-
             RuleFor(x => x.Gender)
                 .NotEmpty()
                 .WithMessage("Gender is required.")

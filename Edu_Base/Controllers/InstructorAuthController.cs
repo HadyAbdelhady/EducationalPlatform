@@ -30,15 +30,12 @@ namespace Edu_Base.Controllers
                     FullName = request.FullName,
                     Email = request.Email,
                     PictureUrl = request.PictureUrl,
-                    DateOfBirth = request.DateOfBirth,
                     Gender = request.Gender,
                     PhoneNumber = request.PhoneNumber
                 },
                 Ssn = request.Ssn,
                 PhoneNumber = request.PhoneNumber,
-                DateOfBirth = request.DateOfBirth,
                 Gender = request.Gender,
-                LocationMaps = request.LocationMaps
             };
 
             var result = await _mediator.Send(command, cancellationToken);
