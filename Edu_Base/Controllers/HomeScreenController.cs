@@ -1,4 +1,5 @@
 using Application.Features.HomeScreen.StudentHomeScreen;
+using Application.Features.HomeScreen.InstructorDashboard;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,19 @@ namespace Edu_Base.Controllers
             _logger.LogInformation("Fetching home screen data for StudentId: {StudentId}", studentId);
             
             var query = new HomeScreenQuery { StudentId = studentId };
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return result.IsSuccess 
+                ? Ok(result) 
+                : StatusCode((int)result.ErrorType, result.Error);
+        }
+
+        [HttpGet("instructor/{instructorId}")]
+        public async Task<IActionResult> GetInstructorDashboard(Guid instructorId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching dashboard data for InstructorId: {InstructorId}", instructorId);
+            
+            var query = new InstructorDashboardQuery { InstructorId = instructorId };
             var result = await _mediator.Send(query, cancellationToken);
             
             return result.IsSuccess 
