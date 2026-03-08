@@ -21,6 +21,13 @@ namespace Application.Features.Sections.Commands.CreateSection
                 var sectionRepo = _unitOfWork.Repository<Section>();
                 var courseRepo = _unitOfWork.Repository<Course>();
 
+                // ensure the target course exists to avoid FK violations
+                var course = await courseRepo.GetByIdAsync(request.CourseId, cancellationToken);
+                if (course == null)
+                {
+                    return Result<List<CreateSectionResponse>>.FailureStatusCode("Course not found.", ErrorType.NotFound);
+                }
+
                 var responses = new List<CreateSectionResponse>();
 
                 foreach (var section in request.Sections)
@@ -30,7 +37,9 @@ namespace Application.Features.Sections.Commands.CreateSection
                         Id = Guid.NewGuid(),
                         Name = section.Name,
                         Description = section.Description,
-                        Price = section.Price
+                        Price = section.Price,
+                        CourseId = request.CourseId,
+                        CreatedAt = DateTimeOffset.UtcNow
                     };
 
                     await sectionRepo.AddAsync(newSection, cancellationToken);
@@ -41,8 +50,10 @@ namespace Application.Features.Sections.Commands.CreateSection
                         CreatedAt = newSection.CreatedAt.UtcDateTime
                     });
                 }
-                await _mediator.Publish(new SectionAddedEvent ( request.CourseId, responses.Count ), cancellationToken);
+
+                // persist changes before publishing events that may rely on the data
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _mediator.Publish(new SectionAddedEvent(request.CourseId, responses.Count), cancellationToken);
 
                 return Result<List<CreateSectionResponse>>.Success(responses);
             }
