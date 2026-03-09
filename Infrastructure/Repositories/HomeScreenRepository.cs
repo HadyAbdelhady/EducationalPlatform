@@ -202,14 +202,20 @@ namespace Infrastructure.Repositories
                     RelatedEntityId = null
                 });
 
-            response.RecentActivities = videos.Concat(exams).Concat(sheets).Concat(enrollments)
+            // Materialize each query before performing set operations in-memory to avoid EF Core translation issues
+            var videosList = await videos.ToListAsync(cancellationToken);
+            var examsList = await exams.ToListAsync(cancellationToken);
+            var sheetsList = await sheets.ToListAsync(cancellationToken);
+            var enrollmentsList = await enrollments.ToListAsync(cancellationToken);
+
+            response.RecentActivities = videosList.Concat(examsList).Concat(sheetsList).Concat(enrollmentsList)
                 .OrderByDescending(a => a.Timestamp)
                 .Take(10)
                 .ToList();
 
             var sheetsToReview = _context.Sheets
                 .Where(s => s.InstructorId == instructorId && s.DueDate.HasValue &&
-                           s.DueDate.Value <= DateTimeOffset.Now.AddDays(3))
+                           s.DueDate.Value <= DateTimeOffset.UtcNow.AddDays(3))
                 .Select(s => new PendingTaskDto
                 {
                     TaskType = "Review",
@@ -221,7 +227,7 @@ namespace Infrastructure.Repositories
                 });
 
             var supportTasks = _context.StudentCourses
-                .Where(sc => instructorCourseIds.Contains(sc.CourseId) && sc.EnrolledAt >= DateTimeOffset.Now.AddDays(-7))
+                .Where(sc => instructorCourseIds.Contains(sc.CourseId) && sc.EnrolledAt >= DateTimeOffset.UtcNow.AddDays(-7))
                 .Select(sc => new PendingTaskDto
                 {
                     TaskType = "Support",
@@ -232,7 +238,11 @@ namespace Infrastructure.Repositories
                     RelatedEntityId = null
                 });
 
-            response.PendingTasks = sheetsToReview.Concat(supportTasks)
+            // Materialize each query before performing set operations in-memory to avoid EF Core translation issues
+            var sheetsToReviewList = await sheetsToReview.ToListAsync(cancellationToken);
+            var supportTasksList = await supportTasks.ToListAsync(cancellationToken);
+
+            response.PendingTasks = sheetsToReviewList.Concat(supportTasksList)
                 .OrderBy(t => t.Priority)
                 .ThenBy(t => t.DueDate ?? DateTimeOffset.MaxValue)
                 .Take(8)
