@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Domain.Entities;
 using Domain.Events;
 using MediatR;
 
@@ -10,7 +11,7 @@ namespace Application.EventHandlers
 
         public async Task Handle(SectionAddedEvent notification, CancellationToken cancellationToken)
         {
-            var courseRepo = _unitOfWork.Repository<Domain.Entities.Course>();
+            var courseRepo = _unitOfWork.Repository<Course>();
             var course = await courseRepo.GetByIdAsync(notification.CourseId, cancellationToken);
             if (course != null)
             {
