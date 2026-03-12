@@ -13,20 +13,16 @@ namespace Application.EventHandlers
         {
             var courseRepo = _unitOfWork.Repository<Course>();
             var course = await courseRepo.GetByIdAsync(notification.CourseId, cancellationToken);
-            if (course == null)
-            {
-                return;
-            }
+
+            if (course == null) return;
+
             if (course.NumberOfSections > notification.NumberOfSections)
-            {
                 course.NumberOfSections -= notification.NumberOfSections;
-                courseRepo.Update(course);
-            }
+
             else
-            {
                 course.NumberOfSections = 0;
 
-            }
+            courseRepo.Update(course);
         }
     }
 }

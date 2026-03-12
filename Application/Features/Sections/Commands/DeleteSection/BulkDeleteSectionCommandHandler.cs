@@ -27,7 +27,7 @@ namespace Application.Features.Sections.Commands.DeleteSection
             var sectionRepo = _unitOfWork.Repository<Section>();
 
             // Optional: Validate that all sections belong to this course (defensive)
-            var sections =  sectionRepo
+            var sections = sectionRepo
                                 .Find(s => request.SectionIds.Contains(s.Id) && s.CourseId == request.CourseId, cancellationToken);
 
             var SectionList = sections.ToList();
@@ -43,7 +43,7 @@ namespace Application.Features.Sections.Commands.DeleteSection
 
             // Update course counter
             //course.NumberOfSections -= SectionList.Count;
-            await _mediator.Publish(new SectionDeletedEvent(request.CourseId, 1), cancellationToken);
+            await _mediator.Publish(new SectionDeletedEvent(request.CourseId, SectionList.Count), cancellationToken);
 
 
             // Remove sections (EF will track and delete)
