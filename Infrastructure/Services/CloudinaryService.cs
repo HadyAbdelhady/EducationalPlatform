@@ -285,6 +285,7 @@ namespace Infrastructure.Services
             {
                 UsageCategory.ProfilePicture => "educational_platform/profile_pictures",
                 UsageCategory.Thumbnail => "educational_platform/video_thumbnails",
+                UsageCategory.CourseThumbnail => "educational_platform/course_thumbnails",
                 _ => "educational_platform/uploads"
             };
         }
@@ -305,7 +306,7 @@ namespace Infrastructure.Services
                     .Quality("auto:good")
                     .FetchFormat("auto")
                     .Chain()
-                    .Radius("max") // Optional: makes it circular
+                    .Radius("max")
                     .Border("2px_solid_white"),
 
                 // Video Thumbnail: 16:9 aspect ratio, optimized for video previews
@@ -317,6 +318,14 @@ namespace Infrastructure.Services
                     .FetchFormat("auto")
                     .Chain()
                     .Effect("sharpen:100"),
+
+                // Course Thumbnail: 16:9 aspect ratio, optimized for course cards
+                UsageCategory.CourseThumbnail => new Transformation()
+                    .Width(800).Height(450)
+                    .Crop("fill")
+                    .Gravity("center")
+                    .Quality("auto:good")
+                    .FetchFormat("auto"),
 
                 _ => throw new ArgumentException($"Invalid usage category: {imageType}", nameof(imageType))
             };

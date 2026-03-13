@@ -1,10 +1,11 @@
-﻿using Application.DTOs.Review;
+using Application.DTOs.Review;
 using Application.HelperFunctions;
 using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
+using Domain.Interfaces;
 
 namespace Infrastructure.Services.ReviewService
 {
@@ -45,6 +46,8 @@ namespace Infrastructure.Services.ReviewService
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+                await UpdateEntityRatingAsync(request.EntityId, cancellationToken);
+
                 return Result<ReviewResponse>.Success(new ReviewResponse
                 {
                     ReviewId = newReview.Id,
@@ -67,6 +70,9 @@ namespace Infrastructure.Services.ReviewService
         {
             try
             {
+                var review = await _unitOfWork.Repository<TReview>().GetByIdAsync(reviewId, cancellationToken);
+                var entityId = review?.EntityId;
+
                 var reviewExists = await _unitOfWork.Repository<TReview>().AnyAsync(r => r.Id == reviewId, cancellationToken);
                 if (!reviewExists)
                 {
@@ -75,6 +81,11 @@ namespace Infrastructure.Services.ReviewService
 
                 await _unitOfWork.Repository<TReview>().RemoveAsync(reviewId, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                if (entityId.HasValue)
+                {
+                    await UpdateEntityRatingAsync(entityId.Value, cancellationToken);
+                }
 
                 return Result<string>.Success($"Review with ID: {reviewId} deleted Successfully.");
             }
@@ -103,6 +114,8 @@ namespace Infrastructure.Services.ReviewService
             _unitOfWork.Repository<TReview>().Update(review);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+            await UpdateEntityRatingAsync(review.EntityId, cancellationToken);
+
             return Result<ReviewResponse>.Success(new ReviewResponse
             {
                 ReviewId = request.ReviewId,
@@ -111,12 +124,124 @@ namespace Infrastructure.Services.ReviewService
             });
         }
 
+        // Centralized rating update method for all review types
+        protected virtual async Task UpdateEntityRatingAsync(Guid entityId, CancellationToken cancellationToken)
+        {
+            if (typeof(TReview) == typeof(CourseReview))
+            {
+                await UpdateRatingForEntity<Course, CourseReview>(
+                    entityId,
+                    (course, rating) =>
+                    {
+                        course.Rating = rating;
+                        return course;
+                    },
+                    cancellationToken);
+            }
+            else if (typeof(TReview) == typeof(SectionReview))
+            {
+                await UpdateRatingForEntity<Section, SectionReview>(
+                    entityId,
+                    (section, rating) =>
+                    {
+                        section.Rating = rating;
+                        return section;
+                    },
+                    cancellationToken);
+            }
+            else if (typeof(TReview) == typeof(InstructorReview))
+            {
+                var userRepository = _unitOfWork.GetRepository<IUserRepository>();
+
+                var instructorUser =
+                    await userRepository.GetInstructorByIdWithRelationsAsync(entityId, cancellationToken);
+
+                var reviewRepository = _unitOfWork.Repository<InstructorReview>();
+                var reviews = reviewRepository.Find(r => r.EntityId == entityId, cancellationToken);
+
+                decimal? newRating = null;
+                if (reviews.Any())
+                {
+                    newRating = reviews.Average(r => r.StarRating);
+                }
+
+                instructorUser!.Instructor!.Rating = newRating;
+                userRepository.Update(instructorUser);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
+            else if (typeof(TReview) == typeof(VideoReview))
+            {
+                await UpdateRatingForEntity<Video, VideoReview>(
+                    entityId,
+                    (video, rating) =>
+                    {
+                        video.Rating = rating;
+                        return video;
+                    },
+                    cancellationToken);
+            }
+        }
+
+        // Helper method used only inside the base class for soft-deletable entities
+        private async Task UpdateRatingForEntity<TEntity, TEntityReview>(
+            Guid entityId,
+            Func<TEntity, decimal?, TEntity> updateRatingAction,
+            CancellationToken cancellationToken)
+            where TEntityReview : Review
+            where TEntity : class, ISoftDeletableEntity
+        {
+            var entityRepository = _unitOfWork.Repository<TEntity>();
+            var reviewRepository = _unitOfWork.Repository<TEntityReview>();
+
+            var entity = await entityRepository.GetByIdAsync(entityId, cancellationToken);
+            if (entity == null) return;
+
+            var reviews = reviewRepository.Find(r => r.EntityId == entityId, cancellationToken);
+
+            decimal? newRating = null;
+            if (reviews.Any())
+            {
+                newRating = reviews.Average(r => r.StarRating);
+            }
+
+            var updatedEntity = updateRatingAction(entity, newRating);
+            entityRepository.Update(updatedEntity);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
+
+        // Helper method for entities that implement ISoftDeletableEntity
+        //protected async Task UpdateRatingForInstructor<TEntity, TEntityReview>(
+        //    Guid entityId,
+        //    Func<TEntity, decimal?, User> updateRatingAction,
+        //    CancellationToken cancellationToken)
+        //    where TEntityReview : Review
+        //    where TEntity : User
+        //{
+        //    var entityRepository = _unitOfWork.Repository<TEntity>();
+        //    var reviewRepository = _unitOfWork.Repository<TEntityReview>();
+
+        //    var entity = await entityRepository.GetByIdAsync(entityId, cancellationToken);
+        //    if (entity == null) return;
+
+        //    var reviews = reviewRepository.Find(r => r.EntityId == entityId, cancellationToken);
+
+        //    decimal? newRating = null;
+        //    if (reviews.Any())
+        //    {
+        //        newRating = reviews.Average(r => r.StarRating);
+        //    }
+
+        //    var updatedEntity = updateRatingAction(entity, newRating);
+        //    entityRepository.Update(updatedEntity);
+        //    await _unitOfWork.SaveChangesAsync(cancellationToken);
+        //}
+
         public virtual async Task<Result<List<GetAllReviewsResponse>>> GetAllReviewsAsync(ReviewGettingRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
                 var reviews = _unitOfWork.Repository<TReview>()
-                    .Find(r => r.EntityId == request.EntityId, 
+                    .Find(r => r.EntityId == request.EntityId,
                         cancellationToken, r => r.Student!.User!);
 
                 if (request.Filters != null && request.Filters.Count > 0)

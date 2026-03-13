@@ -6,9 +6,10 @@ using MediatR;
 
 namespace Application.Features.Courses.Commands.UpdateCourse
 {
-    public class UpdateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateCourseCommand, Result<string>>
+    public class UpdateCourseCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService) : IRequestHandler<UpdateCourseCommand, Result<string>>
     {
         private readonly IUnitOfWork unitOfWork = unitOfWork;
+        private readonly ICloudinaryCore _cloudinaryService = cloudinaryService;
 
         public async Task<Result<string>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
         {
@@ -27,7 +28,14 @@ namespace Application.Features.Courses.Commands.UpdateCourse
                 course.Description = request.Description;
                 Instrcutor.InstructorId = request.InstructorId;
                 //course.Price = request.Price;
-                course.PictureUrl = request.PictureUrl;
+                if (request.PictureFile is not null)
+                {
+                    course.PictureUrl = await _cloudinaryService.UploadMediaAsync(request.PictureFile, UsageCategory.CourseThumbnail);
+                }
+                else if (!string.IsNullOrWhiteSpace(request.PictureUrl))
+                {
+                    course.PictureUrl = request.PictureUrl;
+                }
                 course.IntroVideoUrl = request.IntroVideoUrl;
                 course.UpdatedAt = DateTime.UtcNow;
                 unitOfWork.Repository<Course>().Update(course);

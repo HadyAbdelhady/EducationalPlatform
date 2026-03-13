@@ -1,3 +1,4 @@
+using Domain.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,6 +13,11 @@ namespace Domain.Entities
         public Guid UserId { get; set; }
 
         public User User { get; set; } = null!;
+
+        [Column("rating")]
+        public decimal? Rating { get; set; } = 1;
+
+
 
         public ICollection<InstructorCourse> InstructorCourses { get; set; } = [];
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];

@@ -1,5 +1,6 @@
 using Application.DTOs.Courses;
 using Application.ResultWrapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 
 namespace Application.Features.Courses.Commands.CreateCourse
@@ -12,6 +13,6 @@ namespace Application.Features.Courses.Commands.CreateCourse
         public decimal? Price { get; set; }
         public string? PictureUrl { get; set; }
         public string? IntroVideoUrl { get; set; }
-
+        public IFormFile? PictureFile { get; set; }
     }
 }

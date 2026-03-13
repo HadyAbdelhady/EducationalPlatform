@@ -17,7 +17,7 @@ namespace Domain.Entities
         public Guid EntityId { get; set; }
 
         [Column("star_rating")]
-        public int StarRating { get; set; } = 1;
+        public decimal StarRating { get; set; } = 1;
 
         [Column("comment")]
         public string Comment { get; set; } = string.Empty;

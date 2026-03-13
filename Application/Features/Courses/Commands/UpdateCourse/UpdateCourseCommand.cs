@@ -1,4 +1,5 @@
 using Application.ResultWrapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 
 namespace Application.Features.Courses.Commands.UpdateCourse
@@ -12,5 +13,6 @@ namespace Application.Features.Courses.Commands.UpdateCourse
         //public decimal Price { get; set; }
         public string PictureUrl { get; set; } = string.Empty;
         public string IntroVideoUrl { get; set; } = string.Empty;
+        public IFormFile? PictureFile { get; set; }
     }
 }

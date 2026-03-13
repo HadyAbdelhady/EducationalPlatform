@@ -7,21 +7,29 @@ using MediatR;
 
 namespace Application.Features.Courses.Commands.CreateCourse
 {
-    public class CreateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateCourseCommand, Result<CourseCreationResponse>>
+    public class CreateCourseCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService) : IRequestHandler<CreateCourseCommand, Result<CourseCreationResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly ICloudinaryCore _cloudinaryService = cloudinaryService;
 
         public async Task<Result<CourseCreationResponse>> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
         {
             try
             {
+                string? pictureUrl = request.PictureUrl;
+
+                if (request.PictureFile is not null)
+                {
+                    pictureUrl = await _cloudinaryService.UploadMediaAsync(request.PictureFile, UsageCategory.CourseThumbnail);
+                }
+
                 Course newCourse = new()
                 {
                     Id = Guid.NewGuid(),
                     Name = request.CourseName,
                     Description = request.Description,
                     Price = request.Price,
-                    PictureUrl = request.PictureUrl,
+                    PictureUrl = pictureUrl,
                     IntroVideoUrl = request.IntroVideoUrl,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,

@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
@@ -31,6 +31,16 @@ namespace Application.Features.Sections.Commands.DeleteSection
                                 .Find(s => request.SectionIds.Contains(s.Id) && s.CourseId == request.CourseId, cancellationToken);
 
             var SectionList = sections.ToList();
+
+            var hasEnrolledStudents = await sectionRepo
+                .AnyAsync(s => request.SectionIds.Contains(s.Id) && s.StudentSections.Any(), cancellationToken);
+
+            if (hasEnrolledStudents)
+            {
+                return Result<string>.FailureStatusCode(
+                    "Cannot delete one or more sections because there are students enrolled.",
+                    ErrorType.Conflict);
+            }
 
             /*
              Warn or fail if some IDs don't exist or don't belong to the course?

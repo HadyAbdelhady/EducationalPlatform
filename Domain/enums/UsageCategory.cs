@@ -1,8 +1,9 @@
-﻿namespace Domain.enums
+namespace Domain.enums
 {
     public enum UsageCategory
     {
         Thumbnail,
         ProfilePicture,
+        CourseThumbnail,
     }
 }

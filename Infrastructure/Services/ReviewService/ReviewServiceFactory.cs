@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Review;
+using Application.DTOs.Review;
 using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
 using Application.ResultWrapper;
@@ -45,8 +45,10 @@ namespace Infrastructure.Services.ReviewService
             if (!video)
                 return Result<ReviewResponse>.FailureStatusCode("Video not found.", ErrorType.NotFound);
 
-            return await base.CreateReviewAsync(request, cancellationToken);
+            var response = await base.CreateReviewAsync(request, cancellationToken);
+            return response;
         }
+
     }
 
     public class InstructorReviewService(IUnitOfWork unitOfWork, IBaseFilterRegistry<InstructorReview> filterRegistry)
@@ -60,8 +62,10 @@ namespace Infrastructure.Services.ReviewService
             if (!instructor)
                 return Result<ReviewResponse>.FailureStatusCode("Instructor not found.", ErrorType.NotFound);
 
-            return await base.CreateReviewAsync(request, cancellationToken);
+            var response = await base.CreateReviewAsync(request, cancellationToken);
+            return response;
         }
+
     }
 
     public class SectionReviewService(IUnitOfWork unitOfWork, IBaseFilterRegistry<SectionReview> filterRegistry)
@@ -75,8 +79,10 @@ namespace Infrastructure.Services.ReviewService
             if (!section)
                 return Result<ReviewResponse>.FailureStatusCode("Section not found.", ErrorType.NotFound);
 
-            return await base.CreateReviewAsync(request, cancellationToken);
+            var response = await base.CreateReviewAsync(request, cancellationToken);
+            return response;
         }
+
     }
 
     public class CourseReviewService(IUnitOfWork unitOfWork, IBaseFilterRegistry<CourseReview> filterRegistry)
@@ -90,7 +96,9 @@ namespace Infrastructure.Services.ReviewService
             if (!courseExists)
                 return Result<ReviewResponse>.FailureStatusCode("Course not found.", ErrorType.NotFound);
 
-            return await base.CreateReviewAsync(request, cancellationToken);
+            var response = await base.CreateReviewAsync(request, cancellationToken);
+            return response;
         }
+
     }
 }
