@@ -26,7 +26,7 @@ namespace Application.Features.Courses.Commands.UpdateCourse
                 course.Name = request.CourseName;
                 course.Description = request.Description;
                 Instrcutor.InstructorId = request.InstructorId;
-                course.Price = request.Price;
+                //course.Price = request.Price;
                 course.PictureUrl = request.PictureUrl;
                 course.IntroVideoUrl = request.IntroVideoUrl;
                 course.UpdatedAt = DateTime.UtcNow;

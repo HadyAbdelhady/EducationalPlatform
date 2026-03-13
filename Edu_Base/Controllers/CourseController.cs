@@ -73,7 +73,7 @@ namespace Edu_Base.Controllers
                 CourseName = courseUpdateRequest.CourseName,
                 Description = courseUpdateRequest.Description,
                 InstructorId = courseUpdateRequest.InstructorId,
-                Price = courseUpdateRequest.Price,
+                //Price = courseUpdateRequest.Price,
                 PictureUrl = courseUpdateRequest.PictureUrl,
                 IntroVideoUrl = courseUpdateRequest.IntroVideoUrl
             };

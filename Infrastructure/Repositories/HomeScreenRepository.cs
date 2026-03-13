@@ -226,27 +226,33 @@ namespace Infrastructure.Repositories
                     RelatedEntityId = s.Id
                 });
 
-            var supportTasks = _context.StudentCourses
-                .Where(sc => instructorCourseIds.Contains(sc.CourseId) && sc.EnrolledAt >= DateTimeOffset.UtcNow.AddDays(-7))
-                .Select(sc => new PendingTaskDto
-                {
-                    TaskType = "Support",
-                    Title = "Answer student questions",
-                    CourseName = sc.Course.Name,
-                    DueDate = null,
-                    Priority = 3,
-                    RelatedEntityId = null
-                });
+            //var supportTasks = _context.StudentCourses
+            //    .Where(sc => instructorCourseIds.Contains(sc.CourseId) && sc.EnrolledAt >= DateTimeOffset.UtcNow.AddDays(-7))
+            //    .Select(sc => new PendingTaskDto
+            //    {
+            //        TaskType = "Support",
+            //        Title = "Answer student questions",
+            //        CourseName = sc.Course.Name,
+            //        DueDate = null,
+            //        Priority = 3,
+            //        RelatedEntityId = null
+            //    });
 
             // Materialize each query before performing set operations in-memory to avoid EF Core translation issues
             var sheetsToReviewList = await sheetsToReview.ToListAsync(cancellationToken);
-            var supportTasksList = await supportTasks.ToListAsync(cancellationToken);
+            //var supportTasksList = await supportTasks.ToListAsync(cancellationToken);
 
-            response.PendingTasks = sheetsToReviewList.Concat(supportTasksList)
-                .OrderBy(t => t.Priority)
-                .ThenBy(t => t.DueDate ?? DateTimeOffset.MaxValue)
-                .Take(8)
-                .ToList();
+            //response.PendingTasks = sheetsToReviewList.Concat(supportTasksList)
+            //    .OrderBy(t => t.Priority)
+            //    .ThenBy(t => t.DueDate ?? DateTimeOffset.MaxValue)
+            //    .Take(8)
+            //    .ToList();
+
+            response.PendingTasks = sheetsToReviewList
+                                    .OrderBy(t => t.Priority)
+                                    .ThenBy(t => t.DueDate)
+                                    .Take(8)
+                                    .ToList();
 
             // Upcoming exams
             response.UpcomingExams = _context.Exams

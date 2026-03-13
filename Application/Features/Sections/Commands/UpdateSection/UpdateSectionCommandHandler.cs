@@ -23,7 +23,7 @@ namespace Application.Features.Sections.Commands.UpdateSection
 
                 section.Name = request.Name;
                 section.Description = request.Description;
-                section.Price = request.Price;
+                //section.Price = request.Price;
                 section.CourseId = request.CourseId;
                 section.UpdatedAt = DateTimeOffset.UtcNow;
 

@@ -9,7 +9,7 @@ namespace Application.Features.Courses.Commands.UpdateCourse
         public string CourseName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public Guid InstructorId { get; set; }
-        public decimal Price { get; set; }
+        //public decimal Price { get; set; }
         public string PictureUrl { get; set; } = string.Empty;
         public string IntroVideoUrl { get; set; } = string.Empty;
     }

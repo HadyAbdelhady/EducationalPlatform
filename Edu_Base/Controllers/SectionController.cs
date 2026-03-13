@@ -69,7 +69,7 @@ namespace Edu_Base.Controllers
                 SectionId = sectionUpdateRequest.SectionId,
                 Name = sectionUpdateRequest.Name,
                 Description = sectionUpdateRequest.Description,
-                Price = sectionUpdateRequest.Price,
+                //Price = sectionUpdateRequest.Price,
                 CourseId = sectionUpdateRequest.CourseId
             };
 
