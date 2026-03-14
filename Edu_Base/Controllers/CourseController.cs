@@ -19,7 +19,7 @@ namespace Edu_Base.Controllers
         [HttpPost("create")]
         //[ValidateAntiForgeryToken]
         //[Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> CreateCourse(CourseCreationRequest courseCreationRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCourse([FromForm] CourseCreationRequest courseCreationRequest, CancellationToken cancellationToken)
         {
             if (courseCreationRequest == null)
             {
@@ -32,7 +32,8 @@ namespace Edu_Base.Controllers
                 InstructorId = courseCreationRequest.InstructorId,
                 Price = courseCreationRequest.Price,
                 PictureUrl = courseCreationRequest.PictureUrl,
-                IntroVideoUrl = courseCreationRequest.IntroVideoUrl
+                IntroVideoUrl = courseCreationRequest.IntroVideoUrl,
+                PictureFile = courseCreationRequest.PictureFile
             };
             var result = await _mediator.Send(createCourseCommand, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
@@ -65,7 +66,7 @@ namespace Edu_Base.Controllers
         }
 
         [HttpPatch("update")]
-        public async Task<IActionResult> UpdateCourse(CourseUpdateRequest courseUpdateRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateCourse([FromForm] CourseUpdateRequest courseUpdateRequest, CancellationToken cancellationToken)
         {
             var command = new UpdateCourseCommand
             {
@@ -73,9 +74,10 @@ namespace Edu_Base.Controllers
                 CourseName = courseUpdateRequest.CourseName,
                 Description = courseUpdateRequest.Description,
                 InstructorId = courseUpdateRequest.InstructorId,
-                Price = courseUpdateRequest.Price,
+                //Price = courseUpdateRequest.Price,
                 PictureUrl = courseUpdateRequest.PictureUrl,
-                IntroVideoUrl = courseUpdateRequest.IntroVideoUrl
+                IntroVideoUrl = courseUpdateRequest.IntroVideoUrl,
+                PictureFile = courseUpdateRequest.PictureFile
             };
             var result = await _mediator.Send(command, cancellationToken);
 

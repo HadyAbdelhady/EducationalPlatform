@@ -11,18 +11,21 @@
     <Compile Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
     <Compile Remove="Features\Exams\Command\PublishExamResults\**" />
     <Compile Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
+    <Compile Remove="Features\HomeScreen\InstructorHomeScreen\**" />
     <Compile Remove="Features\Sections\**" />
     <Compile Remove="Persistence\**" />
     <EmbeddedResource Remove="Features\Answer\**" />
     <EmbeddedResource Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
     <EmbeddedResource Remove="Features\Exams\Command\PublishExamResults\**" />
     <EmbeddedResource Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
+    <EmbeddedResource Remove="Features\HomeScreen\InstructorHomeScreen\**" />
     <EmbeddedResource Remove="Features\Sections\**" />
     <EmbeddedResource Remove="Persistence\**" />
     <None Remove="Features\Answer\**" />
     <None Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
     <None Remove="Features\Exams\Command\PublishExamResults\**" />
     <None Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
+    <None Remove="Features\HomeScreen\InstructorHomeScreen\**" />
     <None Remove="Features\Sections\**" />
     <None Remove="Persistence\**" />
   </ItemGroup>
@@ -64,7 +67,6 @@
     <Folder Include="Features\Exams\Query\GetExamSubmissionsList\" />
     <Folder Include="Features\Exams\Query\CanStudentTakeExam\" />
     <Folder Include="Features\Exams\Query\GetExamStatistics\" />
-    <Folder Include="Features\HomeScreen\InstructorHomeScreen\" />
     <Folder Include="Features\Sheets\Queries\" />
   </ItemGroup>
 

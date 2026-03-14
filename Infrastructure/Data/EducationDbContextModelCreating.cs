@@ -412,6 +412,9 @@ namespace Infrastructure.Data
                     .WithMany(x => x.Payments)
                     .HasForeignKey(x => x.SectionId)
                     .HasConstraintName("payments_section_id_fkey");
+                b.Property(e=>e.Status)
+                    .HasConversion<EnumToStringConverter<PaymentStatus>>();
+
             });
 
             modelBuilder.Entity<StudentExamResult>(b =>

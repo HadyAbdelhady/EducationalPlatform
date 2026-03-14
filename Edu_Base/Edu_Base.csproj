@@ -31,4 +31,8 @@
 		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Edu_Base\Swagger\" />
+	</ItemGroup>
+
 </Project>

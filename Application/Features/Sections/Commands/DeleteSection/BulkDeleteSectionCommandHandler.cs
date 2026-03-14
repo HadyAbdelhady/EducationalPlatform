@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
@@ -27,10 +27,20 @@ namespace Application.Features.Sections.Commands.DeleteSection
             var sectionRepo = _unitOfWork.Repository<Section>();
 
             // Optional: Validate that all sections belong to this course (defensive)
-            var sections =  sectionRepo
+            var sections = sectionRepo
                                 .Find(s => request.SectionIds.Contains(s.Id) && s.CourseId == request.CourseId, cancellationToken);
 
             var SectionList = sections.ToList();
+
+            var hasEnrolledStudents = await sectionRepo
+                .AnyAsync(s => request.SectionIds.Contains(s.Id) && s.StudentSections.Any(), cancellationToken);
+
+            if (hasEnrolledStudents)
+            {
+                return Result<string>.FailureStatusCode(
+                    "Cannot delete one or more sections because there are students enrolled.",
+                    ErrorType.Conflict);
+            }
 
             /*
              Warn or fail if some IDs don't exist or don't belong to the course?
@@ -43,7 +53,7 @@ namespace Application.Features.Sections.Commands.DeleteSection
 
             // Update course counter
             //course.NumberOfSections -= SectionList.Count;
-            await _mediator.Publish(new SectionDeletedEvent(request.CourseId, 1), cancellationToken);
+            await _mediator.Publish(new SectionDeletedEvent(request.CourseId, SectionList.Count), cancellationToken);
 
 
             // Remove sections (EF will track and delete)

@@ -6,9 +6,8 @@ using MediatR;
 
 namespace Application.Features.Payment.StudentBuys
 {
-    public class BuyingCommandHandler(IUnitOfWork unitOfWork, IMediator mediator) : IRequestHandler<BuyingCommand, Result<StudentBuyResponse>>
+    public class BuyingCommandHandler(IMediator mediator) : IRequestHandler<BuyingCommand, Result<StudentBuyResponse>>
     {
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMediator _mediator = mediator;
 
         public async Task<Result<StudentBuyResponse>> Handle(BuyingCommand request, CancellationToken cancellationToken)

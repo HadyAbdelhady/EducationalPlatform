@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Domain.Entities;
 using Domain.Events;
 using MediatR;
 
@@ -10,13 +11,18 @@ namespace Application.EventHandlers
 
         public async Task Handle(SectionDeletedEvent notification, CancellationToken cancellationToken)
         {
-            var courseRepo = _unitOfWork.Repository<Domain.Entities.Course>();
+            var courseRepo = _unitOfWork.Repository<Course>();
             var course = await courseRepo.GetByIdAsync(notification.CourseId, cancellationToken);
-            if (course != null)
-            {
+
+            if (course == null) return;
+
+            if (course.NumberOfSections > notification.NumberOfSections)
                 course.NumberOfSections -= notification.NumberOfSections;
-                courseRepo.Update(course);
-            }
+
+            else
+                course.NumberOfSections = 0;
+
+            courseRepo.Update(course);
         }
     }
 }

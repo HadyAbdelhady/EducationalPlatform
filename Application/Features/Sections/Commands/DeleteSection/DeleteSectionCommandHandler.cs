@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
@@ -19,6 +19,16 @@ namespace Application.Features.Sections.Commands.DeleteSection
 
                 var section = await sectionRepo.GetByIdAsync(request.SectionId, cancellationToken)
                     ?? throw new KeyNotFoundException("Section not found");
+
+                var hasEnrolledStudents = await sectionRepo
+                    .AnyAsync(s => s.Id == request.SectionId && s.StudentSections.Any(), cancellationToken);
+
+                if (hasEnrolledStudents)
+                {
+                    return Result<string>.FailureStatusCode(
+                        "Cannot delete this section because there are students enrolled.",
+                        ErrorType.Conflict);
+                }
 
                 var course = await courseRepo.GetByIdAsync(section.CourseId, cancellationToken)
                     ?? throw new KeyNotFoundException("Course not found for this section");

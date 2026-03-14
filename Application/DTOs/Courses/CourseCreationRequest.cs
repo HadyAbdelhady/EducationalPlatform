@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Application.DTOs.Courses
 {
     public class CourseCreationRequest
@@ -8,5 +10,6 @@ namespace Application.DTOs.Courses
         public decimal? Price { get; set; }
         public string? PictureUrl { get; set; }
         public string? IntroVideoUrl { get; set; }
+        public IFormFile? PictureFile { get; set; }
     }
 }

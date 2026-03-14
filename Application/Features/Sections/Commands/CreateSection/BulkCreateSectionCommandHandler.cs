@@ -52,8 +52,8 @@ namespace Application.Features.Sections.Commands.CreateSection
                 }
 
                 // persist changes before publishing events that may rely on the data
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await _mediator.Publish(new SectionAddedEvent(request.CourseId, responses.Count), cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<List<CreateSectionResponse>>.Success(responses);
             }

@@ -14,11 +14,25 @@ namespace Application.Features.Courses.Commands.DeleteCourse
         {
             try
             {
+                var courseRepo = _unitOfWork.Repository<Course>();
 
-                var course = await _unitOfWork.Repository<Course>().GetByIdAsync(request.CourseId, cancellationToken)
+                var course = await courseRepo.GetByIdAsync(request.CourseId, cancellationToken)
                                                             ?? throw new KeyNotFoundException("Course not found");
 
-                await _unitOfWork.Repository<Course>().RemoveAsync(course.Id, cancellationToken);
+                var hasEnrolledStudentsInCourse = await courseRepo
+                    .AnyAsync(c => c.Id == request.CourseId && c.StudentCourses.Any(), cancellationToken);
+
+                var hasEnrolledStudentsInAnySection = await courseRepo
+                    .AnyAsync(c => c.Id == request.CourseId && c.Sections.Any(s => s.StudentSections.Any()), cancellationToken);
+
+                if (hasEnrolledStudentsInCourse || hasEnrolledStudentsInAnySection)
+                {
+                    return Result<string>.FailureStatusCode(
+                        "Cannot delete this course because there are students enrolled.",
+                        ErrorType.Conflict);
+                }
+
+                await courseRepo.RemoveAsync(course.Id, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<string>.Success("Course deleted successfully");

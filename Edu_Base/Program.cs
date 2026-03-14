@@ -97,6 +97,7 @@ namespace Edu_Base
             builder.Services.AddScoped<IReviewService, VideoReviewService>();
             builder.Services.AddScoped<IQuestionUpdateService, QuestionUpdateService>();
             builder.Services.AddScoped<IBaseFilterRegistry<Course>, CourseFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<Section>, SectionFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<CourseReview>, CourseReviewFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<SectionReview>, SectionReviewFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<VideoReview>, VideoReviewFilterRegistry>();
@@ -141,7 +142,12 @@ namespace Edu_Base
 
             builder.Services.AddAuthorization();
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(opts =>
+                {
+                    // Serialize enums as their string names in JSON responses
+                    opts.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                });
 
             // Swagger/OpenAPI Configuration
             builder.Services.AddEndpointsApiExplorer();
@@ -178,6 +184,8 @@ namespace Edu_Base
                         Array.Empty<string>()
                     }
                 });
+                // Represent enums as strings in Swagger schema (use names instead of numeric values)
+                c.SchemaFilter<Edu_Base.Swagger.EnumSchemaFilter>();
             });
 
             var app = builder.Build();
