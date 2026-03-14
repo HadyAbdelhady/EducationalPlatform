@@ -1,5 +1,6 @@
 using Application.DTOs.HomeScreen;
 using Application.Interfaces;
+using Application.ResultWrapper;
 using Domain.enums;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -91,6 +92,131 @@ namespace Infrastructure.Repositories
             var result = await query.FirstOrDefaultAsync(cancellationToken);
 
             return result;
+        }
+
+        public async Task<StudentProgressSummaryResponse> GetStudentProgressDataAsync(
+            Guid studentId,
+            int coursesPage,
+            int coursesPageSize,
+            int milestonesPage,
+            int milestonesPageSize,
+            CancellationToken cancellationToken = default)
+        {
+            coursesPage = coursesPage < 1 ? 1 : coursesPage;
+            coursesPageSize = coursesPageSize <= 0 ? 6 : coursesPageSize;
+            milestonesPage = milestonesPage < 1 ? 1 : milestonesPage;
+            milestonesPageSize = milestonesPageSize <= 0 ? 10 : milestonesPageSize;
+
+            var studentCoursesQuery = _context.StudentCourses
+                .Include(sc => sc.Course)
+                .Where(sc => sc.StudentId == studentId);
+
+            var studentCoursesAll = await studentCoursesQuery.ToListAsync(cancellationToken);
+
+            var inProgressCoursesCount = studentCoursesAll
+                .Count(sc =>
+                    sc.Course.NumberOfVideos > 0 &&
+                    sc.NumberOfCourseVideosWatched < sc.Course.NumberOfVideos);
+
+            var completedLessonsCount = studentCoursesAll.Sum(sc => sc.NumberOfCourseVideosWatched);
+
+            var courseDtosAll = studentCoursesAll
+                .Select(sc => new StudentProgressCourseDto
+                {
+                    Id = sc.CourseId,
+                    Name = sc.Course.Name,
+                    PictureUrl = sc.Course.PictureUrl,
+                    TotalLessons = sc.Course.NumberOfVideos,
+                    CompletedLessons = sc.NumberOfCourseVideosWatched,
+                    GradePercent = null
+                })
+                .OrderBy(c => c.Name)
+                .ToList();
+
+            var coursesTotalCount = courseDtosAll.Count;
+            var coursesItems = courseDtosAll
+                .Skip((coursesPage - 1) * coursesPageSize)
+                .Take(coursesPageSize)
+                .ToList();
+
+            var paginatedCourses = new PaginatedResult<StudentProgressCourseDto>
+            {
+                Items = coursesItems,
+                PageNumber = coursesPage,
+                PageSize = coursesPageSize,
+                TotalCount = coursesTotalCount
+            };
+
+            // Average grade across completed exams (global IsDeleted filter applied)
+            var examResults = await _context.ExamResults
+                .Include(er => er.Exam)
+                .Where(er =>
+                    er.StudentId == studentId &&
+                    er.StudentMark.HasValue &&
+                    er.Exam.TotalMark > 0)
+                .ToListAsync(cancellationToken);
+
+            var averageGrade = examResults.Count > 0
+                ? examResults.Average(er => (er.StudentMark!.Value / er.Exam.TotalMark) * 100m)
+                : 0m;
+
+            var upcomingExamsQuery = _context.Exams
+                .Where(e =>
+                    e.StartTime.HasValue &&
+                    e.StartTime.Value >= DateTimeOffset.UtcNow &&
+                    _context.StudentCourses.Any(sc =>
+                        sc.StudentId == studentId &&
+                        sc.CourseId == e.CourseId))
+                .Select(e => new UpcomingMilestoneDto
+                {
+                    Id = e.Id,
+                    Title = e.Name,
+                    CourseName = e.Course != null ? e.Course.Name : string.Empty,
+                    Type = "Exam",
+                    DueAt = e.StartTime!.Value
+                });
+
+            var upcomingSheetsQuery = _context.Sheets
+                .Where(s =>
+                    s.CourseId.HasValue &&
+                    s.DueDate.HasValue &&
+                    s.DueDate.Value >= DateTimeOffset.UtcNow &&
+                    _context.StudentCourses.Any(sc =>
+                        sc.StudentId == studentId &&
+                        sc.CourseId == s.CourseId.Value))
+                .Select(s => new UpcomingMilestoneDto
+                {
+                    Id = s.Id,
+                    Title = s.Name,
+                    CourseName = s.Course != null ? s.Course.Name : string.Empty,
+                    Type = "Sheet",
+                    DueAt = s.DueDate!.Value
+                });
+
+            var milestonesQuery = upcomingExamsQuery.Concat(upcomingSheetsQuery);
+            var milestonesTotalCount = await milestonesQuery.CountAsync(cancellationToken);
+            var milestonesItems = await milestonesQuery
+                .OrderBy(m => m.DueAt)
+                .Skip((milestonesPage - 1) * milestonesPageSize)
+                .Take(milestonesPageSize)
+                .ToListAsync(cancellationToken);
+
+            var paginatedMilestones = new PaginatedResult<UpcomingMilestoneDto>
+            {
+                Items = milestonesItems,
+                PageNumber = milestonesPage,
+                PageSize = milestonesPageSize,
+                TotalCount = milestonesTotalCount
+            };
+
+            return new StudentProgressSummaryResponse
+            {
+                InProgressCoursesCount = inProgressCoursesCount,
+                CompletedLessonsCount = completedLessonsCount,
+                AverageGrade = averageGrade,
+                Courses = paginatedCourses,
+                UpcomingMilestones = paginatedMilestones
+            };
         }
 
         public async Task<InstructorDashboardResponse?> GetInstructorDashboardDataAsync(

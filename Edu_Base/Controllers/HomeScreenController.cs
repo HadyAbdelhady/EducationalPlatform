@@ -1,5 +1,6 @@
-using Application.Features.HomeScreen.StudentHomeScreen;
 using Application.Features.HomeScreen.InstructorDashboard;
+using Application.Features.HomeScreen.StudentHomeScreen;
+using Application.Features.HomeScreen.StudentProgress;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,35 @@ namespace Edu_Base.Controllers
             return result.IsSuccess 
                 ? Ok(result) 
                 : StatusCode((int)result.ErrorType, result.Error);
+        }
+
+        [HttpGet("progress")]
+        public async Task<IActionResult> GetStudentProgress(
+            [FromQuery] int coursesPage = 1,
+            [FromQuery] int coursesPageSize = 6,
+            [FromQuery] int milestonesPage = 1,
+            [FromQuery] int milestonesPageSize = 10,
+            CancellationToken cancellationToken = default)
+        {
+            var studentIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out var studentId))
+            {
+                return Unauthorized();
+            }
+
+            _logger.LogInformation("Fetching progress for StudentId: {StudentId}", studentId);
+
+            var query = new StudentProgressQuery
+            {
+                StudentId = studentId,
+                CoursesPage = coursesPage,
+                CoursesPageSize = coursesPageSize,
+                MilestonesPage = milestonesPage,
+                MilestonesPageSize = milestonesPageSize
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("instructor/{instructorId}")]
