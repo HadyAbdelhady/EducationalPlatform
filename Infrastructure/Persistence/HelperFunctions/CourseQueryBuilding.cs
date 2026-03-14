@@ -9,7 +9,8 @@ namespace Infrastructure.Persistence.HelperFunctions
         {
             ["name"] = (q, value) => q.Where(p => p.Name == value),
             ["instructorid"] = (q, value) => q.Where(p => p.InstructorCourses.Any(i => i.InstructorId == Guid.Parse(value))),
-            ["rating"] = (q, value) => q.Where(p => p.Rating != null && p.Rating >= decimal.Parse(value))
+            ["rating"] = (q, value) => q.Where(p => p.Rating != null && p.Rating >= decimal.Parse(value)),
+            ["studentid"] = (q, value) => q.Where(p => p.StudentCourses.Any(s => s.StudentId == Guid.Parse(value)))
         };
        
         public Dictionary<string, Func<IQueryable<Course>, bool, IOrderedQueryable<Course>>> Sorts { get; } = new()

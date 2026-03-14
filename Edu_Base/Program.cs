@@ -97,6 +97,7 @@ namespace Edu_Base
             builder.Services.AddScoped<IReviewService, VideoReviewService>();
             builder.Services.AddScoped<IQuestionUpdateService, QuestionUpdateService>();
             builder.Services.AddScoped<IBaseFilterRegistry<Course>, CourseFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<Section>, SectionFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<CourseReview>, CourseReviewFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<SectionReview>, SectionReviewFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<VideoReview>, VideoReviewFilterRegistry>();

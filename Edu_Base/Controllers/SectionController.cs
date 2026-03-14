@@ -1,9 +1,10 @@
-﻿using Application.DTOs.Sections;
-using Application.Features.Sections.Query.GetSectionsForCourse;
+﻿using Application.DTOs;
+using Application.DTOs.Sections;
 using Application.Features.Sections.Commands.CreateSection;
 using Application.Features.Sections.Commands.DeleteSection;
 using Application.Features.Sections.Commands.UpdateSection;
 using Application.Features.Sections.Query.GetSectionDetails;
+using Application.Features.Sections.Query.GetSectionsForCourse;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,11 +50,17 @@ namespace Edu_Base.Controllers
         }
 
         [HttpGet("course/{courseId}")]
-        public async Task<IActionResult> GetSectionsForCourse(Guid courseId)
+        public async Task<IActionResult> GetSectionsForCourse([FromQuery] GetAllEntityRequestSkeleton request,Guid courseId)
         {
             var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
             //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
-            var result = await _mediator.Send(new GetSectionsForCourseQuery(courseId, UserId));
+           var query = new GetSectionsForCourseQuery
+            {
+                CourseId = courseId,
+                UserId = UserId,
+                GetAllEntityRequestSkeleton = request
+            };
+            var result = await _mediator.Send(query, CancellationToken.None);
 
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
