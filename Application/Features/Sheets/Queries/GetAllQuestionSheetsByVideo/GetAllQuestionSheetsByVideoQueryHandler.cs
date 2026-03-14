@@ -4,11 +4,6 @@ using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Sheets.Queries.GetAllQuestionSheetsByVideo
 {

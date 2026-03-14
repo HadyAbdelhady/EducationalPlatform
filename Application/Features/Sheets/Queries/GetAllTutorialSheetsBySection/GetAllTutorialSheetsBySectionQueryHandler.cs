@@ -4,11 +4,6 @@ using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Sheets.Queries.GetAllTutorialSheetsBySection
 {
@@ -24,7 +19,7 @@ namespace Application.Features.Sheets.Queries.GetAllTutorialSheetsBySection
                 if (!sectionExists)
                     return Result<PaginatedResult<SheetResponse>>.FailureStatusCode("Section not found", ErrorType.NotFound);
 
-                var tutorialSheets = await _unitOfWork.GetRepository<ISheetRepository>().GetAllSheetsBySectionAsync(request.SectionId, SheetType.TutorialSheet,cancellationToken);
+                var tutorialSheets = await _unitOfWork.GetRepository<ISheetRepository>().GetAllSheetsBySectionAsync(request.SectionId, SheetType.TutorialSheet, cancellationToken);
 
                 return Result<PaginatedResult<SheetResponse>>.Success(new PaginatedResult<SheetResponse>
                 {
