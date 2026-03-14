@@ -26,5 +26,6 @@ namespace Domain.Entities
 
         // Navigation
         public ICollection<Student> Students { get; set; } = [];
+        public ICollection<Course> Courses { get; set; } = [];
     }
 }

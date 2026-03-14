@@ -28,6 +28,7 @@ namespace Application.Features.Courses.Commands.CreateCourse
                     Id = Guid.NewGuid(),
                     Name = request.CourseName,
                     Description = request.Description,
+                    EducationYearId = request.EducationYearId,
                     Price = request.Price,
                     PictureUrl = pictureUrl,
                     IntroVideoUrl = request.IntroVideoUrl,
@@ -50,6 +51,7 @@ namespace Application.Features.Courses.Commands.CreateCourse
                 {
                     CourseId = newCourse.Id,
                     CourseName = newCourse.Name,
+                    EducationYearId = newCourse.EducationYearId,
                     CreatedAt = newCourse.CreatedAt.DateTime
                 });
             }

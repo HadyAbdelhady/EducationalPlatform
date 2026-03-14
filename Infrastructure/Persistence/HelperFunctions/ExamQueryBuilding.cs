@@ -1,4 +1,4 @@
-﻿using Application.Interfaces.BaseFilters;
+using Application.Interfaces.BaseFilters;
 using Domain.Entities;
 using Domain.enums;
 
@@ -7,6 +7,9 @@ public class ExamFilterRegistry : IBaseFilterRegistry<Exam>
     public Dictionary<string, Func<IQueryable<Exam>, string, IQueryable<Exam>>> Filters { get; }
         = new()
         {
+            ["educationyearid"] = (q, value) =>
+                q.Where(e => e.Course != null && e.Course.EducationYearId == Guid.Parse(value)),
+
             ["courseid"] = (q, value) =>
                 q.Where(e => e.CourseId == Guid.Parse(value)),
 

@@ -1,4 +1,4 @@
-﻿using Application.Interfaces.BaseFilters;
+using Application.Interfaces.BaseFilters;
 using Domain.Entities;
 
 namespace Infrastructure.Persistence.HelperFunctions
@@ -7,6 +7,7 @@ namespace Infrastructure.Persistence.HelperFunctions
     {
         public Dictionary<string, Func<IQueryable<Course>, string, IQueryable<Course>>> Filters { get; } = new()
         {
+            ["educationyearid"] = (q, value) => q.Where(c => c.EducationYearId == Guid.Parse(value)),
             ["name"] = (q, value) => q.Where(p => p.Name == value),
             ["instructorid"] = (q, value) => q.Where(p => p.InstructorCourses.Any(i => i.InstructorId == Guid.Parse(value))),
             ["rating"] = (q, value) => q.Where(p => p.Rating != null && p.Rating >= decimal.Parse(value)),

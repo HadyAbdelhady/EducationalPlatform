@@ -175,6 +175,16 @@ namespace Infrastructure.Data
                     .HasConstraintName("sections_course_id_fkey");
             });
 
+            modelBuilder.Entity<Course>(b =>
+            {
+                b.HasOne(x => x.EducationYear)
+                    .WithMany(e => e.Courses)
+                    .HasForeignKey(c => c.EducationYearId)
+                    .IsRequired()
+                    .HasConstraintName("courses_education_year_id_fkey");
+                b.HasIndex(x => x.EducationYearId);
+            });
+
             modelBuilder.Entity<Video>(b =>
             {
                 b.HasOne(x => x.Section)

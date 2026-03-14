@@ -4,6 +4,7 @@ namespace Application.DTOs.Courses
     {
         public Guid CourseId { get; set; }
         public string CourseName { get; set; } = string.Empty;
+        public Guid EducationYearId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

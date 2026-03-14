@@ -9,17 +9,25 @@ using Application.HelperFunctions;
 
 namespace Application.Features.Courses.Query.GetAllCourses
 {
-    public class GetAllCoursesQueryHandler(IUnitOfWork unitOfWork, IBaseFilterRegistry<Course> courseFilterRegistry)
+    public class GetAllCoursesQueryHandler(IUnitOfWork unitOfWork, IBaseFilterRegistry<Course> courseFilterRegistry, IStudentEducationYearProvider studentEducationYearProvider)
         : IRequestHandler<GetAllCoursesQuery, Result<PaginatedResult<CourseResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IBaseFilterRegistry<Course> _courseFilterRegistry = courseFilterRegistry;
+        private readonly IStudentEducationYearProvider _studentEducationYearProvider = studentEducationYearProvider;
 
         public async Task<Result<PaginatedResult<CourseResponse>>> Handle(GetAllCoursesQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 var Courses = _unitOfWork.Repository<Course>().GetAll(cancellationToken);
+
+                // For students: filter by their education year. Instructors/admins use Filters["educationyearid"] from request.
+                var studentEducationYearId = await _studentEducationYearProvider.GetEducationYearIdByUserIdAsync(request.UserID, cancellationToken);
+                if (studentEducationYearId.HasValue)
+                {
+                    Courses = Courses.Where(c => c.EducationYearId == studentEducationYearId.Value);
+                }
 
                 Courses = Courses.ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _courseFilterRegistry.Filters)
                                  .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _courseFilterRegistry.Sorts);
@@ -37,6 +45,7 @@ namespace Application.Features.Courses.Query.GetAllCourses
                 .Select(x => new CourseResponse
                 {
                     Id = x.course.Id,
+                    EducationYearId = x.course.EducationYearId,
                     Title = x.course.Name,
                     Description = x.course.Description ?? string.Empty,
                     PictureUrl = x.course.PictureUrl,

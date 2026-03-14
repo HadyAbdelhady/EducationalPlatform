@@ -29,6 +29,7 @@ namespace Edu_Base.Controllers
             {
                 CourseName = courseCreationRequest.CourseName,
                 Description = courseCreationRequest.Description,
+                EducationYearId = courseCreationRequest.EducationYearId,
                 InstructorId = courseCreationRequest.InstructorId,
                 Price = courseCreationRequest.Price,
                 PictureUrl = courseCreationRequest.PictureUrl,
@@ -73,6 +74,7 @@ namespace Edu_Base.Controllers
                 Id = courseUpdateRequest.CourseId,
                 CourseName = courseUpdateRequest.CourseName,
                 Description = courseUpdateRequest.Description,
+                EducationYearId = courseUpdateRequest.EducationYearId,
                 InstructorId = courseUpdateRequest.InstructorId,
                 //Price = courseUpdateRequest.Price,
                 PictureUrl = courseUpdateRequest.PictureUrl,

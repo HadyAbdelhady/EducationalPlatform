@@ -56,11 +56,11 @@ namespace Edu_Base.Controllers
         }
 
         [HttpGet("instructor/{instructorId}")]
-        public async Task<IActionResult> GetInstructorDashboard(Guid instructorId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetInstructorDashboard(Guid instructorId, [FromQuery] Guid? educationYearId = null, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Fetching dashboard data for InstructorId: {InstructorId}", instructorId);
             
-            var query = new InstructorDashboardQuery { InstructorId = instructorId };
+            var query = new InstructorDashboardQuery { InstructorId = instructorId, EducationYearId = educationYearId };
             var result = await _mediator.Send(query, cancellationToken);
             
             return result.IsSuccess 

@@ -26,6 +26,10 @@ namespace Application.Features.Courses.Commands.UpdateCourse
                                                         };
                 course.Name = request.CourseName;
                 course.Description = request.Description;
+                if (request.EducationYearId.HasValue)
+                {
+                    course.EducationYearId = request.EducationYearId.Value;
+                }
                 Instrcutor.InstructorId = request.InstructorId;
                 //course.Price = request.Price;
                 if (request.PictureFile is not null)

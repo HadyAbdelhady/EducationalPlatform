@@ -18,7 +18,7 @@ namespace Application.Features.HomeScreen.InstructorDashboard
             try
             {
                 var homeScreenRepository = _unitOfWork.GetRepository<IHomeScreenRepository>();
-                var result = await homeScreenRepository.GetInstructorDashboardDataAsync(request.InstructorId, cancellationToken)
+                var result = await homeScreenRepository.GetInstructorDashboardDataAsync(request.InstructorId, request.EducationYearId, cancellationToken)
                                                         ?? new InstructorDashboardResponse();
 
                 return Result<InstructorDashboardResponse>.Success(result);

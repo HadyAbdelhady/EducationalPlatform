@@ -54,6 +54,13 @@ namespace Domain.Entities
         [Column("is_deleted")]
         public bool IsDeleted { get; set; }
 
+        [Required]
+        [Column("education_year_id")]
+        [ForeignKey(nameof(EducationYear))]
+        public Guid EducationYearId { get; set; }
+
+        public EducationYear EducationYear { get; set; } = null!;
+
         public ICollection<Section> Sections { get; set; } = [];
         public ICollection<InstructorCourse> InstructorCourses { get; set; } = [];
         public ICollection<StudentCourse> StudentCourses { get; set; } = [];

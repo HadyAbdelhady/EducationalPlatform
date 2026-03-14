@@ -15,13 +15,19 @@ namespace Infrastructure.Repositories
             Guid studentId,
             CancellationToken cancellationToken = default)
         {
+            var studentEducationYearId = await _context.Students
+                .AsNoTracking()
+                .Where(s => s.UserId == studentId)
+                .Select(s => s.EducationYearId)
+                .FirstOrDefaultAsync(cancellationToken);
+
             var query = from sc in _context.StudentCourses
                         where sc.StudentId == studentId
                         select new StudentHomeScreenResponse
                         {
-                            // Enrolled courses - using navigation properties like GetCourseDetailResponseByIdAsync
+                            // Enrolled courses - scope to student's education year for consistency
                             Courses = _context.StudentCourses
-                                .Where(sc2 => sc2.StudentId == studentId)
+                                .Where(sc2 => sc2.StudentId == studentId && sc2.Course.EducationYearId == studentEducationYearId)
                                 .Select(sc2 => new EnrolledCourseDto
                                 {
                                     Id = sc2.Course.Id,
@@ -38,8 +44,9 @@ namespace Infrastructure.Repositories
 
                                 .ToList(),
 
-                            // Latest videos
+                            // Latest videos - scope to courses in student's education year
                             Videos = _context.Videos
+                                .Where(v => v.Section != null && v.Section.Course.EducationYearId == studentEducationYearId)
                                 .OrderByDescending(v => v.CreatedAt)
                                 .Select(v => new LatestVideoDto
                                 {
@@ -51,9 +58,10 @@ namespace Infrastructure.Repositories
                                 .OrderBy(v => v.CreatedAt)
                                 .ToList(),
 
-                            // Exams from enrolled courses - using subquery pattern
+                            // Exams from enrolled courses - scope to student's education year
                             Exams = _context.Exams
                                 .Where(e => e.StartTime.HasValue &&
+                                           e.Course.EducationYearId == studentEducationYearId &&
                                            _context.StudentCourses
                                                .Any(sc3 => sc3.StudentId == studentId &&
                                                         sc3.CourseId == e.CourseId))
@@ -70,13 +78,15 @@ namespace Infrastructure.Repositories
                                 .Take(3)
                                 .ToList(),
 
-                            // Sheets from enrolled courses - using subquery pattern
+                            // Sheets from enrolled courses - scope to student's education year
                             Sheets = _context.Sheets
                                 .Where(s => s.CourseId.HasValue &&
+                                           s.Course != null &&
+                                           s.Course.EducationYearId == studentEducationYearId &&
                                            s.DueDate.HasValue &&
                                            _context.StudentCourses
                                                .Any(sc4 => sc4.StudentId == studentId &&
-                                                        sc4.CourseId == s.CourseId.Value))
+                                                        sc4.CourseId == s.CourseId!.Value))
                                 .Select(s => new StudentSheetDto
                                 {
                                     Id = s.Id,
@@ -221,19 +231,23 @@ namespace Infrastructure.Repositories
 
         public async Task<InstructorDashboardResponse?> GetInstructorDashboardDataAsync(
             Guid instructorId,
+            Guid? educationYearId = null,
             CancellationToken cancellationToken = default)
         {
-            // Get instructor's courses first
-            var instructorCourseIds = _context.InstructorCourses
-                .Where(ic => ic.InstructorId == instructorId)
-                .Select(ic => ic.CourseId)
-                .ToList();
+            // Get instructor's courses first, optionally filtered by education year
+            var instructorCoursesQuery = _context.InstructorCourses
+                .Where(ic => ic.InstructorId == instructorId);
+            if (educationYearId.HasValue)
+            {
+                instructorCoursesQuery = instructorCoursesQuery.Where(ic => ic.Course.EducationYearId == educationYearId.Value);
+            }
+            var instructorCourseIds = await instructorCoursesQuery.Select(ic => ic.CourseId).ToListAsync(cancellationToken);
 
             InstructorDashboardResponse? response = new()
             {
                 // Instructor's courses with metrics
                 Courses = _context.InstructorCourses
-                    .Where(ic => ic.InstructorId == instructorId)
+                    .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
                     .Select(ic => new InstructorCourseDto
                     {
                         Id = ic.Course.Id,
@@ -260,24 +274,24 @@ namespace Infrastructure.Repositories
                     {
                         TotalCourses = instructorCourseIds.Count,
                         TotalStudents = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId)
+                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
                             .Sum(ic => ic.Course.NumberOfStudentsEnrolled),
                         TotalRevenue = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId)
+                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
                             .SelectMany(ic => ic.Course.Payments)
                             .Where(p => p.Status == PaymentStatus.Completed)
                             .Sum(p => p.Amount),
                         AverageRating = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId)
+                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
                             .Average(ic => ic.Course.Rating ?? 0),
                         TotalVideos = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId)
+                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
                             .Sum(ic => ic.Course.NumberOfVideos),
                         TotalExams = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId)
+                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
                             .Sum(ic => ic.Course.NumberOfExams),
                         TotalSheets = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId)
+                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
                             .Sum(ic => ic.Course.NumberOfQuestionSheets)
                     }
                 }
@@ -285,7 +299,7 @@ namespace Infrastructure.Repositories
 
             // Recent activities
             var videos = _context.Videos
-                .Where(v => instructorCourseIds.Contains(v.Section!.CourseId))
+                .Where(v => instructorCourseIds.Contains(v.Section!.CourseId) && (!educationYearId.HasValue || v.Section.Course.EducationYearId == educationYearId.Value))
                 .Select(v => new RecentActivityDto
                 {
                     ActivityType = "Video",
@@ -296,7 +310,7 @@ namespace Infrastructure.Repositories
                 });
 
             var exams = _context.Exams
-                .Where(e => e.InstructorId == instructorId)
+                .Where(e => e.InstructorId == instructorId && (!educationYearId.HasValue || e.Course.EducationYearId == educationYearId.Value))
                 .Select(e => new RecentActivityDto
                 {
                     ActivityType = "Exam",
@@ -307,7 +321,7 @@ namespace Infrastructure.Repositories
                 });
 
             var sheets = _context.Sheets
-                .Where(s => s.InstructorId == instructorId)
+                .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)))
                 .Select(s => new RecentActivityDto
                 {
                     ActivityType = "Sheet",
@@ -340,7 +354,7 @@ namespace Infrastructure.Repositories
                 .ToList();
 
             var sheetsToReview = _context.Sheets
-                .Where(s => s.InstructorId == instructorId && s.DueDate.HasValue &&
+                .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)) && s.DueDate.HasValue &&
                            s.DueDate.Value <= DateTimeOffset.UtcNow.AddDays(3))
                 .Select(s => new PendingTaskDto
                 {
@@ -382,7 +396,7 @@ namespace Infrastructure.Repositories
 
             // Upcoming exams
             response.UpcomingExams = _context.Exams
-                .Where(e => e.InstructorId == instructorId && e.StartTime.HasValue && e.StartTime.Value >= DateTimeOffset.UtcNow)
+                .Where(e => e.InstructorId == instructorId && (!educationYearId.HasValue || e.Course.EducationYearId == educationYearId.Value) && e.StartTime.HasValue && e.StartTime.Value >= DateTimeOffset.UtcNow)
                 .OrderBy(e => e.StartTime)
                 .Select(e => new UpcomingExamDto
                 {
@@ -400,7 +414,7 @@ namespace Infrastructure.Repositories
 
             // Upcoming sheets
             response.UpcomingSheets = _context.Sheets
-                .Where(s => s.InstructorId == instructorId && s.DueDate.HasValue && s.DueDate.Value >= DateTimeOffset.UtcNow.AddDays(-7))
+                .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)) && s.DueDate.HasValue && s.DueDate.Value >= DateTimeOffset.UtcNow.AddDays(-7))
                 .OrderBy(s => s.DueDate)
                 .Select(s => new UpcomingSheetDto
                 {
