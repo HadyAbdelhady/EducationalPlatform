@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Sheets;
+using Application.DTOs.Sheets;
 using Application.Features.AnswersSheets.Commands.ApproveAnswersSheet;
 using Application.Features.AnswersSheets.Commands.CreateAnswersSheet;
 using Application.Features.AnswersSheets.Commands.DeleteAnswersSheet;
@@ -6,12 +6,8 @@ using Application.Features.AnswersSheets.Commands.UpdateAnswersSheet;
 using Application.Features.Sheets.Commands.CreateSheet;
 using Application.Features.Sheets.Commands.DeleteSheet;
 using Application.Features.Sheets.Commands.UpdateSheet;
-using Application.Features.Sheets.Queries.GetAllTutorialSheetsByCourse;
-using Application.Features.Sheets.Queries.GetAllTutorialSheetsByVideo;
-using Application.Features.Sheets.Queries.GetAllTutorialSheetsBySection;
-using Application.Features.Sheets.Queries.GetAllQuestionSheetsByCourse;
-using Application.Features.Sheets.Queries.GetAllQuestionSheetsByVideo;
-using Application.Features.Sheets.Queries.GetAllQuestionSheetsBySection;
+using Application.Features.Sheets.Queries.GetAllSheets;
+using Domain.enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Application.Features.AnswersSheets.Queries.GetAllAnswersSheetsByStudentId;
@@ -183,70 +179,36 @@ namespace Edu_Base.Controllers
 
 
         // QUERIES
-        [HttpGet("GetAllTutorialSheetsByCourse/{courseId}")]
-        public async Task<IActionResult> GetAllTutorialSheetsByCourse(Guid courseId, CancellationToken cancellationToken)
+        /// <summary>
+        /// Unified endpoint to get sheets data.
+        /// Example: GET /api/Sheets/sheets?sheetType=TutorialSheet&targetType=Course&targetId={courseId}
+        /// </summary>
+        [HttpGet("GetAllSheets")]
+        public async Task<IActionResult> GetSheets(
+            [FromQuery] GetSheetsRequest request,
+            CancellationToken cancellationToken)
         {
-            if(courseId == Guid.Empty)
-                return BadRequest("Course Id can not be empty");
+            if (request == null)
+                return BadRequest("Request cannot be null.");
 
-            var query = new GetAllTutorialSheetsByCourseQuery { CourseId = courseId };
+            if (!Enum.IsDefined(typeof(SheetType), request.SheetType))
+                return BadRequest("sheetType must be TutorialSheet or QuestionSheet.");
+
+            if (!Enum.IsDefined(typeof(SheetTargetType), request.TargetType))
+                return BadRequest("targetType must be Course, Section, or Video.");
+
+            if (request.TargetId == Guid.Empty)
+                return BadRequest("targetId can not be empty.");
+
+            var query = new GetAllSheetsQuery
+            {
+                SheetType = request.SheetType,
+                TargetType = request.TargetType,
+                TargetId = request.TargetId
+            };
+
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
-        }
-
-        [HttpGet("GetAllTutorialSheetsByVideo/{videoId}")]
-        public async Task<IActionResult> GetAllTutorialSheetsByVideo(Guid videoId, CancellationToken cancellationToken)
-        {
-            if(videoId == Guid.Empty)
-                return BadRequest("Video Id can not be empty");
-
-            var query = new GetAllTutorialSheetsByVideoQuery { VideoId = videoId };
-            var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
-        }
-
-        [HttpGet("GetAllTutorialSheetsBySection/{sectionId}")]
-        public async Task<IActionResult> GetAllTutorialSheetsBySection(Guid sectionId, CancellationToken cancellationToken)
-        {
-            if(sectionId == Guid.Empty)
-                return BadRequest("Section Id can not be empty");
-
-            var query = new GetAllTutorialSheetsBySectionQuery { SectionId = sectionId };
-            var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
-        }
-
-        [HttpGet("GetAllQuestionSheetsByCourse/{courseId}")]
-        public async Task<IActionResult> GetAllQuestionSheetsByCourse(Guid courseId, CancellationToken cancellationToken)
-        {
-            if(courseId == Guid.Empty)
-                return BadRequest("Course Id can not be empty");
-
-            var query = new GetAllQuestionSheetsByCourseQuery { CourseId = courseId };
-            var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
-        }
-
-        [HttpGet("GetAllQuestionSheetsByVideo/{videoId}")]
-        public async Task<IActionResult> GetAllQuestionSheetsByVideo(Guid videoId, CancellationToken cancellationToken)
-        {
-            if(videoId == Guid.Empty)
-                return BadRequest("Video Id can not be empty");
-
-            var query = new GetAllQuestionSheetsByVideoQuery { VideoId = videoId };
-            var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
-        }
-
-        [HttpGet("GetAllQuestionSheetsBySection/{sectionId}")]
-        public async Task<IActionResult> GetAllQuestionSheetsBySection(Guid sectionId, CancellationToken cancellationToken)
-        {
-            if(sectionId == Guid.Empty)
-                return BadRequest("Section Id can not be empty");
-
-            var query = new GetAllQuestionSheetsBySectionQuery { SectionId = sectionId };
-            var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("GetAllAnswerSheetsByStudent")]
