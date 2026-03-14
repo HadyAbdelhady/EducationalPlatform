@@ -111,6 +111,8 @@ namespace Edu_Base.Controllers
         [HttpPost("answers")]
         public async Task<IActionResult> CreateAnswersSheet(AnswersSheetCreationRequest answersSheetCreationRequest, CancellationToken cancellationToken)
         {
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+
             if (answersSheetCreationRequest == null)
             {
                 return BadRequest("Answers sheet creation request can not be null.");
@@ -121,17 +123,12 @@ namespace Edu_Base.Controllers
                 return BadRequest("Questions sheet ID is required.");
             }
 
-            if (answersSheetCreationRequest.StudentId == Guid.Empty)
-            {
-                return BadRequest("Student ID is required.");
-            }
-
             var answersSheetCommand = new CreateAnswersSheetCommand
             {
                 Name = answersSheetCreationRequest.Name,
                 SheetFile = answersSheetCreationRequest.SheetFile,
                 QuestionsSheetId = answersSheetCreationRequest.QuestionsSheetId,
-                StudentId = answersSheetCreationRequest.StudentId
+                StudentId = UserId
             };
 
             var result = await _mediator.Send(answersSheetCommand, cancellationToken);
@@ -252,13 +249,12 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
-        [HttpGet("GetAllAnswerSheetsByStudent/{studentId}")]
-        public async Task<IActionResult> GetAllAnswersSheetsByStudent(Guid studentId, CancellationToken cancellationToken)
+        [HttpGet("GetAllAnswerSheetsByStudent")]
+        public async Task<IActionResult> GetAllAnswersSheetsByStudent( CancellationToken cancellationToken)
         {
-            if (studentId == Guid.Empty)
-                return BadRequest("Student Id can not be empty");
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
 
-            var query = new GetAllAnswersSheetsByStudentIdQuery { StudentId = studentId };
+            var query = new GetAllAnswersSheetsByStudentIdQuery { StudentId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
