@@ -1,8 +1,9 @@
-﻿namespace Domain.enums
+namespace Domain.enums
 {
     public enum SheetType
     {
         QuestionSheet,
-        TutorialSheet
+        TutorialSheet,
+        AnswersSheet
     }
 }
