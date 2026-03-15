@@ -20,7 +20,7 @@ namespace Application.Features.Exams.Command.GenerateExam
             var QuestionRepository = _unitOfWork.Repository<Question>();
 
 
-            var question =  QuestionRepository.Find(q => q.CourseId == request.CourseId &&
+            var question = QuestionRepository.Find(q => q.CourseId == request.CourseId &&
                                                                                         (!request.SectionId.HasValue || q.SectionId == request.SectionId)
                                                                                         , cancellationToken);
 
@@ -41,7 +41,7 @@ namespace Application.Features.Exams.Command.GenerateExam
             ExamStatus examStatus = ExamStatus.Draft;
             if (request.ExamStartTime <= DateTimeOffset.UtcNow && request.ExamEndTime >= DateTimeOffset.UtcNow)
             {
-                examStatus = ExamStatus.Started; // Exam is currently available
+                return Result<string>.FailureStatusCode("Start time must be in the future.", ErrorType.BadRequest);
             }
             else if (request.ExamStartTime > DateTimeOffset.UtcNow)
             {
@@ -54,16 +54,16 @@ namespace Application.Features.Exams.Command.GenerateExam
                 CourseId = request.CourseId,
                 SectionId = request.SectionId,
                 Name = request.Title,
-                TotalMark = request.ExamTotalMark,
                 Description = request.Description,
+                InstructorId = request.CreatedBy,
+                TotalMark = request.ExamTotalMark,
                 NumberOfQuestions = request.NumberOfQuestions,
-                EndTime = request.ExamEndTime,
                 StartTime = request.ExamStartTime,
+                EndTime = request.ExamEndTime,
                 ExamType = request.ExamType,
                 IsRandomized = request.IsRandomized,
                 DurationInMinutes = request.DurationInMinutes,
                 PassMarkPercentage = request.PassMarkPercentage,
-                InstructorId = request.CreatedBy,
                 Status = examStatus,
             };
 
@@ -98,39 +98,36 @@ namespace Application.Features.Exams.Command.GenerateExam
             await _mediator.Publish(new ExamAddedEvent(request.CourseId, request.SectionId), cancellationToken);
 
             await _unitOfWork.Repository<Exam>().AddAsync(newExam, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             var studentExamResultRepository = _unitOfWork.Repository<StudentExamResult>();
-            List<Guid> enrolledStudentIds = new();
+            List<Guid> enrolledStudentIds = [];
 
+            // Get students enrolled in the section.
             if (request.SectionId.HasValue)
             {
-                // Get students enrolled in the section through Section navigation property
                 var sectionRepository = _unitOfWork.Repository<Section>();
                 var section = await sectionRepository
                     .FirstOrDefaultAsync(s => s.Id == request.SectionId, cancellationToken, s => s.StudentSections);
-                
+
                 if (section != null)
                 {
-                    enrolledStudentIds = section.StudentSections
+                    enrolledStudentIds = [.. section.StudentSections
                         .Select(ss => ss.StudentId)
-                        .Distinct()
-                        .ToList();
+                        .Distinct()];
                 }
             }
+            // Get students enrolled in the course.
             else
             {
-                // Get students enrolled in the course through Course navigation property
                 var courseRepository = _unitOfWork.Repository<Course>();
                 var course = await courseRepository
                     .FirstOrDefaultAsync(c => c.Id == request.CourseId, cancellationToken, c => c.StudentCourses);
-                
+
                 if (course != null)
                 {
-                    enrolledStudentIds = course.StudentCourses
+                    enrolledStudentIds = [.. course.StudentCourses
                         .Select(sc => sc.StudentId)
-                        .Distinct()
-                        .ToList();
+                        .Distinct()];
                 }
             }
 
@@ -144,12 +141,11 @@ namespace Application.Features.Exams.Command.GenerateExam
                 CreatedAt = DateTimeOffset.UtcNow
             }).ToList();
 
-            if (studentExamResults.Any())
-            {
+            if (studentExamResults.Count != 0)
                 await studentExamResultRepository.AddRangeAsync(studentExamResults, cancellationToken);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
-            }
 
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             var response = new AddQuestionToExamBankResponse
             {
                 CourseId = newExam.CourseId,

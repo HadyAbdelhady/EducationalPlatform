@@ -54,7 +54,6 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<QuestionsInExamResponse>> GetAllQuestionsInExamAsync(Guid examId, CancellationToken cancellationToken = default)
         {
-            // First check if exam exists
             var examExists = await _context.Exams
                 .AnyAsync(e => e.Id == examId, cancellationToken);
 
@@ -63,7 +62,6 @@ namespace Infrastructure.Repositories
                 return [];
             }
 
-            // Single query with join to get all questions for the exam
             return await _context.Set<ExamBank>()
                 .AsNoTracking()
                 .Where(eb => eb.ExamId == examId)
@@ -76,7 +74,6 @@ namespace Infrastructure.Repositories
                     SectionId = eb.Question.SectionId,
                     CourseId = eb.Question.CourseId,
                     AllAnswersInExam = eb.Question.Answers
-                                                    .Where(a => !a.IsDeleted)
                                                     .Select(a => new AnswerDto
                                                     {
                                                         Id = a.Id,

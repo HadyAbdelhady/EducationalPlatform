@@ -14,7 +14,8 @@ namespace Application.Features.Questions.Query.GetAllQuestionsInBank
         {
             try
             {
-                var response = await _unitOfWork.GetRepository<IQuestionRepository>().GetAllQuestionsInBankAsync(request.BankId, cancellationToken);
+                var response = await _unitOfWork.GetRepository<IQuestionRepository>()
+                                                                               .GetAllQuestionsInBankAsync(request.BankId, cancellationToken);
                 var responseList = response.ToList();
 
                 if (responseList.Count == 0)

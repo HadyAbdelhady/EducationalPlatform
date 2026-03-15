@@ -9,8 +9,10 @@ using Application.HelperFunctions;
 
 namespace Application.Features.Courses.Query.GetAllCourses
 {
-    public class GetAllCoursesQueryHandler(IUnitOfWork unitOfWork, IBaseFilterRegistry<Course> courseFilterRegistry, IStudentEducationYearProvider studentEducationYearProvider)
-        : IRequestHandler<GetAllCoursesQuery, Result<PaginatedResult<CourseResponse>>>
+    public class GetAllCoursesQueryHandler(IUnitOfWork unitOfWork,
+                                            IBaseFilterRegistry<Course> courseFilterRegistry,
+                                            IStudentEducationYearProvider studentEducationYearProvider) : IRequestHandler<GetAllCoursesQuery,
+                                                                                                                            Result<PaginatedResult<CourseResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IBaseFilterRegistry<Course> _courseFilterRegistry = courseFilterRegistry;
