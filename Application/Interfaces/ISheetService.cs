@@ -1,3 +1,4 @@
+using Application.DTOs.Sheets;
 using Application.ResultWrapper;
 using Domain.enums;
 using System.Threading;
@@ -7,7 +8,7 @@ namespace Application.Interfaces
 {
     public interface ISheetService
     {
-        Task<Result<PaginatedResult<object>>> GetSheetsAsync(
+        Task<Result<PaginatedResult<SheetItem>>> GetSheetsAsync(
             Guid targetId,
             SheetType sheetType,
             CancellationToken cancellationToken);
