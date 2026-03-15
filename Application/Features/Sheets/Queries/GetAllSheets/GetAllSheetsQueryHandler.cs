@@ -1,7 +1,6 @@
 using Application.DTOs.Sheets;
 using Application.Interfaces;
 using Application.ResultWrapper;
-using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Sheets.Queries.GetAllSheets

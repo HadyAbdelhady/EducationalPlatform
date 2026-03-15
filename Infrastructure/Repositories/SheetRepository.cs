@@ -4,12 +4,6 @@ using Domain.Entities;
 using Domain.enums;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -26,7 +20,7 @@ namespace Infrastructure.Repositories
                     SheetUrl = sh.SheetUrl,
                     CreatedAt = sh.CreatedAt,
                     DueDate = sh.DueDate,
-                    UpdatedAt = sh.UpdatedAt   
+                    UpdatedAt = sh.UpdatedAt
                 })
                 .ToListAsync(cancellationToken);
         }

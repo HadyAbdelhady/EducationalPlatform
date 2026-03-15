@@ -3,10 +3,6 @@ using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Services.SheetService
 {
@@ -102,7 +98,7 @@ namespace Infrastructure.Services.SheetService
             var sheets = await UnitOfWork.GetRepository<ISheetRepository>()
                 .GetAllSheetsByCourseAsync(targetId, sheetType, cancellationToken);
 
-            var items = sheets.Cast<SheetItem>().ToList();
+            var items = sheets.ToList();
 
             return Result<PaginatedResult<SheetItem>>.Success(new PaginatedResult<SheetItem>
             {
@@ -129,7 +125,7 @@ namespace Infrastructure.Services.SheetService
             var sheets = await UnitOfWork.GetRepository<ISheetRepository>()
                 .GetAllSheetsBySectionAsync(targetId, sheetType, cancellationToken);
 
-            var items = sheets.Cast<SheetItem>().ToList();
+            var items = sheets.ToList();
 
             return Result<PaginatedResult<SheetItem>>.Success(new PaginatedResult<SheetItem>
             {
@@ -156,7 +152,7 @@ namespace Infrastructure.Services.SheetService
             var sheets = await UnitOfWork.GetRepository<ISheetRepository>()
                 .GetAllSheetsByVideoAsync(targetId, sheetType, cancellationToken);
 
-            var items = sheets.Cast<SheetItem>().ToList();
+            var items = sheets.ToList();
 
             return Result<PaginatedResult<SheetItem>>.Success(new PaginatedResult<SheetItem>
             {
