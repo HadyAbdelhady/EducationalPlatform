@@ -4,7 +4,8 @@ namespace Domain.enums
     {
         Course = 1,
         Section = 2,
-        Video = 3
+        Video = 3,
+        Student = 4
     }
 }
 

@@ -10,7 +10,6 @@ using Application.Features.Sheets.Queries.GetAllSheets;
 using Domain.enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Application.Features.AnswersSheets.Queries.GetAllAnswersSheetsByStudentId;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -181,7 +180,10 @@ namespace Edu_Base.Controllers
         // QUERIES
         /// <summary>
         /// Unified endpoint to get sheets data.
-        /// Example: GET /api/Sheets/sheets?sheetType=TutorialSheet&targetType=Course&targetId={courseId}
+        /// For TutorialSheet/QuestionSheet: supply targetType and targetId.
+        /// For AnswersSheet: supply studentId.
+        /// Example: GET /api/Sheets/GetAllSheets?sheetType=TutorialSheet&amp;targetType=Course&amp;targetId={courseId}
+        /// Example: GET /api/Sheets/GetAllSheets?sheetType=AnswersSheet&amp;studentId={studentId}
         /// </summary>
         [HttpGet("GetAllSheets")]
         public async Task<IActionResult> GetSheets(
@@ -192,13 +194,24 @@ namespace Edu_Base.Controllers
                 return BadRequest("Request cannot be null.");
 
             if (!Enum.IsDefined(typeof(SheetType), request.SheetType))
-                return BadRequest("sheetType must be TutorialSheet or QuestionSheet.");
+                return BadRequest("sheetType must be TutorialSheet, QuestionSheet, or AnswersSheet.");
 
             if (!Enum.IsDefined(typeof(SheetTargetType), request.TargetType))
-                return BadRequest("targetType must be Course, Section, or Video.");
+                return BadRequest("Invalid targetType.");
 
             if (request.TargetId == Guid.Empty)
-                return BadRequest("targetId can not be empty.");
+                return BadRequest("targetId cannot be empty.");
+
+            if (request.SheetType == SheetType.AnswersSheet)
+            {
+                if (request.TargetType != SheetTargetType.Student)
+                    return BadRequest("When sheetType is AnswersSheet, targetType must be Student.");
+            }
+            else
+            {
+                if (request.TargetType == SheetTargetType.Student)
+                    return BadRequest("When sheetType is TutorialSheet or QuestionSheet, targetType cannot be Student.");
+            }
 
             var query = new GetAllSheetsQuery
             {
@@ -210,16 +223,5 @@ namespace Edu_Base.Controllers
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
-
-        [HttpGet("GetAllAnswerSheetsByStudent")]
-        public async Task<IActionResult> GetAllAnswersSheetsByStudent( CancellationToken cancellationToken)
-        {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-
-            var query = new GetAllAnswersSheetsByStudentIdQuery { StudentId = UserId };
-            var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
-        }
-
     }
 }

@@ -20,6 +20,7 @@ namespace Infrastructure.Services.SheetService
                 SheetTargetType.Course => new CourseSheetService(_unitOfWork),
                 SheetTargetType.Section => new SectionSheetService(_unitOfWork),
                 SheetTargetType.Video => new VideoSheetService(_unitOfWork),
+                SheetTargetType.Student => new AnswersSheetService(_unitOfWork),
                 _ => throw new NotImplementedException()
             };
     }
@@ -28,15 +29,70 @@ namespace Infrastructure.Services.SheetService
     {
         protected readonly IUnitOfWork UnitOfWork = unitOfWork;
 
-        public abstract Task<Result<PaginatedResult<SheetResponse>>> GetSheetsAsync(
+        public abstract Task<Result<PaginatedResult<object>>> GetSheetsAsync(
             Guid targetId,
             SheetType sheetType,
             CancellationToken cancellationToken);
     }
 
+    sealed class AnswersSheetService(IUnitOfWork unitOfWork) : ISheetService
+    {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+        public async Task<Result<PaginatedResult<object>>> GetSheetsAsync(
+            Guid targetId,
+            SheetType sheetType,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var studentExists = await _unitOfWork.GetRepository<IUserRepository>()
+                .DoesStudentExistAsync(targetId, cancellationToken);
+                if (!studentExists)
+                    return Result<PaginatedResult<object>>.FailureStatusCode(
+                        "Student not found", ErrorType.NotFound);
+
+                var answersSheets = _unitOfWork.Repository<AnswersSheet>()
+                    .Find(x => x.StudentId == targetId, cancellationToken, x => x.QuestionsSheet);
+                var list = answersSheets.ToList();
+
+                if (list.Count == 0)
+                    return Result<PaginatedResult<object>>.FailureStatusCode(
+                        $"No answers sheets found for student with ID {targetId}.",
+                        ErrorType.NotFound);
+
+                var items = list.Select(a => (object)new AllAnswersSheetsByStudentResponse
+                {
+                    AnswersSheetId = a.Id,
+                    Name = a.Name,
+                    SheetUrl = a.SheetUrl,
+                    QuestionsSheetId = a.QuestionsSheetId,
+                    QuestionsSheetName = a.QuestionsSheet?.Name ?? string.Empty,
+                    IsApproved = a.IsApproved,
+                    CreatedAt = a.CreatedAt,
+                    UpdatedAt = a.UpdatedAt
+                }).ToList();
+
+                return Result<PaginatedResult<object>>.Success(new PaginatedResult<object>
+                {
+                    Items = items,
+                    PageNumber = 1,
+                    PageSize = list.Count,
+                    TotalCount = list.Count
+                });
+            }
+            catch (Exception ex)
+            {
+                return Result<PaginatedResult<object>>.FailureStatusCode(
+                    $"An error occurred while retrieving answers sheets: {ex.Message}",
+                    ErrorType.InternalServerError);
+            }
+        }
+    }
+
     sealed class CourseSheetService(IUnitOfWork unitOfWork) : SheetServiceBase(unitOfWork)
     {
-        public override async Task<Result<PaginatedResult<SheetResponse>>> GetSheetsAsync(
+        public override async Task<Result<PaginatedResult<object>>> GetSheetsAsync(
             Guid targetId,
             SheetType sheetType,
             CancellationToken cancellationToken)
@@ -44,14 +100,15 @@ namespace Infrastructure.Services.SheetService
             var courseExists = await UnitOfWork.Repository<Course>()
                 .AnyAsync(c => c.Id == targetId, cancellationToken);
             if (!courseExists)
-                return Result<PaginatedResult<SheetResponse>>.FailureStatusCode("Course not found", ErrorType.NotFound);
+                return Result<PaginatedResult<object>>.FailureStatusCode("Course not found", ErrorType.NotFound);
 
             var sheets = await UnitOfWork.GetRepository<ISheetRepository>()
                 .GetAllSheetsByCourseAsync(targetId, sheetType, cancellationToken);
+            var items = sheets.Cast<object>().ToList();
 
-            return Result<PaginatedResult<SheetResponse>>.Success(new PaginatedResult<SheetResponse>
+            return Result<PaginatedResult<object>>.Success(new PaginatedResult<object>
             {
-                Items = sheets.ToList(),
+                Items = items,
                 PageNumber = 1,
                 PageSize = sheets.Count,
                 TotalCount = sheets.Count
@@ -61,7 +118,7 @@ namespace Infrastructure.Services.SheetService
 
     sealed class SectionSheetService(IUnitOfWork unitOfWork) : SheetServiceBase(unitOfWork)
     {
-        public override async Task<Result<PaginatedResult<SheetResponse>>> GetSheetsAsync(
+        public override async Task<Result<PaginatedResult<object>>> GetSheetsAsync(
             Guid targetId,
             SheetType sheetType,
             CancellationToken cancellationToken)
@@ -69,14 +126,15 @@ namespace Infrastructure.Services.SheetService
             var sectionExists = await UnitOfWork.Repository<Section>()
                 .AnyAsync(s => s.Id == targetId, cancellationToken);
             if (!sectionExists)
-                return Result<PaginatedResult<SheetResponse>>.FailureStatusCode("Section not found", ErrorType.NotFound);
+                return Result<PaginatedResult<object>>.FailureStatusCode("Section not found", ErrorType.NotFound);
 
             var sheets = await UnitOfWork.GetRepository<ISheetRepository>()
                 .GetAllSheetsBySectionAsync(targetId, sheetType, cancellationToken);
+            var items = sheets.Cast<object>().ToList();
 
-            return Result<PaginatedResult<SheetResponse>>.Success(new PaginatedResult<SheetResponse>
+            return Result<PaginatedResult<object>>.Success(new PaginatedResult<object>
             {
-                Items = sheets.ToList(),
+                Items = items,
                 PageNumber = 1,
                 PageSize = sheets.Count,
                 TotalCount = sheets.Count
@@ -86,7 +144,7 @@ namespace Infrastructure.Services.SheetService
 
     sealed class VideoSheetService(IUnitOfWork unitOfWork) : SheetServiceBase(unitOfWork)
     {
-        public override async Task<Result<PaginatedResult<SheetResponse>>> GetSheetsAsync(
+        public override async Task<Result<PaginatedResult<object>>> GetSheetsAsync(
             Guid targetId,
             SheetType sheetType,
             CancellationToken cancellationToken)
@@ -94,14 +152,15 @@ namespace Infrastructure.Services.SheetService
             var videoExists = await UnitOfWork.Repository<Video>()
                 .AnyAsync(v => v.Id == targetId, cancellationToken);
             if (!videoExists)
-                return Result<PaginatedResult<SheetResponse>>.FailureStatusCode("Video not found", ErrorType.NotFound);
+                return Result<PaginatedResult<object>>.FailureStatusCode("Video not found", ErrorType.NotFound);
 
             var sheets = await UnitOfWork.GetRepository<ISheetRepository>()
                 .GetAllSheetsByVideoAsync(targetId, sheetType, cancellationToken);
+            var items = sheets.Cast<object>().ToList();
 
-            return Result<PaginatedResult<SheetResponse>>.Success(new PaginatedResult<SheetResponse>
+            return Result<PaginatedResult<object>>.Success(new PaginatedResult<object>
             {
-                Items = sheets.ToList(),
+                Items = items,
                 PageNumber = 1,
                 PageSize = sheets.Count,
                 TotalCount = sheets.Count
