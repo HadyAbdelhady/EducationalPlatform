@@ -122,7 +122,7 @@ namespace Edu_Base.Controllers
         [HttpGet("GetSectionsNamesForCourse/{courseId}")]
         public async Task<IActionResult> GetSectionsNamesForCourse(Guid courseId, CancellationToken cancellationToken)
         {
-            var query = new GetSectionsNamesFourCourseQuery { CourseId = courseId };
+            var query = new GetSectionsNamesForCourseQuery { CourseId = courseId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }

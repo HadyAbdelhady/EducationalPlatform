@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Features.Sections.Query.GetSectionsNamesFourCourse
 {
-    public class GetSectionsNamesFourCourseQuery : IRequest<Result<List<SectionData>>>
+    public class GetSectionsNamesForCourseQuery : IRequest<Result<List<SectionData>>>
     {
         public Guid CourseId { get; set; }
     }

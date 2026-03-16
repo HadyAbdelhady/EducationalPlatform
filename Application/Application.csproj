@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -45,8 +45,8 @@
     <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQueryHandler.cs" />
     <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQuery.cs" />
     <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQueryHandler.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionsNamesFourCourse\GetSectionsNamesFourCourseQuery.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionsNamesFourCourse\GetSectionsNamesFourCourseQueryHandler.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionsNamesForCourse\GetSectionsNamesForCourseQuery.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionsNamesForCourse\GetSectionsNamesForCourseQueryHandler.cs" />
   </ItemGroup>
 
   <ItemGroup>

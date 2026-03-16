@@ -4,6 +4,7 @@ using Application.Features.Review.Query.GetReviewById;
 using Application.Features.Reviews.Commands.CreateReview;
 using Application.Features.Reviews.Commands.DeleteReview;
 using Application.Features.Reviews.Commands.UpdateReview;
+using Application.Features.Reviews.Query.GetAllReviews;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -104,9 +105,7 @@ namespace Edu_Base.Controllers
             {
                 EntityId = request.EntityId,
                 EntityType = request.EntityType,
-                Filters = request.Filters,
-                SortBy = request.SortBy,
-                IsDescending = request.IsDescending
+                GetAllEntityRequestSkeleton = request.GetAllEntityRequestSkeleton
             };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
