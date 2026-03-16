@@ -45,6 +45,8 @@
     <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQueryHandler.cs" />
     <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQuery.cs" />
     <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQueryHandler.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionsNamesFourCourse\GetSectionsNamesFourCourseQuery.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionsNamesFourCourse\GetSectionsNamesFourCourseQueryHandler.cs" />
   </ItemGroup>
 
   <ItemGroup>

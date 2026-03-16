@@ -17,6 +17,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Edu_Base\**" />
+	  <Content Remove="Edu_Base\**" />
+	  <EmbeddedResource Remove="Edu_Base\**" />
+	  <None Remove="Edu_Base\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
@@ -33,10 +40,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Application\Application.csproj" />
 		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Edu_Base\Swagger\" />
 	</ItemGroup>
 
 </Project>
