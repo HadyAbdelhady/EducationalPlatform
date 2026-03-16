@@ -33,7 +33,6 @@ namespace Application.Features.Courses.Commands.UpdateCourse
                 }
 
                 Instrcutor.InstructorId = request.InstructorId;
-                //course.Price = request.Price;
 
                 if (request.PictureFile is not null)
                 {
@@ -47,6 +46,11 @@ namespace Application.Features.Courses.Commands.UpdateCourse
 
                 course.IntroVideoUrl = request.IntroVideoUrl;
                 course.UpdatedAt = DateTime.UtcNow;
+
+                if (course.StudentCourses.Count == 0 && request.Price.HasValue)
+                {
+                    course.Price = request.Price.Value;
+                }
 
                 unitOfWork.Repository<Course>().Update(course);
                 await unitOfWork.SaveChangesAsync(cancellationToken);

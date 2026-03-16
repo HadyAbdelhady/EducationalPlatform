@@ -23,7 +23,10 @@ namespace Application.Features.Sections.Commands.UpdateSection
 
                 section.Name = request.Name;
                 section.Description = request.Description;
-                //section.Price = request.Price;
+
+                if (request.Price.HasValue && section.StudentSections.Count == 0)
+                    section.Price = request.Price.Value;
+
                 section.CourseId = request.CourseId;
                 section.UpdatedAt = DateTimeOffset.UtcNow;
 
