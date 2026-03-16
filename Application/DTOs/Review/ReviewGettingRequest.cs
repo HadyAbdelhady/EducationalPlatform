@@ -3,9 +3,9 @@
 namespace Application.DTOs.Review
 {
     public record ReviewGettingRequest(
-        Guid EntityId, 
+        Guid EntityId,
         ReviewEntityType EntityType,
-        Dictionary<string, string>? Filters = null,
-        string? SortBy = null,
+        Dictionary<string, string> Filters,
+        string SortBy,
         bool IsDescending = false);
 }

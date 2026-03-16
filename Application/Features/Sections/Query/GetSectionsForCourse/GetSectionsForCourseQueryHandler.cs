@@ -20,11 +20,11 @@ namespace Application.Features.Sections.Query.GetSectionsForCourse
             //var sections = await _unitOfWork.GetRepository<ISectionRepository>()
             //                                                        .GetSectionList(request, cancellationToken);
 
-            var sections = _unitOfWork.Repository<Section>().GetAll(cancellationToken).Where(s => s.CourseId == request.CourseId);
-
-            sections = sections.ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _sectionFilterRegistry.Filters)
-                                .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _sectionFilterRegistry.Sorts);
-
+            var sections = _unitOfWork.Repository<Section>()
+                                                      .GetAll(cancellationToken)
+                                                      .Where(s => s.CourseId == request.CourseId)
+                                                      .ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _sectionFilterRegistry.Filters)
+                                                      .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _sectionFilterRegistry.Sorts);
 
 
             var response = sections.Select(s => new SectionDetailsQueryModel

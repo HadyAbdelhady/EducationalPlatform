@@ -3,7 +3,7 @@ using Application.DTOs.Exam;
 using Application.DTOs;
 using MediatR;
 
-namespace Application.Features.Exams.Query.GetExamList
+namespace Application.Features.Exams.Query.GetAllStudentExams
 {
     public class GetAllStudentExamsQuery : IRequest<Result<PaginatedResult<ExamListDto>>>
     {

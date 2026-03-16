@@ -4,9 +4,9 @@ using Application.Features.Exams.Command.DeleteExam;
 using Application.Features.Exams.Command.GenerateExam;
 using Application.Features.Exams.Command.StartExam;
 using Application.Features.Exams.Command.SubmitExam;
+using Application.Features.Exams.Query.GetAllStudentExams;
 using Application.Features.Exams.Query.GetExamById;
-using Application.Features.Exams.Query.GetExamList;
-using Application.Features.Exams.Query.GetStudentsSubmittionsForExam;
+using Application.Features.Exams.Query.GetExamSubmissionsList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -64,8 +64,8 @@ namespace Edu_Base.Controllers
 
 
 
-        [HttpGet("GetStudentExamsList")]
-        public async Task<IActionResult> GetStudentExamsList([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
+        [HttpGet("GetStudentExams")]
+        public async Task<IActionResult> GetStudentExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
             //var userId = Guid.Parse(
             //    User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
@@ -82,13 +82,13 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
-        [HttpGet("GetStudentsSubmittionsForExam")]
-        public async Task<IActionResult> GetStudentsSubmittionsForExam([FromQuery] GetStudentsSubmittionsForExamRequest request, CancellationToken cancellationToken)
+        [HttpGet("GetExamSubmissions")]
+        public async Task<IActionResult> GetExamSubmissions([FromQuery] GetStudentsSubmittionsForExamRequest request, CancellationToken cancellationToken)
         {
             var Instructor = Guid.Parse(
                 User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
             );
-            var query = new GetStudentsSubmittionsForExamQuery
+            var query = new GetExamSubmissionsListQuery
             {
                 RequestSkeleton = request.RequestSkeleton,
                 UserId = Instructor,

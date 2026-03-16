@@ -242,21 +242,9 @@ namespace Infrastructure.Services.ReviewService
             {
                 var reviews = _unitOfWork.Repository<TReview>()
                     .Find(r => r.EntityId == request.EntityId,
-                        cancellationToken, r => r.Student!.User!);
-
-                if (request.Filters != null && request.Filters.Count > 0)
-                {
-                    reviews = reviews.ApplyFilters(request.Filters, _filterRegistry.Filters);
-                }
-
-                if (!string.IsNullOrWhiteSpace(request.SortBy))
-                {
-                    reviews = reviews.ApplySort(request.SortBy, request.IsDescending, _filterRegistry.Sorts);
-                }
-                else
-                {
-                    reviews = reviews.OrderByDescending(r => r.CreatedAt);
-                }
+                        cancellationToken, r => r.Student!.User!)
+                    .ApplyFilters(request.Filters, _filterRegistry.Filters)
+                    .ApplySort(request.SortBy, request.IsDescending, _filterRegistry.Sorts);
 
                 var reviewsList = reviews.ToList();
 

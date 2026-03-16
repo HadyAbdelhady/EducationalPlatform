@@ -7,7 +7,7 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Exams.Query.GetExamList
+namespace Application.Features.Exams.Query.GetAllStudentExams
 {
     public class GetAllStudentExamsQueryHandler(IUnitOfWork unitOfWork,
                                         IBaseFilterRegistry<Exam> examFilterRegistry) : IRequestHandler<GetAllStudentExamsQuery, Result<PaginatedResult<ExamListDto>>>

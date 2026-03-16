@@ -3,9 +3,9 @@ using Application.DTOs.Exam;
 using Application.ResultWrapper;
 using MediatR;
 
-namespace Application.Features.Exams.Query.GetStudentsSubmittionsForExam
+namespace Application.Features.Exams.Query.GetExamSubmissionsList
 {
-    public class GetStudentsSubmittionsForExamQuery : IRequest<Result<PaginatedResult<ExamListDto>>>
+    public class GetExamSubmissionsListQuery : IRequest<Result<PaginatedResult<ExamSubmissionDto>>>
     {
         public Guid ExamId { get; set; }
         public GetAllEntityRequestSkeleton RequestSkeleton { get; set; } = new GetAllEntityRequestSkeleton();

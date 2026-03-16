@@ -22,7 +22,11 @@ namespace Application.Features.Courses.Query.GetAllCourses
         {
             try
             {
-                var Courses = _unitOfWork.Repository<Course>().GetAll(cancellationToken);
+                var Courses = _unitOfWork.Repository<Course>()
+                                                         .GetAll(cancellationToken)
+                                                         .ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _courseFilterRegistry.Filters)
+                                                         .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _courseFilterRegistry.Sorts);
+                ;
 
                 // For students: filter by their education year. Instructors/admins use Filters["educationyearid"] from request.
                 var studentEducationYearId = await _studentEducationYearProvider.GetEducationYearIdByUserIdAsync(request.UserID, cancellationToken);
@@ -30,9 +34,6 @@ namespace Application.Features.Courses.Query.GetAllCourses
                 {
                     Courses = Courses.Where(c => c.EducationYearId == studentEducationYearId.Value);
                 }
-
-                Courses = Courses.ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _courseFilterRegistry.Filters)
-                                 .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _courseFilterRegistry.Sorts);
 
                 var response = Courses
                 .Select(course => new
