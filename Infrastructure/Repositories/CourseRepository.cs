@@ -49,6 +49,8 @@ namespace Infrastructure.Repositories
                                     PersonalPictureUrl = ic.Instructor.User.PersonalPictureUrl,
                                     GmailExternal = ic.Instructor.User.GmailExternal
                                 }).ToList(),
+
+                            EducationYear = course.EducationYear != null ? course.EducationYear.EducationYearName : string.Empty
                         };
 
 

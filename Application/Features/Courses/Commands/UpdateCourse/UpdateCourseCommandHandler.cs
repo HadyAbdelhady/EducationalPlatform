@@ -26,22 +26,28 @@ namespace Application.Features.Courses.Commands.UpdateCourse
                                                         };
                 course.Name = request.CourseName;
                 course.Description = request.Description;
+
                 if (request.EducationYearId.HasValue)
                 {
                     course.EducationYearId = request.EducationYearId.Value;
                 }
+
                 Instrcutor.InstructorId = request.InstructorId;
                 //course.Price = request.Price;
+
                 if (request.PictureFile is not null)
                 {
                     course.PictureUrl = await _cloudinaryService.UploadMediaAsync(request.PictureFile, UsageCategory.CourseThumbnail);
                 }
+
                 else if (!string.IsNullOrWhiteSpace(request.PictureUrl))
                 {
                     course.PictureUrl = request.PictureUrl;
                 }
+
                 course.IntroVideoUrl = request.IntroVideoUrl;
                 course.UpdatedAt = DateTime.UtcNow;
+
                 unitOfWork.Repository<Course>().Update(course);
                 await unitOfWork.SaveChangesAsync(cancellationToken);
 

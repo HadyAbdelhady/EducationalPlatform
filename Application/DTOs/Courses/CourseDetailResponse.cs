@@ -18,6 +18,7 @@ namespace Application.DTOs.Courses
         public int NumberOfSections { get; set; }
         public int? NumberOfEnrolledSections { get; set; }
         public int ProgressPercentage { get; set; }
+        public string EducationYear { get; set; } = string.Empty;
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public List<InstructorInfoDto> Instructors { get; set; } = [];
