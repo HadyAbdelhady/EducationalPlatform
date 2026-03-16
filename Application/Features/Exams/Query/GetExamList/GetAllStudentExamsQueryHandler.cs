@@ -1,5 +1,4 @@
 ﻿using Application.DTOs.Exam;
-using Application.Features.Exams.Query.GetExamList;
 using Application.HelperFunctions;
 using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
@@ -8,16 +7,16 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Exams.Query.GetAllExams
+namespace Application.Features.Exams.Query.GetExamList
 {
-    public class GetAllExamsQueryHandler(IUnitOfWork unitOfWork,
-                                        IBaseFilterRegistry<Exam> examFilterRegistry) : IRequestHandler<GetAllExamsQuery, Result<PaginatedResult<ExamListDto>>>
+    public class GetAllStudentExamsQueryHandler(IUnitOfWork unitOfWork,
+                                        IBaseFilterRegistry<Exam> examFilterRegistry) : IRequestHandler<GetAllStudentExamsQuery, Result<PaginatedResult<ExamListDto>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IBaseFilterRegistry<Exam> _examFilterRegistry = examFilterRegistry;
 
         public async Task<Result<PaginatedResult<ExamListDto>>> Handle(
-            GetAllExamsQuery request,
+            GetAllStudentExamsQuery request,
             CancellationToken cancellationToken)
         {
             var exams = _unitOfWork.Repository<Exam>()

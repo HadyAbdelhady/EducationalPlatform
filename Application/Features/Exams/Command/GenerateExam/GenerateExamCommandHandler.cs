@@ -67,26 +67,12 @@ namespace Application.Features.Exams.Command.GenerateExam
                 Status = examStatus,
             };
 
-            if (request.IsRandomized)
-            {
-                question.ToList().Shuffle();
-                decimal markPerQuestion = request.ExamTotalMark / request.NumberOfQuestions;
-
-                newExam.ExamQuestions = [.. question
-                .Take(request.NumberOfQuestions)
-                .Select(q => new ExamBank
-                {
-                    ExamId = newExam.Id,
-                    QuestionId = q.Id,
-                    QuestionMark = markPerQuestion,
-                })];
-            }
-            else
+            if (!request.IsRandomized)
             {
                 foreach (var item in request.QuestionIdsWithMarks ?? Enumerable.Empty<KeyValuePair<Guid, decimal>>())
                 {
                     newExam.ExamQuestions.Add(
-                        new ExamBank
+                        new ExamQuestions
                         {
                             ExamId = newExam.Id,
                             QuestionId = item.Key,
@@ -95,6 +81,36 @@ namespace Application.Features.Exams.Command.GenerateExam
                     );
                 }
             }
+
+
+            //if (request.IsRandomized)
+            //{
+            //    question.ToList().Shuffle();
+            //    decimal markPerQuestion = request.ExamTotalMark / request.NumberOfQuestions;
+
+            //    newExam.ExamQuestions = [.. question
+            //    .Take(request.NumberOfQuestions)
+            //    .Select(q => new ExamQuestions
+            //    {
+            //        ExamId = newExam.Id,
+            //        QuestionId = q.Id,
+            //        QuestionMark = markPerQuestion,
+            //    })];
+            //}
+            //else
+            //{
+            //    foreach (var item in request.QuestionIdsWithMarks ?? Enumerable.Empty<KeyValuePair<Guid, decimal>>())
+            //    {
+            //        newExam.ExamQuestions.Add(
+            //            new ExamQuestions
+            //            {
+            //                ExamId = newExam.Id,
+            //                QuestionId = item.Key,
+            //                QuestionMark = item.Value,
+            //            }
+            //        );
+            //    }
+            //}
             await _mediator.Publish(new ExamAddedEvent(request.CourseId, request.SectionId), cancellationToken);
 
             await _unitOfWork.Repository<Exam>().AddAsync(newExam, cancellationToken);

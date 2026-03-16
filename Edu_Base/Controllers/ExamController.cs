@@ -1,10 +1,12 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Exam;
 using Application.Features.Exams.Command.DeleteExam;
 using Application.Features.Exams.Command.GenerateExam;
 using Application.Features.Exams.Command.StartExam;
 using Application.Features.Exams.Command.SubmitExam;
 using Application.Features.Exams.Query.GetExamById;
 using Application.Features.Exams.Query.GetExamList;
+using Application.Features.Exams.Query.GetStudentsSubmittionsForExam;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,15 +64,15 @@ namespace Edu_Base.Controllers
 
 
 
-        [HttpGet("GetExamsList")]
-        public async Task<IActionResult> GetExamsList([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
+        [HttpGet("GetStudentExamsList")]
+        public async Task<IActionResult> GetStudentExamsList([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
             //var userId = Guid.Parse(
             //    User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
             //);
             var userId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
 
-            var query = new GetAllExamsQuery
+            var query = new GetAllStudentExamsQuery
             {
                 RequestSkeleton = request,
                 UserId = userId
@@ -80,6 +82,21 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
+        [HttpGet("GetStudentsSubmittionsForExam")]
+        public async Task<IActionResult> GetStudentsSubmittionsForExam([FromQuery] GetStudentsSubmittionsForExamRequest request, CancellationToken cancellationToken)
+        {
+            var Instructor = Guid.Parse(
+                User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
+            );
+            var query = new GetStudentsSubmittionsForExamQuery
+            {
+                RequestSkeleton = request.RequestSkeleton,
+                UserId = Instructor,
+                ExamId = request.ExamId
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
 
+        }
     }
 }

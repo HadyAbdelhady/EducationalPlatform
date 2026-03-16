@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
-    [Table("exam_bank", Schema = "public")]
-    public class ExamBank
+    [Table("exam_questions", Schema = "public")]
+    public class ExamQuestions
     {
         [Column("exam_id")]
         [ForeignKey(nameof(Exam))]

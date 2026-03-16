@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Features.Questions.Query.GetAllQuestionsInBank
 {
-    public class GetAllQuestionsInBankQuery : IRequest<Result<PaginatedResult<AllQuestionsInBankResponse>>>
+    public class GetAllQuestionsInBankQuery : IRequest<Result<PaginatedResult<AllQuestionsInExamResponse>>>
     {
         public Guid BankId { get; set; }
     }

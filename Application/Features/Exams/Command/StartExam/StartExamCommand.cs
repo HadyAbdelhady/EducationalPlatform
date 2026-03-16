@@ -3,17 +3,18 @@ using MediatR;
 
 namespace Application.Features.Exams.Command.StartExam
 {
-    public class StartExamCommand : IRequest<Result<StartedExamResponse>>
+    public class StartExamCommand : IRequest<Result<string>>
     {
         public Guid Student { get; set; }
         public Guid ExamId { get; set; }
+        public bool IsRandomized { get; set; } = false;
 
     }
 
-    public class StartedExamResponse
-    {
-        public Guid Student { get; set; }
-        public Guid ExamId { get; set; }
-        public DateTime StartedAt { get; set; } = DateTime.Now;
-    }
+public class StartedExamResponse
+{
+    public Guid Student { get; set; }
+    public Guid ExamId { get; set; }
+    public DateTime StartedAt { get; set; } = DateTime.Now;
+}
 }

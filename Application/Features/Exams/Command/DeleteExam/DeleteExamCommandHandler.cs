@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Domain.Entities;
 using Domain.Events;
 using MediatR;
+using Domain.enums;
 
 namespace Application.Features.Exams.Command.DeleteExam
 {
@@ -15,7 +16,7 @@ namespace Application.Features.Exams.Command.DeleteExam
         public async Task<Result<string>> Handle(DeleteExamCommand request, CancellationToken cancellationToken)
         {
             var ExamRepo = _unitOfWork.Repository<Exam>();
-            var StudentSubmissionRepo = _unitOfWork.Repository<StudentAnswers>();
+            var StudentSubmissionRepo = _unitOfWork.Repository<StudentExamResult>();
 
 
             var exam = await ExamRepo.GetByIdAsync(request.ExamId, cancellationToken);
@@ -25,8 +26,8 @@ namespace Application.Features.Exams.Command.DeleteExam
                 return Result<string>.Success("Exam does not exist");
             }
 
-            var ExamSubmissions =  StudentSubmissionRepo
-                                                                .Find(ss => ss.ExamResult.ExamId == request.ExamId,
+            var ExamSubmissions = StudentSubmissionRepo
+                                                                .Find(ss => ss.ExamId == request.ExamId,
                                                                 cancellationToken);
 
 
@@ -40,7 +41,6 @@ namespace Application.Features.Exams.Command.DeleteExam
 
             foreach (var result in exam.ExamResults) result.IsDeleted = true;
             foreach (var bank in exam.ExamQuestions) bank.IsDeleted = true;
-            foreach (var submission in ExamSubmissions) submission.IsDeleted = true;
 
             await _mediator.Publish(new ExamDeletedEvent(request.CourseId, request.SectionId), cancellationToken);
 

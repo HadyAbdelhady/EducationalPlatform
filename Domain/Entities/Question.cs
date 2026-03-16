@@ -11,10 +11,9 @@ namespace Domain.Entities
         [Column("id")]
         public Guid Id { get; set; }
 
-        [Required]
         [Column("section_id")]
         [ForeignKey(nameof(Section))]
-        public Guid SectionId { get; set; }
+        public Guid? SectionId { get; set; }
 
         [Required]
         [Column("course_id")]

@@ -43,7 +43,6 @@ namespace Infrastructure.Data
             modelBuilder.Entity<ChatMessage>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Payment>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<StudentExamResult>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<StudentAnswers>().HasQueryFilter(x => !x.IsDeleted);
 
             // Enum conversions (cannot be done with Data Annotations)
             modelBuilder.Entity<Sheet>()
@@ -144,7 +143,7 @@ namespace Infrastructure.Data
                     .HasConstraintName("students_user_id_fkey");
             });
 
-            modelBuilder.Entity<ExamBank>(entity =>
+            modelBuilder.Entity<ExamQuestions>(entity =>
             {
                 entity.HasKey(e => new { e.QuestionId, e.ExamId });
             });
@@ -422,7 +421,7 @@ namespace Infrastructure.Data
                     .WithMany(x => x.Payments)
                     .HasForeignKey(x => x.SectionId)
                     .HasConstraintName("payments_section_id_fkey");
-                b.Property(e=>e.Status)
+                b.Property(e => e.Status)
                     .HasConversion<EnumToStringConverter<PaymentStatus>>();
 
             });
@@ -459,6 +458,8 @@ namespace Infrastructure.Data
                     .WithMany()
                     .HasForeignKey(x => x.ChosenAnswerId)
                     .HasConstraintName("student_submissions_chosen_answer_id_fkey");
+
+                b.HasKey(e => new { e.StudentId, e.ExamResultId, e.QuestionId });
             });
         }
     }

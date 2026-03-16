@@ -1,8 +1,6 @@
-using Application.DTOs.Answer;
-
-namespace Application.DTOs.Questions
+﻿namespace Application.DTOs.Questions
 {
-    public class QuestionsInExamResponse
+    public class AllQuestionsInExamResponse
     {
         public Guid Id { get; set; }
         public string QuestionString { get; set; } = string.Empty;
@@ -10,8 +8,5 @@ namespace Application.DTOs.Questions
         public decimal? QuestionMark { get; set; }
         public Guid SectionId { get; set; }
         public Guid CourseId { get; set; }
-        public ICollection<AnswerDto> AllAnswersInExam { get; set; } = [];
-
     }
 }
-

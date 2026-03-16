@@ -63,7 +63,7 @@ namespace Application.Features.Exams.Command.UpdateExam
 
                     if (!questionLink)
                     {
-                        Exam.ExamQuestions.Add(new ExamBank
+                        Exam.ExamQuestions.Add(new ExamQuestions
                         {
                             ExamId = Exam.Id,
                             QuestionId = NewQuestionsList.Id,
