@@ -63,7 +63,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Exams\Query\GetActiveExamAttempt\" />
-    <Folder Include="Features\Exams\Query\GetStudentExamResult\" />
     <Folder Include="Features\Exams\Query\CanStudentTakeExam\" />
     <Folder Include="Features\Exams\Query\GetExamStatistics\" />
     <Folder Include="Features\Sheets\Queries\" />
