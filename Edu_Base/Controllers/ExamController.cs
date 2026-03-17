@@ -5,6 +5,7 @@ using Application.Features.Exams.Command.GenerateExam;
 using Application.Features.Exams.Command.StartExam;
 using Application.Features.Exams.Command.SubmitExam;
 using Application.Features.Exams.Query.GetAllStudentExams;
+using Application.Features.Exams.Query.GetExamCalendarDays;
 using Application.Features.Exams.Query.GetExamById;
 using Application.Features.Exams.Query.GetExamSubmissionsList;
 using Application.Features.Exams.Query.GetStudentExamResult;
@@ -119,6 +120,33 @@ namespace Edu_Base.Controllers
 
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+        }
+
+        [HttpGet("GetExamCalendarDays")]
+        public async Task<IActionResult> GetExamCalendarDays(
+            [FromQuery] Guid? courseId,
+            [FromQuery] Guid? sectionId,
+            [FromQuery] Guid educationYearId,
+            CancellationToken cancellationToken)
+        {
+            var instructorIdValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var instructorIdValue = "1eb4f9e5-0327-47d5-a18c-ea1119d57827";
+
+            if (string.IsNullOrWhiteSpace(instructorIdValue) || !Guid.TryParse(instructorIdValue, out var instructorId))
+            {
+                return Unauthorized("User id not found in token.");
+            }
+
+            var query = new GetExamCalendarDaysQuery
+            {
+                CourseId = courseId,
+                SectionId = sectionId,
+                EducationYearId = educationYearId,
+                InstructorId = instructorId
+            };
+
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
         }
     }
 }
