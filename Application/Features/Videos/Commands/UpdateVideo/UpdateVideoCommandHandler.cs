@@ -14,25 +14,33 @@ namespace Application.Features.Videos.Commands.UpdateVideo
         {
             try
             {
+                Section? section = null;
                 var video = await _unitOfWork.Repository<Video>().GetByIdAsync(request.VideoId, cancellationToken)
                                                                     ?? throw new KeyNotFoundException("Video Not Found");
 
-                var section = await _unitOfWork.Repository<Section>().GetByIdAsync(request.SectionId.Value, cancellationToken);
+                if (request.SectionId.HasValue)
+                    section = await _unitOfWork.Repository<Section>().GetByIdAsync(request.SectionId.Value, cancellationToken);
 
+                if (section == null)
+                    return Result<string>.FailureStatusCode("Section not found", ErrorType.NotFound);
 
-                video.Name = request.Name;
-                video.Description = request.Description;
-                video.SectionId = section.Id;
-                video.VideoUrl = request.VideoUrl;
+                if (!string.IsNullOrEmpty(request.Name))
+                    video.Name = request.Name;
+                
+                if (!string.IsNullOrEmpty(request.Description))
+                    video.Description = request.Description;
+                
+                if (request.SectionId.HasValue)
+                    video.SectionId = section.Id;
+                
+                if (!string.IsNullOrEmpty(request.VideoUrl))
+                    video.VideoUrl = request.VideoUrl;
+
                 video.UpdatedAt = DateTime.UtcNow;
                 _unitOfWork.Repository<Video>().Update(video);
-                var Result = await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                if (Result > 0)
-                    return Result<string>.Success("Video Updated Successfully");
-
-
-                return Result<string>.FailureStatusCode("Failed To Update Video", ErrorType.BadRequest);
+                return Result<string>.Success("Video updated successfully");
             }
             catch (KeyNotFoundException)
             {

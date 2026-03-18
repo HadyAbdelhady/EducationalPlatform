@@ -20,9 +20,10 @@ namespace Application.Features.Sections.Commands.UpdateSection
                 var section = await sectionRepo.FirstOrDefaultAsync(s => s.Id == request.SectionId, cancellationToken);
                 if (section == null)
                     return Result<SectionUpdateResponse>.FailureStatusCode("Section not found.", ErrorType.NotFound);
-
-                section.Name = request.Name;
-                section.Description = request.Description;
+                if (!string.IsNullOrWhiteSpace(request.Name))
+                    section.Name = request.Name;
+                if (!string.IsNullOrWhiteSpace(request.Description))
+                    section.Description = request.Description;
 
                 if (request.Price.HasValue && section.StudentSections.Count == 0)
                     section.Price = request.Price.Value;
