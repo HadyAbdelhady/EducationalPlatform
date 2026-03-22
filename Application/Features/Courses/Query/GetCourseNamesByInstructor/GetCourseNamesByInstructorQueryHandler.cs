@@ -13,7 +13,7 @@ namespace Application.Features.Courses.Query.GetCourseNamesByInstructor
         {
             var courses = _unitOfWork.Repository<Course>().GetAll(cancellationToken)
                                                     .Where(c => c.InstructorCourses
-                                                    .Any(ic => ic.InstructorId == request.InstructorId))
+                                                    .Any(ic => ic.InstructorId == request.InstructorId && c.EducationYearId == request.EducationalYearId))
                 .Select(c => new CourseData { Id = c.Id, Name = c.Name })
                 .ToList();
 

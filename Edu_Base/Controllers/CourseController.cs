@@ -101,12 +101,12 @@ namespace Edu_Base.Controllers
         }
 
         [HttpGet("GetCourseNamesByInstructor")]
-        public async Task<IActionResult> GetCourseNamesByInstructor(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCourseNamesByInstructor([FromQuery] Guid EducationalYearId, CancellationToken cancellationToken)
         {
             var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
             //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
 
-            var query = new GetCourseNamesByInstructorQuery { InstructorId = UserId };
+            var query = new GetCourseNamesByInstructorQuery { InstructorId = UserId, EducationalYearId = EducationalYearId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }

@@ -119,7 +119,7 @@ namespace Edu_Base.Controllers
             };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpGet("GetExamCalendarDays")]
@@ -146,7 +146,7 @@ namespace Edu_Base.Controllers
             };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
         }
     }
 }
