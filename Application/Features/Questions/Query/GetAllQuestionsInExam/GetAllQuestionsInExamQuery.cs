@@ -2,10 +2,10 @@
 using Application.ResultWrapper;
 using MediatR;
 
-namespace Application.Features.Questions.Query.GetAllQuestionsInExam
+namespace Application.Features.Questions.Query.GetAllQuestionsInBank
 {
-    public class GetAllQuestionsInExamQuery : IRequest<Result<PaginatedResult<QuestionsInExamWithAnswersResponse>>>
+    public class GetAllQuestionsInExamQuery : IRequest<Result<PaginatedResult<AllQuestionsInExamResponse>>>
     {
-        public Guid ExamId { get; set; }
+        public Guid BankId { get; set; }
     }
 }

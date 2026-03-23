@@ -1,9 +1,11 @@
-﻿using Application.Features.Questions.Command.AddQuestion;
+﻿using Application.DTOs.Questions;
+using Application.Features.Questions.Command.AddQuestion;
 using Application.Features.Questions.Command.DeleteQuestion;
 using Application.Features.Questions.Command.UpdateQuestion;
-using Application.Features.Questions.Query.GetQuestionById;
 using Application.Features.Questions.Query.GetAllQuestionsInBank;
 using Application.Features.Questions.Query.GetAllQuestionsInExam;
+using Application.Features.Questions.Query.GetAllQuestionsWithAnswersInBank;
+using Application.Features.Questions.Query.GetQuestionById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,11 +56,11 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
         }
 
-        [HttpGet("bank/{bankId}")]
-        public async Task<IActionResult> GetAllQuestionsInBank(Guid bankId, CancellationToken cancellationToken)
+        [HttpGet("QuestionBank")]
+        public async Task<IActionResult> GetAllQuestionsInBank([FromQuery] QuestionRequest questionRequest, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Fetching all questions in bank: {BankId}", bankId);
-            var query = new GetAllQuestionsInBankQuery { BankId = bankId };
+            _logger.LogInformation("Fetching all questions in bank: {BankId}", questionRequest.Id);
+            var query = new GetAllQuestionsWithAnswersInBankQuery { BankId = questionRequest.Id, BankType = questionRequest.Type };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
         }
@@ -67,9 +69,11 @@ namespace Edu_Base.Controllers
         public async Task<IActionResult> GetAllQuestionsInExam(Guid examId, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Fetching all questions in exam: {ExamId}", examId);
-            var query = new GetAllQuestionsInExamQuery { ExamId = examId };
+            var query = new GetAllQuestionsWithAnswersInExamQuery { ExamId = examId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
         }
+
+
     }
 }
