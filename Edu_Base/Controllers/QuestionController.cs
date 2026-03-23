@@ -25,7 +25,7 @@ namespace Edu_Base.Controllers
 
             _logger.LogInformation("Fetching course detail for CourseId: {CourseId}", command.QuestionString);
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpPatch("{id}")]
@@ -53,7 +53,7 @@ namespace Edu_Base.Controllers
             _logger.LogInformation("Fetching question detail for QuestionId: {QuestionId}", id);
             var query = new GetQuestionByIdQuery { QuestionId = id };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpGet("QuestionBank")]
@@ -62,7 +62,7 @@ namespace Edu_Base.Controllers
             _logger.LogInformation("Fetching all questions in bank: {BankId}", questionRequest.Id);
             var query = new GetAllQuestionsWithAnswersInBankQuery { BankId = questionRequest.Id, BankType = questionRequest.Type };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpGet("exam/{examId}")]
@@ -71,7 +71,7 @@ namespace Edu_Base.Controllers
             _logger.LogInformation("Fetching all questions in exam: {ExamId}", examId);
             var query = new GetAllQuestionsWithAnswersInExamQuery { ExamId = examId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
 
