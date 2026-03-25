@@ -6,33 +6,40 @@ using MediatR;
 
 namespace Application.Features.Questions.Command.AddQuestion
 {
-    public class AddQuestionHandler(IUnitOfWork context) : IRequestHandler<AddQuestionCommand, Result<Guid>>
+    public class AddQuestionHandler(IUnitOfWork context, ICloudinaryCore cloudinaryService) : IRequestHandler<AddQuestionCommand, Result<Guid>>
     {
         private readonly IUnitOfWork _unitOfWork = context;
+        private readonly ICloudinaryCore _cloudinaryService = cloudinaryService;
 
         public async Task<Result<Guid>> Handle(AddQuestionCommand request, CancellationToken cancellationToken)
         {
             try
             {
+                string? pictureUrl = request.PictureUrl;
+
+                if (request.PictureFile is not null)
+                {
+                    pictureUrl = await _cloudinaryService.UploadMediaAsync(request.PictureFile, UsageCategory.CourseThumbnail);
+                }
                 // 1. Create the Question Entity
                 var question = new Question
                 {
                     Id = Guid.NewGuid(),
                     QuestionString = request.QuestionString,
-                    QuestionImageUrl = request.QuestionImageUrl,
+                    QuestionImageUrl = pictureUrl,
                     SectionId = request.SectionId,
                     CourseId = request.CourseId,
                 };
 
                 // 2. Create the Answer Entities
-                foreach (var answerDto in request.Answers)
+                for (int i = 0; i < request.AnswerTexts.Count; i++)
                 {
                     var answer = new Answer
                     {
                         Id = Guid.NewGuid(),
                         QuestionId = question.Id, // Link to parent
-                        AnswerText = answerDto.AnswerText,
-                        IsCorrect = answerDto.IsCorrect,
+                        AnswerText = request.AnswerTexts[i],
+                        IsCorrect = request.IsCorrects[i],
                         Explanation = request.Explanation
                     };
                     question.Answers.Add(answer);

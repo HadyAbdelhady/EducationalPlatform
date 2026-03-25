@@ -17,9 +17,6 @@ namespace Application.Features.Sections.Query.GetSectionsForCourse
 
         public async Task<Result<List<SectionDetailsQueryModel>>> Handle(GetSectionsForCourseQuery request, CancellationToken cancellationToken)
         {
-            //var sections = await _unitOfWork.GetRepository<ISectionRepository>()
-            //                                                        .GetSectionList(request, cancellationToken);
-
             var sections = _unitOfWork.Repository<Section>()
                                                       .GetAll(cancellationToken)
                                                       .Where(s => s.CourseId == request.CourseId)

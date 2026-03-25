@@ -1,4 +1,5 @@
 using Application.DTOs.Media;
+using Application.DTOs.Videos;
 using Domain.enums;
 using Microsoft.AspNetCore.Http;
 
@@ -11,6 +12,10 @@ namespace Application.Interfaces
         public Task<CloudinaryMediaResult> UploadPdfAsync(IFormFile file, string? folder = null);
         Task<string> UploadMediaAsync(IFormFile file, UsageCategory usageCategory, string? folder = null);
         Task<string> UploadVideoAsync(IFormFile file, string? folder = null);
+
+        // Direct upload methods (client uploads directly to Cloudinary)
+        Task<DirectVideoUploadSignatureResponse> GenerateDirectUploadSignatureAsync(
+            DirectVideoUploadSignatureRequest request);
 
         // Edit methods
         Task<string> EditMediaAsync(string publicId, IFormFile file, UsageCategory usageCategory, string? folder = null);

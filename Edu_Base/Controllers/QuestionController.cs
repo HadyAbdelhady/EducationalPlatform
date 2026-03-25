@@ -20,7 +20,7 @@ namespace Edu_Base.Controllers
         private readonly ILogger<QuestionController> _logger = logger;
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] AddQuestionCommand command)
+        public async Task<IActionResult> Create([FromForm] AddQuestionCommand command)
         {
 
             _logger.LogInformation("Fetching course detail for CourseId: {CourseId}", command.QuestionString);

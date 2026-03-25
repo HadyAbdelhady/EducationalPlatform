@@ -22,7 +22,7 @@ namespace Domain.Entities
 
         [Required]
         [Column("question_string")]
-        public string QuestionString { get; set; } = string.Empty;
+        public string? QuestionString { get; set; } = string.Empty;
 
         [Column("question_image_url")]
         public string? QuestionImageUrl { get; set; }
