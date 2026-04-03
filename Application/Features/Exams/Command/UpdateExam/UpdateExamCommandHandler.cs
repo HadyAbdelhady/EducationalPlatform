@@ -36,7 +36,7 @@ namespace Application.Features.Exams.Command.UpdateExam
             }
             if (request.ScheduledDate is not null)
             {
-                Exam.StartTime = request.ScheduledDate;
+                Exam.StartTime = request.ScheduledDate.Value.ToUniversalTime();
             }
             if (request.DurationInMinutes is not null)
             {

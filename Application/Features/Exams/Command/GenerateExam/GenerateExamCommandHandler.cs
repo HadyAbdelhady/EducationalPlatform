@@ -1,5 +1,4 @@
-using Application.HelperFunctions;
-using Application.DTOs.Questions;
+using Application.DTOs.Exam;
 using Application.ResultWrapper;
 using Application.Interfaces;
 using Domain.Entities;
@@ -9,13 +8,13 @@ using MediatR;
 
 namespace Application.Features.Exams.Command.GenerateExam
 {
-    public class GenerateExamCommandHandler(IUnitOfWork unitOfWork, IMediator mediator) : IRequestHandler<GenerateExamCommand, Result<string>>
+    public class GenerateExamCommandHandler(IUnitOfWork unitOfWork, IMediator mediator) : IRequestHandler<GenerateExamCommand, Result<GenerateExamResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMediator _mediator = mediator;
 
 
-        public async Task<Result<string>> Handle(GenerateExamCommand request, CancellationToken cancellationToken)
+        public async Task<Result<GenerateExamResponse>> Handle(GenerateExamCommand request, CancellationToken cancellationToken)
         {
             var QuestionRepository = _unitOfWork.Repository<Question>();
 
@@ -26,26 +25,28 @@ namespace Application.Features.Exams.Command.GenerateExam
 
             if (!question.Any())
             {
-                return Result<string>.FailureStatusCode("Question does not exist.", ErrorType.NotFound);
+                return Result<GenerateExamResponse>.FailureStatusCode("Question does not exist.", ErrorType.NotFound);
             }
 
             if (question.Count() < request.NumberOfQuestions)
             {
-                return Result<string>.FailureStatusCode(
+                return Result<GenerateExamResponse>.FailureStatusCode(
                     $"Not enough questions available. Requested: {request.NumberOfQuestions}, Available: {question.Count()}.",
                     ErrorType.BadRequest
                 );
             }
 
-            // Determine exam status based on start time
+            var examStartUtc = request.ExamStartTime.ToUniversalTime();
+            var examEndUtc = request.ExamEndTime.ToUniversalTime();
+
             ExamStatus examStatus = ExamStatus.Draft;
-            if (request.ExamStartTime <= DateTimeOffset.UtcNow && request.ExamEndTime >= DateTimeOffset.UtcNow)
+            if (examStartUtc <= DateTimeOffset.UtcNow && examEndUtc >= DateTimeOffset.UtcNow)
             {
-                return Result<string>.FailureStatusCode("Start time must be in the future.", ErrorType.BadRequest);
+                return Result<GenerateExamResponse>.FailureStatusCode("Start time must be in the future.", ErrorType.BadRequest);
             }
-            else if (request.ExamStartTime > DateTimeOffset.UtcNow)
+            else if (examStartUtc > DateTimeOffset.UtcNow)
             {
-                examStatus = ExamStatus.Scheduled; // Exam is scheduled for the future
+                examStatus = ExamStatus.Scheduled; 
             }
 
             Exam newExam = new()
@@ -58,8 +59,8 @@ namespace Application.Features.Exams.Command.GenerateExam
                 InstructorId = request.CreatedBy,
                 TotalMark = request.ExamTotalMark,
                 NumberOfQuestions = request.NumberOfQuestions,
-                StartTime = request.ExamStartTime,
-                EndTime = request.ExamEndTime,
+                StartTime = examStartUtc,
+                EndTime = examEndUtc,
                 ExamType = request.ExamType,
                 IsRandomized = request.IsRandomized,
                 DurationInMinutes = request.DurationInMinutes,
@@ -132,7 +133,6 @@ namespace Application.Features.Exams.Command.GenerateExam
                         .Distinct()];
                 }
             }
-            // Get students enrolled in the course.
             else
             {
                 var courseRepository = _unitOfWork.Repository<Course>();
@@ -147,7 +147,6 @@ namespace Application.Features.Exams.Command.GenerateExam
                 }
             }
 
-            // Create StudentExamResult records for each enrolled student
             var studentExamResults = enrolledStudentIds.Select(studentId => new StudentExamResult
             {
                 Id = Guid.NewGuid(),
@@ -162,13 +161,11 @@ namespace Application.Features.Exams.Command.GenerateExam
 
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            var response = new AddQuestionToExamBankResponse
+            return Result<GenerateExamResponse>.Success(new GenerateExamResponse
             {
-                CourseId = newExam.CourseId,
-                SectionId = newExam.SectionId,
-                ExamId = newExam.Id
-            };
-            return Result<string>.Success($"Exam created successfully with ID: {newExam.Id} for Course ID: {newExam.CourseId} and Section ID: {newExam.SectionId}");
+                Message = "Exam created successfully",
+                ExamId = newExam.Id,
+            });
         }
     }
 }
