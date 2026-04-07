@@ -9,5 +9,7 @@ namespace Application.Features.Questions.Query.GetAllQuestionsWithAnswersInBank
     {
         public Guid BankId { get; set; }
         public EntityType BankType { get; set; }
+        public int PageNumber { get; set; } = 1;
+
     }
 }

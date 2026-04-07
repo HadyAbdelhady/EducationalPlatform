@@ -246,7 +246,7 @@ namespace Infrastructure.Repositories
             InstructorDashboardResponse? response = new()
             {
                 // Instructor's courses with metrics
-                Courses = _context.InstructorCourses
+                Courses = [.. _context.InstructorCourses
                     .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
                     .Select(ic => new InstructorCourseDto
                     {
@@ -264,12 +264,11 @@ namespace Infrastructure.Repositories
                         NumberOfSheets = ic.Course.NumberOfQuestionSheets
                     })
                     .OrderByDescending(c => c.CreatedAt)
-                    .Take(6)
-                    .ToList(),
+                    .Take(6)],
 
                 // Instructor statistics
-                Stats = new List<InstructorStatsDto>
-                {
+                Stats =
+                [
                     new()
                     {
                         TotalCourses = instructorCourseIds.Count,
@@ -294,7 +293,7 @@ namespace Infrastructure.Repositories
                             .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
                             .Sum(ic => ic.Course.NumberOfQuestionSheets)
                     }
-                }
+                ]
             };
 
             // Recent activities
@@ -348,10 +347,9 @@ namespace Infrastructure.Repositories
             var sheetsList = await sheets.ToListAsync(cancellationToken);
             var enrollmentsList = await enrollments.ToListAsync(cancellationToken);
 
-            response.RecentActivities = videosList.Concat(examsList).Concat(sheetsList).Concat(enrollmentsList)
+            response.RecentActivities = [.. videosList.Concat(examsList).Concat(sheetsList).Concat(enrollmentsList)
                 .OrderByDescending(a => a.Timestamp)
-                .Take(10)
-                .ToList();
+                .Take(10)];
 
             var sheetsToReview = _context.Sheets
                 .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)) && s.DueDate.HasValue &&
@@ -366,36 +364,16 @@ namespace Infrastructure.Repositories
                     RelatedEntityId = s.Id
                 });
 
-            //var supportTasks = _context.StudentCourses
-            //    .Where(sc => instructorCourseIds.Contains(sc.CourseId) && sc.EnrolledAt >= DateTimeOffset.UtcNow.AddDays(-7))
-            //    .Select(sc => new PendingTaskDto
-            //    {
-            //        TaskType = "Support",
-            //        Title = "Answer student questions",
-            //        CourseName = sc.Course.Name,
-            //        DueDate = null,
-            //        Priority = 3,
-            //        RelatedEntityId = null
-            //    });
-
             // Materialize each query before performing set operations in-memory to avoid EF Core translation issues
             var sheetsToReviewList = await sheetsToReview.ToListAsync(cancellationToken);
-            //var supportTasksList = await supportTasks.ToListAsync(cancellationToken);
 
-            //response.PendingTasks = sheetsToReviewList.Concat(supportTasksList)
-            //    .OrderBy(t => t.Priority)
-            //    .ThenBy(t => t.DueDate ?? DateTimeOffset.MaxValue)
-            //    .Take(8)
-            //    .ToList();
-
-            response.PendingTasks = sheetsToReviewList
+            response.PendingTasks = [.. sheetsToReviewList
                                     .OrderBy(t => t.Priority)
                                     .ThenBy(t => t.DueDate)
-                                    .Take(8)
-                                    .ToList();
+                                    .Take(8)];
 
             // Upcoming exams
-            response.UpcomingExams = _context.Exams
+            response.UpcomingExams = [.. _context.Exams
                 .Where(e => e.InstructorId == instructorId && (!educationYearId.HasValue || e.Course.EducationYearId == educationYearId.Value) && e.StartTime.HasValue && e.StartTime.Value >= DateTimeOffset.UtcNow)
                 .OrderBy(e => e.StartTime)
                 .Select(e => new UpcomingExamDto
@@ -409,11 +387,10 @@ namespace Infrastructure.Repositories
                     Status = e.Status.ToString(),
                     NumberOfEnrolledStudents = _context.StudentCourses.Count(sc => sc.CourseId == e.CourseId)
                 })
-                .Take(5)
-                .ToList();
+                .Take(5)];
 
             // Upcoming sheets
-            response.UpcomingSheets = _context.Sheets
+            response.UpcomingSheets = [.. _context.Sheets
                 .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)) && s.DueDate.HasValue && s.DueDate.Value >= DateTimeOffset.UtcNow.AddDays(-7))
                 .OrderBy(s => s.DueDate)
                 .Select(s => new UpcomingSheetDto
@@ -425,8 +402,7 @@ namespace Infrastructure.Repositories
                     Status = "Published",
                     NumberOfSubmittedStudents = s.AnswersSheets.Count
                 })
-                .Take(5)
-                .ToList();
+                .Take(5)];
 
             return response;
         }

@@ -2,7 +2,6 @@
 using Application.Features.Questions.Command.AddQuestion;
 using Application.Features.Questions.Command.DeleteQuestion;
 using Application.Features.Questions.Command.UpdateQuestion;
-using Application.Features.Questions.Query.GetAllQuestionsInBank;
 using Application.Features.Questions.Query.GetAllQuestionsInExam;
 using Application.Features.Questions.Query.GetAllQuestionsWithAnswersInBank;
 using Application.Features.Questions.Query.GetQuestionById;
@@ -60,7 +59,12 @@ namespace Edu_Base.Controllers
         public async Task<IActionResult> GetAllQuestionsInBank([FromQuery] QuestionRequest questionRequest, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Fetching all questions in bank: {BankId}", questionRequest.Id);
-            var query = new GetAllQuestionsWithAnswersInBankQuery { BankId = questionRequest.Id, BankType = questionRequest.Type };
+            var query = new GetAllQuestionsWithAnswersInBankQuery
+            {
+                BankId = questionRequest.Id,
+                BankType = questionRequest.Type,
+                PageNumber = questionRequest.PageNumber
+            };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }

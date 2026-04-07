@@ -14,14 +14,14 @@ namespace Application.Features.Questions.Query.GetAllQuestionsWithAnswersInBank
         {
             try
             {
-                QuestionRequest questionRequest = new ()
+                QuestionRequest questionRequest = new()
                 {
                     Id = request.BankId,
                     Type = request.BankType
                 };
-                var response = await _unitOfWork.GetRepository<IQuestionRepository>().GetAllQuestionsInBankWithAnswersAsync(questionRequest,cancellationToken);
+                var response = await _unitOfWork.GetRepository<IQuestionRepository>().GetAllQuestionsInBankWithAnswersAsync(questionRequest, cancellationToken);
                 var responseList = response.ToList();
-                
+
                 if (responseList.Count == 0)
                 {
                     return Result<PaginatedResult<QuestionsInExamWithAnswersResponse>>.FailureStatusCode(
@@ -31,8 +31,8 @@ namespace Application.Features.Questions.Query.GetAllQuestionsWithAnswersInBank
 
                 return Result<PaginatedResult<QuestionsInExamWithAnswersResponse>>.Success(new PaginatedResult<QuestionsInExamWithAnswersResponse>
                 {
-                    Items = responseList,
-                    PageNumber = 1,
+                    Items = [.. responseList.Skip(request.PageNumber - 1).Take(responseList.Count)],
+                    PageNumber = questionRequest.PageNumber,
                     PageSize = responseList.Count,
                     TotalCount = responseList.Count
                 });
