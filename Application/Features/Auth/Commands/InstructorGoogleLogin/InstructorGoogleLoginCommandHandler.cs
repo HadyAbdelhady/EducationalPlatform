@@ -21,12 +21,21 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
             try
             {
                 // Validate Google ID token
-                var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
-
+                var isValidToken = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
+                if (isValidToken == false)
+                {
+                    throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
+                }
 
                 // Check if user already exists
                 var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
                                                          .GetByGoogleEmailAsync(request.GoogleUserInfo.Email, cancellationToken);
+
+                // Reject if the email belongs to a Student account
+                if (existingUser != null && existingUser.Instructor == null)
+                {
+                    throw new UnauthorizedAccessException("This email is registered as a Student account.");
+                }
 
                 bool isNewUser = existingUser == null;
                 User user;
@@ -56,30 +65,34 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                     user.Instructor = instructor;
                     await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
                 }
+                else
+                {
+                    user = existingUser;
+                }
 
                 // Generate JWT token
                 var token = _jwtTokenService.GenerateToken(
-                    userId: existingUser!.Id,
-                    email: existingUser.GmailExternal ?? string.Empty,
+                    userId: user.Id,
+                    email: user.GmailExternal ?? string.Empty,
                     role: "Instructor",
-                    fullName: existingUser.FullName
+                    fullName: user.FullName
                 );
 
                 var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
 
                 // Generate refresh token
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();
-                await _unitOfWork.GetRepository<IRefreshTokenRepository>().AddRefreshTokenAsync(refreshToken, existingUser.Id, cancellationToken);
+                await _unitOfWork.GetRepository<IRefreshTokenRepository>().AddRefreshTokenAsync(refreshToken, user.Id, cancellationToken);
 
                 // Save all changes in a single transaction
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<AuthenticationResponse>.Success(new AuthenticationResponse
                 {
-                    UserId = existingUser.Id,
-                    FullName = existingUser.FullName,
-                    Email = existingUser.GmailExternal ?? string.Empty,
-                    ProfilePictureUrl = existingUser.PersonalPictureUrl,
+                    UserId = user.Id,
+                    FullName = user.FullName,
+                    Email = user.GmailExternal ?? string.Empty,
+                    ProfilePictureUrl = user.PersonalPictureUrl,
                     IsNewUser = isNewUser,
                     Token = token,
                     TokenExpiresAt = tokenExpiration,

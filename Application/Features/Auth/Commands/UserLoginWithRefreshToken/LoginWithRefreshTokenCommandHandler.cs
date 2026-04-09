@@ -24,7 +24,11 @@ namespace Application.Features.Auth.Commands.UserLoginWithRefreshToken
                     throw new UnauthorizedAccessException("Refresh token has expired");
                 }
 
-                var newAccessToken = _jwtTokenService.GenerateToken(refreshToken.User.Id, refreshToken.User.GmailExternal!, request.Role, refreshToken.User.FullName);
+                var newAccessToken = _jwtTokenService.GenerateToken(
+                    refreshToken.User.Id,
+                    refreshToken.User.GmailExternal!,
+                    refreshToken.User.Student != null ? "Student" : "Instructor",
+                    refreshToken.User.FullName);
                 var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
                 // Invalidate the old refresh token by removing it

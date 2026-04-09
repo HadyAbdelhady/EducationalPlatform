@@ -32,6 +32,11 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
                                                          .GetByGoogleEmailAsync(request.GoogleUserInfo.Email, cancellationToken);
 
+                // Reject if the email belongs to an Instructor account
+                if (existingUser != null && existingUser.Student == null)
+                {
+                    throw new UnauthorizedAccessException("This email is registered as an Instructor account.");
+                }
 
                 bool isNewUser = existingUser == null;
                 User user;
