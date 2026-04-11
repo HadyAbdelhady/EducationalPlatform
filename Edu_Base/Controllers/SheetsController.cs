@@ -10,7 +10,6 @@ using Application.Features.Sheets.Queries.GetAllSheets;
 using Domain.enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Application.Features.AnswersSheets.Queries.GetAllAnswersSheetsByStudentId;
 using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -42,11 +41,11 @@ namespace Edu_Base.Controllers
             {
                 return BadRequest("Sheet creation request can not be null.");
             }
-            if(request.InstructorId == Guid.Empty)
+            if (request.InstructorId == Guid.Empty)
             {
                 return BadRequest("Instructor Id can not be null.");
             }
-            if(request.Type == Domain.enums.SheetType.QuestionSheet && (request.DueDate is null || request.DueDate < DateTimeOffset.UtcNow))
+            if (request.Type == Domain.enums.SheetType.QuestionSheet && (request.DueDate is null || request.DueDate < DateTimeOffset.UtcNow))
             {
                 return BadRequest("Due Date can not be null or in the past.");
             }
@@ -92,12 +91,12 @@ namespace Edu_Base.Controllers
             {
                 return BadRequest("Sheet update request can not be null.");
             }
-     
+
             var SheetCommand = new UpdateSheetCommand
             {
-               SheetId = sheetUpdateRequest.SheetId,
-               Name= sheetUpdateRequest.Name,
-               SheetUrl= sheetUpdateRequest.SheetFile
+                SheetId = sheetUpdateRequest.SheetId,
+                Name = sheetUpdateRequest.Name,
+                SheetUrl = sheetUpdateRequest.SheetFile
             };
 
             var result = await _mediator.Send(SheetCommand, cancellationToken);
@@ -217,7 +216,7 @@ namespace Edu_Base.Controllers
             };
 
             var result = await _mediator.Send(answersSheetCommand, cancellationToken);
-            return result.IsSuccess? Ok(result) : StatusCode((int)result.ErrorType, result);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
 
@@ -271,23 +270,23 @@ namespace Edu_Base.Controllers
         [HttpGet("GetAllQuestionSheetsBySection/{sectionId}")]
         public async Task<IActionResult> GetAllQuestionSheetsBySection(Guid sectionId, CancellationToken cancellationToken)
         {
-            if(sectionId == Guid.Empty)
+            if (sectionId == Guid.Empty)
                 return BadRequest("Section Id can not be empty");
 
-            var query = new GetAllQuestionSheetsBySectionQuery { SectionId = sectionId };
+            var query = new GetAllSheetsQuery { SheetType = SheetType.QuestionSheet, TargetType = SheetTargetType.Section, TargetId = sectionId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpGet("GetAllAnswerSheetsByStudent")]
-        public async Task<IActionResult> GetAllAnswersSheetsByStudent( CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllAnswersSheetsByStudent(CancellationToken cancellationToken)
         {
-            if (!TryGetCurrentUserId(out var userId))
+            if (!TryGetCurrentUserId(userId: out Guid userId))
             {
                 return Unauthorized();
             }
 
-            var query = new GetAllAnswersSheetsByStudentIdQuery { StudentId = userId };
+            var query = new GetAllSheetsQuery { SheetType = SheetType.QuestionSheet, TargetType = SheetTargetType.Section, TargetId = userId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
