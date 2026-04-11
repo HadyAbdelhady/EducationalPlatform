@@ -21,12 +21,21 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
             try
             {
                 // Validate Google ID token
-                var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
-
+                var isValidToken = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
+                if (isValidToken == false)
+                {
+                    throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
+                }
 
                 // Check if user already exists
                 var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
                                                          .GetByGoogleEmailAsync(request.GoogleUserInfo.Email, cancellationToken);
+
+                // Reject if the email belongs to a Student account
+                if (existingUser != null && existingUser.Instructor == null)
+                {
+                    throw new UnauthorizedAccessException("This email is registered as a Student account.");
+                }
 
                 bool isNewUser = existingUser == null;
                 User user;
@@ -58,12 +67,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 }
                 else
                 {
-                    // Update existing user
                     user = existingUser;
-                    user.UpdatedAt = DateTimeOffset.UtcNow;
-                    user.PersonalPictureUrl = request.GoogleUserInfo.PictureUrl ?? user.PersonalPictureUrl;
-
-                    _unitOfWork.Repository<User>().Update(user);
                 }
 
                 // Generate JWT token
@@ -89,7 +93,6 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                     FullName = user.FullName,
                     Email = user.GmailExternal ?? string.Empty,
                     ProfilePictureUrl = user.PersonalPictureUrl,
-                    //UserRole = "Instructor",
                     IsNewUser = isNewUser,
                     Token = token,
                     TokenExpiresAt = tokenExpiration,

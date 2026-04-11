@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -45,6 +45,8 @@
     <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQueryHandler.cs" />
     <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQuery.cs" />
     <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQueryHandler.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionsNamesForCourse\GetSectionsNamesForCourseQuery.cs" />
+    <Compile Include="Features\Sections\Query\GetSectionsNamesForCourse\GetSectionsNamesForCourseQueryHandler.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,11 +62,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Exams\Query\GetAllStudentExams\" />
-    <Folder Include="Features\Exams\Query\GetAllInstructorExams\" />
     <Folder Include="Features\Exams\Query\GetActiveExamAttempt\" />
-    <Folder Include="Features\Exams\Query\GetStudentExamResult\" />
-    <Folder Include="Features\Exams\Query\GetExamSubmissionsList\" />
     <Folder Include="Features\Exams\Query\CanStudentTakeExam\" />
     <Folder Include="Features\Exams\Query\GetExamStatistics\" />
     <Folder Include="Features\Sheets\Queries\" />

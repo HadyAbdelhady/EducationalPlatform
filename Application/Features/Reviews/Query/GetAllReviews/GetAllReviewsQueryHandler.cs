@@ -1,4 +1,5 @@
 using Application.DTOs.Review;
+using Application.Features.Reviews.Query.GetAllReviews;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.enums;
@@ -16,13 +17,12 @@ namespace Application.Features.Review.Query.GetAllReviews
             try
             {
                 IReviewService reviewService = _reviewServiceFactory.GetReviewService(request.EntityType);
-                return await reviewService.GetAllReviewsAsync(new ReviewGettingRequest(
-                    request.EntityId,
-                    request.EntityType,
-                    request.Filters,
-                    request.SortBy,
-                    request.IsDescending),
-                    cancellationToken);
+                return await reviewService.GetAllReviewsAsync(new ReviewGettingRequest
+                {
+                    EntityId = request.EntityId,
+                    GetAllEntityRequestSkeleton = request.GetAllEntityRequestSkeleton,
+                }, cancellationToken);
+
             }
             catch (NotImplementedException ex)
             {

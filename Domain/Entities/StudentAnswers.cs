@@ -1,17 +1,11 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Domain.Interfaces;
 
 namespace Domain.Entities
 {
 
     [Table("student_answers", Schema = "public")]
-    public class StudentAnswers : ISoftDeletableEntity
+    public class StudentAnswers
     {
-        [Key]
-        [Column("id")]
-        public Guid Id { get; set; }
-
         [Column("student_id")]
         [ForeignKey(nameof(Student))]
         public Guid StudentId { get; set; }
@@ -27,15 +21,6 @@ namespace Domain.Entities
         [Column("chosen_answer_id")]
         [ForeignKey(nameof(ChosenAnswer))]
         public Guid? ChosenAnswerId { get; set; }
-
-        [Column("created_at")]
-        public DateTimeOffset CreatedAt { get; set; }
-
-        [Column("updated_at")]
-        public DateTimeOffset? UpdatedAt { get; set; }
-
-        [Column("is_deleted")]
-        public bool IsDeleted { get; set; }
 
         public Question Question { get; set; } = null!;
         public Answer? ChosenAnswer { get; set; }

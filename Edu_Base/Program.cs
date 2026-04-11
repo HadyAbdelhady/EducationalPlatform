@@ -11,6 +11,7 @@ using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Services.ReviewService;
+using Infrastructure.Services.SheetService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -91,6 +92,7 @@ namespace Edu_Base
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryCore, CloudinaryService>();
             builder.Services.AddScoped<IReviewServiceFactory, ReviewServiceFactory>();
+            builder.Services.AddScoped<ISheetServiceFactory, SheetServiceFactory>();
             builder.Services.AddScoped<IReviewService, CourseReviewService>();
             builder.Services.AddScoped<IReviewService, SectionReviewService>();
             builder.Services.AddScoped<IReviewService, InstructorReviewService>();
@@ -103,6 +105,8 @@ namespace Edu_Base
             builder.Services.AddScoped<IBaseFilterRegistry<VideoReview>, VideoReviewFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<InstructorReview>, InstructorReviewFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<Exam>, ExamFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<StudentExamResult>, StudentExamResultFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<Video>, VideoFilterRegistry>();
             builder.Services.AddScoped<IStudentEducationYearProvider, StudentEducationYearProvider>();
 
             // CORS Configuration (optional - configure as needed)

@@ -32,6 +32,11 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
                                                          .GetByGoogleEmailAsync(request.GoogleUserInfo.Email, cancellationToken);
 
+                // Reject if the email belongs to an Instructor account
+                if (existingUser != null && existingUser.Student == null)
+                {
+                    throw new UnauthorizedAccessException("This email is registered as an Instructor account.");
+                }
 
                 bool isNewUser = existingUser == null;
                 User user;
@@ -89,21 +94,6 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         {
                             user.Student.DeviceId = request.DeviceId;
                         }
-
-                        user.FullName = request.GoogleUserInfo.FullName;
-                        user.Ssn = request.Ssn; // Will be updated later if needed
-                        user.PhoneNumber = request.GoogleUserInfo.PhoneNumber;
-                        user.GmailExternal = request.GoogleUserInfo.Email;
-                        user.PersonalPictureUrl = request.GoogleUserInfo.PictureUrl;
-                        user.DateOfBirth = request.GoogleUserInfo.DateOfBirth;
-                        user.Gender = request.GoogleUserInfo.Gender;
-                        user.Student.EducationYearId = request.EducationYearId;
-                        user.LocationMaps = request.LocationMaps;
-                        user.CreatedAt = DateTimeOffset.UtcNow;
-                        user.UpdatedAt = DateTimeOffset.UtcNow;
-                        user.IsDeleted = false;
-
-                        //await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
                     }
                 }
 

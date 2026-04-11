@@ -11,10 +11,9 @@ namespace Domain.Entities
         [Column("id")]
         public Guid Id { get; set; }
 
-        [Required]
         [Column("section_id")]
         [ForeignKey(nameof(Section))]
-        public Guid SectionId { get; set; }
+        public Guid? SectionId { get; set; }
 
         [Required]
         [Column("course_id")]
@@ -23,7 +22,7 @@ namespace Domain.Entities
 
         [Required]
         [Column("question_string")]
-        public string QuestionString { get; set; } = string.Empty;
+        public string? QuestionString { get; set; } = string.Empty;
 
         [Column("question_image_url")]
         public string? QuestionImageUrl { get; set; }

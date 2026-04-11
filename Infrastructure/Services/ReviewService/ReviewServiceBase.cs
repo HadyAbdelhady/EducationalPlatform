@@ -39,7 +39,7 @@ namespace Infrastructure.Services.ReviewService
                     Comment = request.Comment,
                     StarRating = request.StarRating,
                     StudentId = request.StudentId,
-                    EntityId = request.EntityId
+                    EntityId = request.EntityId,
                 };
 
                 await _unitOfWork.Repository<TReview>().AddAsync(newReview, cancellationToken);
@@ -209,54 +209,15 @@ namespace Infrastructure.Services.ReviewService
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        // Helper method for entities that implement ISoftDeletableEntity
-        //protected async Task UpdateRatingForInstructor<TEntity, TEntityReview>(
-        //    Guid entityId,
-        //    Func<TEntity, decimal?, User> updateRatingAction,
-        //    CancellationToken cancellationToken)
-        //    where TEntityReview : Review
-        //    where TEntity : User
-        //{
-        //    var entityRepository = _unitOfWork.Repository<TEntity>();
-        //    var reviewRepository = _unitOfWork.Repository<TEntityReview>();
-
-        //    var entity = await entityRepository.GetByIdAsync(entityId, cancellationToken);
-        //    if (entity == null) return;
-
-        //    var reviews = reviewRepository.Find(r => r.EntityId == entityId, cancellationToken);
-
-        //    decimal? newRating = null;
-        //    if (reviews.Any())
-        //    {
-        //        newRating = reviews.Average(r => r.StarRating);
-        //    }
-
-        //    var updatedEntity = updateRatingAction(entity, newRating);
-        //    entityRepository.Update(updatedEntity);
-        //    await _unitOfWork.SaveChangesAsync(cancellationToken);
-        //}
-
         public virtual async Task<Result<List<GetAllReviewsResponse>>> GetAllReviewsAsync(ReviewGettingRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
                 var reviews = _unitOfWork.Repository<TReview>()
                     .Find(r => r.EntityId == request.EntityId,
-                        cancellationToken, r => r.Student!.User!);
-
-                if (request.Filters != null && request.Filters.Count > 0)
-                {
-                    reviews = reviews.ApplyFilters(request.Filters, _filterRegistry.Filters);
-                }
-
-                if (!string.IsNullOrWhiteSpace(request.SortBy))
-                {
-                    reviews = reviews.ApplySort(request.SortBy, request.IsDescending, _filterRegistry.Sorts);
-                }
-                else
-                {
-                    reviews = reviews.OrderByDescending(r => r.CreatedAt);
-                }
+                        cancellationToken, r => r.Student!.User!)
+                    .ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _filterRegistry.Filters)
+                    .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _filterRegistry.Sorts);
 
                 var reviewsList = reviews.ToList();
 

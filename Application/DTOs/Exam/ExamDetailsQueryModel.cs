@@ -11,7 +11,7 @@ namespace Application.DTOs.Exam
         public int? DurationInMinutes { get; set; }
         public decimal TotalMark { get; set; } = 0;
         public int NumberOfQuestions { get; set; } = 0;
-        public ICollection<QuestionsInExamResponse> AllQuestionsInExam { get; set; } = [];
+        public ICollection<QuestionsInExamWithAnswersResponse> AllQuestionsInExam { get; set; } = [];
     }
 
 }

@@ -5,6 +5,7 @@ using Application.Features.Sections.Commands.DeleteSection;
 using Application.Features.Sections.Commands.UpdateSection;
 using Application.Features.Sections.Query.GetSectionDetails;
 using Application.Features.Sections.Query.GetSectionsForCourse;
+using Application.Features.Sections.Query.GetSectionsNamesFourCourse;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,11 +51,11 @@ namespace Edu_Base.Controllers
         }
 
         [HttpGet("course/{courseId}")]
-        public async Task<IActionResult> GetSectionsForCourse([FromQuery] GetAllEntityRequestSkeleton request,Guid courseId)
+        public async Task<IActionResult> GetSectionsForCourse([FromQuery] GetAllEntityRequestSkeleton request, Guid courseId)
         {
             var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
             //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
-           var query = new GetSectionsForCourseQuery
+            var query = new GetSectionsForCourseQuery
             {
                 CourseId = courseId,
                 UserId = UserId,
@@ -118,5 +119,12 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
+        [HttpGet("GetSectionsNamesForCourse/{courseId}")]
+        public async Task<IActionResult> GetSectionsNamesForCourse(Guid courseId, CancellationToken cancellationToken)
+        {
+            var query = new GetSectionsNamesForCourseQuery { CourseId = courseId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
     }
 }

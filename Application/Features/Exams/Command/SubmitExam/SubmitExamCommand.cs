@@ -8,10 +8,10 @@ namespace Application.Features.Exams.Command.SubmitExam
     {
         public Guid Student { get; set; }
         public Guid Exam { get; set; }
-        public List<StudentAnswers> Answers { get; set; } = [];
+        public List<StudentAnswersDTO> Answers { get; set; } = [];
     }
 
-    public record StudentAnswers
+    public record StudentAnswersDTO
     {
         public Guid QuestionId { get; set; }
         public Guid? ChosenAnswerId { get; set; }

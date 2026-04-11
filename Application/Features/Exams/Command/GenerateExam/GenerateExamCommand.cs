@@ -1,10 +1,11 @@
-﻿using Application.ResultWrapper;
+﻿using Application.DTOs.Exam;
+using Application.ResultWrapper;
 using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Exams.Command.GenerateExam
 {
-    public class GenerateExamCommand : IRequest<Result<string>>
+    public class GenerateExamCommand : IRequest<Result<GenerateExamResponse>>
     {
         public Guid CourseId { get; set; }
         public Guid? SectionId { get; set; }

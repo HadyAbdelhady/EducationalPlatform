@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
+﻿using Domain.enums;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Domain.enums;
-using Domain.Interfaces;
 
 namespace Application.DTOs.Exam
 {
@@ -32,7 +24,7 @@ namespace Application.DTOs.Exam
         public DateTimeOffset? EndTime { get; set; }
         public DateTimeOffset? TakenAt { get; set; }
         public decimal ObtainedMarks { get; set; }
-        public bool IsTaken {get; set; } 
+        public bool IsTaken { get; set; }
         //public int NotStartedCount { get; set; }
         //public int InProgressCount { get; set; }
         //public int PassedCount { get; set; }

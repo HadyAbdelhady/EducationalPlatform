@@ -89,14 +89,14 @@ namespace Infrastructure.Repositories
                                      NumberOfQuestions = e.NumberOfQuestions,
                                      TotalMark = e.TotalMark,
                                      AllQuestionsInExam = e.ExamQuestions.Where(ex => ex.ExamId == ExamId)
-                                                                         .Select(eq => new QuestionsInExamResponse
+                                                                         .Select(eq => new QuestionsInExamWithAnswersResponse
                                                                          {
                                                                              Id = eq.Question.Id,
                                                                              QuestionMark = eq.QuestionMark,
                                                                              CourseId = eq.Question.CourseId,
                                                                              QuestionImageUrl = eq.Question.QuestionImageUrl,
                                                                              QuestionString = eq.Question.QuestionString,
-                                                                             SectionId = eq.Question.SectionId
+                                                                             SectionId = eq.Question.SectionId?? Guid.Empty,
                                                                          }).ToList()
                                  })
                                  .FirstOrDefaultAsync(cancellationToken);

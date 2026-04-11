@@ -20,7 +20,7 @@ namespace Application.Features.Exams.Command.SubmitExam
 
             var userRepository = unitOfWork.Repository<User>();
             var studentExamResultRepository = unitOfWork.Repository<StudentExamResult>();
-         
+
             var Student = await userRepository.GetByIdAsync(request.Student, cancellationToken);
 
             if (Student == null)
@@ -46,8 +46,8 @@ namespace Application.Features.Exams.Command.SubmitExam
             if (examResult.Status != ExamResultStatus.InProgress)
             {
                 return Result<SubmissionResponse>.FailureStatusCode(
-                    examResult.Status == ExamResultStatus.NotStarted 
-                        ? "Exam has not been started yet" 
+                    examResult.Status == ExamResultStatus.NotStarted
+                        ? "Exam has not been started yet"
                         : "Exam has already been submitted",
                     ErrorType.Conflict);
             }
@@ -66,16 +66,13 @@ namespace Application.Features.Exams.Command.SubmitExam
             // Add student answers
             foreach (var answer in request.Answers)
             {
-                Domain.Entities.StudentAnswers submission = new()
+                examResult.StudentSubmissions.Add(new StudentAnswers
                 {
-                    Id = Guid.NewGuid(),
                     QuestionId = answer.QuestionId,
                     ChosenAnswerId = answer.ChosenAnswerId,
                     ExamResultId = examResult.Id,
                     StudentId = request.Student
-                };
-
-                await unitOfWork.Repository<Domain.Entities.StudentAnswers>().AddAsync(submission, cancellationToken);
+                });
             }
 
             // Publish event to trigger any additional processing

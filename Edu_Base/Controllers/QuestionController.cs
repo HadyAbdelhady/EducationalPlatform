@@ -1,9 +1,10 @@
-﻿using Application.Features.Questions.Command.AddQuestion;
+﻿using Application.DTOs.Questions;
+using Application.Features.Questions.Command.AddQuestion;
 using Application.Features.Questions.Command.DeleteQuestion;
 using Application.Features.Questions.Command.UpdateQuestion;
-using Application.Features.Questions.Query.GetQuestionById;
-using Application.Features.Questions.Query.GetAllQuestionsInBank;
 using Application.Features.Questions.Query.GetAllQuestionsInExam;
+using Application.Features.Questions.Query.GetAllQuestionsWithAnswersInBank;
+using Application.Features.Questions.Query.GetQuestionById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +19,12 @@ namespace Edu_Base.Controllers
         private readonly ILogger<QuestionController> _logger = logger;
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] AddQuestionCommand command)
+        public async Task<IActionResult> Create([FromForm] AddQuestionCommand command)
         {
 
             _logger.LogInformation("Fetching course detail for CourseId: {CourseId}", command.QuestionString);
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpPatch("{id}")]
@@ -51,25 +52,32 @@ namespace Edu_Base.Controllers
             _logger.LogInformation("Fetching question detail for QuestionId: {QuestionId}", id);
             var query = new GetQuestionByIdQuery { QuestionId = id };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
-        [HttpGet("bank/{bankId}")]
-        public async Task<IActionResult> GetAllQuestionsInBank(Guid bankId, CancellationToken cancellationToken)
+        [HttpGet("QuestionBank")]
+        public async Task<IActionResult> GetAllQuestionsInBank([FromQuery] QuestionRequest questionRequest, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Fetching all questions in bank: {BankId}", bankId);
-            var query = new GetAllQuestionsInBankQuery { BankId = bankId };
+            _logger.LogInformation("Fetching all questions in bank: {BankId}", questionRequest.Id);
+            var query = new GetAllQuestionsWithAnswersInBankQuery
+            {
+                BankId = questionRequest.Id,
+                BankType = questionRequest.Type,
+                PageNumber = questionRequest.PageNumber
+            };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpGet("exam/{examId}")]
         public async Task<IActionResult> GetAllQuestionsInExam(Guid examId, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Fetching all questions in exam: {ExamId}", examId);
-            var query = new GetAllQuestionsInExamQuery { ExamId = examId };
+            var query = new GetAllQuestionsWithAnswersInExamQuery { ExamId = examId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
+
+
     }
 }

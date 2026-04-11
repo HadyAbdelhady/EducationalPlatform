@@ -2,10 +2,11 @@
 
 namespace Application.DTOs.Review
 {
-    public record ReviewGettingRequest(
-        Guid EntityId, 
-        ReviewEntityType EntityType,
-        Dictionary<string, string>? Filters = null,
-        string? SortBy = null,
-        bool IsDescending = false);
+    public class ReviewGettingRequest
+    {
+        public GetAllEntityRequestSkeleton GetAllEntityRequestSkeleton { get; set; } = new GetAllEntityRequestSkeleton();
+        public Guid EntityId { get; set; }
+        public ReviewEntityType EntityType { get; set; }
+    }
+
 }
