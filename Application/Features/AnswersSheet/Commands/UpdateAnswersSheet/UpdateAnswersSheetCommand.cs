@@ -8,6 +8,7 @@ namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
     public class UpdateAnswersSheetCommand : IRequest<Result<AnswersSheetUpdateResponse>>
     {
         public Guid AnswersSheetId { get; set; }
+        public Guid StudentId { get; set; }
         public string Name { get; set; } = string.Empty;
         public IFormFile SheetFile { get; set; } = null!;
     }
