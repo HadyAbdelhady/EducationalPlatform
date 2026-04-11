@@ -22,7 +22,7 @@ namespace Edu_Base.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpPost]
-        public async Task<IActionResult> CreateSheet(SheetCreationRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateSheet([FromForm] SheetCreationRequest request, CancellationToken cancellationToken)
         {
             if (request == null)
             {

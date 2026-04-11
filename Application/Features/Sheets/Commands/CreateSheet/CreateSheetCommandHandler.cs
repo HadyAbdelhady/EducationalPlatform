@@ -58,6 +58,16 @@ namespace Application.Features.Sheets.Commands.CreateSheet
                     EventEntity = (Guid)request.CourseId!;
                 }
 
+                if (request.Type == SheetType.QuestionSheet && request.DueDate is null)
+                {
+                    return Result<SheetCreationResponse>.FailureStatusCode("Due date is required for answer sheets", ErrorType.BadRequest);
+                }
+                
+                if(request.Type == SheetType.AnswersSheet )
+                {
+                    var questionSheet = await _unitOfWork.Repository<Sheet>().FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
+                    return Result<SheetCreationResponse>.FailureStatusCode("Due date cannot be in the past", ErrorType.BadRequest);
+                }
                 var cloudianryResult = await _cloudinaryService.UploadPdfAsync(request.SheetUrl);
                 
                 // Convert DueDate to UTC if provided (PostgreSQL requires UTC for timestamp with time zone)

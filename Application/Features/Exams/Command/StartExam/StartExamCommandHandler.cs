@@ -7,11 +7,11 @@ using Application.HelperFunctions;
 
 namespace Application.Features.Exams.Command.StartExam
 {
-    public class StartExamCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<StartExamCommand, Result<string>>
+    public class StartExamCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<StartExamCommand, Result<StartedExamResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<Result<string>> Handle(StartExamCommand request, CancellationToken cancellationToken)
+        public async Task<Result<StartedExamResponse>> Handle(StartExamCommand request, CancellationToken cancellationToken)
         {
             var studentRepository = _unitOfWork.GetRepository<IUserRepository>();
 
@@ -19,14 +19,14 @@ namespace Application.Features.Exams.Command.StartExam
 
             if (user == null)
             {
-                return Result<string>.FailureStatusCode("Student not found", ErrorType.NotFound);
+                return Result<StartedExamResponse>.FailureStatusCode("Student not found", ErrorType.NotFound);
             }
 
             Student? Student = user.Student;
 
             if (Student == null)
             {
-                return Result<string>.FailureStatusCode("User is not a student", ErrorType.BadRequest);
+                return Result<StartedExamResponse>.FailureStatusCode("User is not a student", ErrorType.BadRequest);
             }
 
             var studentExamResultRepository = _unitOfWork.Repository<StudentExamResult>();
@@ -38,13 +38,13 @@ namespace Application.Features.Exams.Command.StartExam
 
             if (studentExamResult == null)
             {
-                return Result<string>.FailureStatusCode("Exam not found for this student", ErrorType.NotFound);
+                return Result<StartedExamResponse>.FailureStatusCode("Exam not found for this student", ErrorType.NotFound);
             }
 
             // Check if exam is already in progress or completed
             if (studentExamResult.Status != ExamResultStatus.NotStarted)
             {
-                return Result<string>.FailureStatusCode("Exam already started or completed by the student", ErrorType.Conflict);
+                return Result<StartedExamResponse>.FailureStatusCode("Exam already started or completed by the student", ErrorType.Conflict);
             }
 
             // Get the exam to validate timing
@@ -52,7 +52,7 @@ namespace Application.Features.Exams.Command.StartExam
 
             if (exam == null)
             {
-                return Result<string>.FailureStatusCode("Exam not found", ErrorType.NotFound);
+                return Result<StartedExamResponse>.FailureStatusCode("Exam not found", ErrorType.NotFound);
             }
 
             // For FixedTimeExam, check if exam has started
@@ -61,14 +61,14 @@ namespace Application.Features.Exams.Command.StartExam
             {
                 if (exam.StartTime.HasValue && exam.StartTime > DateTimeOffset.UtcNow)
                 {
-                    return Result<string>.FailureStatusCode("Exam has not started yet", ErrorType.Conflict);
+                    return Result<StartedExamResponse>.FailureStatusCode("Exam has not started yet", ErrorType.Conflict);
                 }
             }
 
             // Check if exam has ended (applies to both exam types)
             if (exam.EndTime.HasValue && exam.EndTime < DateTimeOffset.UtcNow)
             {
-                return Result<string>.FailureStatusCode("Exam has ended", ErrorType.Conflict);
+                return Result<StartedExamResponse>.FailureStatusCode("Exam has ended", ErrorType.Conflict);
             }
 
             var QuestionRepository = _unitOfWork.Repository<Question>();
@@ -80,12 +80,12 @@ namespace Application.Features.Exams.Command.StartExam
 
             if (!question.Any())
             {
-                return Result<string>.FailureStatusCode("Question does not exist.", ErrorType.NotFound);
+                return Result<StartedExamResponse>.FailureStatusCode("Question does not exist.", ErrorType.NotFound);
             }
 
             if (question.Count() < exam.NumberOfQuestions)
             {
-                return Result<string>.FailureStatusCode(
+                return Result<StartedExamResponse>.FailureStatusCode(
                     $"Not enough questions available. Requested: {exam.NumberOfQuestions}, Available: {question.Count()}.",
                     ErrorType.BadRequest
                 );
@@ -115,7 +115,13 @@ namespace Application.Features.Exams.Command.StartExam
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success($"Student {studentExamResult.StudentId} started exam {studentExamResult.ExamId} successfully. At {studentExamResult.TakenAt}");
+            return Result<StartedExamResponse>.Success(new StartedExamResponse
+            {
+                Student = studentExamResult.StudentId,
+                ExamId = studentExamResult.ExamId,
+                StartedAt = (DateTimeOffset)studentExamResult.TakenAt,
+                CurrentTime = DateTimeOffset.UtcNow
+            });
         }
     }
 }
