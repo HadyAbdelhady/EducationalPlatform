@@ -10,6 +10,8 @@ using Application.Features.Sheets.Queries.GetAllSheets;
 using Domain.enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Application.Features.AnswersSheets.Queries.GetAllAnswersSheetsByStudentId;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,6 +22,18 @@ namespace Edu_Base.Controllers
     public class SheetsController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+
+        private bool TryGetCurrentUserId(out Guid userId)
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(claim) || !Guid.TryParse(claim, out userId))
+            {
+                userId = default;
+                return false;
+            }
+
+            return true;
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateSheet([FromForm] SheetCreationRequest request, CancellationToken cancellationToken)
@@ -106,7 +120,10 @@ namespace Edu_Base.Controllers
         [HttpPost("answers")]
         public async Task<IActionResult> CreateAnswersSheet(AnswersSheetCreationRequest answersSheetCreationRequest, CancellationToken cancellationToken)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized();
+            }
 
             if (answersSheetCreationRequest == null)
             {
@@ -118,12 +135,17 @@ namespace Edu_Base.Controllers
                 return BadRequest("Questions sheet ID is required.");
             }
 
+            if (answersSheetCreationRequest.SheetFile is null || answersSheetCreationRequest.SheetFile.Length == 0)
+            {
+                return BadRequest("A PDF file is required.");
+            }
+
             var answersSheetCommand = new CreateAnswersSheetCommand
             {
                 Name = answersSheetCreationRequest.Name,
                 SheetFile = answersSheetCreationRequest.SheetFile,
                 QuestionsSheetId = answersSheetCreationRequest.QuestionsSheetId,
-                StudentId = UserId
+                StudentId = userId
             };
 
             var result = await _mediator.Send(answersSheetCommand, cancellationToken);
@@ -133,14 +155,30 @@ namespace Edu_Base.Controllers
         [HttpPatch("answers")]
         public async Task<IActionResult> UpdateAnswersSheet(AnswersSheetUpdateRequest answersSheetUpdateRequest, CancellationToken cancellationToken)
         {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized();
+            }
+
             if (answersSheetUpdateRequest == null)
             {
                 return BadRequest("Answers sheet update request can not be null.");
             }
 
+            if (answersSheetUpdateRequest.AnswersSheetId == Guid.Empty)
+            {
+                return BadRequest("Answers sheet ID is required.");
+            }
+
+            if (answersSheetUpdateRequest.SheetFile is null || answersSheetUpdateRequest.SheetFile.Length == 0)
+            {
+                return BadRequest("A PDF file is required.");
+            }
+
             var answersSheetCommand = new UpdateAnswersSheetCommand
             {
                 AnswersSheetId = answersSheetUpdateRequest.AnswersSheetId,
+                StudentId = userId,
                 Name = answersSheetUpdateRequest.Name,
                 SheetFile = answersSheetUpdateRequest.SheetFile
             };
@@ -152,9 +190,15 @@ namespace Edu_Base.Controllers
         [HttpDelete("answers/{answersSheetId}")]
         public async Task<IActionResult> DeleteAnswersSheet(Guid answersSheetId, CancellationToken cancellationToken)
         {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized();
+            }
+
             var answersSheetCommand = new DeleteAnswersSheetCommand
             {
-                AnswersSheetId = answersSheetId
+                AnswersSheetId = answersSheetId,
+                StudentId = userId
             };
 
             var result = await _mediator.Send(answersSheetCommand, cancellationToken);
@@ -221,7 +265,31 @@ namespace Edu_Base.Controllers
             };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+        }
+
+        [HttpGet("GetAllQuestionSheetsBySection/{sectionId}")]
+        public async Task<IActionResult> GetAllQuestionSheetsBySection(Guid sectionId, CancellationToken cancellationToken)
+        {
+            if(sectionId == Guid.Empty)
+                return BadRequest("Section Id can not be empty");
+
+            var query = new GetAllQuestionSheetsBySectionQuery { SectionId = sectionId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+        }
+
+        [HttpGet("GetAllAnswerSheetsByStudent")]
+        public async Task<IActionResult> GetAllAnswersSheetsByStudent( CancellationToken cancellationToken)
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized();
+            }
+
+            var query = new GetAllAnswersSheetsByStudentIdQuery { StudentId = userId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
     }
 }

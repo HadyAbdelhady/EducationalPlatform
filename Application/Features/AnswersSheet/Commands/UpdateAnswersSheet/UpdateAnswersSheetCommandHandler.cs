@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
 {
-    public class UpdateAnswersSheetCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService) 
+    public class UpdateAnswersSheetCommandHandler(IUnitOfWork unitOfWork, ICloudinaryCore cloudinaryService)
         : IRequestHandler<UpdateAnswersSheetCommand, Result<AnswersSheetUpdateResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -17,10 +17,47 @@ namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(request.Name))
+                {
+                    return Result<AnswersSheetUpdateResponse>.FailureStatusCode("Name is required.", ErrorType.BadRequest);
+                }
+
+                if (request.SheetFile is null || request.SheetFile.Length == 0)
+                {
+                    return Result<AnswersSheetUpdateResponse>.FailureStatusCode("A non-empty PDF file is required.", ErrorType.BadRequest);
+                }
+
+                var contentType = request.SheetFile.ContentType ?? string.Empty;
+                var fileName = request.SheetFile.FileName ?? string.Empty;
+                if (!contentType.Contains("pdf", StringComparison.OrdinalIgnoreCase) &&
+                    !fileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Result<AnswersSheetUpdateResponse>.FailureStatusCode("Only PDF uploads are allowed.", ErrorType.BadRequest);
+                }
+
                 var answersSheet = await _unitOfWork.Repository<AnswersSheet>().GetByIdAsync(request.AnswersSheetId, cancellationToken, x => x.QuestionsSheet);
                 if (answersSheet == null)
                 {
                     return Result<AnswersSheetUpdateResponse>.FailureStatusCode("Answers sheet not found", ErrorType.NotFound);
+                }
+
+                if (answersSheet.StudentId != request.StudentId)
+                {
+                    return Result<AnswersSheetUpdateResponse>.FailureStatusCode(
+                        "You can only update your own submission.",
+                        ErrorType.UnAuthorized);
+                }
+
+                if (answersSheet.IsApproved)
+                {
+                    return Result<AnswersSheetUpdateResponse>.FailureStatusCode(
+                        "Cannot modify an approved submission.",
+                        ErrorType.Conflict);
+                }
+
+                if (answersSheet.QuestionsSheet is null)
+                {
+                    return Result<AnswersSheetUpdateResponse>.FailureStatusCode("Questions sheet not found.", ErrorType.NotFound);
                 }
 
                 if (answersSheet.QuestionsSheet.DueDate.HasValue && DateTimeOffset.UtcNow >= answersSheet.QuestionsSheet.DueDate.Value)
@@ -29,16 +66,15 @@ namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
                         ErrorType.BadRequest);
                 }
 
-                // Update PDF in Cloudinary
                 var cloudinaryResult = await _cloudinaryService.UpdatePdfAsync(answersSheet.SheetPublicId, request.SheetFile);
 
                 answersSheet.SheetUrl = cloudinaryResult.Url;
                 answersSheet.SheetPublicId = cloudinaryResult.PublicId;
-                answersSheet.Name = request.Name;
+                answersSheet.Name = request.Name.Trim();
                 answersSheet.UpdatedAt = DateTimeOffset.UtcNow;
 
                 _unitOfWork.Repository<AnswersSheet>().Update(answersSheet);
-                await _unitOfWork.Repository<AnswersSheet>().SaveChangesAsync(cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<AnswersSheetUpdateResponse>.Success(new AnswersSheetUpdateResponse
                 {
@@ -58,7 +94,3 @@ namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
         }
     }
 }
-
-
-
-

@@ -23,6 +23,23 @@ namespace Infrastructure.Repositories
                                 ss.SectionId == sectionId, cancellationToken);
         }
 
+        public async Task<bool> CanStudentAccessSectionContentAsync(Guid studentId, Guid sectionId, CancellationToken cancellationToken = default)
+        {
+            if (await _context.StudentSections.AnyAsync(
+                    ss => ss.StudentId == studentId && ss.SectionId == sectionId,
+                    cancellationToken))
+            {
+                return true;
+            }
+
+            return await (
+                from sc in _context.StudentCourses
+                join sec in _context.Sections on sc.CourseId equals sec.CourseId
+                where sc.StudentId == studentId && sec.Id == sectionId
+                select sc
+            ).AnyAsync(cancellationToken);
+        }
+
         public async Task AddStudentCourseAsync(StudentCourse studentCourse, CancellationToken cancellationToken = default)
         {
             await _context.StudentCourses.AddAsync(studentCourse, cancellationToken);
