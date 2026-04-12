@@ -6,6 +6,8 @@ namespace Application.DTOs.HomeScreen
         public List<LatestVideoDto> Videos { get; set; } = [];
         public List<StudentExamDto> Exams { get; set; } = [];
         public List<StudentSheetDto> Sheets { get; set; } = [];
+        public DateTimeOffset CurrentTime { get; set; }
+
     }
 
     public class EnrolledCourseDto

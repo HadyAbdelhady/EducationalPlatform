@@ -24,7 +24,6 @@ public class ExamFilterRegistry : IBaseFilterRegistry<Exam>
 
             ["studentstatus"] = (q, value) =>
                 q.Where(e => e.ExamResults.Any(r =>
-                    !r.IsDeleted &&
                     r.Status == Enum.Parse<ExamResultStatus>(value, true))),
 
             ["name"] = (q, value) =>

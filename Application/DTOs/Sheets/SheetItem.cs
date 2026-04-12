@@ -7,5 +7,7 @@ namespace Application.DTOs.Sheets
         public string SheetUrl { get; set; } = string.Empty;
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? UpdatedAt { get; set; }
+        public DateTimeOffset? DueDate { get; set; }
+
     }
 }

@@ -36,14 +36,14 @@ namespace Edu_Base.Controllers
             }
 
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? NoContent() : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete([FromBody] DeleteQuestionCommand command)
         {
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? NoContent() : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
         [HttpGet("{id}")]

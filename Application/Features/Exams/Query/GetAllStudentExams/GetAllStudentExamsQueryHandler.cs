@@ -10,13 +10,13 @@ using MediatR;
 namespace Application.Features.Exams.Query.GetAllStudentExams
 {
     public class GetAllStudentExamsQueryHandler(IUnitOfWork unitOfWork,
-                                        IBaseFilterRegistry<Exam> examFilterRegistry) : IRequestHandler<GetAllStudentExamsQuery, Result<PaginatedResult<ExamListDto>>>
+                                        IBaseFilterRegistry<Exam> examFilterRegistry) : IRequestHandler<GetAllExamsQuery, Result<PaginatedResult<ExamListDto>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IBaseFilterRegistry<Exam> _examFilterRegistry = examFilterRegistry;
 
         public async Task<Result<PaginatedResult<ExamListDto>>> Handle(
-            GetAllStudentExamsQuery request,
+            GetAllExamsQuery request,
             CancellationToken cancellationToken)
         {
             var exams = _unitOfWork.Repository<Exam>()

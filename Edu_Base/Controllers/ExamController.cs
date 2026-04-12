@@ -67,15 +67,15 @@ namespace Edu_Base.Controllers
 
 
 
-        [HttpGet("GetStudentExams")]
-        public async Task<IActionResult> GetStudentExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
+        [HttpGet("GetAllExams")]
+        public async Task<IActionResult> GetAllExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
             var userId = Guid.Parse(
                 User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             );
             //var userId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
 
-            var query = new GetAllStudentExamsQuery
+            var query = new GetAllExamsQuery
             {
                 RequestSkeleton = request,
                 UserId = userId

@@ -96,7 +96,8 @@ namespace Infrastructure.Repositories
                                 })
                                 .OrderBy(s => s.DueDate)
                                 .Take(3)
-                                .ToList()
+                                .ToList(),
+                            CurrentTime = DateTimeOffset.UtcNow
                         };
 
             var result = await query.FirstOrDefaultAsync(cancellationToken);
@@ -403,6 +404,8 @@ namespace Infrastructure.Repositories
                     NumberOfSubmittedStudents = s.AnswersSheets.Count
                 })
                 .Take(5)];
+
+            response.CurrentTime = DateTimeOffset.UtcNow;
 
             return response;
         }

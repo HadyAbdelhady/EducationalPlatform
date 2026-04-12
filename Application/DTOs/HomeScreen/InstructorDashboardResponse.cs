@@ -8,6 +8,7 @@ namespace Application.DTOs.HomeScreen
         public List<PendingTaskDto> PendingTasks { get; set; } = [];
         public List<UpcomingExamDto> UpcomingExams { get; set; } = [];
         public List<UpcomingSheetDto> UpcomingSheets { get; set; } = [];
+        public DateTimeOffset CurrentTime { get; set; }
     }
 
     public class InstructorCourseDto
