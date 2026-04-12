@@ -4,7 +4,7 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Answer.Command.AnswerQuestion
+namespace Application.Features.Answers.Command.AnswerQuestion
 {
     public class AddAnswerToQuestionCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<AddAnswerToQuestionCommand, Result<Guid>>
     {

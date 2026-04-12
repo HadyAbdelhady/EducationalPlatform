@@ -7,21 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Features\Answer\**" />
     <Compile Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
     <Compile Remove="Features\Exams\Command\PublishExamResults\**" />
     <Compile Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
     <Compile Remove="Features\HomeScreen\InstructorHomeScreen\**" />
     <Compile Remove="Features\Sections\**" />
     <Compile Remove="Persistence\**" />
-    <EmbeddedResource Remove="Features\Answer\**" />
     <EmbeddedResource Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
     <EmbeddedResource Remove="Features\Exams\Command\PublishExamResults\**" />
     <EmbeddedResource Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
     <EmbeddedResource Remove="Features\HomeScreen\InstructorHomeScreen\**" />
     <EmbeddedResource Remove="Features\Sections\**" />
     <EmbeddedResource Remove="Persistence\**" />
-    <None Remove="Features\Answer\**" />
     <None Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
     <None Remove="Features\Exams\Command\PublishExamResults\**" />
     <None Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />

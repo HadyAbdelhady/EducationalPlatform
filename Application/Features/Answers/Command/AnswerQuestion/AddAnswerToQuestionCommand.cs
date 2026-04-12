@@ -1,7 +1,7 @@
 using Application.ResultWrapper;
 using MediatR;
 
-namespace Application.Features.Answer.Command.AnswerQuestion
+namespace Application.Features.Answers.Command.AnswerQuestion
 {
     public record AddAnswerToQuestionCommand : IRequest<Result<Guid>>
     {
