@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Questions;
-using Application.Features.Answer.Command.AnswerQuestion;
+using Application.Features.Answers.Command.AnswerQuestion;
 using Application.Features.Questions.Command.AddQuestion;
 using Application.Features.Questions.Command.DeleteQuestion;
 using Application.Features.Questions.Command.UpdateQuestion;
