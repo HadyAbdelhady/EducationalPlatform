@@ -39,3 +39,4 @@ project.nuget.cache
 *.assets.cache
 *.csproj.AssemblyReference.cache
 *.csproj.CoreCompileInputs.cache
+.cascade-reference.md

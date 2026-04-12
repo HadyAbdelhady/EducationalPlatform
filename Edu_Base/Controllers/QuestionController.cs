@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Questions;
+using Application.Features.Answer.Command.AnswerQuestion;
 using Application.Features.Questions.Command.AddQuestion;
 using Application.Features.Questions.Command.DeleteQuestion;
 using Application.Features.Questions.Command.UpdateQuestion;
@@ -27,18 +28,18 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
-        [HttpPatch("{id}")]
-        [Consumes("application/json")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateQuestionCommand command)
-        {
-            if (id != command.QuestionId)
-            {
-                return BadRequest();
-            }
+        //[HttpPatch("{id}")]
+        //[Consumes("application/json")]
+        //public async Task<IActionResult> Update(Guid id, [FromBody] UpdateQuestionCommand command)
+        //{
+        //    if (id != command.QuestionId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
-        }
+        //    var result = await _mediator.Send(command);
+        //    return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+        //}
 
         [HttpPatch("{id}")]
         [Consumes("multipart/form-data")]
@@ -92,6 +93,17 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
 
+        [HttpPost("{questionId}/answers")]
+        public async Task<IActionResult> AddAnswerToQuestion(Guid questionId, [FromBody] AddAnswerToQuestionCommand command, CancellationToken cancellationToken)
+        {
+            if (questionId != command.QuestionId)
+            {
+                return BadRequest("Question ID in route does not match Question ID in body.");
+            }
+
+            var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
 
     }
 }
