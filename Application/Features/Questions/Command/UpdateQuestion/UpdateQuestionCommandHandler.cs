@@ -6,10 +6,14 @@ using MediatR;
 
 namespace Application.Features.Questions.Command.UpdateQuestion
 {
-    public class UpdateQuestionHandler(IUnitOfWork unitOfWork, IQuestionUpdateService questionUpdateService) : IRequestHandler<UpdateQuestionCommand, Result<Guid>>
+    public class UpdateQuestionHandler(
+        IUnitOfWork unitOfWork,
+        IQuestionUpdateService questionUpdateService,
+        ICloudinaryCore cloudinaryService) : IRequestHandler<UpdateQuestionCommand, Result<Guid>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IQuestionUpdateService _questionUpdateService = questionUpdateService;
+        private readonly ICloudinaryCore _cloudinaryService = cloudinaryService;
 
         public async Task<Result<Guid>> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
@@ -23,11 +27,24 @@ namespace Application.Features.Questions.Command.UpdateQuestion
                     return Result<Guid>.FailureStatusCode("Question not found.", ErrorType.NotFound);
                 }
 
-                // Use the service to update the question and its answers
+                string? finalImageUrl;
+                if (request.PictureFile is not null)
+                {
+                    finalImageUrl = await _cloudinaryService.UploadMediaAsync(request.PictureFile, UsageCategory.CourseThumbnail);
+                }
+                else if (request.QuestionImageUrl is not null)
+                {
+                    finalImageUrl = request.QuestionImageUrl;
+                }
+                else
+                {
+                    finalImageUrl = existingQuestion.QuestionImageUrl;
+                }
+
                 _questionUpdateService.UpdateQuestion(
                     existingQuestion,
                     request.QuestionString,
-                    request.QuestionImageUrl,
+                    finalImageUrl,
                     request.Answers);
 
                 _unitOfWork.Repository<Question>().Update(existingQuestion);

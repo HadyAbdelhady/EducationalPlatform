@@ -28,7 +28,21 @@ namespace Edu_Base.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Consumes("application/json")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateQuestionCommand command)
+        {
+            if (id != command.QuestionId)
+            {
+                return BadRequest();
+            }
+
+            var result = await _mediator.Send(command);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+        }
+
+        [HttpPatch("{id}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateForm(Guid id, [FromForm] UpdateQuestionCommand command)
         {
             if (id != command.QuestionId)
             {

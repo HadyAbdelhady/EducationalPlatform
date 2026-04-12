@@ -1,6 +1,8 @@
 ﻿using Application.DTOs.Answer;
 using Application.ResultWrapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
 
 namespace Application.Features.Questions.Command.UpdateQuestion
 {
@@ -11,5 +13,8 @@ namespace Application.Features.Questions.Command.UpdateQuestion
         public string? QuestionImageUrl { get; set; }
         public decimal? Mark { get; set; }
         public List<UpdateAnswerDto> Answers { get; set; } = [];
+
+        [JsonIgnore]
+        public IFormFile? PictureFile { get; set; }
     }
 }
