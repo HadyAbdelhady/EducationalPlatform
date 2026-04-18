@@ -12,7 +12,7 @@ namespace Application.Features.Questions.Command.UpdateQuestion
         public string QuestionString { get; set; } = string.Empty;
         public string? QuestionImageUrl { get; set; }
         public decimal? Mark { get; set; }
-        public List<UpdateAnswerDto> Answers { get; set; } = [];
+        public List<UpdateAnswerDto> Answers { get; set; } = new();
 
         [JsonIgnore]
         public IFormFile? PictureFile { get; set; }

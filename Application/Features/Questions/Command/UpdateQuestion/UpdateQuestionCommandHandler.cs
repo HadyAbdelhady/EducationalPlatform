@@ -20,7 +20,7 @@ namespace Application.Features.Questions.Command.UpdateQuestion
             try
             {
                 var existingQuestion = await _unitOfWork.Repository<Question>()
-                    .GetByIdAsync(request.QuestionId, cancellationToken);
+                    .GetByIdAsync(request.QuestionId, cancellationToken, q => q.Answers);
 
                 if (existingQuestion == null)
                 {

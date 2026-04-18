@@ -4,6 +4,7 @@ using Application.Interfaces.BaseFilters;
 using CloudinaryDotNet;
 using Domain.Entities;
 using FluentValidation;
+using Infrastructure.Binders;
 using Infrastructure.Data;
 using Infrastructure.Middleware;
 using Infrastructure.Persistence.HelperFunctions;
@@ -13,6 +14,7 @@ using Infrastructure.Services;
 using Infrastructure.Services.ReviewService;
 using Infrastructure.Services.SheetService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -147,7 +149,10 @@ namespace Edu_Base
 
             builder.Services.AddAuthorization();
 
-            builder.Services.AddControllers()
+            builder.Services.AddControllers(options =>
+                {
+                    options.ModelBinderProviders.Insert(0, new UpdateAnswerDtoModelBinderProvider());
+                })
                 .AddJsonOptions(opts =>
                 {
                     // Serialize enums as their string names in JSON responses

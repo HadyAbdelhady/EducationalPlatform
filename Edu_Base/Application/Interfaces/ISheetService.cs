@@ -6,10 +6,15 @@ namespace Edu_Base.Application.Interfaces
 {
     public interface ISheetService
     {
-        Task<Result<PaginatedResult<SheetItem>>> GetSheetsAsync(
+        Task<Result<PaginatedResult<SheetResponse>>> GetSheetsAsync(
             Guid targetId,
             SheetType sheetType,
             int pageNumber,
+            CancellationToken cancellationToken);
+
+        Task<Result<PaginatedResult<AllAnswersSheetsByStudentResponse>>> GetAnswersSheetsAsync(
+            Guid targetId,
+            SheetType sheetType,
             CancellationToken cancellationToken);
     }
 }

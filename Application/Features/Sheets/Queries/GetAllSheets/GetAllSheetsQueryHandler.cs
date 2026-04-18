@@ -15,7 +15,8 @@ namespace Application.Features.Sheets.Queries.GetAllSheets
             CancellationToken cancellationToken)
         {
             var service = _sheetServiceFactory.GetSheetService(request.TargetType);
-            return await service.GetSheetsAsync(request.TargetId, request.SheetType, cancellationToken);
+            var pageNumber = request.RequestSkeleton?.PageNumber ?? 1;
+            return await service.GetSheetsAsync(request.TargetId, request.SheetType, pageNumber, cancellationToken);
         }
     }
 }

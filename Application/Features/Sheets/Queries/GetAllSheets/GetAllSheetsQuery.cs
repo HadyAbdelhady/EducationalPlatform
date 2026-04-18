@@ -1,3 +1,4 @@
+using Application.DTOs;
 using Application.DTOs.Sheets;
 using Application.ResultWrapper;
 using Domain.enums;
@@ -10,6 +11,7 @@ namespace Application.Features.Sheets.Queries.GetAllSheets
         public required SheetType SheetType { get; init; }
         public required SheetTargetType TargetType { get; init; }
         public required Guid TargetId { get; init; }
+        public GetAllEntityRequestSkeleton RequestSkeleton { get; set; } = new GetAllEntityRequestSkeleton();
     }
 }
 

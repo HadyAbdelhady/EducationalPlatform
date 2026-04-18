@@ -7,11 +7,11 @@ using MediatR;
 namespace Edu_Base.Application.Features.Sheets.Queries.GetAllSheets
 {
     public class GetAllSheetsQueryHandler(ISheetServiceFactory sheetServiceFactory)
-        : IRequestHandler<GetAllSheetsQuery, Result<PaginatedResult<SheetItem>>>
+        : IRequestHandler<GetAllSheetsQuery, Result<PaginatedResult<SheetResponse>>>
     {
         private readonly ISheetServiceFactory _sheetServiceFactory = sheetServiceFactory;
 
-        public async Task<Result<PaginatedResult<SheetItem>>> Handle(
+        public async Task<Result<PaginatedResult<SheetResponse>>> Handle(
             GetAllSheetsQuery request,
             CancellationToken cancellationToken)
         {
