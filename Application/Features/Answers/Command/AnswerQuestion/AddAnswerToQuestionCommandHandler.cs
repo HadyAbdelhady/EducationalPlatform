@@ -33,10 +33,8 @@ namespace Application.Features.Answers.Command.AnswerQuestion
                     IsDeleted = false
                 };
 
-                question.Answers.Add(answer);
-                question.UpdatedAt = DateTimeOffset.UtcNow;
-
-                _unitOfWork.Repository<Question>().Update(question);
+                // Add the answer directly to the Answer repository
+                await _unitOfWork.Repository<Answer>().AddAsync(answer, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result<Guid>.Success(answer.Id);
