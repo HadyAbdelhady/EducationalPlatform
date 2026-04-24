@@ -40,6 +40,17 @@ public class ExamFilterRegistry : IBaseFilterRegistry<Exam>
                 desc ? q.OrderByDescending(e => e.StartTime) : q.OrderBy(e => e.StartTime),
 
             ["createdat"] = (q, desc) =>
-                desc ? q.OrderByDescending(e => e.CreatedAt) : q.OrderBy(e => e.CreatedAt)
-        };
+                desc ? q.OrderByDescending(e => e.CreatedAt) : q.OrderBy(e => e.CreatedAt),
+
+            ["mark"] = (q, desc) =>
+                 desc
+                     ? q.OrderByDescending(e => e.ExamResults
+                         .OrderByDescending(r => r.StudentMark)
+                         .Select(r => r.StudentMark)
+                         .FirstOrDefault())
+                     : q.OrderBy(e => e.ExamResults
+                         .OrderBy(r => r.StudentMark)
+                         .Select(r => r.StudentMark)
+                         .FirstOrDefault())
+                    };
 }
