@@ -1,19 +1,17 @@
 using Application.DTOs.EducationYear;
 using Application.Interfaces;
+using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class EducationYearRepository(EducationDbContext context) : IEducationYearRepository
+    public class EducationYearRepository(EducationDbContext context) : Repository<EducationYear>(context), IEducationYearRepository
     {
-        private readonly EducationDbContext _context = context;
-
         public async Task<List<EducationYearDto>> GetActiveEducationYearsAsync(CancellationToken cancellationToken = default)
         {
             return await _context.EducationYears
                 .AsNoTracking()
-                .Where(ey => !ey.IsDeleted)
                 .OrderByDescending(ey => ey.CreatedAt)
                 .Select(ey => new EducationYearDto
                 {
@@ -27,7 +25,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.EducationYears
                 .AsNoTracking()
-                .Where(ey => ey.Id)
+                .Where(ey => ey.Id == id && !ey.IsDeleted)
                 .Select(ey => new EducationYearDto
                 {
                     Id = ey.Id,
@@ -47,8 +45,8 @@ namespace Infrastructure.Repositories
         {
             return await _context.EducationYears
                 .AsNoTracking()
-                .AnyAsync(ey => ey.Id != excludeId && 
-                               ey.EducationYearName.Equals(name, StringComparison.OrdinalIgnoreCase) && 
+                .AnyAsync(ey => ey.Id != excludeId &&
+                               ey.EducationYearName.Equals(name, StringComparison.OrdinalIgnoreCase) &&
                                !ey.IsDeleted, cancellationToken);
         }
     }

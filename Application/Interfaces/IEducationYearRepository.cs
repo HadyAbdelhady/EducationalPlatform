@@ -1,8 +1,9 @@
 using Application.DTOs.EducationYear;
+using Domain.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IEducationYearRepository
+    public interface IEducationYearRepository : IRepository<EducationYear>
     {
         Task<List<EducationYearDto>> GetActiveEducationYearsAsync(CancellationToken cancellationToken = default);
         Task<EducationYearDto?> GetEducationYearByIdAsync(Guid id, CancellationToken cancellationToken = default);

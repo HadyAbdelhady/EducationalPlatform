@@ -2,8 +2,8 @@ using Application.DTOs.EducationYear;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
+using Domain.enums;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.EducationYears.Commands.UpdateEducationYear
 {
@@ -14,14 +14,14 @@ namespace Application.Features.EducationYears.Commands.UpdateEducationYear
 
         public async Task<Result<EducationYearResponse>> Handle(UpdateEducationYearCommand request, CancellationToken cancellationToken)
         {
-            var educationYear = await _unitOfWork.EducationYears
+            var educationYear = await _unitOfWork.Repository<EducationYear>()
                 .FirstOrDefaultAsync(ey => ey.Id == request.Id && !ey.IsDeleted, cancellationToken);
 
             if (educationYear == null)
             {
-                return Result<EducationYearResponse>.Failure(
+                return Result<EducationYearResponse>.FailureStatusCode(
                     "Education year not found.",
-                    ResultType.NotFound
+                    ErrorType.NotFound
                 );
             }
 
@@ -32,9 +32,9 @@ namespace Application.Features.EducationYears.Commands.UpdateEducationYear
             if (existingYears.Any(ey => ey.Id != request.Id && 
                 ey.EducationYearName.Equals(request.EducationYear.EducationYearName, StringComparison.OrdinalIgnoreCase)))
             {
-                return Result<EducationYearResponse>.Failure(
+                return Result<EducationYearResponse>.FailureStatusCode(
                     "Another education year with this name already exists.",
-                    ResultType.Conflict
+                    ErrorType.Conflict
                 );
             }
 
@@ -46,9 +46,7 @@ namespace Application.Features.EducationYears.Commands.UpdateEducationYear
             var response = new EducationYearResponse
             {
                 Id = educationYear.Id,
-                EducationYearName = educationYear.EducationYearName,
-                CreatedAt = educationYear.CreatedAt,
-                UpdatedAt = educationYear.UpdatedAt
+                EducationYearName = educationYear.EducationYearName
             };
 
             return Result<EducationYearResponse>.Success(response);
