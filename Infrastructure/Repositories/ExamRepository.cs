@@ -132,6 +132,40 @@ namespace Infrastructure.Repositories
 
             return hashMap;
         }
+
+        public async Task<IQueryable<InstructorNonRandomExamsResponseDto>> GetInstructorNonRandomExamsQuery(Guid instructorId, CancellationToken cancellationToken)
+        {
+            return await Task.FromResult(_context.Exams
+                .Where(e => e.InstructorId == instructorId && !e.IsRandomized)
+                .Select(e => new InstructorNonRandomExamsResponseDto
+                {
+                    ExamId = e.Id,
+                    Name = e.Name,
+                    Description = e.Description,
+                    ExamStatus = e.Status,
+                    ExamType = e.ExamType,
+                    StartTime = e.StartTime,
+                    EndTime = e.EndTime,
+                    CreatedAt = e.CreatedAt,
+                    UpdatedAt = e.UpdatedAt,
+                    TotalMark = e.TotalMark,
+                    NumberOfQuestions = e.NumberOfQuestions,
+                    DurationInMinutes = e.DurationInMinutes,
+                    IsRandomized = e.IsRandomized,
+                    PassMarkPercentage = e.PassMarkPercentage,
+                    CourseId = e.CourseId,
+                    CourseName = e.Course.Name,
+                    SectionId = e.SectionId,
+                    SectionName = e.Section.Name,
+                    
+                    // Calculate exam statistics
+                    StudentCount = e.ExamResults.Count,
+                    PassedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.Passed),
+                    FailedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.Failed),
+                    NotStartedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.NotStarted),
+                    InProgressCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.InProgress)
+                }));
+        }
     }
 
 }

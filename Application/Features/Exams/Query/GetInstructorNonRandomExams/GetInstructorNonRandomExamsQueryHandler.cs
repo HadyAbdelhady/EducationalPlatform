@@ -22,47 +22,14 @@ namespace Application.Features.Exams.Query.GetInstructorNonRandomExams
             GetInstructorNonRandomExamsQuery request,
             CancellationToken cancellationToken)
         {
-            // Get non-randomized exams for the instructor
-            var examsQuery = _unitOfWork.Repository<Exam>()
-                .GetAll(cancellationToken)
-                .Where(e => e.InstructorId == request.Request.InstructorId && !e.IsRandomized)
+            // Get non-randomized exams for the instructor from repository (already projected to DTO)
+            var examsQuery = await _examRepository.GetInstructorNonRandomExamsQuery(request.Request.InstructorId, cancellationToken);
+            
+            var filteredSortedQuery = examsQuery
                 .ApplyFilters(request.Request.RequestSkeleton.Filters, _examFilterRegistry.Filters)
                 .ApplySort(request.Request.RequestSkeleton.SortBy, request.Request.RequestSkeleton.IsDescending, _examFilterRegistry.Sorts);
 
-            var exams = await examsQuery
-                .Include(e => e.Course)
-                .Include(e => e.Section)
-                .Include(e => e.ExamResults)
-                .ToListAsync(cancellationToken);
-
-            var examDtos = exams.Select(e => new InstructorNonRandomExamsResponseDto
-            {
-                ExamId = e.Id,
-                Name = e.Name,
-                Description = e.Description,
-                ExamStatus = e.Status,
-                ExamType = e.ExamType,
-                StartTime = e.StartTime,
-                EndTime = e.EndTime,
-                CreatedAt = e.CreatedAt,
-                UpdatedAt = e.UpdatedAt,
-                TotalMark = e.TotalMark,
-                NumberOfQuestions = e.NumberOfQuestions,
-                DurationInMinutes = e.DurationInMinutes,
-                IsRandomized = e.IsRandomized,
-                PassMarkPercentage = e.PassMarkPercentage,
-                CourseId = e.CourseId,
-                CourseName = e.Course?.Name ?? string.Empty,
-                SectionId = e.SectionId,
-                SectionName = e.Section?.Name,
-                
-                // Calculate exam statistics
-                StudentCount = e.ExamResults.Count,
-                PassedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.Passed),
-                FailedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.Failed),
-                NotStartedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.NotStarted),
-                InProgressCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.InProgress)
-            }).ToList();
+            var examDtos = await filteredSortedQuery.ToListAsync(cancellationToken);
 
             // Pagination
             int pageSize = 10;
