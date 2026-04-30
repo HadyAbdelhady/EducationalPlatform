@@ -111,6 +111,27 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(e => e.Id == examId, ct);
         }
 
+        public async Task<Dictionary<Guid, Dictionary<Guid, string>>> GetInstructorCoursesSectionsHashMapAsync(Guid instructorId, CancellationToken cancellationToken)
+        {
+            var courses = await _context.Courses
+                .Where(c => c.InstructorCourses.Any(ic => ic.InstructorId == instructorId))
+                .Include(c => c.Sections)
+                .ToListAsync(cancellationToken);
+
+            var hashMap = new Dictionary<Guid, Dictionary<Guid, string>>();
+
+            foreach (var course in courses)
+            {
+                hashMap[course.Id] = new Dictionary<Guid, string>();
+                
+                foreach (var section in course.Sections)
+                {
+                    hashMap[course.Id][section.Id] = section.Name;
+                }
+            }
+
+            return hashMap;
+        }
     }
 
 }

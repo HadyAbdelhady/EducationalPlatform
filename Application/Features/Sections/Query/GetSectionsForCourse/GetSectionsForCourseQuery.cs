@@ -12,4 +12,6 @@ namespace Application.Features.Sections.Query.GetSectionsForCourse
         public GetAllEntityRequestSkeleton GetAllEntityRequestSkeleton { get; init; } = new GetAllEntityRequestSkeleton();
     }
 
+   
+
 }

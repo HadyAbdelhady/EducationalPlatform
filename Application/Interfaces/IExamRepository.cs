@@ -10,5 +10,6 @@ namespace Application.Interfaces
         Task<ExamDetailsQueryModel?> GetExamByIdWithQuestionsAndAnswersAsync(Guid ExamId, CancellationToken cancellationToken = default);
         Task<Exam?> GetExamEntityByIdAsync(Guid examId, CancellationToken ct);
         public Task<ExamModelAnswer?> GetExamWithQuestionsAndAnswersByIdAsync(Guid examId, CancellationToken cancellationToken = default);
+        Task<Dictionary<Guid, Dictionary<Guid, string>>> GetInstructorCoursesSectionsHashMapAsync(Guid instructorId, CancellationToken cancellationToken);
     }
 }
