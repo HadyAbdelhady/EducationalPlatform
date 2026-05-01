@@ -1,9 +1,10 @@
+using Application.ResultWrapper;
 using Domain.enums;
 using System.Text.Json.Serialization;
 
 namespace Application.DTOs.Exam
 {
-    public class InstructorNonRandomExamsResponseDto
+    public class InstructorExamsResponseDto
     {
         public Guid ExamId { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -41,7 +42,7 @@ namespace Application.DTOs.Exam
 
     public class CoursesSectionsHashMap
     {
-        public Dictionary<Guid, CourseSectionInfo> Courses { get; set; } = new();
+        public Dictionary<Guid, CourseSectionInfo> Courses { get; set; } = [];
     }
 
     public class CourseSectionInfo
@@ -57,9 +58,9 @@ namespace Application.DTOs.Exam
         public string Name { get; set; } = string.Empty;
     }
 
-    public class InstructorNonRandomExamsResult
+    public class InstructorExamsResult
     {
-        public PaginatedResult<InstructorNonRandomExamsResponseDto> Exams { get; set; } = new();
+        public PaginatedResult<InstructorExamsResponseDto> Exams { get; set; } = new();
         public CoursesSectionsHashMap CoursesSections { get; set; } = new();
     }
 }

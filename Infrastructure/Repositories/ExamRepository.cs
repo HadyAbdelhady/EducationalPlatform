@@ -6,6 +6,7 @@ using Application.Interfaces;
 using Application.DTOs.Exam;
 using Infrastructure.Data;
 using Domain.Entities;
+using Domain.enums;
 
 namespace Infrastructure.Repositories
 {
@@ -122,7 +123,7 @@ namespace Infrastructure.Repositories
 
             foreach (var course in courses)
             {
-                hashMap[course.Id] = new Dictionary<Guid, string>();
+                hashMap[course.Id] = [];
                 
                 foreach (var section in course.Sections)
                 {
@@ -133,11 +134,11 @@ namespace Infrastructure.Repositories
             return hashMap;
         }
 
-        public async Task<IQueryable<InstructorNonRandomExamsResponseDto>> GetInstructorNonRandomExamsQuery(Guid instructorId, CancellationToken cancellationToken)
+        public async Task<IQueryable<InstructorExamsResponseDto>> GetInstructorNonRandomExamsQuery(Guid instructorId, CancellationToken cancellationToken)
         {
             return await Task.FromResult(_context.Exams
-                .Where(e => e.InstructorId == instructorId && !e.IsRandomized)
-                .Select(e => new InstructorNonRandomExamsResponseDto
+                .Where(e => e.InstructorId == instructorId)
+                .Select(e => new InstructorExamsResponseDto
                 {
                     ExamId = e.Id,
                     Name = e.Name,
@@ -154,9 +155,9 @@ namespace Infrastructure.Repositories
                     IsRandomized = e.IsRandomized,
                     PassMarkPercentage = e.PassMarkPercentage,
                     CourseId = e.CourseId,
-                    CourseName = e.Course.Name,
-                    SectionId = e.SectionId,
-                    SectionName = e.Section.Name,
+                    CourseName = e.Course!.Name,
+                    SectionId = e.SectionId!,
+                    SectionName = e.Section!.Name,
                     
                     // Calculate exam statistics
                     StudentCount = e.ExamResults.Count,

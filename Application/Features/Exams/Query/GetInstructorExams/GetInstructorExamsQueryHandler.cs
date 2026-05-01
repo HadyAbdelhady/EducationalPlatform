@@ -4,32 +4,30 @@ using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
 using Application.ResultWrapper;
 using Domain.Entities;
-using Domain.enums;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.Exams.Query.GetInstructorNonRandomExams
+namespace Application.Features.Exams.Query.GetInstructorExams
 {
-    public class GetInstructorNonRandomExamsQueryHandler(
+    public class GetInstructorExamsQueryHandler(
         IUnitOfWork unitOfWork,
-        IBaseFilterRegistry<Exam> examFilterRegistry) : IRequestHandler<GetInstructorNonRandomExamsQuery, Result<InstructorNonRandomExamsResult>>
+        IBaseFilterRegistry<InstructorExamsResponseDto> instructorExamsFilterRegistry) : IRequestHandler<GetInstructorExamsQuery, Result<InstructorExamsResult>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IBaseFilterRegistry<Exam> _examFilterRegistry = examFilterRegistry;
-        private readonly IExamRepository _examRepository = unitOfWork.Repository<Exam>() as IExamRepository;
+        private readonly IBaseFilterRegistry<InstructorExamsResponseDto> _instructorExamsFilterRegistry = instructorExamsFilterRegistry;
+        private readonly IExamRepository _examRepository = unitOfWork.GetRepository<IExamRepository>();
 
-        public async Task<Result<InstructorNonRandomExamsResult>> Handle(
-            GetInstructorNonRandomExamsQuery request,
+        public async Task<Result<InstructorExamsResult>> Handle(
+            GetInstructorExamsQuery request,
             CancellationToken cancellationToken)
         {
             // Get non-randomized exams for the instructor from repository (already projected to DTO)
             var examsQuery = await _examRepository.GetInstructorNonRandomExamsQuery(request.Request.InstructorId, cancellationToken);
-            
-            var filteredSortedQuery = examsQuery
-                .ApplyFilters(request.Request.RequestSkeleton.Filters, _examFilterRegistry.Filters)
-                .ApplySort(request.Request.RequestSkeleton.SortBy, request.Request.RequestSkeleton.IsDescending, _examFilterRegistry.Sorts);
 
-            var examDtos = await filteredSortedQuery.ToListAsync(cancellationToken);
+            var filteredSortedQuery = examsQuery
+                .ApplyFilters(request.Request.RequestSkeleton.Filters, _instructorExamsFilterRegistry.Filters)
+                .ApplySort(request.Request.RequestSkeleton.SortBy, request.Request.RequestSkeleton.IsDescending, _instructorExamsFilterRegistry.Sorts);
+
+            var examDtos = filteredSortedQuery.ToList();
 
             // Pagination
             int pageSize = 10;
@@ -64,10 +62,10 @@ namespace Application.Features.Exams.Query.GetInstructorNonRandomExams
                 }
             }
 
-            return Result<InstructorNonRandomExamsResult>.Success(
-                new InstructorNonRandomExamsResult
+            return Result<InstructorExamsResult>.Success(
+                new InstructorExamsResult
                 {
-                    Exams = new PaginatedResult<InstructorNonRandomExamsResponseDto>
+                    Exams = new PaginatedResult<InstructorExamsResponseDto>
                     {
                         Items = paginatedExams,
                         PageNumber = request.Request.RequestSkeleton.PageNumber,

@@ -9,10 +9,10 @@ using Application.Features.Exams.Query.GetExamCalendarDays;
 using Application.Features.Exams.Query.GetExamById;
 using Application.Features.Exams.Query.GetExamSubmissionsList;
 using Application.Features.Exams.Query.GetStudentExamResult;
-using Application.Features.Exams.Query.GetInstructorNonRandomExams;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Application.Features.Exams.Query.GetInstructorExams;
 
 namespace Edu_Base.Controllers
 {
@@ -150,7 +150,7 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
         }
 
-        [HttpGet("GetInstructorNonRandomExams")]
+        [HttpGet("GetInstructorExams")]
         public async Task<IActionResult> GetInstructorNonRandomExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
             var instructorIdValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -160,9 +160,9 @@ namespace Edu_Base.Controllers
                 return Unauthorized("User id not found in token.");
             }
 
-            var query = new GetInstructorNonRandomExamsQuery
+            var query = new GetInstructorExamsQuery
             {
-                Request = new GetInstructorNonRandomExamsRequest
+                Request = new GetInstructorExamsRequest
                 {
                     RequestSkeleton = request,
                     InstructorId = instructorId
