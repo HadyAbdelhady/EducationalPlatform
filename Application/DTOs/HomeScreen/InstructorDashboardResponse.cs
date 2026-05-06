@@ -78,6 +78,7 @@ namespace Application.DTOs.HomeScreen
         public DateTimeOffset? DueDate { get; set; }
         public string Status { get; set; } = string.Empty; // Draft, Published, Grading, Completed
         public int NumberOfSubmittedStudents { get; set; }
+        public string SheetUrl { get; set; } = string.Empty;
         public bool IsOverdue => DueDate.HasValue && DueDate.Value < DateTimeOffset.UtcNow;
         public bool IsDueSoon => DueDate.HasValue && DueDate.Value <= DateTimeOffset.UtcNow.AddDays(2);
     }

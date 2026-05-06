@@ -400,6 +400,7 @@ namespace Infrastructure.Repositories
                 {
                     Id = s.Id,
                     Title = s.Name,
+                    SheetUrl = s.SheetUrl,
                     CourseName = s.Course!.Name,
                     DueDate = s.DueDate,
                     Status = "Published",
