@@ -306,6 +306,7 @@ namespace Infrastructure.Repositories
                     Description = v.Name,
                     CourseName = v.Section!.Course!.Name,
                     Timestamp = v.CreatedAt,
+                    EntityUrl = v.VideoUrl,
                     RelatedEntityId = v.Id
                 });
 
@@ -328,6 +329,7 @@ namespace Infrastructure.Repositories
                     Description = s.Name,
                     CourseName = s.Course!.Name,
                     Timestamp = s.CreatedAt,
+                    EntityUrl = s.SheetUrl,
                     RelatedEntityId = s.Id
                 });
 

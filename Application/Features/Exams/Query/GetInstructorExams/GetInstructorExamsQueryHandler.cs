@@ -20,7 +20,7 @@ namespace Application.Features.Exams.Query.GetInstructorExams
             GetInstructorExamsQuery request,
             CancellationToken cancellationToken)
         {
-            // Get non-randomized exams for the instructor from repository (already projected to DTO)
+            // Get exams for the instructor from repository
             var examsQuery = await _examRepository.GetInstructorNonRandomExamsQuery(request.Request.InstructorId, cancellationToken);
 
             var filteredSortedQuery = examsQuery

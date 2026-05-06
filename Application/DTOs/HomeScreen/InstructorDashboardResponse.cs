@@ -41,6 +41,7 @@ namespace Application.DTOs.HomeScreen
         public string ActivityType { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string CourseName { get; set; } = string.Empty;
+        public string? EntityUrl { get; set; } = string.Empty;
         public DateTimeOffset Timestamp { get; set; }
         public Guid? RelatedEntityId { get; set; }
     }

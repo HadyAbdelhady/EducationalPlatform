@@ -1,4 +1,5 @@
 using Application.DTOs.Media;
+using Application.DTOs.Exam;
 using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
 using CloudinaryDotNet;
@@ -108,6 +109,7 @@ namespace Edu_Base
             builder.Services.AddScoped<IBaseFilterRegistry<InstructorReview>, InstructorReviewFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<Exam>, ExamFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<StudentExamResult>, StudentExamResultFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<InstructorExamsResponseDto>, InstructorExamsFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<Video>, VideoFilterRegistry>();
             builder.Services.AddScoped<IStudentEducationYearProvider, StudentEducationYearProvider>();
 

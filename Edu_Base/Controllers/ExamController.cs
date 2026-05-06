@@ -92,6 +92,10 @@ namespace Edu_Base.Controllers
             var Instructor = Guid.Parse(
                 User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             );
+
+            //var Instructor = Guid.Parse("1bfcd481-6ab8-4c70-b0da-3dbd9764ba9c");
+
+
             var query = new GetExamSubmissionsListQuery
             {
                 RequestSkeleton = request.RequestSkeleton,
@@ -154,7 +158,9 @@ namespace Edu_Base.Controllers
         public async Task<IActionResult> GetInstructorNonRandomExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
             var instructorIdValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
+            //var instructorIdValue = Guid.Parse("1bfcd481-6ab8-4c70-b0da-3dbd9764ba9c").ToString();
+
+
             if (string.IsNullOrWhiteSpace(instructorIdValue) || !Guid.TryParse(instructorIdValue, out var instructorId))
             {
                 return Unauthorized("User id not found in token.");
