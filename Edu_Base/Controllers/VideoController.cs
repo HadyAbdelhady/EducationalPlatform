@@ -2,7 +2,7 @@ using Application.DTOs;
 using Application.DTOs.Videos;
 using Application.Features.Videos.Commands.CreateVideo;
 using Application.Features.Videos.Commands.DeleteVideo;
-using Application.Features.Videos.Commands.MarkVideoWatched;
+using Application.Features.Videos.Commands.UpdateVideoProgress;
 using Application.Features.Videos.Commands.UpdateVideo;
 using Application.Features.Videos.Queries.GetAllVideos;
 using Application.Features.Videos.Queries.GetVideoById;
@@ -190,14 +190,36 @@ namespace Edu_Base.Controllers
         }
 
         [HttpPatch("MarkVideoWatched/{VideoId}")]
+        [Obsolete("Use PATCH api/Video/progress instead.")]
         public async Task<IActionResult> MarkVideoWatched(Guid VideoId, CancellationToken cancellationToken)
         {
             var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
 
-            var command = new VideoWatchedCommand(VideoId, UserId);
+            var command = new UpdateVideoProgressCommand(VideoId, UserId, 100);
 
             var result = await _mediator.Send(command, cancellationToken);
             return result ? Ok() : StatusCode(500, "Failed to mark video as watched.");
+        }
+
+        [HttpPatch("progress")]
+        public async Task<IActionResult> UpdateVideoProgress([FromBody] UpdateVideoProgressRequest request, CancellationToken cancellationToken)
+        {
+            if (request == null)
+                return BadRequest("Update video progress request must be sent.");
+
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized("User id claim is missing or invalid.");
+
+            if (request.VideoId == Guid.Empty)
+                return BadRequest("VideoId is required.");
+
+            if (request.Progress is < 0 or > 100)
+                return BadRequest("Progress must be between 0 and 100.");
+
+            var command = new UpdateVideoProgressCommand(request.VideoId, userId, request.Progress);
+            var result = await _mediator.Send(command, cancellationToken);
+            return result ? Ok() : NotFound("Video not found or student is not enrolled.");
         }
 
         #endregion
