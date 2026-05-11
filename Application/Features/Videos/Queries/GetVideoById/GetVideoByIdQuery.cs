@@ -7,5 +7,6 @@ namespace Application.Features.Videos.Queries.GetVideoById
     public class GetVideoByIdQuery : IRequest<Result<VideoByUserIdResponse>>
     {
         public Guid VideoId { get; set; }
+        public Guid StudentId { get; set; }
     }
 }

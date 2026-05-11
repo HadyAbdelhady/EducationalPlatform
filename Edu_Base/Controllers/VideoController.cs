@@ -114,9 +114,13 @@ namespace Edu_Base.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllVideos([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
+            var StudentId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid StudentId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+
             var query = new GetAllVideosQuery
             {
-                GetAllEntityRequestSkeleton = request
+                GetAllEntityRequestSkeleton = request,
+                StudentId = StudentId
             };
 
             var result = await _mediator.Send(query, cancellationToken);
@@ -126,7 +130,10 @@ namespace Edu_Base.Controllers
         [HttpGet("{videoId:guid}")]
         public async Task<IActionResult> GetVideoById(Guid videoId, CancellationToken cancellationToken)
         {
-            var query = new GetVideoByIdQuery { VideoId = videoId };
+            var StudentId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid StudentId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+
+            var query = new GetVideoByIdQuery { VideoId = videoId, StudentId = StudentId };
 
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);

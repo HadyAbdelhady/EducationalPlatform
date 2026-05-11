@@ -31,6 +31,7 @@ namespace Application.Features.Videos.Queries.GetAllVideos
                     Name = v.Name,
                     VideoUrl = v.VideoUrl,
                     Description = v.Description,
+                    Progress = v.StudentVideos.Where(s => s.StudentId == request.StudentId && s.VideoId == v.Id).Select(s => s.Progress).FirstOrDefault(),
                     NumberOfTutorialSheets = v.Sheets.Where(sh => sh.Type == SheetType.TutorialSheet).ToList().Count,
                     NumberOfQuestionsSheets = v.Sheets.Where(sh => sh.Type == SheetType.QuestionSheet).ToList().Count,
                     SectionId = v.SectionId,
