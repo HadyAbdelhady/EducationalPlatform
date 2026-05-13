@@ -1,13 +1,10 @@
-﻿using Application.DTOs.Sheets;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.enums;
 
 namespace Application.Interfaces
 {
     public interface ISheetRepository : IRepository<Sheet>
     {
-        Task<ICollection<SheetResponse>> GetAllSheetsByCourseAsync(Guid courseId, SheetType sheetType, CancellationToken cancellationToken);
-        Task<ICollection<SheetResponse>> GetAllSheetsByVideoAsync(Guid videoId, SheetType sheetType, CancellationToken cancellationToken);
-        Task<ICollection<SheetResponse>> GetAllSheetsBySectionAsync(Guid sectionId, SheetType sheetType, CancellationToken cancellationToken);
+        IQueryable<Sheet> GetSheetsByTargetQuery(Guid targetId, SheetTargetType targetType, SheetType sheetType);
     }
 }

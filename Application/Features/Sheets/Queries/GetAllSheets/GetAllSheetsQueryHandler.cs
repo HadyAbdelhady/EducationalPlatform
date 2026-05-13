@@ -1,3 +1,4 @@
+using Application.DTOs;
 using Application.DTOs.Sheets;
 using Application.Interfaces;
 using Application.ResultWrapper;
@@ -15,8 +16,13 @@ namespace Application.Features.Sheets.Queries.GetAllSheets
             CancellationToken cancellationToken)
         {
             var service = _sheetServiceFactory.GetSheetService(request.TargetType);
-            var pageNumber = request.RequestSkeleton?.PageNumber ?? 1;
-            return await service.GetSheetsAsync(request.TargetId, request.SheetType, pageNumber, cancellationToken);
+            var skeleton = request.RequestSkeleton ?? new GetAllEntityRequestSkeleton();
+            return await service.GetSheetsAsync(
+                request.TargetId,
+                request.SheetType,
+                request.TargetType,
+                skeleton,
+                cancellationToken);
         }
     }
 }

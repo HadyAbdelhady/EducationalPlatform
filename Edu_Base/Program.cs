@@ -111,6 +111,8 @@ namespace Edu_Base
             builder.Services.AddScoped<IBaseFilterRegistry<StudentExamResult>, StudentExamResultFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<InstructorExamsResponseDto>, InstructorExamsFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<Video>, VideoFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<Sheet>, SheetFilterRegistry>();
+            builder.Services.AddScoped<IBaseFilterRegistry<AnswersSheet>, AnswersSheetFilterRegistry>();
             builder.Services.AddScoped<IStudentEducationYearProvider, StudentEducationYearProvider>();
 
             // CORS Configuration (optional - configure as needed)

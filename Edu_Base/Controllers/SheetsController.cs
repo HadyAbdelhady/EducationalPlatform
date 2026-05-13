@@ -1,3 +1,4 @@
+using Application.DTOs;
 using Application.DTOs.Sheets;
 using Application.Features.AnswersSheets.Commands.ApproveAnswersSheet;
 using Application.Features.AnswersSheets.Commands.CreateAnswersSheet;
@@ -260,7 +261,8 @@ namespace Edu_Base.Controllers
             {
                 SheetType = request.SheetType,
                 TargetType = request.TargetType,
-                TargetId = request.TargetId
+                TargetId = request.TargetId,
+                RequestSkeleton = request.RequestSkeleton ?? new GetAllEntityRequestSkeleton()
             };
 
             var result = await _mediator.Send(query, cancellationToken);
@@ -279,14 +281,22 @@ namespace Edu_Base.Controllers
         }
 
         [HttpGet("GetAllAnswerSheetsByStudent")]
-        public async Task<IActionResult> GetAllAnswersSheetsByStudent(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllAnswersSheetsByStudent(
+            [FromQuery] GetAllEntityRequestSkeleton? requestSkeleton,
+            CancellationToken cancellationToken)
         {
             if (!TryGetCurrentUserId(userId: out Guid userId))
             {
                 return Unauthorized();
             }
 
-            var query = new GetAllSheetsQuery { SheetType = SheetType.QuestionSheet, TargetType = SheetTargetType.Section, TargetId = userId };
+            var query = new GetAllSheetsQuery
+            {
+                SheetType = SheetType.AnswersSheet,
+                TargetType = SheetTargetType.Student,
+                TargetId = userId,
+                RequestSkeleton = requestSkeleton ?? new GetAllEntityRequestSkeleton()
+            };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : NotFound(result.Error);
         }
