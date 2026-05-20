@@ -26,8 +26,8 @@ namespace Application.Features.Videos.Commands.CreateVideo
                     VideoUrl = request.VideoUrl,
                     SectionId = request.SectionId,
                     Description = request.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
+                    CreatedAt = EgyptTime.NowDateTimeUnspecified,
+                    UpdatedAt = EgyptTime.NowDateTimeUnspecified,
 
                 };
                 //Check SectionId Is Valid In Table Section 

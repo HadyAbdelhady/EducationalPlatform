@@ -1,6 +1,7 @@
 using Application.DTOs.HomeScreen;
 using Application.Interfaces;
 using Application.ResultWrapper;
+using Domain;
 using Domain.enums;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -97,10 +98,12 @@ namespace Infrastructure.Repositories
                                 .OrderBy(s => s.DueDate)
                                 .Take(3)
                                 .ToList(),
-                            CurrentTime = DateTimeOffset.UtcNow
                         };
 
             var result = await query.FirstOrDefaultAsync(cancellationToken);
+
+            if (result is not null)
+                result.CurrentTime = EgyptTime.Now;
 
             return result;
         }
@@ -171,10 +174,12 @@ namespace Infrastructure.Repositories
                 ? examResults.Average(er => (er.StudentMark!.Value / er.Exam.TotalMark) * 100m)
                 : 0m;
 
+            var now = EgyptTime.Now;
+
             var upcomingExamsQuery = _context.Exams
                 .Where(e =>
                     e.StartTime.HasValue &&
-                    e.StartTime.Value >= DateTimeOffset.UtcNow &&
+                    e.StartTime.Value >= now &&
                     _context.StudentCourses.Any(sc =>
                         sc.StudentId == studentId &&
                         sc.CourseId == e.CourseId))
@@ -191,7 +196,7 @@ namespace Infrastructure.Repositories
                 .Where(s =>
                     s.CourseId.HasValue &&
                     s.DueDate.HasValue &&
-                    s.DueDate.Value >= DateTimeOffset.UtcNow &&
+                    s.DueDate.Value >= now &&
                     _context.StudentCourses.Any(sc =>
                         sc.StudentId == studentId &&
                         sc.CourseId == s.CourseId.Value))
@@ -354,9 +359,11 @@ namespace Infrastructure.Repositories
                 .OrderByDescending(a => a.Timestamp)
                 .Take(10)];
 
+            var instructorNow = EgyptTime.Now;
+
             var sheetsToReview = _context.Sheets
                 .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)) && s.DueDate.HasValue &&
-                           s.DueDate.Value <= DateTimeOffset.UtcNow.AddDays(3))
+                           s.DueDate.Value <= instructorNow.AddDays(3))
                 .Select(s => new PendingTaskDto
                 {
                     TaskType = "Review",
@@ -377,7 +384,7 @@ namespace Infrastructure.Repositories
 
             // Upcoming exams
             response.UpcomingExams = [.. _context.Exams
-                .Where(e => e.InstructorId == instructorId && (!educationYearId.HasValue || e.Course.EducationYearId == educationYearId.Value) && e.StartTime.HasValue && e.StartTime.Value >= DateTimeOffset.UtcNow)
+                .Where(e => e.InstructorId == instructorId && (!educationYearId.HasValue || e.Course.EducationYearId == educationYearId.Value) && e.StartTime.HasValue && e.StartTime.Value >= instructorNow)
                 .OrderBy(e => e.StartTime)
                 .Select(e => new UpcomingExamDto
                 {
@@ -394,7 +401,7 @@ namespace Infrastructure.Repositories
 
             // Upcoming sheets
             response.UpcomingSheets = [.. _context.Sheets
-                .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)) && s.DueDate.HasValue && s.DueDate.Value >= DateTimeOffset.UtcNow.AddDays(-7))
+                .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)) && s.DueDate.HasValue && s.DueDate.Value >= instructorNow.AddDays(-7))
                 .OrderBy(s => s.DueDate)
                 .Select(s => new UpcomingSheetDto
                 {
@@ -408,7 +415,7 @@ namespace Infrastructure.Repositories
                 })
                 .Take(5)];
 
-            response.CurrentTime = DateTimeOffset.UtcNow;
+            response.CurrentTime = EgyptTime.Now;
 
             return response;
         }

@@ -1,5 +1,6 @@
 using Application.DTOs.Answer;
 using Application.Interfaces;
+using Domain;
 using Domain.Entities;
 
 namespace Infrastructure.Services
@@ -11,9 +12,9 @@ namespace Infrastructure.Services
             // Update question properties
             question.QuestionString = questionString;
             question.QuestionImageUrl = questionImageUrl;
-            question.UpdatedAt = DateTimeOffset.UtcNow;
+            question.UpdatedAt = EgyptTime.Now;
 
-            var now = DateTimeOffset.UtcNow;
+            var now = EgyptTime.Now;
             var currentAnswers = question.Answers.ToList(); // All are non-deleted (thanks to global filter)
             var incomingAnswerIds = new HashSet<Guid>();
 

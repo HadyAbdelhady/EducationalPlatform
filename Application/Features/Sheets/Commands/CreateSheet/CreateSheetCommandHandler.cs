@@ -80,7 +80,7 @@ namespace Application.Features.Sheets.Commands.CreateSheet
                     SectionId = request.SectionId,
                     CourseId = request.CourseId,
                     VideoId = request.VideoId,
-                    CreatedAt = DateTimeOffset.UtcNow,
+                    CreatedAt = EgyptTime.Now,
                     IsDeleted = false
                 };
 

@@ -1,6 +1,7 @@
 using Application.DTOs.Review;
 using Application.HelperFunctions;
 using Application.Interfaces;
+using Domain;
 using Application.Interfaces.BaseFilters;
 using Application.ResultWrapper;
 using Domain.Entities;
@@ -109,7 +110,7 @@ namespace Infrastructure.Services.ReviewService
 
             review.Comment = request.Comment;
             review.StarRating = request.StarRating;
-            review.UpdatedAt = DateTimeOffset.UtcNow;
+            review.UpdatedAt = EgyptTime.Now;
 
             _unitOfWork.Repository<TReview>().Update(review);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

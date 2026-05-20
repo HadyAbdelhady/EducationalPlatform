@@ -8,6 +8,7 @@ using Application.Features.Sheets.Commands.CreateSheet;
 using Application.Features.Sheets.Commands.DeleteSheet;
 using Application.Features.Sheets.Commands.UpdateSheet;
 using Application.Features.Sheets.Queries.GetAllSheets;
+using Domain;
 using Domain.enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +47,7 @@ namespace Edu_Base.Controllers
             {
                 return BadRequest("Instructor Id can not be null.");
             }
-            if (request.Type == Domain.enums.SheetType.QuestionSheet && (request.DueDate is null || request.DueDate < DateTimeOffset.UtcNow))
+            if (request.Type == Domain.enums.SheetType.QuestionSheet && (request.DueDate is null || request.DueDate < EgyptTime.Now))
             {
                 return BadRequest("Due Date can not be null or in the past.");
             }

@@ -40,7 +40,7 @@ namespace Application.Features.EducationYears.Commands.DeleteEducationYear
             }
 
             educationYear.IsDeleted = true;
-            educationYear.UpdatedAt = DateTimeOffset.UtcNow;
+            educationYear.UpdatedAt = EgyptTime.Now;
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -36,7 +36,7 @@ namespace Application.Features.Videos.Commands.UpdateVideo
                 if (!string.IsNullOrEmpty(request.VideoUrl))
                     video.VideoUrl = request.VideoUrl;
 
-                video.UpdatedAt = DateTime.UtcNow;
+                video.UpdatedAt = EgyptTime.NowDateTimeUnspecified;
                 _unitOfWork.Repository<Video>().Update(video);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 

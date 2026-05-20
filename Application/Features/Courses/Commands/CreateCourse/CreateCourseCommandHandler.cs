@@ -32,8 +32,8 @@ namespace Application.Features.Courses.Commands.CreateCourse
                     Price = request.Price,
                     PictureUrl = pictureUrl,
                     IntroVideoUrl = request.IntroVideoUrl,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
+                    CreatedAt = EgyptTime.NowDateTimeUnspecified,
+                    UpdatedAt = EgyptTime.NowDateTimeUnspecified,
                 };
 
                 await _unitOfWork.Repository<Course>().AddAsync(newCourse, cancellationToken);
@@ -42,7 +42,7 @@ namespace Application.Features.Courses.Commands.CreateCourse
                 {
                     InstructorId = request.InstructorId,
                     CourseId = newCourse.Id,
-                    UpdatedAt = DateTimeOffset.UtcNow
+                    UpdatedAt = EgyptTime.Now
                 });
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);

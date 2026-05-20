@@ -23,7 +23,7 @@ namespace Application.Features.Questions.Command.DeleteQuestion
                     return Result<Guid>.FailureStatusCode("Question not found.", ErrorType.NotFound);
                 }
 
-                var now = DateTimeOffset.UtcNow;
+                var now = EgyptTime.Now;
                 question.UpdatedAt = now;
 
                 // Optionally: also soft-delete all related answers (recommended for consistency)

@@ -15,7 +15,7 @@ namespace Application.Features.Videos.Commands.UpdateVideoProgress
                 return false;
             }
 
-            var now = DateTimeOffset.UtcNow;
+            var now = EgyptTime.Now;
 
             var video = await _unitOfWork.Repository<Video>()
                                          .FirstOrDefaultAsync(v => v.Id == request.VideoId, cancellationToken,

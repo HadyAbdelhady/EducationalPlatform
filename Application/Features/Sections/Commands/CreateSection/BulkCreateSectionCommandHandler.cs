@@ -39,7 +39,7 @@ namespace Application.Features.Sections.Commands.CreateSection
                         Description = section.Description,
                         Price = section.Price,
                         CourseId = request.CourseId,
-                        CreatedAt = DateTimeOffset.UtcNow
+                        CreatedAt = EgyptTime.Now
                     };
 
                     await sectionRepo.AddAsync(newSection, cancellationToken);

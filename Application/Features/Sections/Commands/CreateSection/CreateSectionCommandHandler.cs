@@ -26,8 +26,8 @@ namespace Application.Features.Sections.Commands.CreateSection
                     Price = request.Price,
                     NumberOfVideos = request.NumberOfVideos,
                     CourseId = request.CourseId,
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    UpdatedAt = DateTimeOffset.UtcNow,
+                    CreatedAt = EgyptTime.Now,
+                    UpdatedAt = EgyptTime.Now,
                 };
 
                 await _unitOfWork.Repository<Section>()

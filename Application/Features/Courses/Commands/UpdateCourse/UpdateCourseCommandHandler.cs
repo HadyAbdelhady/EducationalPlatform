@@ -50,7 +50,7 @@ namespace Application.Features.Courses.Commands.UpdateCourse
                 if (!string.IsNullOrWhiteSpace(request.IntroVideoUrl))
                     course.IntroVideoUrl = request.IntroVideoUrl;
 
-                course.UpdatedAt = DateTime.UtcNow;
+                course.UpdatedAt = EgyptTime.NowDateTimeUnspecified;
 
                 if (course.StudentCourses.Count == 0 && request.Price.HasValue)
                     course.Price = request.Price.Value;

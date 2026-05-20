@@ -1,3 +1,5 @@
+using Domain;
+
 namespace Application.DTOs.HomeScreen
 {
     public class InstructorDashboardResponse
@@ -66,8 +68,8 @@ namespace Application.DTOs.HomeScreen
         public int NumberOfQuestions { get; set; }
         public string Status { get; set; } = string.Empty; // Draft, Published, Grading, Completed
         public int NumberOfEnrolledStudents { get; set; }
-        public bool IsToday => StartTime.Date == DateTimeOffset.UtcNow.Date;
-        public bool IsUrgent => StartTime <= DateTimeOffset.UtcNow.AddDays(3);
+        public bool IsToday => StartTime.Date == EgyptTime.Now.Date;
+        public bool IsUrgent => StartTime <= EgyptTime.Now.AddDays(3);
     }
 
     public class UpcomingSheetDto
@@ -79,7 +81,7 @@ namespace Application.DTOs.HomeScreen
         public string Status { get; set; } = string.Empty; // Draft, Published, Grading, Completed
         public int NumberOfSubmittedStudents { get; set; }
         public string SheetUrl { get; set; } = string.Empty;
-        public bool IsOverdue => DueDate.HasValue && DueDate.Value < DateTimeOffset.UtcNow;
-        public bool IsDueSoon => DueDate.HasValue && DueDate.Value <= DateTimeOffset.UtcNow.AddDays(2);
+        public bool IsOverdue => DueDate.HasValue && DueDate.Value < EgyptTime.Now;
+        public bool IsDueSoon => DueDate.HasValue && DueDate.Value <= EgyptTime.Now.AddDays(2);
     }
 }

@@ -41,7 +41,7 @@ namespace Application.Features.AnswersSheets.Commands.DeleteAnswersSheet
 
                 if (answersSheet.QuestionsSheet is not null &&
                     answersSheet.QuestionsSheet.DueDate.HasValue &&
-                    DateTimeOffset.UtcNow >= answersSheet.QuestionsSheet.DueDate.Value)
+                    EgyptTime.Now >= answersSheet.QuestionsSheet.DueDate.Value)
                 {
                     return Result<string>.FailureStatusCode(
                         "The submission deadline has passed; this submission can no longer be deleted.",

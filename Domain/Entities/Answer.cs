@@ -26,7 +26,7 @@ namespace Domain.Entities
         public string? Explanation { get; set; }
 
         [Column("created_at")]
-        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+        public DateTimeOffset CreatedAt { get; set; } = EgyptTime.Now;
 
         [Column("updated_at")]
         public DateTimeOffset? UpdatedAt { get; set; }

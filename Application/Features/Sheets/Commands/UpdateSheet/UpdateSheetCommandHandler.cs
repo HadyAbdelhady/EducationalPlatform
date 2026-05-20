@@ -33,7 +33,7 @@ namespace Application.Features.Sheets.Commands.UpdateSheet
                 sheet.DueDate = request.DueDate?.ToUniversalTime();
                 
                 sheet.Name = request.Name;
-                sheet.UpdatedAt = DateTimeOffset.UtcNow;
+                sheet.UpdatedAt = EgyptTime.Now;
 
                 _unitOfWork.Repository<Sheet>().Update(sheet);
                 await _unitOfWork.Repository<Sheet>().SaveChangesAsync(cancellationToken);
@@ -42,7 +42,7 @@ namespace Application.Features.Sheets.Commands.UpdateSheet
                 {
                     SheetId = sheet.Id,
                     SheetUrl = sheet.SheetUrl,
-                    UpdatedAt = DateTimeOffset.UtcNow
+                    UpdatedAt = EgyptTime.Now
                 });
             }
             catch (UnauthorizedAccessException authEx)

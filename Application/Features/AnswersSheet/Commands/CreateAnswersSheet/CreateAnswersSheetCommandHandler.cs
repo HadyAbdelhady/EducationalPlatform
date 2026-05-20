@@ -52,7 +52,7 @@ namespace Application.Features.AnswersSheets.Commands.CreateAnswersSheet
                         ErrorType.BadRequest);
                 }
 
-                if (questionsSheet.DueDate.HasValue && DateTimeOffset.UtcNow >= questionsSheet.DueDate.Value)
+                if (questionsSheet.DueDate.HasValue && EgyptTime.Now >= questionsSheet.DueDate.Value)
                 {
                     return Result<AnswersSheetCreationResponse>.FailureStatusCode("The submission deadline has passed!",
                         ErrorType.BadRequest);
@@ -176,7 +176,7 @@ namespace Application.Features.AnswersSheets.Commands.CreateAnswersSheet
                     SheetPublicId = cloudinaryResult.PublicId,
                     QuestionsSheetId = request.QuestionsSheetId,
                     StudentId = request.StudentId,
-                    CreatedAt = DateTimeOffset.UtcNow,
+                    CreatedAt = EgyptTime.Now,
                     IsDeleted = false
                 };
 

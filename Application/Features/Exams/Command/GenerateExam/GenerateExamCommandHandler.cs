@@ -40,11 +40,11 @@ namespace Application.Features.Exams.Command.GenerateExam
             var examEndUtc = request.ExamEndTime.ToUniversalTime();
 
             ExamStatus examStatus = ExamStatus.Draft;
-            if (examStartUtc <= DateTimeOffset.UtcNow && examEndUtc >= DateTimeOffset.UtcNow)
+            if (examStartUtc <= EgyptTime.Now && examEndUtc >= EgyptTime.Now)
             {
                 return Result<GenerateExamResponse>.FailureStatusCode("Start time must be in the future.", ErrorType.BadRequest);
             }
-            else if (examStartUtc > DateTimeOffset.UtcNow)
+            else if (examStartUtc > EgyptTime.Now)
             {
                 examStatus = ExamStatus.Scheduled; 
             }
@@ -153,7 +153,7 @@ namespace Application.Features.Exams.Command.GenerateExam
                 ExamId = newExam.Id,
                 StudentId = studentId,
                 Status = ExamResultStatus.NotStarted,
-                CreatedAt = DateTimeOffset.UtcNow
+                CreatedAt = EgyptTime.Now
             }).ToList();
 
             if (studentExamResults.Count != 0)

@@ -60,7 +60,7 @@ namespace Application.Features.Exams.Command.SubmitExam
             // Update the existing StudentExamResult
             examResult.StudentMark = studentActualMark;
             examResult.Status = isPassed ? ExamResultStatus.Passed : ExamResultStatus.Failed;
-            examResult.UpdatedAt = DateTimeOffset.UtcNow;
+            examResult.UpdatedAt = EgyptTime.Now;
             studentExamResultRepository.Update(examResult);
 
             // Add student answers

@@ -29,7 +29,7 @@ namespace Application.Features.Sections.Commands.UpdateSection
                     section.Price = request.Price.Value;
 
                 section.CourseId = request.CourseId;
-                section.UpdatedAt = DateTimeOffset.UtcNow;
+                section.UpdatedAt = EgyptTime.Now;
 
                 sectionRepo.Update(section);
 
@@ -39,7 +39,7 @@ namespace Application.Features.Sections.Commands.UpdateSection
                 {
                     SectionId = section.Id,
                     Name = section.Name,
-                    UpdatedAt = section.UpdatedAt?.UtcDateTime ?? DateTime.UtcNow
+                    UpdatedAt = section.UpdatedAt?.UtcDateTime ?? EgyptTime.NowDateTimeUnspecified
                 });
             }
             catch (UnauthorizedAccessException auth)
