@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Sheets;
+using Application.DTOs.Sheets;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
@@ -80,7 +80,7 @@ namespace Application.Features.Sheets.Commands.CreateSheet
                     SectionId = request.SectionId,
                     CourseId = request.CourseId,
                     VideoId = request.VideoId,
-                    CreatedAt = EgyptTime.Now,
+                    CreatedAt = EgyptTime.UtcNow,
                     IsDeleted = false
                 };
 

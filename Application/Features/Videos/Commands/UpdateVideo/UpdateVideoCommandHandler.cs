@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
@@ -36,7 +36,7 @@ namespace Application.Features.Videos.Commands.UpdateVideo
                 if (!string.IsNullOrEmpty(request.VideoUrl))
                     video.VideoUrl = request.VideoUrl;
 
-                video.UpdatedAt = EgyptTime.NowDateTimeUnspecified;
+                video.UpdatedAt = EgyptTime.UtcNow;
                 _unitOfWork.Repository<Video>().Update(video);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 

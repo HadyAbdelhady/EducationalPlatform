@@ -43,7 +43,9 @@ namespace Application.DTOs.HomeScreen
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string CourseName { get; set; } = string.Empty;
+        public string SheetUrl { get; set; } = string.Empty;
         public DateTimeOffset? DueDate { get; set; }
+        public Guid? AnswerSheetID { get; set; }
     }
 }
 

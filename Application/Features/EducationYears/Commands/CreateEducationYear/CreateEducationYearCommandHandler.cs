@@ -30,7 +30,7 @@ namespace Application.Features.EducationYears.Commands.CreateEducationYear
             {
                 Id = Guid.NewGuid(),
                 EducationYearName = request.EducationYear.EducationYearName,
-                CreatedAt = EgyptTime.Now
+                CreatedAt = EgyptTime.UtcNow
             };
 
             await _unitOfWork.Repository<EducationYear>().AddAsync(educationYear, cancellationToken);

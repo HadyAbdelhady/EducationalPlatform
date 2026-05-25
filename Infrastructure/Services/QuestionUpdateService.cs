@@ -12,9 +12,9 @@ namespace Infrastructure.Services
             // Update question properties
             question.QuestionString = questionString;
             question.QuestionImageUrl = questionImageUrl;
-            question.UpdatedAt = EgyptTime.Now;
+            question.UpdatedAt = EgyptTime.UtcNow;
 
-            var now = EgyptTime.Now;
+            var now = EgyptTime.UtcNow;
             var currentAnswers = question.Answers.ToList(); // All are non-deleted (thanks to global filter)
             var incomingAnswerIds = new HashSet<Guid>();
 

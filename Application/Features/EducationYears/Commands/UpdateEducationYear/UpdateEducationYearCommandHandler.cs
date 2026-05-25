@@ -39,7 +39,7 @@ namespace Application.Features.EducationYears.Commands.UpdateEducationYear
             }
 
             educationYear.EducationYearName = request.EducationYear.EducationYearName;
-            educationYear.UpdatedAt = EgyptTime.Now;
+            educationYear.UpdatedAt = EgyptTime.UtcNow;
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

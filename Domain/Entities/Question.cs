@@ -28,7 +28,7 @@ namespace Domain.Entities
         public string? QuestionImageUrl { get; set; }
 
         [Column("created_at")]
-        public DateTimeOffset CreatedAt { get; set; } = EgyptTime.Now;
+        public DateTimeOffset CreatedAt { get; set; } = EgyptTime.UtcNow;
 
         [Column("updated_at")]
         public DateTimeOffset? UpdatedAt { get; set; }

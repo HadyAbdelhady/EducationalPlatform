@@ -22,7 +22,7 @@ namespace Domain.Entities
         public decimal? Progress { get; set; }
 
         [Column("enrolled_at")]
-        public DateTimeOffset EnrolledAt { get; set; } = EgyptTime.Now;
+        public DateTimeOffset EnrolledAt { get; set; } = EgyptTime.UtcNow;
 
         [Column("updated_at")]
         public DateTimeOffset? UpdatedAt { get; set; }
@@ -46,7 +46,7 @@ namespace Domain.Entities
         public Guid SectionId { get; set; }
 
         [Column("enrolled_at")]
-        public DateTimeOffset EnrolledAt { get; set; } = EgyptTime.Now;
+        public DateTimeOffset EnrolledAt { get; set; } = EgyptTime.UtcNow;
 
         [Column("updated_at")]
         public DateTimeOffset UpdatedAt { get; set; }

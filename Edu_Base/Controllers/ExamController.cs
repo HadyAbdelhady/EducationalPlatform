@@ -99,7 +99,7 @@ namespace Edu_Base.Controllers
             var query = new GetExamSubmissionsListQuery
             {
                 RequestSkeleton = request.RequestSkeleton,
-                UserId = Instructor,
+                InstructorId = Instructor,
                 ExamId = request.ExamId
             };
             var result = await _mediator.Send(query, cancellationToken);

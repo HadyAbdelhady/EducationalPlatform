@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Sections;
+using Application.DTOs.Sections;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
@@ -39,7 +39,7 @@ namespace Application.Features.Sections.Commands.CreateSection
                         Description = section.Description,
                         Price = section.Price,
                         CourseId = request.CourseId,
-                        CreatedAt = EgyptTime.Now
+                        CreatedAt = EgyptTime.UtcNow
                     };
 
                     await sectionRepo.AddAsync(newSection, cancellationToken);

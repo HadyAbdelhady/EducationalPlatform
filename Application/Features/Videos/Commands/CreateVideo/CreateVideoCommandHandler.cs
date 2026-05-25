@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Videos;
+using Application.DTOs.Videos;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
@@ -26,8 +26,8 @@ namespace Application.Features.Videos.Commands.CreateVideo
                     VideoUrl = request.VideoUrl,
                     SectionId = request.SectionId,
                     Description = request.Description,
-                    CreatedAt = EgyptTime.NowDateTimeUnspecified,
-                    UpdatedAt = EgyptTime.NowDateTimeUnspecified,
+                    CreatedAt = EgyptTime.UtcNow,
+                    UpdatedAt = EgyptTime.UtcNow,
 
                 };
                 //Check SectionId Is Valid In Table Section 
@@ -61,7 +61,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
             }
             catch (Exception ex)
             {
-                return Result<VideoResponse>.FailureStatusCode($"Error creating video: {ex.Message}", ErrorType.Conflict);
+                return Result<VideoResponse>.FailureStatusCode($"Error creating video: {ex.Message} {ex.InnerException?.Message}", ErrorType.InternalServerError);
             }
         }
     }

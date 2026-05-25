@@ -42,10 +42,14 @@ namespace Edu_Base
                 // Enable a retry-on-failure execution strategy and set a command timeout
                 options.UseNpgsql(
                         builder.Configuration.GetConnectionString("DefaultConnection"),
+
+
                         npgsqlOptions => npgsqlOptions
                             .EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(2), errorCodesToAdd: null)
                             .CommandTimeout(60)
+                            
                     )
+
                        .AddInterceptors(provider.GetRequiredService<SoftDeleteInterceptor>());
             });
 
@@ -161,6 +165,8 @@ namespace Edu_Base
                 {
                     // Serialize enums as their string names in JSON responses
                     opts.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                    opts.JsonSerializerOptions.Converters.Add(new Infrastructure.Converters.EgyptTimeJsonConverter());
+                    opts.JsonSerializerOptions.Converters.Add(new Infrastructure.Converters.NullableEgyptTimeJsonConverter());
                 });
 
             // Swagger/OpenAPI Configuration

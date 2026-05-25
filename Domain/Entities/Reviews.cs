@@ -23,10 +23,10 @@ namespace Domain.Entities
         public string Comment { get; set; } = string.Empty;
 
         [Column("created_at")]
-        public DateTimeOffset CreatedAt { get; set; } = EgyptTime.Now;
+        public DateTimeOffset CreatedAt { get; set; } = EgyptTime.UtcNow;
 
         [Column("updated_at")]
-        public DateTimeOffset? UpdatedAt { get; set; } = EgyptTime.Now;
+        public DateTimeOffset? UpdatedAt { get; set; } = EgyptTime.UtcNow;
 
         [Column("is_deleted")]
         public bool IsDeleted { get; set; } = false;

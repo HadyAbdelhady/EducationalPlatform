@@ -1,6 +1,7 @@
 using Application.Interfaces.BaseFilters;
 using Domain.Entities;
 using Domain.enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.HelperFunctions
 {
@@ -28,7 +29,9 @@ namespace Infrastructure.Persistence.HelperFunctions
                     q.Where(e => e.ExamResults.Any(r =>
                         r.Status == Enum.Parse<ExamResultStatus>(value, true))),
 
-                ["examtype"] = (q, value) => q.Where(e => e.ExamType.ToString().Equals(value, StringComparison.OrdinalIgnoreCase)),
+
+                ["examtype"] = (q, value) => q.Where(e => e.ExamType.ToString()
+                                                                     .Equals(value, StringComparison.OrdinalIgnoreCase)),
 
                 ["israndomized"] = (q, value) => q.Where(e => e.IsRandomized == bool.Parse(value)),
 
@@ -36,9 +39,11 @@ namespace Infrastructure.Persistence.HelperFunctions
 
                 ["endtime"] = (q, value) => q.Where(e => e.EndTime <= DateTimeOffset.Parse(value)),
 
-
                 ["name"] = (q, value) => q.Where(e => e.Name.Contains(value, StringComparison.OrdinalIgnoreCase)),
 
+                ["studentid"] = (q, value) =>
+                    q.Where(e => e.ExamResults.Any(r => r.StudentId == Guid.Parse(value)))
+                     .Include(e => e.ExamResults.Where(r => r.StudentId == Guid.Parse(value)))
             };
 
         public Dictionary<string, Func<IQueryable<Exam>, bool, IOrderedQueryable<Exam>>> Sorts { get; }

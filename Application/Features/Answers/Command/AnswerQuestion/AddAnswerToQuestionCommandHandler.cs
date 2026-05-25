@@ -29,7 +29,7 @@ namespace Application.Features.Answers.Command.AnswerQuestion
                     AnswerText = request.AnswerText,
                     IsCorrect = request.IsCorrect,
                     Explanation = request.Explanation,
-                    CreatedAt = EgyptTime.Now,
+                    CreatedAt = EgyptTime.UtcNow,
                     IsDeleted = false
                 };
 

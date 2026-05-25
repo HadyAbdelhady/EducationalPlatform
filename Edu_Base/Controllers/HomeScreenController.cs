@@ -17,12 +17,14 @@ namespace Edu_Base.Controllers
         public async Task<IActionResult> GetStudentHomeScreen(Guid studentId, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Fetching home screen data for StudentId: {StudentId}", studentId);
-            
+
+            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+
             var query = new HomeScreenQuery { StudentId = studentId };
             var result = await _mediator.Send(query, cancellationToken);
-            
-            return result.IsSuccess 
-                ? Ok(result) 
+
+            return result.IsSuccess
+                ? Ok(result)
                 : StatusCode((int)result.ErrorType, result.Error);
         }
 
@@ -59,12 +61,12 @@ namespace Edu_Base.Controllers
         public async Task<IActionResult> GetInstructorDashboard(Guid instructorId, [FromQuery] Guid? educationYearId = null, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Fetching dashboard data for InstructorId: {InstructorId}", instructorId);
-            
+
             var query = new InstructorDashboardQuery { InstructorId = instructorId, EducationYearId = educationYearId };
             var result = await _mediator.Send(query, cancellationToken);
-            
-            return result.IsSuccess 
-                ? Ok(result) 
+
+            return result.IsSuccess
+                ? Ok(result)
                 : StatusCode((int)result.ErrorType, result.Error);
         }
     }

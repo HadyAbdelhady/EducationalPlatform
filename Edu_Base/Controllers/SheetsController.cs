@@ -47,7 +47,7 @@ namespace Edu_Base.Controllers
             {
                 return BadRequest("Instructor Id can not be null.");
             }
-            if (request.Type == Domain.enums.SheetType.QuestionSheet && (request.DueDate is null || request.DueDate < EgyptTime.Now))
+            if (request.Type == Domain.enums.SheetType.QuestionSheet && (request.DueDate is null || request.DueDate < EgyptTime.UtcNow))
             {
                 return BadRequest("Due Date can not be null or in the past.");
             }

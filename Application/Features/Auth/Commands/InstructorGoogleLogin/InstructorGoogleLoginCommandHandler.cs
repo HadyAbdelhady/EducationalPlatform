@@ -52,8 +52,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                         GmailExternal = request.GoogleUserInfo.Email,
                         PersonalPictureUrl = request.GoogleUserInfo.PictureUrl,
                         Gender = request.Gender,
-                        CreatedAt = EgyptTime.Now,
-                        UpdatedAt = EgyptTime.Now,
+                        CreatedAt = EgyptTime.UtcNow,
+                        UpdatedAt = EgyptTime.UtcNow,
                         IsDeleted = false
                     };
 

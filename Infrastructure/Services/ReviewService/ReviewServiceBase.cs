@@ -110,7 +110,7 @@ namespace Infrastructure.Services.ReviewService
 
             review.Comment = request.Comment;
             review.StarRating = request.StarRating;
-            review.UpdatedAt = EgyptTime.Now;
+            review.UpdatedAt = EgyptTime.UtcNow;
 
             _unitOfWork.Repository<TReview>().Update(review);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

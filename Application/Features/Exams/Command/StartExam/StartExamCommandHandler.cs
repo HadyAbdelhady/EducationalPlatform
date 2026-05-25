@@ -59,14 +59,14 @@ namespace Application.Features.Exams.Command.StartExam
             // For FlexibleTimeExam, students can start anytime (within the exam period)
             if (exam.ExamType == ExamType.FixedTimeExam)
             {
-                if (exam.StartTime.HasValue && exam.StartTime > EgyptTime.Now)
+                if (exam.StartTime.HasValue && exam.StartTime > EgyptTime.UtcNow)
                 {
                     return Result<StartedExamResponse>.FailureStatusCode("Exam has not started yet", ErrorType.Conflict);
                 }
             }
 
             // Check if exam has ended (applies to both exam types)
-            if (exam.EndTime.HasValue && exam.EndTime < EgyptTime.Now)
+            if (exam.EndTime.HasValue && exam.EndTime < EgyptTime.UtcNow)
             {
                 return Result<StartedExamResponse>.FailureStatusCode("Exam has ended", ErrorType.Conflict);
             }
@@ -109,8 +109,8 @@ namespace Application.Features.Exams.Command.StartExam
 
             // Update the existing StudentExamResult to InProgress
             studentExamResult.Status = ExamResultStatus.InProgress;
-            studentExamResult.TakenAt = EgyptTime.Now;
-            studentExamResult.UpdatedAt = EgyptTime.Now;
+            studentExamResult.TakenAt = EgyptTime.UtcNow;
+            studentExamResult.UpdatedAt = EgyptTime.UtcNow;
             studentExamResultRepository.Update(studentExamResult);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -120,7 +120,7 @@ namespace Application.Features.Exams.Command.StartExam
                 Student = studentExamResult.StudentId,
                 ExamId = studentExamResult.ExamId,
                 StartedAt = (DateTimeOffset)studentExamResult.TakenAt,
-                CurrentTime = EgyptTime.Now
+                CurrentTime = EgyptTime.UtcNow
             });
         }
     }

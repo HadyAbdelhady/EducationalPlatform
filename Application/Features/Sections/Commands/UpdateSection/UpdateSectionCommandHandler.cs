@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Sections;
+using Application.DTOs.Sections;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
@@ -29,7 +29,7 @@ namespace Application.Features.Sections.Commands.UpdateSection
                     section.Price = request.Price.Value;
 
                 section.CourseId = request.CourseId;
-                section.UpdatedAt = EgyptTime.Now;
+                section.UpdatedAt = EgyptTime.UtcNow;
 
                 sectionRepo.Update(section);
 
@@ -39,7 +39,7 @@ namespace Application.Features.Sections.Commands.UpdateSection
                 {
                     SectionId = section.Id,
                     Name = section.Name,
-                    UpdatedAt = section.UpdatedAt?.UtcDateTime ?? EgyptTime.NowDateTimeUnspecified
+                    UpdatedAt = section.UpdatedAt?.UtcDateTime ?? EgyptTime.UtcNow.DateTime
                 });
             }
             catch (UnauthorizedAccessException auth)

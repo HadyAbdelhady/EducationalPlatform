@@ -9,6 +9,6 @@ namespace Application.Features.Exams.Query.GetExamSubmissionsList
     {
         public Guid ExamId { get; set; }
         public GetAllEntityRequestSkeleton RequestSkeleton { get; set; } = new GetAllEntityRequestSkeleton();
-        public Guid UserId { get; set; }
+        public Guid InstructorId { get; set; }
     }
 }

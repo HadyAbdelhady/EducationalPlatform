@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Sheets;
+using Application.DTOs.Sheets;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
@@ -29,11 +29,10 @@ namespace Application.Features.Sheets.Commands.UpdateSheet
                     sheet.SheetPublicId = cloudinaryResult.PublicId;
                 }
               
-                // Convert DueDate to UTC if provided (PostgreSQL requires UTC for timestamp with time zone)
                 sheet.DueDate = request.DueDate?.ToUniversalTime();
                 
                 sheet.Name = request.Name;
-                sheet.UpdatedAt = EgyptTime.Now;
+                sheet.UpdatedAt = EgyptTime.UtcNow;
 
                 _unitOfWork.Repository<Sheet>().Update(sheet);
                 await _unitOfWork.Repository<Sheet>().SaveChangesAsync(cancellationToken);
@@ -42,7 +41,7 @@ namespace Application.Features.Sheets.Commands.UpdateSheet
                 {
                     SheetId = sheet.Id,
                     SheetUrl = sheet.SheetUrl,
-                    UpdatedAt = EgyptTime.Now
+                    UpdatedAt = EgyptTime.UtcNow
                 });
             }
             catch (UnauthorizedAccessException authEx)

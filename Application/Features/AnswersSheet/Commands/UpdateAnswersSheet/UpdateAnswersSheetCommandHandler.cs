@@ -60,7 +60,7 @@ namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
                     return Result<AnswersSheetUpdateResponse>.FailureStatusCode("Questions sheet not found.", ErrorType.NotFound);
                 }
 
-                if (answersSheet.QuestionsSheet.DueDate.HasValue && EgyptTime.Now >= answersSheet.QuestionsSheet.DueDate.Value)
+                if (answersSheet.QuestionsSheet.DueDate.HasValue && EgyptTime.UtcNow >= answersSheet.QuestionsSheet.DueDate.Value)
                 {
                     return Result<AnswersSheetUpdateResponse>.FailureStatusCode("The submission deadline has passed!",
                         ErrorType.BadRequest);
@@ -71,7 +71,7 @@ namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
                 answersSheet.SheetUrl = cloudinaryResult.Url;
                 answersSheet.SheetPublicId = cloudinaryResult.PublicId;
                 answersSheet.Name = request.Name.Trim();
-                answersSheet.UpdatedAt = EgyptTime.Now;
+                answersSheet.UpdatedAt = EgyptTime.UtcNow;
 
                 _unitOfWork.Repository<AnswersSheet>().Update(answersSheet);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -80,7 +80,7 @@ namespace Application.Features.AnswersSheets.Commands.UpdateAnswersSheet
                 {
                     AnswersSheetId = answersSheet.Id,
                     SheetUrl = answersSheet.SheetUrl,
-                    UpdatedAt = answersSheet.UpdatedAt ?? EgyptTime.Now
+                    UpdatedAt = answersSheet.UpdatedAt ?? EgyptTime.UtcNow
                 });
             }
             catch (UnauthorizedAccessException authEx)

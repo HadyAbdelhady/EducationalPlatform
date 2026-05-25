@@ -68,8 +68,8 @@ namespace Application.DTOs.HomeScreen
         public int NumberOfQuestions { get; set; }
         public string Status { get; set; } = string.Empty; // Draft, Published, Grading, Completed
         public int NumberOfEnrolledStudents { get; set; }
-        public bool IsToday => StartTime.Date == EgyptTime.Now.Date;
-        public bool IsUrgent => StartTime <= EgyptTime.Now.AddDays(3);
+        public bool IsToday => StartTime.Date == EgyptTime.UtcNow.Date;
+        public bool IsUrgent => StartTime <= EgyptTime.UtcNow.AddDays(3);
     }
 
     public class UpcomingSheetDto
@@ -81,7 +81,7 @@ namespace Application.DTOs.HomeScreen
         public string Status { get; set; } = string.Empty; // Draft, Published, Grading, Completed
         public int NumberOfSubmittedStudents { get; set; }
         public string SheetUrl { get; set; } = string.Empty;
-        public bool IsOverdue => DueDate.HasValue && DueDate.Value < EgyptTime.Now;
-        public bool IsDueSoon => DueDate.HasValue && DueDate.Value <= EgyptTime.Now.AddDays(2);
+        public bool IsOverdue => DueDate.HasValue && DueDate.Value < EgyptTime.UtcNow;
+        public bool IsDueSoon => DueDate.HasValue && DueDate.Value <= EgyptTime.UtcNow.AddDays(2);
     }
 }

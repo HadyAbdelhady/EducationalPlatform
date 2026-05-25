@@ -55,8 +55,8 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         DateOfBirth = request.GoogleUserInfo.DateOfBirth,
                         Gender = request.GoogleUserInfo.Gender,
                         LocationMaps = request.LocationMaps,
-                        CreatedAt = EgyptTime.Now,
-                        UpdatedAt = EgyptTime.Now,
+                        CreatedAt = EgyptTime.UtcNow,
+                        UpdatedAt = EgyptTime.UtcNow,
                         IsDeleted = false
                     };
 

@@ -93,17 +93,23 @@ namespace Infrastructure.Repositories
                                     Id = s.Id,
                                     Title = s.Name,
                                     CourseName = s.Course != null ? s.Course.Name : string.Empty,
+                                    SheetUrl = s.SheetUrl,
+                                    AnswerSheetID = s.AnswersSheets
+                                                    .Where(ans => ans.StudentId == studentId)
+                                                    .Select(ans => (Guid?)ans.Id)
+                                                    .FirstOrDefault(),
                                     DueDate = s.DueDate
                                 })
                                 .OrderBy(s => s.DueDate)
                                 .Take(3)
                                 .ToList(),
+
                         };
 
             var result = await query.FirstOrDefaultAsync(cancellationToken);
 
             if (result is not null)
-                result.CurrentTime = EgyptTime.Now;
+                result.CurrentTime = EgyptTime.UtcNow;
 
             return result;
         }
@@ -174,7 +180,7 @@ namespace Infrastructure.Repositories
                 ? examResults.Average(er => (er.StudentMark!.Value / er.Exam.TotalMark) * 100m)
                 : 0m;
 
-            var now = EgyptTime.Now;
+            var now = EgyptTime.UtcNow;
 
             var upcomingExamsQuery = _context.Exams
                 .Where(e =>
@@ -359,7 +365,7 @@ namespace Infrastructure.Repositories
                 .OrderByDescending(a => a.Timestamp)
                 .Take(10)];
 
-            var instructorNow = EgyptTime.Now;
+            var instructorNow = EgyptTime.UtcNow;
 
             var sheetsToReview = _context.Sheets
                 .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)) && s.DueDate.HasValue &&
@@ -415,7 +421,7 @@ namespace Infrastructure.Repositories
                 })
                 .Take(5)];
 
-            response.CurrentTime = EgyptTime.Now;
+            response.CurrentTime = EgyptTime.UtcNow;
 
             return response;
         }

@@ -21,7 +21,7 @@ namespace Application.Features.Exams.Command.UpdateExam
                                                     .Where(eq => request.ModifiedQuestions.All(mq => mq.Id != eq.QuestionId))
                                                     .ToList();
 
-            if (Exam.StartTime <= DateTimeOffset.Now)
+            if (Exam.StartTime <= EgyptTime.UtcNow)
             {
                 return Result<bool>.FailureStatusCode("Sorry, the exam has already started.", ErrorType.BadRequest);
             }

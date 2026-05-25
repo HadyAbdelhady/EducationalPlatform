@@ -23,6 +23,18 @@ namespace Application.Features.Courses.Commands.CreateCourse
                     pictureUrl = await _cloudinaryService.UploadMediaAsync(request.PictureFile, UsageCategory.CourseThumbnail);
                 }
 
+                bool educationYearExists = await _unitOfWork.Repository<EducationYear>().AnyAsync(e => e.Id == request.EducationYearId, cancellationToken);
+                if (!educationYearExists)
+                {
+                    return Result<CourseCreationResponse>.FailureStatusCode("Education Year not found.", ErrorType.NotFound);
+                }
+
+                bool instructorExists = await _unitOfWork.Repository<User>().AnyAsync(i => i.Id == request.InstructorId, cancellationToken);
+                if (!instructorExists)
+                {
+                    return Result<CourseCreationResponse>.FailureStatusCode("Instructor not found.", ErrorType.NotFound);
+                }
+
                 Course newCourse = new()
                 {
                     Id = Guid.NewGuid(),
@@ -32,8 +44,8 @@ namespace Application.Features.Courses.Commands.CreateCourse
                     Price = request.Price,
                     PictureUrl = pictureUrl,
                     IntroVideoUrl = request.IntroVideoUrl,
-                    CreatedAt = EgyptTime.NowDateTimeUnspecified,
-                    UpdatedAt = EgyptTime.NowDateTimeUnspecified,
+                    CreatedAt = EgyptTime.UtcNow,
+                    UpdatedAt = EgyptTime.UtcNow,
                 };
 
                 await _unitOfWork.Repository<Course>().AddAsync(newCourse, cancellationToken);
@@ -42,7 +54,7 @@ namespace Application.Features.Courses.Commands.CreateCourse
                 {
                     InstructorId = request.InstructorId,
                     CourseId = newCourse.Id,
-                    UpdatedAt = EgyptTime.Now
+                    UpdatedAt = EgyptTime.UtcNow
                 });
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -61,7 +73,7 @@ namespace Application.Features.Courses.Commands.CreateCourse
             }
             catch (Exception ex)
             {
-                return Result<CourseCreationResponse>.FailureStatusCode($"Error creating course: {ex.Message}", ErrorType.Conflict);
+                return Result<CourseCreationResponse>.FailureStatusCode($"Error creating course: {ex.Message} {ex.InnerException?.Message}", ErrorType.InternalServerError);
             }
         }
 

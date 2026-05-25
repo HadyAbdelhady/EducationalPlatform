@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
@@ -23,7 +23,7 @@ namespace Application.Features.Questions.Command.DeleteQuestion
                     return Result<Guid>.FailureStatusCode("Question not found.", ErrorType.NotFound);
                 }
 
-                var now = EgyptTime.Now;
+                var now = EgyptTime.UtcNow;
                 question.UpdatedAt = now;
 
                 // Optionally: also soft-delete all related answers (recommended for consistency)
