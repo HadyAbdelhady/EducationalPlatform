@@ -6,13 +6,5 @@ namespace Application.Interfaces
     {
         Task<StudentHomeScreenResponse?> GetStudentHomeScreenDataAsync(Guid studentId, CancellationToken cancellationToken = default);
         Task<InstructorDashboardResponse?> GetInstructorDashboardDataAsync(Guid instructorId, Guid? educationYearId = null, CancellationToken cancellationToken = default);
-        Task<StudentProgressSummaryResponse> GetStudentProgressDataAsync(
-            Guid studentId,
-            int coursesPage,
-            int coursesPageSize,
-            int milestonesPage,
-            int milestonesPageSize,
-            CancellationToken cancellationToken = default);
     }
 }
-

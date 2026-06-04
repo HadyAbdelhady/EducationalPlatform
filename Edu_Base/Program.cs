@@ -118,6 +118,8 @@ namespace Edu_Base
             builder.Services.AddScoped<IBaseFilterRegistry<Sheet>, SheetFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<AnswersSheet>, AnswersSheetFilterRegistry>();
             builder.Services.AddScoped<IStudentEducationYearProvider, StudentEducationYearProvider>();
+            builder.Services.AddScoped<Infrastructure.Progress.EnrollmentProgressHelper>();
+            builder.Services.AddScoped<IInstructorContentScopeService, Infrastructure.Services.InstructorContentScopeService>();
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>

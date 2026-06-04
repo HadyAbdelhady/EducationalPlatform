@@ -8,31 +8,31 @@ using MediatR;
 namespace Application.Features.HomeScreen.StudentProgress
 {
     public class StudentProgressQueryHandler(IUnitOfWork unitOfWork)
-        : IRequestHandler<StudentProgressQuery, Result<StudentProgressSummaryResponse>>
+        : IRequestHandler<StudentProgressQuery, Result<StudentEnrollmentProgressResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<Result<StudentProgressSummaryResponse>> Handle(
+        public async Task<Result<StudentEnrollmentProgressResponse>> Handle(
             StudentProgressQuery request,
             CancellationToken cancellationToken)
         {
             try
             {
-                var repo = _unitOfWork.GetRepository<IHomeScreenRepository>();
-                var response = await repo.GetStudentProgressDataAsync(
+                var repo = _unitOfWork.GetRepository<IEnrollmentProgressRepository>();
+                var response = await repo.GetStudentEnrollmentProgressAsync(
                     request.StudentId,
-                    request.CoursesPage,
-                    request.CoursesPageSize,
+                    request.EnrollmentsPage,
+                    request.EnrollmentsPageSize,
                     request.MilestonesPage,
                     request.MilestonesPageSize,
                     cancellationToken);
 
-                response.AverageGradeLetter = GradeMapping.ToLetterGrade(response.AverageGrade);
-                return Result<StudentProgressSummaryResponse>.Success(response);
+                response.Global.AverageGradeLetter = GradeMapping.ToLetterGrade(response.Global.AverageGrade);
+                return Result<StudentEnrollmentProgressResponse>.Success(response);
             }
             catch (Exception ex)
             {
-                return Result<StudentProgressSummaryResponse>.FailureStatusCode(
+                return Result<StudentEnrollmentProgressResponse>.FailureStatusCode(
                     $"An error occurred while retrieving student progress: {ex.Message}",
                     ErrorType.InternalServerError);
             }
