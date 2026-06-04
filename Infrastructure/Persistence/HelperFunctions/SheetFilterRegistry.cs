@@ -1,5 +1,6 @@
 using Application.Interfaces.BaseFilters;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.HelperFunctions
 {
@@ -12,6 +13,9 @@ namespace Infrastructure.Persistence.HelperFunctions
             ["videoid"] = (q, value) => q.Where(sh => sh.VideoId == Guid.Parse(value)),
             ["instructorid"] = (q, value) => q.Where(sh => sh.InstructorId == Guid.Parse(value)),
             ["name"] = (q, value) => q.Where(sh => sh.Name.Contains(value)),
+            ["sheetstatus"] = (q, value) =>
+                                              q.Where(sh => sh.AnswersSheets.Any(a => a.IsApproved.Equals(value)))
+                                              .Include(sh => sh.AnswersSheets.Where(a => a.IsApproved.Equals(value))),
         };
 
         public Dictionary<string, Func<IQueryable<Sheet>, bool, IOrderedQueryable<Sheet>>> Sorts { get; } = new()

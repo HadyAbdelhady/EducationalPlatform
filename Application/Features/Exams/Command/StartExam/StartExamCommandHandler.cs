@@ -36,9 +36,18 @@ namespace Application.Features.Exams.Command.StartExam
             var studentExamResult = await studentExamResultRepository
                 .FirstOrDefaultAsync(ser => ser.ExamId == request.ExamId && ser.StudentId == user.Id, cancellationToken);
 
+            // If StudentExamResult doesn't exist (student enrolled after exam was created), create it
             if (studentExamResult == null)
             {
-                return Result<StartedExamResponse>.FailureStatusCode("Exam not found for this student", ErrorType.NotFound);
+                studentExamResult = new StudentExamResult
+                {
+                    Id = Guid.NewGuid(),
+                    ExamId = request.ExamId,
+                    StudentId = user.Id,
+                    Status = ExamResultStatus.NotStarted,
+                    CreatedAt = EgyptTime.UtcNow
+                };
+                await studentExamResultRepository.AddAsync(studentExamResult, cancellationToken);
             }
 
             // Check if exam is already in progress or completed
@@ -91,7 +100,7 @@ namespace Application.Features.Exams.Command.StartExam
                 );
             }
 
-            if (request.IsRandomized)
+            if (exam.IsRandomized)
             {
                 question.ToList().Shuffle();
                 decimal markPerQuestion = exam.TotalMark / exam.NumberOfQuestions;

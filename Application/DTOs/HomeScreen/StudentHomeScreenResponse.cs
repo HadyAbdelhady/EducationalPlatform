@@ -1,3 +1,5 @@
+using Domain.enums;
+
 namespace Application.DTOs.HomeScreen
 {
     public class StudentHomeScreenResponse
@@ -36,6 +38,7 @@ namespace Application.DTOs.HomeScreen
         public decimal TotalMark { get; set; }
         public DateTimeOffset? StartTime { get; set; }
         public int? DurationInMinutes { get; set; }
+        public ExamType ExamType { get; set; }
     }
 
     public class StudentSheetDto

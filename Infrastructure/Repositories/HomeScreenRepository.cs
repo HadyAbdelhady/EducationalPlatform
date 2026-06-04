@@ -62,6 +62,7 @@ namespace Infrastructure.Repositories
                             // Exams from enrolled courses - scope to student's education year
                             Exams = _context.Exams
                                 .Where(e => e.StartTime.HasValue &&
+                                           e.EndTime > EgyptTime.UtcNow &&
                                            e.Course.EducationYearId == studentEducationYearId &&
                                            _context.StudentCourses
                                                .Any(sc3 => sc3.StudentId == studentId &&
@@ -73,6 +74,7 @@ namespace Infrastructure.Repositories
                                     CourseName = e.Course != null ? e.Course.Name : string.Empty,
                                     TotalMark = e.TotalMark,
                                     StartTime = e.StartTime,
+                                    ExamType = e.ExamType,
                                     DurationInMinutes = e.DurationInMinutes
                                 })
                                 .OrderBy(e => e.StartTime)
@@ -85,6 +87,7 @@ namespace Infrastructure.Repositories
                                            s.Course != null &&
                                            s.Course.EducationYearId == studentEducationYearId &&
                                            s.DueDate.HasValue &&
+                                           s.DueDate > EgyptTime.UtcNow &&
                                            _context.StudentCourses
                                                .Any(sc4 => sc4.StudentId == studentId &&
                                                         sc4.CourseId == s.CourseId!.Value))

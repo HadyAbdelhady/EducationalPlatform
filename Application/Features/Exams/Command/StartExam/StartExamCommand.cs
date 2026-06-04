@@ -7,7 +7,6 @@ namespace Application.Features.Exams.Command.StartExam
     {
         public Guid Student { get; set; }
         public Guid ExamId { get; set; }
-        public bool IsRandomized { get; set; } = false;
 
     }
 
