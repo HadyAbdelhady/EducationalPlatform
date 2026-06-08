@@ -9,7 +9,7 @@ namespace Application.Interfaces
         Task<ExamEditDto?> GetExamByIdWithQuestionsAndAnswersAsync(UpdateExamCommand request, CancellationToken cancellationToken = default);
         Task<ExamDetailsQueryModel?> GetExamByIdWithQuestionsAndAnswersAsync(Guid ExamId, CancellationToken cancellationToken = default);
         Task<Exam?> GetExamEntityByIdAsync(Guid examId, CancellationToken ct);
-        public Task<ExamModelAnswer?> GetExamWithQuestionsAndAnswersByIdAsync(Guid examId, CancellationToken cancellationToken = default);
+        Task<ExamModelAnswer?> GetExamWithQuestionsAndAnswersByIdAsync(Guid examId, CancellationToken cancellationToken = default);
         Task<Dictionary<Guid, Dictionary<Guid, string>>> GetInstructorCoursesSectionsHashMapAsync(Guid instructorId, CancellationToken cancellationToken);
         Task<IQueryable<InstructorExamsResponseDto>> GetInstructorNonRandomExamsQuery(Guid instructorId, CancellationToken cancellationToken);
     }

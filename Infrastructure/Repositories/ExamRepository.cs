@@ -100,7 +100,7 @@ namespace Infrastructure.Repositories
                                                                              SectionId = eq.Question.SectionId?? Guid.Empty,
                                                                          }).ToList()
                                  })
-                                 .FirstOrDefaultAsync(cancellationToken);
+                                 .FirstOrDefaultAsync(ex => ex.ExamId == ExamId, cancellationToken);
         }
 
         public async Task<Exam?> GetExamEntityByIdAsync(Guid examId, CancellationToken ct)
