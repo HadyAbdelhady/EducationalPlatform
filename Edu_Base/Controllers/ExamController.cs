@@ -44,7 +44,7 @@ namespace Edu_Base.Controllers
                 ExamId = examId
             };
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
 
         }
 
@@ -52,7 +52,7 @@ namespace Edu_Base.Controllers
         public async Task<IActionResult> SubmitExam([FromBody] SubmitExamCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
         }
 
         [HttpGet("GetExamById/{examId}")]
@@ -63,7 +63,7 @@ namespace Edu_Base.Controllers
             //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
             var query = new GetExamByIdQuery { Id = examId, UserId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
         }
 
 

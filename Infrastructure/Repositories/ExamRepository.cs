@@ -73,7 +73,7 @@ namespace Infrastructure.Repositories
                                                                              }).ToList()
                                                                          }).ToList()
                                  })
-                                 .FirstOrDefaultAsync(cancellationToken);
+                                 .FirstOrDefaultAsync(ex => ex.ExamId == ExamId, cancellationToken);
         }
 
         public async Task<Exam?> GetExamEntityByIdAsync(Guid examId, CancellationToken ct)
