@@ -1,4 +1,4 @@
-﻿using Application.Features.Exams.Command.UpdateExam;
+using Application.Features.Exams.Command.UpdateExam;
 using Microsoft.EntityFrameworkCore;
 using Application.DTOs.Questions;
 using Application.DTOs.Answer;
@@ -37,41 +37,7 @@ namespace Infrastructure.Repositories
                                   .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<ExamEditDto?> GetExamByIdWithQuestionsAndAnswersAsync(UpdateExamCommand request, CancellationToken cancellationToken = default)
-        {
-            if (request.ExamId == Guid.Empty)
-            {
-                throw new ArgumentException("ExamId cannot be empty.");
-            }
-            return await _context.Exams
-                                 .Select(e => new ExamEditDto
-                                 {
-                                     ExamId = e.Id,
-                                     Title = e.Name,
-                                     Description = e.Description,
-                                     ScheduledDate = e.StartTime,
-                                     DurationInMinutes = e.DurationInMinutes,
-                                     NumberOfQuestions = e.NumberOfQuestions,
-                                     TotalMark = e.TotalMark,
-                                     PassMarkPercentage = e.PassMarkPercentage,
-                                     ModifiedAnswerDto = e.ExamQuestions.Where(eq => eq.ExamId == request.ExamId)
-                                                                        .SelectMany(eq => eq.Question.Answers
-                                                                        .Select(a => new UpdateAnswerDto
-                                                                        {
-                                                                            Id = a.Id,
-                                                                            AnswerText = a.AnswerText,
-                                                                            IsCorrect = a.IsCorrect
-                                                                        }))
-                                                                        .ToList(),
-                                     ModifiedQuestions = e.ExamQuestions.Select(eq => new ModifiedQuestionsDto
-                                     {
-                                         Id = eq.Question.Id,
-                                         Mark = eq.QuestionMark
 
-                                     }).ToList()
-                                 })
-                                 .FirstOrDefaultAsync(cancellationToken);
-        }
 
         public async Task<ExamDetailsQueryModel?> GetExamByIdWithQuestionsAndAnswersAsync(Guid ExamId, CancellationToken cancellationToken = default)
         {
@@ -98,6 +64,13 @@ namespace Infrastructure.Repositories
                                                                              QuestionImageUrl = eq.Question.QuestionImageUrl,
                                                                              QuestionString = eq.Question.QuestionString,
                                                                              SectionId = eq.Question.SectionId?? Guid.Empty,
+                                                                             AllAnswersInExam = eq.Question.Answers.Select(a => new AnswerDto
+                                                                             {
+                                                                                 Id = a.Id,
+                                                                                 AnswerString = a.AnswerText,
+                                                                                 IsCorrect = a.IsCorrect,
+                                                                                 QuestionId = a.QuestionId ?? Guid.Empty
+                                                                             }).ToList()
                                                                          }).ToList()
                                  })
                                  .FirstOrDefaultAsync(cancellationToken);

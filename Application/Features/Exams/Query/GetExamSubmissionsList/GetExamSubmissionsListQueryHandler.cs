@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Exam;
+using Application.DTOs.Exam;
 using Application.HelperFunctions;
 using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
@@ -36,19 +36,7 @@ namespace Application.Features.Exams.Query.GetExamSubmissionsList
                 .Where(er => er.ExamId == request.ExamId)
                 .ApplyFilters(request.RequestSkeleton.Filters, _studentExamResultFilterRegistry.Filters)
                 .ApplySort(request.RequestSkeleton.SortBy, request.RequestSkeleton.IsDescending, _studentExamResultFilterRegistry.Sorts)
-                .Select(er => new ExamSubmissionDto
-                {
-                    StudentId = er.StudentId,
-                    StudentName = er.Student.User.FullName,
-                    Status = er.Status,
-                    ObtainedMarks = er.StudentMark,
-                    TotalMark = exam.TotalMark,
-                    TakenAt = er.TakenAt,
-                    SubmittedAt = er.UpdatedAt ?? er.CreatedAt,
-                    NumberOfAnswersSubmitted = er.StudentSubmissions.Count(),
-                    TotalQuestions = exam.NumberOfQuestions,
-                    IsCompleted = er.Status == ExamResultStatus.Passed || er.Status == ExamResultStatus.Failed
-                });
+                .Select(ExamSubmissionDtoMapping.Project(exam));
 
             var resultList = examResults.ToList();
 

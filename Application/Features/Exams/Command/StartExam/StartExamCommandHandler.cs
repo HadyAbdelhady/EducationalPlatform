@@ -80,41 +80,6 @@ namespace Application.Features.Exams.Command.StartExam
                 return Result<StartedExamResponse>.FailureStatusCode("Exam has ended", ErrorType.Conflict);
             }
 
-            var QuestionRepository = _unitOfWork.Repository<Question>();
-
-
-            var question = QuestionRepository.Find(q => q.CourseId == exam.CourseId &&
-                                                                                        (!exam.SectionId.HasValue || q.SectionId == exam.SectionId)
-                                                                                        , cancellationToken);
-
-            if (!question.Any())
-            {
-                return Result<StartedExamResponse>.FailureStatusCode("Question does not exist.", ErrorType.NotFound);
-            }
-
-            if (question.Count() < exam.NumberOfQuestions)
-            {
-                return Result<StartedExamResponse>.FailureStatusCode(
-                    $"Not enough questions available. Requested: {exam.NumberOfQuestions}, Available: {question.Count()}.",
-                    ErrorType.BadRequest
-                );
-            }
-
-            if (exam.IsRandomized)
-            {
-                question.ToList().Shuffle();
-                decimal markPerQuestion = exam.TotalMark / exam.NumberOfQuestions;
-
-                exam.ExamQuestions = [.. question
-                .Take(exam.NumberOfQuestions)
-                .Select(q => new ExamQuestions
-                {
-                    ExamId = exam.Id,
-                    QuestionId = q.Id,
-                    QuestionMark = markPerQuestion,
-                })];
-            }
-
 
             // Update the existing StudentExamResult to InProgress
             studentExamResult.Status = ExamResultStatus.InProgress;

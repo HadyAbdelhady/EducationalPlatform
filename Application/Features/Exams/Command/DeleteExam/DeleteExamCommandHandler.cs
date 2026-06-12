@@ -1,4 +1,4 @@
-﻿using Application.ResultWrapper;
+using Application.ResultWrapper;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Events;
@@ -19,7 +19,10 @@ namespace Application.Features.Exams.Command.DeleteExam
             var StudentSubmissionRepo = _unitOfWork.Repository<StudentExamResult>();
 
 
-            var exam = await ExamRepo.GetByIdAsync(request.ExamId, cancellationToken);
+            var exam = await ExamRepo.GetByIdAsync(request.ExamId,
+                                                        cancellationToken,
+                                                        c => c.ExamResults,
+                                                        c => c.ExamQuestions);
 
             if (exam is null)
             {
@@ -29,13 +32,6 @@ namespace Application.Features.Exams.Command.DeleteExam
             var ExamSubmissions = StudentSubmissionRepo
                                                                 .Find(ss => ss.ExamId == request.ExamId,
                                                                 cancellationToken);
-
-
-
-            var relativeEntities = await ExamRepo.GetByIdAsync(request.ExamId,
-                                                        cancellationToken,
-                                                        c => c.ExamResults,
-                                                        c => c.ExamQuestions);
 
             exam.IsDeleted = true;
 

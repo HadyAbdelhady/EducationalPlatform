@@ -37,19 +37,7 @@ namespace Application.Features.Exams.Query.GetStudentExamResult
                 return Result<ExamSubmissionDto>.FailureStatusCode("Exam result not found for this student", ErrorType.NotFound);
             }
 
-            var dto = new ExamSubmissionDto
-            {
-                StudentId = examResult.StudentId,
-                StudentName = examResult.Student?.User?.FullName ?? string.Empty,
-                Status = examResult.Status,
-                ObtainedMarks = examResult.StudentMark,
-                TotalMark = exam.TotalMark,
-                TakenAt = examResult.TakenAt,
-                SubmittedAt = examResult.UpdatedAt ?? examResult.CreatedAt,
-                NumberOfAnswersSubmitted = examResult.StudentSubmissions?.Count ?? 0,
-                TotalQuestions = exam.NumberOfQuestions,
-                IsCompleted = examResult.Status == ExamResultStatus.Passed || examResult.Status == ExamResultStatus.Failed
-            };
+            var dto = ExamSubmissionDtoMapping.MapFrom(examResult, exam);
 
             return Result<ExamSubmissionDto>.Success(dto);
         }

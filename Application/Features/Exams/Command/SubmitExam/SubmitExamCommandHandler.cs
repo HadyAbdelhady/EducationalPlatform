@@ -97,20 +97,7 @@ namespace Application.Features.Exams.Command.SubmitExam
             ExamModelAnswer? exam = await examRepository.GetExamWithQuestionsAndAnswersByIdAsync(examId, cancellationToken)
                                             ?? throw new Exception("Exam not found");
 
-            var examModelAnswer = new ExamModelAnswer
-            {
-                ExamId = exam.ExamId,
-                TotalMark = exam.TotalMark,
-                Title = exam.Title,
-                PassMarkPercentage = exam.PassMarkPercentage,
-                Questions = [.. exam.Questions.Select(q => new QuestionModelAnswer
-                {
-                    QuestionId = q.QuestionId,
-                    CorrectAnswerId = q.CorrectAnswerId,
-                    QuestionMark = q.QuestionMark
-                })]
-            };
-            return examModelAnswer;
+            return exam;
         }
     }
 
