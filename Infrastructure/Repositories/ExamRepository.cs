@@ -55,6 +55,8 @@ namespace Infrastructure.Repositories
                                      DurationInMinutes = e.DurationInMinutes,
                                      NumberOfQuestions = e.NumberOfQuestions,
                                      TotalMark = e.TotalMark,
+                                     ExamType = e.ExamType,
+                                     EndDate = e.EndTime,
                                      AllQuestionsInExam = e.ExamQuestions.Where(ex => ex.ExamId == ExamId)
                                                                          .Select(eq => new QuestionsInExamWithAnswersResponse
                                                                          {
@@ -62,8 +64,8 @@ namespace Infrastructure.Repositories
                                                                              QuestionMark = eq.QuestionMark,
                                                                              CourseId = eq.Question.CourseId,
                                                                              QuestionImageUrl = eq.Question.QuestionImageUrl,
-                                                                             QuestionString = eq.Question.QuestionString,
-                                                                             SectionId = eq.Question.SectionId?? Guid.Empty,
+                                                                             QuestionString = eq.Question.QuestionString ?? string.Empty,
+                                                                             SectionId = eq.Question.SectionId ?? Guid.Empty,
                                                                              AllAnswersInExam = eq.Question.Answers.Select(a => new AnswerDto
                                                                              {
                                                                                  Id = a.Id,
@@ -97,7 +99,7 @@ namespace Infrastructure.Repositories
             foreach (var course in courses)
             {
                 hashMap[course.Id] = [];
-                
+
                 foreach (var section in course.Sections)
                 {
                     hashMap[course.Id][section.Id] = section.Name;
@@ -131,7 +133,7 @@ namespace Infrastructure.Repositories
                     CourseName = e.Course!.Name,
                     SectionId = e.SectionId!,
                     SectionName = e.Section!.Name,
-                    
+
                     // Calculate exam statistics
                     StudentCount = e.ExamResults.Count,
                     PassedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.Passed),
