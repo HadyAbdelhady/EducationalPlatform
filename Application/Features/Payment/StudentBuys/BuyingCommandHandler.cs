@@ -87,7 +87,8 @@ namespace Application.Features.Payment.StudentBuys
                     await enrollmentRepo.AddStudentSectionAsync(new StudentSection
                     {
                         StudentId = request.StudentId,
-                        SectionId = request.EntityId
+                        SectionId = request.EntityId,
+                        Progress = 0
                     }, cancellationToken);
 
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
