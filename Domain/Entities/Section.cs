@@ -50,7 +50,6 @@ namespace Domain.Entities
 
         public ICollection<Video> Videos { get; set; } = [];
         public ICollection<Sheet> Sheets { get; set; } = [];
-        //public ICollection<QuestionsSheet> QuestionsSheets { get; set; } = [];
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];
         public ICollection<StudentSection> StudentSections { get; set; } = [];
         public ICollection<SectionReview> SectionReviews { get; set; } = [];

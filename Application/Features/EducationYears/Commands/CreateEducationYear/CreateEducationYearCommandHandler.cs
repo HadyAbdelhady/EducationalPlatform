@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Features.EducationYears.Commands.CreateEducationYear
 {
-    public class CreateEducationYearCommandHandler(IUnitOfWork unitOfWork) 
+    public class CreateEducationYearCommandHandler(IUnitOfWork unitOfWork)
         : IRequestHandler<CreateEducationYearCommand, Result<EducationYearResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -15,9 +15,9 @@ namespace Application.Features.EducationYears.Commands.CreateEducationYear
         public async Task<Result<EducationYearResponse>> Handle(CreateEducationYearCommand request, CancellationToken cancellationToken)
         {
             var repo = _unitOfWork.GetRepository<IEducationYearRepository>();
-            
+
             // Check if education year with same name already exists
-            var existingYears = await repo.GetActiveEducationYearsAsync(cancellationToken);
+            var existingYears = await repo.GetActiveEducationYearsAsync(request.InstructorId, cancellationToken);
             if (existingYears.Any(ey => ey.EducationYearName.Equals(request.EducationYear.EducationYearName, StringComparison.OrdinalIgnoreCase)))
             {
                 return Result<EducationYearResponse>.FailureStatusCode(
@@ -30,6 +30,7 @@ namespace Application.Features.EducationYears.Commands.CreateEducationYear
             {
                 Id = Guid.NewGuid(),
                 EducationYearName = request.EducationYear.EducationYearName,
+                InstructorId = request.InstructorId,
                 CreatedAt = EgyptTime.UtcNow
             };
 

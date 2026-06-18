@@ -48,7 +48,7 @@ namespace Application.Features.Videos.Commands.UpdateVideo
             }
             catch (Exception ex)
             {
-                return Result<string>.FailureStatusCode($"An error occurred while updating the video: {ex.Message}", ErrorType.Validation);
+                return Result<string>.FailureStatusCode($"An error occurred while updating the video: {ex.Message}", ErrorType.InternalServerError);
             }
 
         }

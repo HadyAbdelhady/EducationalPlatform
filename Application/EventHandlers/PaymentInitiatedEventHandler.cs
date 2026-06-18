@@ -35,7 +35,6 @@ namespace Application.EventHandlers
                 var existingEnrollment = await enrollmentRepo.IsStudentEnrolledInCourseAsync(paymentData.StudentId,
                                                                                              paymentData.EntityId,
                                                                                              cancellationToken);
-
                 if (!existingEnrollment)
                 {
                     var studentCourse = new StudentCourse
@@ -43,14 +42,14 @@ namespace Application.EventHandlers
                         StudentId = paymentData.StudentId,
                         CourseId = paymentData.EntityId
                     };
-
+                    course.NumberOfStudentsEnrolled += 1;
                     await enrollmentRepo.AddStudentCourseAsync(studentCourse, cancellationToken);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                 }
             }
             else if (paymentData.EntityType == EntityToBuy.Section)
             {
-                var section = await _unitOfWork.Repository<Section>().GetByIdAsync(paymentData.EntityId, cancellationToken, s => s.Course!)
+                Section? section = await _unitOfWork.Repository<Section>().GetByIdAsync(paymentData.EntityId, cancellationToken, s => s.Course!)
                     ?? throw new InvalidOperationException("Section not found.");
                 if (section.Course == null || section.Course.EducationYearId != studentEducationYearId.Value)
                 {
@@ -70,6 +69,7 @@ namespace Application.EventHandlers
                         SectionId = paymentData.EntityId
                     };
 
+                    
                     await enrollmentRepo.AddStudentSectionAsync(studentSection, cancellationToken);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                 }

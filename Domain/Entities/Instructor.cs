@@ -17,13 +17,12 @@ namespace Domain.Entities
         [Column("rating")]
         public decimal? Rating { get; set; } = 1;
 
-
-
         public ICollection<InstructorCourse> InstructorCourses { get; set; } = [];
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];
         public ICollection<InstructorReview> InstructorReviews { get; set; } = [];
         public ICollection<Exam> Exams { get; set; } = [];
         public ICollection<Sheet> Sheets { get; set; } = [];
+        public ICollection<EducationYear> EducationYears { get; set; } = [];
     }
 }
 

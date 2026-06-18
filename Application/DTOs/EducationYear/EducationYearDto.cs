@@ -4,5 +4,6 @@ namespace Application.DTOs.EducationYear
     {
         public Guid Id { get; set; }
         public string EducationYearName { get; set; } = string.Empty;
+
     }
 }

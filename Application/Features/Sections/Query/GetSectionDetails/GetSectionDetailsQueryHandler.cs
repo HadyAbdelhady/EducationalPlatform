@@ -17,6 +17,11 @@ namespace Application.Features.Sections.Query.GetSectionDetails
                 var data = await _unitOfWork.GetRepository<ISectionRepository>()
                                                                      .GetSectionDetailsResponse(request, cancellationToken);
 
+                if (data is null)
+                    return Result<SectionDetailsQueryModel>.FailureStatusCode(
+                        $"Section with ID {request.SectionId} was not found.",
+                        ErrorType.NotFound);
+
                 return Result<SectionDetailsQueryModel>.Success(data);
             }
             catch (Exception ex)

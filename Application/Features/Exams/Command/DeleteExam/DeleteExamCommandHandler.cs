@@ -26,7 +26,7 @@ namespace Application.Features.Exams.Command.DeleteExam
 
             if (exam is null)
             {
-                return Result<string>.Success("Exam does not exist");
+                return Result<string>.FailureStatusCode("Exam not found.", ErrorType.NotFound);
             }
 
             var ExamSubmissions = StudentSubmissionRepo

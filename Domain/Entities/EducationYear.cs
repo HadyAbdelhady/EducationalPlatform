@@ -24,6 +24,10 @@ namespace Domain.Entities
         [Column("updated_at")]
         public DateTimeOffset? UpdatedAt { get; set; }
 
+        [Column("instructor_id")]
+        [ForeignKey(nameof(Instructor))]
+        public Guid InstructorId { get; set; }
+
         // Navigation
         public ICollection<Student> Students { get; set; } = [];
         public ICollection<Course> Courses { get; set; } = [];

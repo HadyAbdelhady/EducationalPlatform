@@ -60,7 +60,7 @@ namespace Application.Features.Sheets.Commands.CreateSheet
 
                 if (request.Type == SheetType.QuestionSheet && request.DueDate is null)
                 {
-                    return Result<SheetCreationResponse>.FailureStatusCode("Due date is required for answer sheets", ErrorType.BadRequest);
+                    return Result<SheetCreationResponse>.FailureStatusCode("Due date is required for question sheets.", ErrorType.BadRequest);
                 }
 
                 var cloudianryResult = await _cloudinaryService.UploadPdfAsync(request.SheetUrl);

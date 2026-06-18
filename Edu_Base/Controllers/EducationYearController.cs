@@ -18,7 +18,10 @@ namespace Edu_Base.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEducationYears(CancellationToken cancellationToken = default)
         {
-            var query = new GetEducationYearsQuery();
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid UserId = Guid.Parse("2cfd78cb-f08e-4ebe-a667-92eb59b9c19d");
+
+            var query = new GetEducationYearsQuery { InstructorId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
         }
@@ -34,7 +37,10 @@ namespace Edu_Base.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEducationYear([FromBody] CreateEducationYearRequest request, CancellationToken cancellationToken = default)
         {
-            var command = new CreateEducationYearCommand { EducationYear = request };
+            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //Guid UserId = Guid.Parse("57786109-6eea-45f6-9f6f-a45dbcc1b62f");
+
+            var command = new CreateEducationYearCommand { EducationYear = request, InstructorId = UserId };
             var result = await _mediator.Send(command, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
         }

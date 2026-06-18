@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
@@ -55,7 +55,7 @@ namespace Application.Features.Questions.Command.AddQuestion
             }
             catch (Exception ex)
             {
-                return Result<Guid>.FailureStatusCode($"Error creating Question: {ex.Message}", ErrorType.Conflict);
+                return Result<Guid>.FailureStatusCode($"An error occurred while creating the question: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }

@@ -13,71 +13,82 @@ namespace Application.Features.Exams.Command.UpdateExam
 
         public async Task<Result<bool>> Handle(UpdateExamCommand request, CancellationToken cancellationToken)
         {
-            var examRepository = _unitOfWork.GetRepository<IExamRepository>();
-            var Exam = await examRepository.GetExamEntityByIdAsync(request.ExamId, cancellationToken)
-                                                ?? throw new ArgumentException("Exam not found.");
+            try
+            {
+                var examRepository = _unitOfWork.GetRepository<IExamRepository>();
+                var Exam = await examRepository.GetExamEntityByIdAsync(request.ExamId, cancellationToken)
+                                                    ?? throw new ArgumentException("Exam not found.");
 
-            var DeletedQuestions = Exam.ExamQuestions
-                                                    .Where(eq => request.ModifiedQuestions.All(mq => mq.Id != eq.QuestionId))
-                                                    .ToList();
+                var DeletedQuestions = Exam.ExamQuestions
+                                                        .Where(eq => request.ModifiedQuestions.All(mq => mq.Id != eq.QuestionId))
+                                                        .ToList();
 
-            if (Exam.StartTime <= EgyptTime.UtcNow)
-            {
-                return Result<bool>.FailureStatusCode("Sorry, the exam has already started.", ErrorType.BadRequest);
-            }
-
-            if (request.Title is not null)
-            {
-                Exam.Name = request.Title;
-            }
-            if (request.Description is not null)
-            {
-                Exam.Description = request.Description;
-            }
-            if (request.ScheduledDate is not null)
-            {
-                Exam.StartTime = request.ScheduledDate.Value.ToUniversalTime();
-            }
-            if (request.DurationInMinutes is not null)
-            {
-                Exam.DurationInMinutes = request.DurationInMinutes;
-            }
-            if (request.TotalMark is not null)
-            {
-                Exam.TotalMark = (decimal)request.TotalMark;
-            }
-            if (request.NumberOfQuestions is not null)
-            {
-                Exam.NumberOfQuestions = (int)request.NumberOfQuestions;
-            }
-            if (request.PassMarkPercentage is not null)
-            {
-                Exam.PassMarkPercentage = (int)request.PassMarkPercentage;
-            }
-           
-            if (request.ModifiedQuestions is not null && request.ModifiedQuestions.Count != 0)
-            {
-                foreach (ModifiedQuestionsDto NewQuestionsList in request.ModifiedQuestions)
+                if (Exam.StartTime <= EgyptTime.UtcNow)
                 {
-                    var questionLink = Exam.ExamQuestions.Any(x => x.QuestionId == NewQuestionsList.Id);
+                    return Result<bool>.FailureStatusCode("Cannot update an exam that has already started.", ErrorType.BadRequest);
+                }
 
-                    if (!questionLink)
+                if (request.Title is not null)
+                {
+                    Exam.Name = request.Title;
+                }
+                if (request.Description is not null)
+                {
+                    Exam.Description = request.Description;
+                }
+                if (request.ScheduledDate is not null)
+                {
+                    Exam.StartTime = request.ScheduledDate.Value.ToUniversalTime();
+                }
+                if (request.DurationInMinutes is not null)
+                {
+                    Exam.DurationInMinutes = request.DurationInMinutes;
+                }
+                if (request.TotalMark is not null)
+                {
+                    Exam.TotalMark = (decimal)request.TotalMark;
+                }
+                if (request.NumberOfQuestions is not null)
+                {
+                    Exam.NumberOfQuestions = (int)request.NumberOfQuestions;
+                }
+                if (request.PassMarkPercentage is not null)
+                {
+                    Exam.PassMarkPercentage = (int)request.PassMarkPercentage;
+                }
+
+                if (request.ModifiedQuestions is not null && request.ModifiedQuestions.Count != 0)
+                {
+                    foreach (ModifiedQuestionsDto NewQuestionsList in request.ModifiedQuestions)
                     {
-                        Exam.ExamQuestions.Add(new ExamQuestions
+                        var questionLink = Exam.ExamQuestions.Any(x => x.QuestionId == NewQuestionsList.Id);
+
+                        if (!questionLink)
                         {
-                            ExamId = Exam.Id,
-                            QuestionId = NewQuestionsList.Id,
-                            QuestionMark = NewQuestionsList.Mark
-                        });
+                            Exam.ExamQuestions.Add(new ExamQuestions
+                            {
+                                ExamId = Exam.Id,
+                                QuestionId = NewQuestionsList.Id,
+                                QuestionMark = NewQuestionsList.Mark
+                            });
+                        }
+                    }
+                    foreach (var deletedQuestion in DeletedQuestions)
+                    {
+                        Exam.ExamQuestions.Remove(deletedQuestion);
                     }
                 }
-                foreach (var deletedQuestion in DeletedQuestions)
-                {
-                    Exam.ExamQuestions.Remove(deletedQuestion);
-                }
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                return Result<bool>.Success(true);
             }
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(true);
+            catch (ArgumentException ex)
+            {
+                return Result<bool>.FailureStatusCode(ex.Message, ErrorType.NotFound);
+            }
+            catch (Exception ex)
+            {
+                return Result<bool>.FailureStatusCode($"An error occurred while updating the exam: {ex.Message}", ErrorType.InternalServerError);
+            }
         }
     }
 }

@@ -66,7 +66,7 @@ namespace Application.Features.Courses.Commands.UpdateCourse
             }
             catch (Exception ex)
             {
-                return Result<string>.FailureStatusCode($"An error occurred while updating the course: {ex.Message}", ErrorType.Validation);
+                return Result<string>.FailureStatusCode($"An error occurred while updating the course: {ex.Message}", ErrorType.InternalServerError);
             }
         }
     }

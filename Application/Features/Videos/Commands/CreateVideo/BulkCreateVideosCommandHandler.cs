@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Videos;
+using Application.DTOs.Videos;
 using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
@@ -57,7 +57,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
                     return Result<List<VideoResponse>>.Success(responses);
 
                 }
-                return Result<List<VideoResponse>>.FailureStatusCode("Error While Inserting Videos", ErrorType.BadRequest);
+                return Result<List<VideoResponse>>.FailureStatusCode("Failed to save videos. No changes were persisted to the database.", ErrorType.BadRequest);
 
             }
             catch (Exception ex)

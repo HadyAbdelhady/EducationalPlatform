@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
@@ -23,7 +23,7 @@ namespace Application.Features.Videos.Commands.DeleteVideo
                 if (Result > 0)
                     return Result<string>.Success("Video Deleted Successfully");
 
-                return Result<string>.FailureStatusCode("Failed To Delete Video", ErrorType.BadRequest);
+                return Result<string>.FailureStatusCode("Failed to delete the video. No changes were persisted to the database.", ErrorType.BadRequest);
 
             }
             catch (KeyNotFoundException ex)

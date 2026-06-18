@@ -8,11 +8,12 @@ namespace Infrastructure.Repositories
 {
     public class EducationYearRepository(EducationDbContext context) : Repository<EducationYear>(context), IEducationYearRepository
     {
-        public async Task<List<EducationYearDto>> GetActiveEducationYearsAsync(CancellationToken cancellationToken = default)
+        public async Task<List<EducationYearDto>> GetActiveEducationYearsAsync(Guid instructorId, CancellationToken cancellationToken = default)
         {
             return await _context.EducationYears
                 .AsNoTracking()
                 .OrderByDescending(ey => ey.CreatedAt)
+                .Where(I => I.InstructorId == instructorId)
                 .Select(ey => new EducationYearDto
                 {
                     Id = ey.Id,
