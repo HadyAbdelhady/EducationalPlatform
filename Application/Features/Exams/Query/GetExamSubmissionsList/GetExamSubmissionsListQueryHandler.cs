@@ -12,46 +12,57 @@ namespace Application.Features.Exams.Query.GetExamSubmissionsList
     public class GetExamSubmissionsListQueryHandler(
         IUnitOfWork unitOfWork,
         IBaseFilterRegistry<StudentExamResult> studentExamResultFilterRegistry)
-        : IRequestHandler<GetExamSubmissionsListQuery, Result<PaginatedResult<ExamSubmissionDto>>>
+        : IRequestHandler<GetExamSubmissionsListQuery, Result<ExamSubmissionsListResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IBaseFilterRegistry<StudentExamResult> _studentExamResultFilterRegistry = studentExamResultFilterRegistry;
 
-        public async Task<Result<PaginatedResult<ExamSubmissionDto>>> Handle(
+        public async Task<Result<ExamSubmissionsListResponse>> Handle(
             GetExamSubmissionsListQuery request,
             CancellationToken cancellationToken)
         {
-            // Get the exam to verify it exists and get total marks
             var exam = await _unitOfWork.Repository<Exam>()
-                .GetByIdAsync(request.ExamId, cancellationToken);
+                .GetByIdAsync(
+                    request.ExamId,
+                    cancellationToken,
+                    e => e.Course!,
+                    e => e.Course!.EducationYear,
+                    e => e.Section!);
 
             if (exam == null)
             {
-                return Result<PaginatedResult<ExamSubmissionDto>>.FailureStatusCode("Exam not found", ErrorType.NotFound);
+                return Result<ExamSubmissionsListResponse>.FailureStatusCode("Exam not found", ErrorType.NotFound);
             }
 
-            // Get all student exam results for the specified exam
-            var examResults = _unitOfWork.Repository<StudentExamResult>()
+            var examContext = ExamSubmissionProjectionContext.FromExam(exam);
+
+            var submissionsQuery = _unitOfWork.Repository<StudentExamResult>()
                 .GetAll(cancellationToken)
                 .Where(er => er.ExamId == request.ExamId)
                 .ApplyFilters(request.RequestSkeleton.Filters, _studentExamResultFilterRegistry.Filters)
-                .ApplySort(request.RequestSkeleton.SortBy, request.RequestSkeleton.IsDescending, _studentExamResultFilterRegistry.Sorts)
-                .Select(ExamSubmissionDtoMapping.Project(exam));
+                .ApplySort(request.RequestSkeleton.SortBy, request.RequestSkeleton.IsDescending, _studentExamResultFilterRegistry.Sorts);
 
-            var resultList = examResults.ToList();
+            const int pageSize = 10;
+            var skip = (request.RequestSkeleton.PageNumber - 1) * pageSize;
 
-            // Apply pagination
-            int pageSize = 10;
-            int skip = (request.RequestSkeleton.PageNumber - 1) * pageSize;
+            var totalCount = submissionsQuery.Count();
+            var submissions = submissionsQuery
+                .Skip(skip)
+                .Take(pageSize)
+                .Select(ExamSubmissionDtoMapping.Project(examContext))
+                .ToList();
 
-            return Result<PaginatedResult<ExamSubmissionDto>>.Success(
-                new PaginatedResult<ExamSubmissionDto>
+            return Result<ExamSubmissionsListResponse>.Success(new ExamSubmissionsListResponse
+            {
+                Exam = ExamSubmissionDtoMapping.ToExamDetails(exam),
+                Submissions = new PaginatedResult<ExamSubmissionDto>
                 {
-                    Items = [.. resultList.Skip(skip).Take(pageSize)],
+                    Items = submissions,
                     PageNumber = request.RequestSkeleton.PageNumber,
                     PageSize = pageSize,
-                    TotalCount = resultList.Count
-                });
+                    TotalCount = totalCount
+                }
+            });
         }
     }
 }

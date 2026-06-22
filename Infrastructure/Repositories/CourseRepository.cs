@@ -50,7 +50,9 @@ namespace Infrastructure.Repositories
                                     GmailExternal = ic.Instructor.User.GmailExternal
                                 }).ToList(),
 
-                            EducationYear = course.EducationYear != null ? course.EducationYear.EducationYearName : string.Empty
+                            EducationYear = course.EducationYear != null ? course.EducationYear.EducationYearName : string.Empty,
+                            EducationYearId = course.EducationYear != null ? course.EducationYear.Id : Guid.Empty
+
                         };
 
 

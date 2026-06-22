@@ -89,11 +89,11 @@ namespace Edu_Base.Controllers
         [HttpGet("GetExamSubmissions")]
         public async Task<IActionResult> GetExamSubmissions([FromQuery] GetStudentsSubmittionsForExamRequest request, CancellationToken cancellationToken)
         {
-            var Instructor = Guid.Parse(
-                User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            //var Instructor = Guid.Parse(
+            //    User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+            //);
 
-            //var Instructor = Guid.Parse("1bfcd481-6ab8-4c70-b0da-3dbd9764ba9c");
+            var Instructor = Guid.Parse("57786109-6eea-45f6-9f6f-a45dbcc1b62f");
 
 
             var query = new GetExamSubmissionsListQuery

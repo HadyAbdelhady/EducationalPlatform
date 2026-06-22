@@ -17,6 +17,10 @@ namespace Domain.Entities
         [Column("rating")]
         public decimal? Rating { get; set; } = 1;
 
+        [Column("preferences_id")]
+        [ForeignKey(nameof(InstructorPreferences))]
+        public Guid PreferencesId { get; set; }
+        public InstructorPreferences InstructorPreferences { get; set; } = null!;
         public ICollection<InstructorCourse> InstructorCourses { get; set; } = [];
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];
         public ICollection<InstructorReview> InstructorReviews { get; set; } = [];

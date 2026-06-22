@@ -16,12 +16,12 @@ namespace Edu_Base.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
-        public async Task<IActionResult> GetEducationYears(CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetEducationYears([FromQuery] string? ApplicationName, CancellationToken cancellationToken = default)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            //var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
             //Guid UserId = Guid.Parse("2cfd78cb-f08e-4ebe-a667-92eb59b9c19d");
 
-            var query = new GetEducationYearsQuery { InstructorId = UserId };
+            var query = new GetEducationYearsQuery { InstructorId = null, ApplicationName = ApplicationName };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
         }

@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Features.Exams.Query.GetExamSubmissionsList
 {
-    public class GetExamSubmissionsListQuery : IRequest<Result<PaginatedResult<ExamSubmissionDto>>>
+    public class GetExamSubmissionsListQuery : IRequest<Result<ExamSubmissionsListResponse>>
     {
         public Guid ExamId { get; set; }
         public GetAllEntityRequestSkeleton RequestSkeleton { get; set; } = new GetAllEntityRequestSkeleton();

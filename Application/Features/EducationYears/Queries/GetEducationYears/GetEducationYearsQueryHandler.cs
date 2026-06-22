@@ -13,7 +13,7 @@ namespace Application.Features.EducationYears.Queries.GetEducationYears
         public async Task<Result<List<EducationYearDto>>> Handle(GetEducationYearsQuery request, CancellationToken cancellationToken)
         {
             var repo = _unitOfWork.GetRepository<IEducationYearRepository>();
-            var educationYears = await repo.GetActiveEducationYearsAsync(request.InstructorId,  cancellationToken);
+            var educationYears = await repo.GetActiveEducationYearsForInstructorAsync(request.InstructorId, request.ApplicationName);
             return Result<List<EducationYearDto>>.Success(educationYears);
         }
     }

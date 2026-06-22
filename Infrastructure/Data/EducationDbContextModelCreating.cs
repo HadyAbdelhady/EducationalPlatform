@@ -461,6 +461,13 @@ namespace Infrastructure.Data
 
                 b.HasKey(e => new { e.StudentId, e.ExamResultId, e.QuestionId });
             });
+            modelBuilder.Entity<InstructorPreferences>(b =>
+            {
+                b.HasOne(x=> x.Instructor)
+                    .WithOne(x => x.InstructorPreferences)
+                    .HasForeignKey<InstructorPreferences>(x => x.InstructorId)
+                    .HasConstraintName("instructor_preferences_instructor_id_fkey");
+            });
         }
     }
 }

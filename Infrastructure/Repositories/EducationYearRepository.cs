@@ -8,19 +8,39 @@ namespace Infrastructure.Repositories
 {
     public class EducationYearRepository(EducationDbContext context) : Repository<EducationYear>(context), IEducationYearRepository
     {
-        public async Task<List<EducationYearDto>> GetActiveEducationYearsAsync(Guid instructorId, CancellationToken cancellationToken = default)
+        public async Task<List<EducationYearDto>> GetActiveEducationYearsForInstructorAsync(Guid? instructorId, string? applicationName = null)
         {
-            return await _context.EducationYears
-                .AsNoTracking()
-                .OrderByDescending(ey => ey.CreatedAt)
-                .Where(I => I.InstructorId == instructorId)
-                .Select(ey => new EducationYearDto
-                {
-                    Id = ey.Id,
-                    EducationYearName = ey.EducationYearName
-                })
-                .ToListAsync(cancellationToken);
+            if (instructorId == null)
+            {
+                return await _context.InstructorPreferences
+                    .AsNoTracking()
+                    .OrderByDescending(ey => ey.CreatedAt)
+                    .Where(I => I.ApplicationName == applicationName)
+                    .Include(x => x.Instructor)
+                        .ThenInclude(i => i.EducationYears)
+                    .SelectMany(ip => ip.Instructor.EducationYears)
+                    .Select(ey => new EducationYearDto
+                    {
+                        Id = ey.Id,
+                        EducationYearName = ey.EducationYearName
+                    })
+                    .ToListAsync();
+            }
+            else
+            {
+                return await _context.EducationYears
+                    .AsNoTracking()
+                    .Where(I => I.InstructorId == instructorId)
+                    .OrderByDescending(ey => ey.CreatedAt)
+                    .Select(ey => new EducationYearDto
+                    {
+                        Id = ey.Id,
+                        EducationYearName = ey.EducationYearName
+                    })
+                    .ToListAsync();
+            }
         }
+
 
         public async Task<EducationYearDto?> GetEducationYearByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {

@@ -40,6 +40,7 @@ namespace Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<Sheet> Sheets => Set<Sheet>();
         public DbSet<AnswersSheet> AnswersSheets => Set<AnswersSheet>();
+        public DbSet<InstructorPreferences> InstructorPreferences => Set<InstructorPreferences>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

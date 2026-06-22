@@ -28,7 +28,7 @@ namespace Application.Features.EducationYears.Commands.UpdateEducationYear
             var repo = _unitOfWork.GetRepository<IEducationYearRepository>();
 
             // Check if another education year with the same name already exists
-            var existingYears = await repo.GetActiveEducationYearsAsync(educationYear.InstructorId, cancellationToken);
+            var existingYears = await repo.GetActiveEducationYearsForInstructorAsync(educationYear.InstructorId);
             if (existingYears.Any(ey => ey.Id != request.Id &&
                 ey.EducationYearName.Equals(request.EducationYear.EducationYearName, StringComparison.OrdinalIgnoreCase)))
             {
