@@ -6,12 +6,11 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
 {
     public class StudentGoogleLoginCommand : IRequest<Result<AuthenticationResponse>>
     {
-        public string DeviceId { get; set; } = string.Empty;
-        public string ParentPhoneNumber { get; set; } = string.Empty;
+        public string DeviceId { get; set; } = null!;
+        public string ParentPhoneNumber { get; set; } = null!;
         public Guid EducationYearId { get; set; }
-        public string Ssn { get; set; } = string.Empty;
+        public string Ssn { get; set; } = null!;
         public string? LocationMaps { get; set; }
-        /// Assigned center for the new student. Null in instructor-only mode deployments.
         public Guid? CenterId { get; set; }
         public GoogleUserInfo GoogleUserInfo { get; set; } = null!;
     }

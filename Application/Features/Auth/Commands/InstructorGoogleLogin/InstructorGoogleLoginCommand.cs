@@ -7,13 +7,13 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 {
     public class InstructorGoogleLoginCommand : IRequest<Result<AuthenticationResponse>>
     {
-        public string IdToken { get; set; } = string.Empty;
+        public string IdToken { get; set; } = null!;
 
-        public string Ssn { get; set; } = string.Empty;
+        public string Ssn { get; set; } = null!;
 
-        public string PhoneNumber { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = null!;
 
-        public string Gender { get; set; } = string.Empty;
+        public string Gender { get; set; } = null!;
 
         public GoogleUserInfo GoogleUserInfo { get; set; } = null!;
 

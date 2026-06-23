@@ -17,6 +17,7 @@ namespace Infrastructure.Repositories
                 .Include(u => u.Student)
                     .ThenInclude(s => s!.EducationYear)
                 .Include(u => u.Instructor)
+                .Include(u => u.CenterAdmin)
                 .FirstOrDefaultAsync(u => u.GmailExternal == email, cancellationToken);
         }
 
