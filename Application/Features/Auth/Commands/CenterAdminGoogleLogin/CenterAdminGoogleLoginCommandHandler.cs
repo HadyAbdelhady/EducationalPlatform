@@ -1,40 +1,48 @@
 using Application.DTOs.Auth;
 using Application.Interfaces;
 using Application.ResultWrapper;
+using Domain;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Auth.Commands.InstructorGoogleLogin
+namespace Application.Features.Auth.Commands.CenterAdminGoogleLogin
 {
-    public class InstructorGoogleLoginCommandHandler(
+    public class CenterAdminGoogleLoginCommandHandler(
         IGoogleAuthService googleAuthService,
         IUnitOfWork unitOfWork,
-        IJwtTokenService jwtTokenService) : IRequestHandler<InstructorGoogleLoginCommand, Result<AuthenticationResponse>>
+        IJwtTokenService jwtTokenService) : IRequestHandler<CenterAdminGoogleLoginCommand, Result<AuthenticationResponse>>
     {
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
-        public async Task<Result<AuthenticationResponse>> Handle(InstructorGoogleLoginCommand request, CancellationToken cancellationToken)
+        public async Task<Result<AuthenticationResponse>> Handle(CenterAdminGoogleLoginCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                // Validate Google ID token
-                var isValidToken = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
-                if (isValidToken != true)
+                var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.GoogleUserInfo.IdToken, cancellationToken);
+
+                if (googleUserInfo == false)
                 {
                     throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
+                }
+
+                // Verify the center exists
+                var centerExists = await _unitOfWork.Repository<Center>().AnyAsync(c => c.Id == request.CenterId && !c.IsDeleted, cancellationToken);
+                if (!centerExists)
+                {
+                    return Result<AuthenticationResponse>.FailureStatusCode("The specified center does not exist.", ErrorType.NotFound);
                 }
 
                 // Check if user already exists
                 var existingUser = await _unitOfWork.GetRepository<IUserRepository>()
                                                          .GetByGoogleEmailAsync(request.GoogleUserInfo.Email, cancellationToken);
 
-                // Reject if the email belongs to a Student account
-                if (existingUser != null && existingUser.Instructor == null)
+                // Reject if the email belongs to a Student or Instructor account without CenterAdmin
+                if (existingUser != null && existingUser.CenterAdmin == null)
                 {
-                    throw new UnauthorizedAccessException("This email is registered as a Student account.");
+                    throw new UnauthorizedAccessException("This email is registered with another role. Please use a different email for the Center Admin account.");
                 }
 
                 bool isNewUser = existingUser == null;
@@ -42,50 +50,58 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
 
                 if (existingUser == null)
                 {
-                    // Check if a user with this SSN already exists
                     var ssnExists = await _unitOfWork.Repository<User>().AnyAsync(u => u.Ssn == request.Ssn, cancellationToken);
                     if (ssnExists)
                     {
                         return Result<AuthenticationResponse>.FailureStatusCode("This SSN is already registered with another account.", ErrorType.Conflict);
                     }
 
-                    // Create new user and instructor
                     user = new User
                     {
                         Id = Guid.NewGuid(),
                         FullName = request.GoogleUserInfo.FullName,
                         Ssn = request.Ssn,
-                        PhoneNumber = request.PhoneNumber,
+                        PhoneNumber = request.GoogleUserInfo.PhoneNumber,
                         GmailExternal = request.GoogleUserInfo.Email,
                         PersonalPictureUrl = request.GoogleUserInfo.PictureUrl,
-                        Gender = request.Gender,
+                        DateOfBirth = request.GoogleUserInfo.DateOfBirth,
+                        Gender = request.GoogleUserInfo.Gender,
+                        LocationMaps = request.LocationMaps,
                         CreatedAt = EgyptTime.UtcNow,
                         UpdatedAt = EgyptTime.UtcNow,
                         IsDeleted = false
                     };
 
-                    var instructor = new Instructor
+                    var centerAdmin = new CenterAdmin
                     {
-                        UserId = user.Id
+                        UserId = user.Id,
+                        CenterId = request.CenterId
                     };
 
-                    user.Instructor = instructor;
+                    user.CenterAdmin = centerAdmin;
+
                     await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
                 }
                 else
                 {
                     user = existingUser;
+
+                    if (user.CenterAdmin != null && user.CenterAdmin.CenterId != request.CenterId)
+                    {
+                        throw new UnauthorizedAccessException(
+                            "This account is already registered as an admin for a different center.");
+                    }
                 }
 
-                // Generate JWT token
-                var token = _jwtTokenService.GenerateToken(
+                // Generate JWT token with "CenterAdmin" role
+                var accesstoken = _jwtTokenService.GenerateToken(
                     userId: user.Id,
                     email: user.GmailExternal ?? string.Empty,
-                    role: "Instructor",
+                    role: "CenterAdmin",
                     fullName: user.FullName
                 );
 
-                var tokenExpiration = DateTime.UtcNow.AddMinutes(1440); // 24 hours
+                var tokenExpiration = DateTime.UtcNow.AddMinutes(15);
 
                 // Generate refresh token
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();
@@ -94,6 +110,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                 // Save all changes in a single transaction
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+                // Return authentication response
                 return Result<AuthenticationResponse>.Success(new AuthenticationResponse
                 {
                     UserId = user.Id,
@@ -101,7 +118,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                     Email = user.GmailExternal ?? string.Empty,
                     ProfilePictureUrl = user.PersonalPictureUrl,
                     IsNewUser = isNewUser,
-                    Token = token,
+                    Token = accesstoken,
                     TokenExpiresAt = tokenExpiration,
                     RefreshToken = refreshToken
                 });

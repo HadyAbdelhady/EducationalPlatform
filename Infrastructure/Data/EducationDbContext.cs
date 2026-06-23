@@ -41,6 +41,13 @@ namespace Infrastructure.Data
         public DbSet<Sheet> Sheets => Set<Sheet>();
         public DbSet<AnswersSheet> AnswersSheets => Set<AnswersSheet>();
         public DbSet<InstructorPreferences> InstructorPreferences => Set<InstructorPreferences>();
+
+        // Center mode entities
+        public DbSet<Center> Centers => Set<Center>();
+        public DbSet<CenterInstructor> CenterInstructors => Set<CenterInstructor>();
+        public DbSet<CenterInstructorEducationYear> CenterInstructorEducationYears => Set<CenterInstructorEducationYear>();
+        public DbSet<CenterAdmin> CenterAdmins => Set<CenterAdmin>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

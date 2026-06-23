@@ -15,9 +15,20 @@ namespace Application.Features.Videos.Queries.GetVideoById
         {
             try
             {
-                var video = _unitOfWork.Repository<Video>().Find(v => v.Id == request.VideoId && v.StudentVideos.Any(sv => sv.StudentId == request.StudentId),
+                Video? video = new();
+                if (request.StudentId is not null)
+                    video = _unitOfWork.Repository<Video>().Find(v => v.Id == request.VideoId &&
+                                                                v.StudentVideos.Any(sv => sv.StudentId == request.StudentId),
                                                                 cancellationToken,
-                                                                sv => sv.StudentVideos).FirstOrDefault();
+                                                         sv => sv.StudentVideos)
+                                                            .FirstOrDefault();
+                else
+                {
+                    video = _unitOfWork.Repository<Video>().Find(v => v.Id == request.VideoId,
+                                                               cancellationToken)
+                                                           .FirstOrDefault();
+
+                }
 
                 if (video is null)
                     return Result<VideoByUserIdResponse>.FailureStatusCode("Video not found.", ErrorType.NotFound);

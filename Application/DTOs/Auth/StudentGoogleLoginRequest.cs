@@ -14,5 +14,9 @@ namespace Application.DTOs.Auth
         public string Gender { get; set; } = string.Empty;
         public Guid EducationYearId { get; set; }
         public string? LocationMaps { get; set; }
+        /// <summary>
+        /// Assigned center for the student. Null in instructor-only mode deployments.
+        /// </summary>
+        public Guid? CenterId { get; set; }
     }
 }

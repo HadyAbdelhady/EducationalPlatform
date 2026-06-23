@@ -468,6 +468,75 @@ namespace Infrastructure.Data
                     .HasForeignKey<InstructorPreferences>(x => x.InstructorId)
                     .HasConstraintName("instructor_preferences_instructor_id_fkey");
             });
+
+            // ── Center mode configuration ─────────────────────────────────────────
+
+            // Center soft-delete filter
+            modelBuilder.Entity<Center>().HasQueryFilter(x => !x.IsDeleted);
+
+            // CenterInstructor — composite PK + FK constraints
+            modelBuilder.Entity<CenterInstructor>(b =>
+            {
+                b.HasKey(e => new { e.CenterId, e.InstructorId });
+
+                b.HasOne(x => x.Center)
+                    .WithMany(x => x.CenterInstructors)
+                    .HasForeignKey(x => x.CenterId)
+                    .HasConstraintName("center_instructors_center_id_fkey");
+
+                b.HasOne(x => x.Instructor)
+                    .WithMany(x => x.CenterInstructors)
+                    .HasForeignKey(x => x.InstructorId)
+                    .HasConstraintName("center_instructors_instructor_id_fkey");
+            });
+
+            // CenterInstructorEducationYear — composite PK + FK constraints
+            modelBuilder.Entity<CenterInstructorEducationYear>(b =>
+            {
+                b.HasKey(e => new { e.CenterId, e.InstructorId, e.EducationYearId });
+
+                b.HasOne(x => x.Center)
+                    .WithMany(x => x.CenterInstructorYears)
+                    .HasForeignKey(x => x.CenterId)
+                    .HasConstraintName("center_instructor_years_center_id_fkey");
+
+                b.HasOne(x => x.Instructor)
+                    .WithMany(x => x.CenterInstructorYears)
+                    .HasForeignKey(x => x.InstructorId)
+                    .HasConstraintName("center_instructor_years_instructor_id_fkey");
+
+                b.HasOne(x => x.EducationYear)
+                    .WithMany()
+                    .HasForeignKey(x => x.EducationYearId)
+                    .HasConstraintName("center_instructor_years_education_year_id_fkey");
+            });
+
+            // Student → Center optional FK
+            modelBuilder.Entity<Student>(b =>
+            {
+                b.HasOne(x => x.Center)
+                    .WithMany(c => c.Students)
+                    .HasForeignKey(s => s.CenterId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("students_center_id_fkey");
+            });
+
+            // CenterAdmin mapping
+            modelBuilder.Entity<CenterAdmin>(b =>
+            {
+                b.HasKey(e => e.UserId);
+
+                b.HasOne(x => x.User)
+                    .WithOne(x => x.CenterAdmin)
+                    .HasForeignKey<CenterAdmin>(x => x.UserId)
+                    .HasConstraintName("center_admins_user_id_fkey");
+
+                b.HasOne(x => x.Center)
+                    .WithMany(x => x.CenterAdmins)
+                    .HasForeignKey(x => x.CenterId)
+                    .HasConstraintName("center_admins_center_id_fkey");
+            });
         }
     }
 }

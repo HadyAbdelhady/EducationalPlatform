@@ -40,12 +40,15 @@ namespace Edu_Base.Controllers
 
             var result = await _mediator.Send(command, cancellationToken);
 
-            _logger.LogInformation(
-                "Instructor Google login successful. UserId: {UserId}, IsNewUser: {IsNewUser}",
-                result.Value.UserId,
-                result.Value.IsNewUser);
+            if (result.IsSuccess)
+            {
+                _logger.LogInformation(
+                    "Instructor Google login successful. UserId: {UserId}, IsNewUser: {IsNewUser}",
+                    result.Value.UserId,
+                    result.Value.IsNewUser);
+            }
 
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
 
         }
 
@@ -65,7 +68,7 @@ namespace Edu_Base.Controllers
 
             _logger.LogInformation("Instructor logout successful for UserId: {UserId}", userId);
 
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
 
         }
 
@@ -77,7 +80,7 @@ namespace Edu_Base.Controllers
 
             var result = await _mediator.Send(loginWithRefreshToken, cancellationToken);
 
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
 
         }
     }

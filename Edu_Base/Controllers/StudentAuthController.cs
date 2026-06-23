@@ -41,13 +41,14 @@ namespace Edu_Base.Controllers
                 DeviceId = request.DeviceId,
                 Ssn = request.Ssn,
                 EducationYearId = request.EducationYearId,
-                LocationMaps = request.LocationMaps
+                LocationMaps = request.LocationMaps,
+                CenterId = request.CenterId  // null in instructor-only mode
             };
 
             var result = await _mediator.Send(command, cancellationToken);
 
 
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
 
         }
 
@@ -66,7 +67,7 @@ namespace Edu_Base.Controllers
 
             _logger.LogInformation("Student logout successful for UserId: {UserId}", userId);
 
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
 
         }
 
@@ -78,7 +79,7 @@ namespace Edu_Base.Controllers
 
             var result = await _mediator.Send(loginWithRefreshToken, cancellationToken);
 
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
 
         }
 

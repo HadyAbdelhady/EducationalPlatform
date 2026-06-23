@@ -20,7 +20,6 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
         {
             try
             {
-                // Validate Google ID token
                 var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.GoogleUserInfo.IdToken, cancellationToken);
 
                 if (googleUserInfo == false)
@@ -43,7 +42,12 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
 
                 if (existingUser == null)
                 {
-                    // Create new user and student
+                    var ssnExists = await _unitOfWork.Repository<User>().AnyAsync(u => u.Ssn == request.Ssn, cancellationToken);
+                    if (ssnExists)
+                    {
+                        return Result<AuthenticationResponse>.FailureStatusCode("This SSN is already registered with another account.", ErrorType.Conflict);
+                    }
+
                     user = new User
                     {
                         Id = Guid.NewGuid(),
@@ -66,7 +70,8 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         DeviceId = request.DeviceId,
                         ParentPhoneNumber = request.ParentPhoneNumber,
                         EducationYearId = request.EducationYearId,
-                        TriedScreenshot = false
+                        TriedScreenshot = false,
+                        CenterId = request.CenterId  // null in instructor-only mode
                     };
 
                     user.Student = student;
@@ -75,7 +80,6 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 }
                 else
                 {
-                    // Validate device ID for existing student
                     user = existingUser;
 
                     if (user.Student != null)
@@ -105,7 +109,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                     fullName: user.FullName
                 );
 
-                var tokenExpiration = DateTime.UtcNow.AddMinutes(1); // 24 hours -> 1440 minutes
+                var tokenExpiration = DateTime.UtcNow.AddMinutes(15);
 
                 // Generate refresh token
                 var refreshToken = _jwtTokenService.GenerateRefreshToken();

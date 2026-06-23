@@ -20,6 +20,35 @@ namespace Edu_Base.Controllers
         private readonly ILogger _logger = logger;
         private readonly ICloudinaryCore _cloudinaryService = cloudinaryService;
 
+        private Guid? GetUserIdFromClaims()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+                return null;
+            return userId;
+        }
+
+        private string GetUserRoleFromClaims()
+        {
+            var roleClaim = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (string.IsNullOrWhiteSpace(roleClaim))
+                throw new UnauthorizedAccessException("User role claim is missing.");
+            return roleClaim;
+        }
+
+        private bool IsStudent()
+        {
+            try
+            {
+                var role = GetUserRoleFromClaims();
+                return role.Equals("Student", StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         #region Direct Upload Endpoints
 
         /// <summary>
@@ -111,16 +140,15 @@ namespace Edu_Base.Controllers
 
         #region Query Endpoints
 
+
+
         [HttpGet]
         public async Task<IActionResult> GetAllVideos([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
-            var StudentId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid StudentId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
-
             var query = new GetAllVideosQuery
             {
                 GetAllEntityRequestSkeleton = request,
-                StudentId = StudentId
+                StudentId = GetUserIdFromClaims()
             };
 
             var result = await _mediator.Send(query, cancellationToken);
@@ -130,8 +158,9 @@ namespace Edu_Base.Controllers
         [HttpGet("{videoId:guid}")]
         public async Task<IActionResult> GetVideoById(Guid videoId, CancellationToken cancellationToken)
         {
-            var StudentId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid StudentId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            Guid? StudentId = null;
+            if (IsStudent())
+                StudentId = GetUserIdFromClaims();
 
             var query = new GetVideoByIdQuery { VideoId = videoId, StudentId = StudentId };
 

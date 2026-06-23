@@ -120,6 +120,7 @@ namespace Edu_Base
             builder.Services.AddScoped<IStudentEducationYearProvider, StudentEducationYearProvider>();
             builder.Services.AddScoped<Infrastructure.Progress.EnrollmentProgressHelper>();
             builder.Services.AddScoped<IInstructorContentScopeService, Infrastructure.Services.InstructorContentScopeService>();
+            builder.Services.AddScoped<ICenterContentScopeService, Infrastructure.Services.CenterContentScopeService>();
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>

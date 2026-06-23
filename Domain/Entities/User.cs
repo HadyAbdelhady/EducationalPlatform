@@ -50,6 +50,7 @@ namespace Domain.Entities
 
         public Student? Student { get; set; }
         public Instructor? Instructor { get; set; }
+        public CenterAdmin? CenterAdmin { get; set; }
     }
 }
 

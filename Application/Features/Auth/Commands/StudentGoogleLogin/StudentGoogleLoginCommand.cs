@@ -11,12 +11,13 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
         public Guid EducationYearId { get; set; }
         public string Ssn { get; set; } = string.Empty;
         public string? LocationMaps { get; set; }
+        /// Assigned center for the new student. Null in instructor-only mode deployments.
+        public Guid? CenterId { get; set; }
         public GoogleUserInfo GoogleUserInfo { get; set; } = null!;
     }
 
     public class GoogleUserInfo
     {
-        //public string GoogleId { get; set; } = string.Empty;
         public string IdToken { get; set; } = string.Empty;
 
         public string Email { get; set; } = string.Empty;
@@ -25,7 +26,5 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
         public string PhoneNumber { get; set; } = string.Empty;
         public string Gender { get; set; } = string.Empty;
         public DateOnly DateOfBirth { get; set; }
-
-        //public bool EmailVerified { get; set; }
     }
 }

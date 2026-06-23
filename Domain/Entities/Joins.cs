@@ -133,6 +133,55 @@ namespace Domain.Entities
         public Instructor Instructor { get; set; } = null!;
         public Section Section { get; set; } = null!;
     }
+
+    // ── Center junction tables ────────────────────────────────────────────
+
+    [Table("center_instructors", Schema = "public")]
+    public class CenterInstructor
+    {
+        [Column("center_id")]
+        [ForeignKey(nameof(Center))]
+        public Guid CenterId { get; set; }
+
+        [Column("instructor_id")]
+        [ForeignKey(nameof(Instructor))]
+        public Guid InstructorId { get; set; }
+
+        [Column("joined_at")]
+        public DateTimeOffset JoinedAt { get; set; } = EgyptTime.UtcNow;
+
+        [Column("is_deleted")]
+        public bool IsDeleted { get; set; } = false;
+
+        public Center Center { get; set; } = null!;
+        public Instructor Instructor { get; set; } = null!;
+    }
+
+    [Table("center_instructor_education_years", Schema = "public")]
+    public class CenterInstructorEducationYear
+    {
+        [Column("center_id")]
+        [ForeignKey(nameof(Center))]
+        public Guid CenterId { get; set; }
+
+        [Column("instructor_id")]
+        [ForeignKey(nameof(Instructor))]
+        public Guid InstructorId { get; set; }
+
+        [Column("education_year_id")]
+        [ForeignKey(nameof(EducationYear))]
+        public Guid EducationYearId { get; set; }
+
+        [Column("is_active")]
+        public bool IsActive { get; set; } = true;
+
+        [Column("assigned_at")]
+        public DateTimeOffset AssignedAt { get; set; } = EgyptTime.UtcNow;
+
+        public Center Center { get; set; } = null!;
+        public Instructor Instructor { get; set; } = null!;
+        public EducationYear EducationYear { get; set; } = null!;
+    }
 }
 
 

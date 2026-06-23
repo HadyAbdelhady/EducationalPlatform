@@ -27,6 +27,8 @@ namespace Domain.Entities
         public ICollection<Exam> Exams { get; set; } = [];
         public ICollection<Sheet> Sheets { get; set; } = [];
         public ICollection<EducationYear> EducationYears { get; set; } = [];
+        public ICollection<CenterInstructor> CenterInstructors { get; set; } = [];
+        public ICollection<CenterInstructorEducationYear> CenterInstructorYears { get; set; } = [];
     }
 }
 

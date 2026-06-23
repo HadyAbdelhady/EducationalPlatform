@@ -26,9 +26,15 @@ namespace Domain.Entities
         [ForeignKey(nameof(EducationYear))]
         public Guid EducationYearId { get; set; }
 
+        [Column("center_id")]
+        [ForeignKey(nameof(Center))]
+        public Guid? CenterId { get; set; }
+
         public User User { get; set; } = null!;
 
         public EducationYear EducationYear { get; set; } = null!;
+
+        public Center? Center { get; set; }
         public ICollection<StudentCourse> StudentCourses { get; set; } = [];
         public ICollection<StudentSection> StudentSections { get; set; } = [];
         public ICollection<StudentVideo> StudentVideos { get; set; } = [];

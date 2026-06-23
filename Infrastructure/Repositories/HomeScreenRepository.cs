@@ -237,7 +237,7 @@ namespace Infrastructure.Repositories
             var enrollmentsList = await enrollments.ToListAsync(cancellationToken);
 
             response.RecentActivities = [.. videosList.Concat(examsList).Concat(sheetsList).Concat(enrollmentsList)
-                .OrderByDescending(a => a.Timestamp)
+                //.OrderByDescending()
                 .Take(10)];
 
             var instructorNow = EgyptTime.UtcNow;
