@@ -1,6 +1,7 @@
 using Application.DTOs.Auth;
 using Application.Interfaces;
 using Application.ResultWrapper;
+using Domain.enums;
 using MediatR;
 
 namespace Application.Features.Auth.Queries.CheckUserExists
@@ -19,7 +20,7 @@ namespace Application.Features.Auth.Queries.CheckUserExists
                 if (user == null)
                 {
                     // User does not exist, return null
-                    return Result<CheckUserExistsResponse?>.Success(null);
+                    return Result<CheckUserExistsResponse?>.FailureStatusCode("User does not exist", ErrorType.NotFound);
                 }
 
                 string role = "User";
