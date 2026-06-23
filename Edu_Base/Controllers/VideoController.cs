@@ -32,7 +32,7 @@ namespace Edu_Base.Controllers
         {
             var roleClaim = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
             if (string.IsNullOrWhiteSpace(roleClaim))
-                throw new UnauthorizedAccessException("User role claim is missing.");
+                return string.Empty;
             return roleClaim;
         }
 

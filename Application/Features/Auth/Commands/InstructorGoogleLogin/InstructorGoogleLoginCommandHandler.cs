@@ -22,7 +22,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
             {
                 // Validate Google ID token
                 var isValidToken = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
-                if (isValidToken != true)
+                if (isValidToken == false)
                 {
                     throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
                 }
