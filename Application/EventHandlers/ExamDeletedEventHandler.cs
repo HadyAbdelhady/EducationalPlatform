@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Events;
 using MediatR;
@@ -32,11 +32,8 @@ namespace Application.EventHandlers
             course.NumberOfExams--;
             section.NumberOfExams--;
 
-            // Apply update (EF Core tracks changes if using change tracking)
+            // Apply update — SaveChangesAsync is called by the command handler after Publish
             courseRepo.Update(course);
-
-            // Save via UnitOfWork if needed
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 

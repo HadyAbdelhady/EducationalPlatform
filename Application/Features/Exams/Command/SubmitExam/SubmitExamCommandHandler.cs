@@ -63,8 +63,9 @@ namespace Application.Features.Exams.Command.SubmitExam
             examResult.UpdatedAt = EgyptTime.UtcNow;
             studentExamResultRepository.Update(examResult);
 
-            // Add student answers
-            foreach (var answer in request.Answers)
+            // Add student answers — only for question IDs that belong to this exam
+            var validQuestionIds = ExamModelAnswer.Questions.Select(q => q.QuestionId).ToHashSet();
+            foreach (var answer in request.Answers.Where(a => validQuestionIds.Contains(a.QuestionId)))
             {
                 examResult.StudentSubmissions.Add(new StudentAnswers
                 {
@@ -90,14 +91,10 @@ namespace Application.Features.Exams.Command.SubmitExam
             });
         }
 
-        private async Task<ExamModelAnswer> CollectExamModelAnswer(Guid examId, CancellationToken cancellationToken)
+        private async Task<ExamModelAnswer?> CollectExamModelAnswer(Guid examId, CancellationToken cancellationToken)
         {
             var examRepository = unitOfWork.GetRepository<IExamRepository>();
-
-            ExamModelAnswer? exam = await examRepository.GetExamWithQuestionsAndAnswersByIdAsync(examId, cancellationToken)
-                                            ?? throw new Exception("Exam not found");
-
-            return exam;
+            return await examRepository.GetExamWithQuestionsAndAnswersByIdAsync(examId, cancellationToken);
         }
     }
 

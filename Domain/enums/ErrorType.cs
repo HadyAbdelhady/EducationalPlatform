@@ -1,4 +1,4 @@
-﻿namespace Domain.enums
+namespace Domain.enums
 {
     public enum ErrorType
     {
@@ -6,6 +6,7 @@
         NotFound = 404,
         BadRequest = 400,
         UnAuthorized = 401,
+        Forbidden = 403,
         Validation = 422,
         Conflict = 409,
         InternalServerError = 500

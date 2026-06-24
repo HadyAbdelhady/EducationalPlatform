@@ -1,19 +1,16 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
-using Domain.Events;
 using MediatR;
 
 namespace Application.Features.Payment.StudentBuys
 {
     public class BuyingCommandHandler(
         IUnitOfWork unitOfWork,
-        IMediator mediator,
         IStudentEducationYearProvider studentEducationYearProvider) : IRequestHandler<BuyingCommand, Result<StudentBuyResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IMediator _mediator = mediator;
         private readonly IStudentEducationYearProvider _studentEducationYearProvider = studentEducationYearProvider;
 
         public async Task<Result<StudentBuyResponse>> Handle(BuyingCommand request, CancellationToken cancellationToken)
@@ -94,16 +91,6 @@ namespace Application.Features.Payment.StudentBuys
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                 }
             }
-
-            PaymentInitiatedEventDto paymentData = new()
-            {
-                //PaymentId = Guid.NewGuid(),
-                StudentId = request.StudentId,
-                EntityId = request.EntityId,
-                EntityType = request.EntityToBuy == EntityToBuy.Course ? EntityToBuy.Course : EntityToBuy.Section
-            };
-            await _mediator.Publish(new PaymentInitiatedEvent(paymentData), cancellationToken);
-
 
             var response = new StudentBuyResponse
             {

@@ -41,6 +41,6 @@ namespace Domain.Entities
         public Student Student { get; set; } = null!;
         public Exam Exam { get; set; } = null!;
 
-        public ICollection<StudentAnswers> StudentSubmissions { get; set; } = null!;
+        public ICollection<StudentAnswers> StudentSubmissions { get; set; } = [];
     }
 }
