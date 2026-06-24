@@ -13,10 +13,11 @@ namespace Application.Features.Videos.Queries.GetVideoById
 
         public async Task<Result<VideoByUserIdResponse>> Handle(GetVideoByIdQuery request, CancellationToken cancellationToken)
         {
-            // Load the video with its sheets (no StudentVideos filter here)
+            // Load the video with its sheets and student progress rows
             var video = await _unitOfWork.Repository<Video>()
                 .FirstOrDefaultAsync(v => v.Id == request.VideoId, cancellationToken,
-                    v => v.Sheets);
+                    v => v.Sheets,
+                    v => v.StudentVideos);
 
             if (video is null)
                 return Result<VideoByUserIdResponse>.FailureStatusCode("Video not found.", ErrorType.NotFound);
@@ -36,13 +37,9 @@ namespace Application.Features.Videos.Queries.GetVideoById
                         "You are not enrolled in the course or section that contains this video.",
                         ErrorType.Forbidden);
 
-                // Load progress from student_videos (row may not exist yet if student never updated progress)
-                var studentVideo = await _unitOfWork.Repository<StudentVideo>()
-                    .FirstOrDefaultAsync(
-                        sv => sv.StudentId == request.StudentId.Value && sv.VideoId == request.VideoId,
-                        cancellationToken);
-
-                progress = studentVideo?.Progress;
+                progress = video.StudentVideos
+                    .FirstOrDefault(sv => sv.StudentId == request.StudentId.Value)
+                    ?.Progress;
             }
 
             var response = new VideoByUserIdResponse

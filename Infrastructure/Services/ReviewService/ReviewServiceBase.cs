@@ -1,12 +1,13 @@
 using Application.DTOs.Review;
 using Application.HelperFunctions;
 using Application.Interfaces;
-using Domain;
 using Application.Interfaces.BaseFilters;
 using Application.ResultWrapper;
+using Domain;
 using Domain.Entities;
 using Domain.enums;
 using Domain.Interfaces;
+using MediatR;
 
 namespace Infrastructure.Services.ReviewService
 {
@@ -20,16 +21,8 @@ namespace Infrastructure.Services.ReviewService
         {
             try
             {
-                var student = await _unitOfWork.GetRepository<IUserRepository>().DoesStudentExistAsync(request.StudentId, cancellationToken);
-                if (!student)
-                {
-                    return Result<ReviewResponse>.FailureStatusCode("Student not found.", ErrorType.NotFound);
-                }
-
-                var reviewAlreadyExists = await _unitOfWork.Repository<TReview>().AnyAsync(r => r.StudentId == request.StudentId &&
-                                                                                           r.EntityId == request.EntityId,
-                                                                                           cancellationToken);
-                if (reviewAlreadyExists)
+                var reviewExistsResult = await IsReviewExists(request.StudentId, request.EntityId, cancellationToken);
+                if (reviewExistsResult.IsSuccess && reviewExistsResult.Value != null)
                 {
                     return Result<ReviewResponse>.FailureStatusCode("You have already submitted a review.", ErrorType.BadRequest);
                 }
@@ -123,6 +116,36 @@ namespace Infrastructure.Services.ReviewService
                 StarRating = request.StarRating,
                 Comment = request.Comment,
             });
+        }
+
+
+        public virtual async Task<Result<ReviewResponse?>> IsReviewExists(Guid studentId, Guid entityId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var student = await _unitOfWork.GetRepository<IUserRepository>().DoesStudentExistAsync(studentId, cancellationToken);
+                if (!student)
+                {
+                    return Result<ReviewResponse?>.FailureStatusCode("Student not found.", ErrorType.NotFound);
+                }
+
+                var reviewExists = await _unitOfWork.Repository<TReview>().FirstOrDefaultAsync(r => r.StudentId == studentId && r.EntityId == entityId, cancellationToken);
+                if (reviewExists is null)
+                {
+                    return Result<ReviewResponse?>.FailureStatusCode("Review not found.", ErrorType.NotFound);
+                }
+                return Result<ReviewResponse?>.Success(new ReviewResponse
+                {
+                    Comment = reviewExists.Comment,
+                    ReviewId = reviewExists.Id,
+                    StarRating = Convert.ToInt32(reviewExists.StarRating)
+                });
+            }
+            catch (Exception ex)
+            {
+                return Result<ReviewResponse?>.FailureStatusCode($"An error occurred while checking review existence: {ex.Message}", ErrorType.InternalServerError);
+
+            }
         }
 
         // Centralized rating update method for all review types

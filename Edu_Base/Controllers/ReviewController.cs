@@ -4,6 +4,7 @@ using Application.Features.Review.Query.GetReviewById;
 using Application.Features.Reviews.Commands.CreateReview;
 using Application.Features.Reviews.Commands.DeleteReview;
 using Application.Features.Reviews.Commands.UpdateReview;
+using Application.Features.Reviews.Query.CheckReviewExists;
 using Application.Features.Reviews.Query.GetAllReviews;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -111,6 +112,22 @@ namespace Edu_Base.Controllers
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
+        [HttpGet("CheckReviewExists")]
+        public async Task<IActionResult> CheckReviewExists([FromQuery] CheckReviewExistsQuery request, CancellationToken cancellationToken)
+        {
+            if (request.EntityId == Guid.Empty || request.StudentId == Guid.Empty)
+            {
+                return BadRequest("Entity ID and Student ID cannot be empty");
+            }
+            var query = new CheckReviewExistsQuery
+            {
+                EntityId = request.EntityId,
+                StudentId = request.StudentId,
+                EntityType = request.EntityType
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
     }
 
 }
