@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Exam;
+using Application.DTOs.Exam;
 using Application.HelperFunctions;
 using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
@@ -37,8 +37,7 @@ namespace Application.Features.Exams.Query.GetAllStudentExams
                 StartTime = e.StartTime,
                 EndTime = e.EndTime,
                 IsTaken = e.ExamResults.Any(se =>
-                    se.StudentId == request.UserId &&
-                    se.Status != ExamResultStatus.NotStarted),
+                    se.StudentId == request.UserId),
                 TotalMark = e.TotalMark,
                 NumberOfQuestions = e.NumberOfQuestions,
                 DurationInMinutes = e.DurationInMinutes,

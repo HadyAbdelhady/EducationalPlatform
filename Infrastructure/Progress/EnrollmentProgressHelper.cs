@@ -282,14 +282,15 @@ namespace Infrastructure.Progress
             if (courseIds.Count == 0)
                 return [];
 
-            var query = _context.StudentSections
+            var explicitSectionsQuery = _context.StudentSections
                 .AsNoTracking()
-                .Where(ss => studentIds.Contains(ss.StudentId) && courseIds.Contains(ss.Section.CourseId));
+                .Where(ss => studentIds.Contains(ss.StudentId) && courseIds.Contains(ss.Section.CourseId))
+                .Where(ss => !_context.StudentCourses.Any(sc => sc.StudentId == ss.StudentId && sc.CourseId == ss.Section.CourseId));
 
             if (scope.AllowedSectionIds is not null)
-                query = query.Where(ss => scope.AllowedSectionIds.Contains(ss.SectionId));
+                explicitSectionsQuery = explicitSectionsQuery.Where(ss => scope.AllowedSectionIds.Contains(ss.SectionId));
 
-            return await query
+            var explicitSections = await explicitSectionsQuery
                 .Select(ss => new SubscribedSectionItem
                 {
                     StudentId = ss.StudentId,
@@ -300,6 +301,26 @@ namespace Infrastructure.Progress
                     TotalVideoCount = ss.Section.NumberOfVideos
                 })
                 .ToListAsync(cancellationToken);
+
+            var fullCourseSectionsQuery = _context.StudentCourses
+                .AsNoTracking()
+                .Where(sc => studentIds.Contains(sc.StudentId) && courseIds.Contains(sc.CourseId))
+                .SelectMany(sc => sc.Course!.Sections.Select(sec => new SubscribedSectionItem
+                {
+                    StudentId = sc.StudentId,
+                    SectionId = sec.Id,
+                    CourseId = sec.CourseId,
+                    SectionName = sec.Name,
+                    WatchedCount = sec.Videos.Count(v => v.StudentVideos.Any(sv => sv.StudentId == sc.StudentId && sv.Progress == 100)),
+                    TotalVideoCount = sec.NumberOfVideos
+                }));
+
+            if (scope.AllowedSectionIds is not null)
+                fullCourseSectionsQuery = fullCourseSectionsQuery.Where(s => scope.AllowedSectionIds.Contains(s.SectionId));
+
+            var fullCourseSections = await fullCourseSectionsQuery.ToListAsync(cancellationToken);
+
+            return explicitSections.Concat(fullCourseSections).ToList();
         }
 
         private async Task<List<ExamProgressRow>> LoadExamProgressRowsAsync(

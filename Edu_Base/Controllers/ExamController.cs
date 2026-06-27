@@ -71,10 +71,10 @@ namespace Edu_Base.Controllers
         [HttpGet("GetAllExams")]
         public async Task<IActionResult> GetAllExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
-            var userId = Guid.Parse(
-                User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
-            //var userId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            //var userId = Guid.Parse(
+            //    User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+            //);
+            var userId = Guid.Parse("17debbf6-44bb-4690-aced-673781a77f56");
 
             var query = new GetAllExamsQuery
             {

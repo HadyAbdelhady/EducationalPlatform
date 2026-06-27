@@ -47,7 +47,7 @@ namespace Application.Features.Exams.Command.GenerateExam
             }
             else if (examStartUtc > EgyptTime.UtcNow)
             {
-                examStatus = ExamStatus.Scheduled; 
+                examStatus = ExamStatus.Scheduled;
             }
 
             Exam newExam = new()
@@ -100,49 +100,6 @@ namespace Application.Features.Exams.Command.GenerateExam
             await _mediator.Publish(new ExamAddedEvent(request.CourseId, request.SectionId), cancellationToken);
 
             await _unitOfWork.Repository<Exam>().AddAsync(newExam, cancellationToken);
-
-            var studentExamResultRepository = _unitOfWork.Repository<StudentExamResult>();
-            List<Guid> enrolledStudentIds = [];
-
-            // Get students enrolled in the section.
-            if (request.SectionId.HasValue)
-            {
-                var sectionRepository = _unitOfWork.Repository<Section>();
-                var section = await sectionRepository
-                    .FirstOrDefaultAsync(s => s.Id == request.SectionId, cancellationToken, s => s.StudentSections);
-
-                if (section != null)
-                {
-                    enrolledStudentIds = [.. section.StudentSections
-                        .Select(ss => ss.StudentId)
-                        .Distinct()];
-                }
-            }
-            else
-            {
-                var courseRepository = _unitOfWork.Repository<Course>();
-                var course = await courseRepository
-                    .FirstOrDefaultAsync(c => c.Id == request.CourseId, cancellationToken, c => c.StudentCourses);
-
-                if (course != null)
-                {
-                    enrolledStudentIds = [.. course.StudentCourses
-                        .Select(sc => sc.StudentId)
-                        .Distinct()];
-                }
-            }
-
-            var studentExamResults = enrolledStudentIds.Select(studentId => new StudentExamResult
-            {
-                Id = Guid.NewGuid(),
-                ExamId = newExam.Id,
-                StudentId = studentId,
-                Status = ExamResultStatus.NotStarted,
-                CreatedAt = EgyptTime.UtcNow
-            }).ToList();
-
-            if (studentExamResults.Count != 0)
-                await studentExamResultRepository.AddRangeAsync(studentExamResults, cancellationToken);
 
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

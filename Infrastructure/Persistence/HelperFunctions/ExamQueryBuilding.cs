@@ -14,7 +14,7 @@ namespace Infrastructure.Persistence.HelperFunctions
                     q.Where(e => e.Course != null && e.Course.EducationYearId == Guid.Parse(value)),
 
                 ["courseid"] = (q, value) =>
-                    q.Where(e => e.CourseId == Guid.Parse(value)),
+                    q.Where(e => e.CourseId == Guid.Parse(value) && e.SectionId == null),
 
                 ["instructorid"] = (q, value) =>
                     q.Where(e => e.InstructorId == Guid.Parse(value)),
@@ -30,8 +30,10 @@ namespace Infrastructure.Persistence.HelperFunctions
                         r.Status == Enum.Parse<ExamResultStatus>(value, true))),
 
 
-                ["examtype"] = (q, value) => q.Where(e => e.ExamType.ToString()
-                                                                     .Equals(value, StringComparison.OrdinalIgnoreCase)),
+                ["examtype"] = (q, value) =>
+                    Enum.TryParse<ExamType>(value, true, out var type)
+                        ? q.Where(e => e.ExamType == type)
+                        : q.Where(e => false),
 
                 ["israndomized"] = (q, value) => q.Where(e => e.IsRandomized == bool.Parse(value)),
 
@@ -39,11 +41,18 @@ namespace Infrastructure.Persistence.HelperFunctions
 
                 ["endtime"] = (q, value) => q.Where(e => e.EndTime <= DateTimeOffset.Parse(value)),
 
-                ["name"] = (q, value) => q.Where(e => e.Name.Contains(value, StringComparison.OrdinalIgnoreCase)),
+                ["name"] = (q, value) => q.Where(e => e.Name.Contains(value, StringComparison.Ordinal)),
 
                 ["studentid"] = (q, value) =>
-                    q.Where(e => e.ExamResults.Any(r => r.StudentId == Guid.Parse(value)))
-                     .Include(e => e.ExamResults.Where(r => r.StudentId == Guid.Parse(value)))
+                    q.Where(e =>
+                        e.Course!.StudentCourses.Any(sc => sc.StudentId == Guid.Parse(value)) ||
+                        (e.SectionId != null && e.Section!.StudentSections.Any(ss => ss.StudentId == Guid.Parse(value))))
+                     .Include(e => e.ExamResults.Where(r => r.StudentId == Guid.Parse(value))),
+
+                ["examstatus"] = (q, value) =>
+                    Enum.TryParse<ExamStatus>(value, true, out var status)
+                        ? q.Where(e => e.Status == status)
+                        : q.Where(e => false),
             };
 
         public Dictionary<string, Func<IQueryable<Exam>, bool, IOrderedQueryable<Exam>>> Sorts { get; }

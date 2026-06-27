@@ -21,7 +21,7 @@ namespace Infrastructure.Services.ReviewService
         {
             try
             {
-                var reviewExistsResult = await IsReviewExists(request.StudentId, request.EntityId, cancellationToken);
+                var reviewExistsResult = await DoesReviewExist(request.StudentId, request.EntityId, cancellationToken);
                 if (reviewExistsResult.IsSuccess && reviewExistsResult.Value != null)
                 {
                     return Result<ReviewResponse>.FailureStatusCode("You have already submitted a review.", ErrorType.BadRequest);
@@ -119,7 +119,7 @@ namespace Infrastructure.Services.ReviewService
         }
 
 
-        public virtual async Task<Result<ReviewResponse?>> IsReviewExists(Guid studentId, Guid entityId, CancellationToken cancellationToken = default)
+        public virtual async Task<Result<ReviewResponse?>> DoesReviewExist(Guid studentId, Guid entityId, CancellationToken cancellationToken = default)
         {
             try
             {

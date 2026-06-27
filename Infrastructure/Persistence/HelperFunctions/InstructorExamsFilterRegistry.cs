@@ -1,5 +1,6 @@
 using Application.DTOs.Exam;
 using Application.Interfaces.BaseFilters;
+using Domain.enums;
 
 namespace Infrastructure.Persistence.HelperFunctions
 {
@@ -9,8 +10,14 @@ namespace Infrastructure.Persistence.HelperFunctions
         {
             ["courseid"] = (q, value) => q.Where(e => e.CourseId == Guid.Parse(value)),
             ["sectionid"] = (q, value) => q.Where(e => e.SectionId == Guid.Parse(value)),
-            ["examstatus"] = (q, value) => q.Where(e => e.ExamStatus.ToString().Equals(value, StringComparison.OrdinalIgnoreCase)),
-            ["examtype"] = (q, value) => q.Where(e => e.ExamType.ToString().Equals(value, StringComparison.OrdinalIgnoreCase)),
+            ["examstatus"] = (q, value) =>
+                Enum.TryParse<ExamStatus>(value, true, out var status)
+                    ? q.Where(e => e.ExamStatus == status)
+                    : q.Where(e => false),
+            ["examtype"] = (q, value) =>
+                Enum.TryParse<ExamType>(value, true, out var type)
+                    ? q.Where(e => e.ExamType == type)
+                    : q.Where(e => false),
             ["name"] = (q, value) => q.Where(e => e.Name.Contains(value, StringComparison.OrdinalIgnoreCase)),
             ["israndomized"] = (q, value) => q.Where(e => e.IsRandomized == bool.Parse(value)),
             ["starttime"] = (q, value) => q.Where(e => e.StartTime >= DateTimeOffset.Parse(value)),

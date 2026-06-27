@@ -135,10 +135,14 @@ namespace Infrastructure.Repositories
                     SectionName = e.Section!.Name,
 
                     // Calculate exam statistics
-                    StudentCount = e.ExamResults.Count,
+                    StudentCount = e.SectionId != null 
+                        ? e.Section!.StudentSections.Count(ss => !e.Course!.StudentCourses.Any(sc => sc.StudentId == ss.StudentId)) + e.Course!.StudentCourses.Count
+                        : e.Course!.StudentCourses.Count,
                     PassedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.Passed),
                     FailedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.Failed),
-                    NotStartedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.NotStarted),
+                    NotStartedCount = (e.SectionId != null 
+                        ? e.Section!.StudentSections.Count(ss => !e.Course!.StudentCourses.Any(sc => sc.StudentId == ss.StudentId)) + e.Course!.StudentCourses.Count
+                        : e.Course!.StudentCourses.Count) - e.ExamResults.Count(r => r.Status != ExamResultStatus.NotStarted),
                     InProgressCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.InProgress)
                 }));
         }

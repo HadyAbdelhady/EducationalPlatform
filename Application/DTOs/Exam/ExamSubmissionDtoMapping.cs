@@ -11,6 +11,7 @@ namespace Application.DTOs.Exam
         int NumberOfQuestions,
         int PassMarkPercentage,
         string CourseName,
+        int? Duration,
         string SectionName)
     {
         public static ExamSubmissionProjectionContext FromExam(Domain.Entities.Exam exam) => new(
@@ -20,6 +21,7 @@ namespace Application.DTOs.Exam
             exam.NumberOfQuestions,
             exam.PassMarkPercentage,
             exam.Course?.Name ?? string.Empty,
+            exam.DurationInMinutes,
             exam.Section?.Name ?? string.Empty);
     }
 

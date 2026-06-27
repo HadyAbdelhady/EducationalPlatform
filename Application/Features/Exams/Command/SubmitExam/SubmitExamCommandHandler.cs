@@ -39,17 +39,13 @@ namespace Application.Features.Exams.Command.SubmitExam
 
             if (examResult == null)
             {
-                return Result<SubmissionResponse>.FailureStatusCode("Exam not found for this student", ErrorType.NotFound);
+                return Result<SubmissionResponse>.FailureStatusCode("Exam has not been started yet", ErrorType.NotFound);
             }
 
             // Check if exam is in progress (student must have started the exam)
             if (examResult.Status != ExamResultStatus.InProgress)
             {
-                return Result<SubmissionResponse>.FailureStatusCode(
-                    examResult.Status == ExamResultStatus.NotStarted
-                        ? "Exam has not been started yet"
-                        : "Exam has already been submitted",
-                    ErrorType.Conflict);
+                return Result<SubmissionResponse>.FailureStatusCode("Exam has already been submitted", ErrorType.Conflict);
             }
 
             // Calculate marks

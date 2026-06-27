@@ -46,7 +46,9 @@ namespace Infrastructure.Repositories
 
                             // Latest videos - scope to courses in student's education year
                             Videos = _context.Videos
-                                .Where(v => v.Section != null && v.Section.Course.EducationYearId == studentEducationYearId)
+                                .Where(v => v.Section != null 
+                                        && v.Section.Course.EducationYearId == studentEducationYearId 
+                                        && v.Section.StudentSections.Any(ss => ss.StudentId == studentId))
                                 .OrderByDescending(v => v.CreatedAt)
                                 .Select(v => new LatestVideoDto
                                 {

@@ -12,7 +12,7 @@ namespace Application.Features.Reviews.Query.CheckReviewExists
         public async Task<Result<ReviewResponse?>> Handle(CheckReviewExistsQuery request, CancellationToken cancellationToken)
         {
             IReviewService reviewService = _reviewServiceFactory.GetReviewService(request.EntityType);
-            return await reviewService.IsReviewExists(request.StudentId, request.EntityId, cancellationToken);
+            return await reviewService.DoesReviewExist(request.StudentId, request.EntityId, cancellationToken);
         }
     }
 }
