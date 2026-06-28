@@ -1,19 +1,20 @@
 using Application.DTOs.Exam;
-using Application.ResultWrapper;
+using Application.Features.Exams.Command.ChangeExamStatus;
+using Application.HelperFunctions;
 using Application.Interfaces;
+using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 using Domain.Events;
 using MediatR;
-using Application.HelperFunctions;
 
 namespace Application.Features.Exams.Command.GenerateExam
 {
-    public class GenerateExamCommandHandler(IUnitOfWork unitOfWork, IMediator mediator) : IRequestHandler<GenerateExamCommand, Result<GenerateExamResponse>>
+    public class GenerateExamCommandHandler(IUnitOfWork unitOfWork, IMediator mediator, IScheduler scheduler) : IRequestHandler<GenerateExamCommand, Result<GenerateExamResponse>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMediator _mediator = mediator;
-
+        private readonly IScheduler _scheduler = scheduler;
 
         public async Task<Result<GenerateExamResponse>> Handle(GenerateExamCommand request, CancellationToken cancellationToken)
         {
@@ -42,13 +43,13 @@ namespace Application.Features.Exams.Command.GenerateExam
 
             ExamStatus examStatus = ExamStatus.Draft;
             if (examStartUtc <= EgyptTime.UtcNow && examEndUtc >= EgyptTime.UtcNow)
-            {
                 return Result<GenerateExamResponse>.FailureStatusCode("Start time must be in the future.", ErrorType.BadRequest);
-            }
+            
             else if (examStartUtc > EgyptTime.UtcNow)
-            {
                 examStatus = ExamStatus.Scheduled;
-            }
+            
+            if (examEndUtc <= EgyptTime.UtcNow)
+                return Result<GenerateExamResponse>.FailureStatusCode("End time must be in the future.", ErrorType.BadRequest);
 
             Exam newExam = new()
             {
@@ -97,11 +98,14 @@ namespace Application.Features.Exams.Command.GenerateExam
                     );
                 }
             }
+            
             await _mediator.Publish(new ExamAddedEvent(request.CourseId, request.SectionId), cancellationToken);
 
             await _unitOfWork.Repository<Exam>().AddAsync(newExam, cancellationToken);
 
-
+            await _scheduler.ScheduleAsync(new ChangeExamStatusCommand(newExam.Id, ExamStatus.Finished),
+                                                                    examEndUtc,
+                                                                    cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result<GenerateExamResponse>.Success(new GenerateExamResponse
             {

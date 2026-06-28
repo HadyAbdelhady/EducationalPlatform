@@ -23,8 +23,16 @@ namespace Edu_Base.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpPatch("Start")]
-        public async Task<IActionResult> StartExam([FromBody] StartExamCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> StartExam(Guid ExamId, CancellationToken cancellationToken)
         {
+            var UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            //var UserId = Guid.Parse("1c231d0f-006e-47ac-a589-59f42f63c94c") ;
+            var command = new StartExamCommand
+            {
+                ExamId = ExamId,
+                StudentId = UserId
+            };
+
             var result = await _mediator.Send(command, cancellationToken);
             return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
         }
@@ -71,10 +79,10 @@ namespace Edu_Base.Controllers
         [HttpGet("GetAllExams")]
         public async Task<IActionResult> GetAllExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
-            //var userId = Guid.Parse(
-            //    User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            //);
-            var userId = Guid.Parse("17debbf6-44bb-4690-aced-673781a77f56");
+            var userId = Guid.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+            );
+            //var userId = Guid.Parse("17debbf6-44bb-4690-aced-673781a77f56");
 
             var query = new GetAllExamsQuery
             {
@@ -89,11 +97,11 @@ namespace Edu_Base.Controllers
         [HttpGet("GetExamSubmissions")]
         public async Task<IActionResult> GetExamSubmissions([FromQuery] GetStudentsSubmittionsForExamRequest request, CancellationToken cancellationToken)
         {
-            //var Instructor = Guid.Parse(
-            //    User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            //);
+            var Instructor = Guid.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+            );
 
-            var Instructor = Guid.Parse("57786109-6eea-45f6-9f6f-a45dbcc1b62f");
+            //var Instructor = Guid.Parse("57786109-6eea-45f6-9f6f-a45dbcc1b62f");
 
 
             var query = new GetExamSubmissionsListQuery

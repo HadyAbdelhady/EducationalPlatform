@@ -1,21 +1,24 @@
-using Application.DTOs.Media;
 using Application.DTOs.Exam;
+using Application.DTOs.Media;
 using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
 using CloudinaryDotNet;
 using Domain.Entities;
 using FluentValidation;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Infrastructure.Binders;
 using Infrastructure.Data;
 using Infrastructure.Middleware;
+using Infrastructure.Persistence;
 using Infrastructure.Persistence.HelperFunctions;
 using Infrastructure.Persistence.Interceptors;
+using Infrastructure.Progress;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Services.ReviewService;
 using Infrastructure.Services.SheetService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -32,11 +35,9 @@ namespace Edu_Base
 
             // Add services to the container.
 
-            // Register EF Core interceptor used by the DbContext
             builder.Services.AddSingleton<SoftDeleteInterceptor>();
 
 
-            // Database Configuration (register DbContext with interceptor from DI)
             builder.Services.AddDbContext<EducationDbContext>((provider, options) =>
             {
                 // Enable a retry-on-failure execution strategy and set a command timeout
@@ -47,25 +48,21 @@ namespace Edu_Base
                         npgsqlOptions => npgsqlOptions
                             .EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(2), errorCodesToAdd: null)
                             .CommandTimeout(60)
-                            
+
                     )
 
                        .AddInterceptors(provider.GetRequiredService<SoftDeleteInterceptor>());
             });
 
-            // MediatR Configuration
             builder.Services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(Assembly.Load("Application"));
             });
 
-            // Configure Cloudinary
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
-            builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google")
-                            );
+            builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google"));
 
-            // Register Cloudinary instance
             builder.Services.AddSingleton(provider =>
             {
                 var config = provider.GetRequiredService<IOptions<CloudinarySettings>>();
@@ -77,13 +74,21 @@ namespace Edu_Base
                 return new Cloudinary(account);
             });
 
-            // FluentValidation Configuration
+            builder.Services.AddHangfire(config => config
+                            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                            .UseSimpleAssemblyNameTypeSerializer()
+                            .UsePostgreSqlStorage(options =>
+                            {
+                                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                                options.UseNpgsqlConnection(connectionString);
+                            }));
+
+            builder.Services.AddHangfireServer();
+
             builder.Services.AddValidatorsFromAssembly(Assembly.Load("Application"));
 
-            // Unit of Work & Repository Registration
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // Open generic base repository
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             // Auto-register concrete repository implementations (Scrutor)
@@ -118,9 +123,11 @@ namespace Edu_Base
             builder.Services.AddScoped<IBaseFilterRegistry<Sheet>, SheetFilterRegistry>();
             builder.Services.AddScoped<IBaseFilterRegistry<AnswersSheet>, AnswersSheetFilterRegistry>();
             builder.Services.AddScoped<IStudentEducationYearProvider, StudentEducationYearProvider>();
-            builder.Services.AddScoped<Infrastructure.Progress.EnrollmentProgressHelper>();
-            builder.Services.AddScoped<IInstructorContentScopeService, Infrastructure.Services.InstructorContentScopeService>();
-            builder.Services.AddScoped<ICenterContentScopeService, Infrastructure.Services.CenterContentScopeService>();
+            builder.Services.AddScoped<EnrollmentProgressHelper>();
+            builder.Services.AddScoped<IInstructorContentScopeService, InstructorContentScopeService>();
+            builder.Services.AddScoped<ICenterContentScopeService, CenterContentScopeService>();
+            builder.Services.AddScoped<IScheduler, HangfireScheduler>();
+
 
             // CORS Configuration (optional - configure as needed)
             builder.Services.AddCors(options =>
@@ -227,7 +234,7 @@ namespace Edu_Base
             app.UseAuthorization();
 
             app.UseScreenshotCheck();
-
+            app.UseHangfireDashboard();
             app.MapControllers();
 
             app.Run();

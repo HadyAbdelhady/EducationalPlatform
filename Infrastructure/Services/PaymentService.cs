@@ -1,8 +1,6 @@
 using Application.DTOs.Payment;
 using Application.Interfaces;
 using Application.ResultWrapper;
-using Domain.Entities;
-using Domain.enums;
 
 namespace Infrastructure.Services
 {
@@ -14,7 +12,7 @@ namespace Infrastructure.Services
         {
             // Payment gateway integration will be implemented here
             // For now, this is a placeholder structure
-            
+
             throw new NotImplementedException("Payment gateway integration is not yet implemented.");
         }
 
@@ -22,7 +20,7 @@ namespace Infrastructure.Services
         {
             // Payment processing logic will be implemented here
             // For now, this is a placeholder structure
-            
+
             throw new NotImplementedException("Payment gateway integration is not yet implemented.");
         }
 
@@ -30,7 +28,7 @@ namespace Infrastructure.Services
         {
             // Payment retrieval logic will be implemented here
             // For now, this is a placeholder structure
-            
+
             throw new NotImplementedException("Payment gateway integration is not yet implemented.");
         }
 
@@ -38,7 +36,7 @@ namespace Infrastructure.Services
         {
             // Payment retrieval logic will be implemented here
             // For now, this is a placeholder structure
-            
+
             throw new NotImplementedException("Payment gateway integration is not yet implemented.");
         }
     }

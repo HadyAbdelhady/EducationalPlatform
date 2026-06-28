@@ -5,7 +5,7 @@ namespace Application.Features.Exams.Command.StartExam
 {
     public class StartExamCommand : IRequest<Result<StartedExamResponse>>
     {
-        public Guid Student { get; set; }
+        public Guid StudentId { get; set; }
         public Guid ExamId { get; set; }
 
     }

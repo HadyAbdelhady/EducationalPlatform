@@ -1,9 +1,8 @@
-using Application.ResultWrapper;
 using Application.Interfaces;
+using Application.ResultWrapper;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using Application.HelperFunctions;
 
 namespace Application.Features.Exams.Command.StartExam
 {
@@ -15,7 +14,7 @@ namespace Application.Features.Exams.Command.StartExam
         {
             var studentRepository = _unitOfWork.GetRepository<IUserRepository>();
 
-            User? user = await studentRepository.GetStudentByIdWithRelationsAsync(request.Student, cancellationToken);
+            User? user = await studentRepository.GetStudentByIdWithRelationsAsync(request.StudentId, cancellationToken);
 
             if (user == null)
             {
@@ -29,32 +28,9 @@ namespace Application.Features.Exams.Command.StartExam
                 return Result<StartedExamResponse>.FailureStatusCode("User is not a student", ErrorType.BadRequest);
             }
 
+
             var studentExamResultRepository = _unitOfWork.Repository<StudentExamResult>();
             var examRepository = _unitOfWork.Repository<Exam>();
-
-            // Find the existing StudentExamResult (created during exam generation)
-            var studentExamResult = await studentExamResultRepository
-                .FirstOrDefaultAsync(ser => ser.ExamId == request.ExamId && ser.StudentId == user.Id, cancellationToken);
-
-            // If StudentExamResult doesn't exist (student enrolled after exam was created), create it
-            if (studentExamResult == null)
-            {
-                studentExamResult = new StudentExamResult
-                {
-                    Id = Guid.NewGuid(),
-                    ExamId = request.ExamId,
-                    StudentId = user.Id,
-                    Status = ExamResultStatus.NotStarted,
-                    CreatedAt = EgyptTime.UtcNow
-                };
-                await studentExamResultRepository.AddAsync(studentExamResult, cancellationToken);
-            }
-
-            // Check if exam is already in progress or completed
-            if (studentExamResult.Status != ExamResultStatus.NotStarted)
-            {
-                return Result<StartedExamResponse>.FailureStatusCode("Exam already started or completed by the student", ErrorType.Conflict);
-            }
 
             // Get the exam to validate timing
             var exam = await examRepository.GetByIdAsync(request.ExamId, cancellationToken);
@@ -80,12 +56,46 @@ namespace Application.Features.Exams.Command.StartExam
                 return Result<StartedExamResponse>.FailureStatusCode("Exam has ended", ErrorType.Conflict);
             }
 
+            // Find the existing StudentExamResult (created during exam generation)
+            var studentExamResult = await studentExamResultRepository
+                .FirstOrDefaultAsync(ser => ser.ExamId == request.ExamId && ser.StudentId == user.Id, cancellationToken);
+
+            // If StudentExamResult doesn't exist (student enrolled after exam was created), create it
+            if (studentExamResult == null)
+            {
+                studentExamResult = new StudentExamResult
+                {
+                    Id = Guid.NewGuid(),
+                    ExamId = request.ExamId,
+                    StudentId = user.Id,
+                    Status = ExamResultStatus.NotStarted,
+                    StudentMark = 0,
+                    TakenAt = EgyptTime.UtcNow,
+                    UpdatedAt = EgyptTime.UtcNow,
+                    CreatedAt = EgyptTime.UtcNow
+                };
+                await studentExamResultRepository.AddAsync(studentExamResult, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                return Result<StartedExamResponse>.Success(new StartedExamResponse
+                {
+                    Student = studentExamResult.StudentId,
+                    ExamId = studentExamResult.ExamId,
+                    StartedAt = (DateTimeOffset)studentExamResult.TakenAt,
+                    CurrentTime = EgyptTime.UtcNow
+                });
+            }
+
+            // Check if exam is already in progress or completed
+            if (studentExamResult.Status != ExamResultStatus.NotStarted)
+            {
+                return Result<StartedExamResponse>.FailureStatusCode("Exam already started or completed by the student", ErrorType.Conflict);
+            }
 
             // Update the existing StudentExamResult to InProgress
             studentExamResult.Status = ExamResultStatus.InProgress;
             studentExamResult.TakenAt = EgyptTime.UtcNow;
             studentExamResult.UpdatedAt = EgyptTime.UtcNow;
-            studentExamResultRepository.Update(studentExamResult);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
