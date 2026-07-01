@@ -34,7 +34,7 @@ namespace Infrastructure.Data
         public DbSet<InstructorReview> InstructorReviews => Set<InstructorReview>();
         public DbSet<ChatRoom> ChatRooms => Set<ChatRoom>();
         public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
-        public DbSet<Payment> Payments => Set<Payment>();
+        public DbSet<PaymentTransactions> Payments => Set<PaymentTransactions>();
         public DbSet<StudentExamResult> ExamResults => Set<StudentExamResult>();
         public DbSet<StudentAnswers> StudentSubmissions => Set<StudentAnswers>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();

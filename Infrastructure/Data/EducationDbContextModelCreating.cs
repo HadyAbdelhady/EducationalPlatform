@@ -41,7 +41,7 @@ namespace Infrastructure.Data
             modelBuilder.Entity<InstructorReview>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<ChatRoom>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<ChatMessage>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Payment>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<PaymentTransactions>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<StudentExamResult>().HasQueryFilter(x => !x.IsDeleted);
 
             // Enum conversions (cannot be done with Data Annotations)
@@ -405,7 +405,7 @@ namespace Infrastructure.Data
                     .HasConstraintName("chat_messages_sender_id_fkey");
             });
 
-            modelBuilder.Entity<Payment>(b =>
+            modelBuilder.Entity<PaymentTransactions>(b =>
             {
                 b.HasOne(x => x.Student)
                     .WithMany(x => x.Payments)

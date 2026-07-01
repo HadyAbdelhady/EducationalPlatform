@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Domain.Entities
 {
     [Table("payments", Schema = "public")]
-    public class Payment : ISoftDeletableEntity
+    public class PaymentTransactions : ISoftDeletableEntity
     {
         [Key]
         [Column("id")]
@@ -27,22 +27,11 @@ namespace Domain.Entities
         [ForeignKey(nameof(Section))]
         public Guid? SectionId { get; set; }
 
-        [Required]
-        [Column("sender_account")]
-        public string SenderAccount { get; set; } = string.Empty;
-
-        [Required]
-        [Column("receiver_account")]
-        public string ReceiverAccount { get; set; } = string.Empty;
-
-        [Column("commission_account1")]
-        public string? CommissionAccount1 { get; set; }
-
-        [Column("commission_account2")]
-        public string? CommissionAccount2 { get; set; }
-
         [Column("amount")]
         public decimal Amount { get; set; }
+
+        [Column("paymob_intention_id")]
+        public string? PaymobIntentionId { get; set; }
 
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }

@@ -1,8 +1,8 @@
-using Application.DTOs.Payment;
+using Application.DTOs.Payment.PaymobRawDtos;
 
 namespace Application.Interfaces
 {
-    public interface IPaymentRepository : IRepository<Domain.Entities.Payment>
+    public interface IPaymentRepository : IRepository<Domain.Entities.PaymentTransactions>
     {
         Task<IEnumerable<PaymentResponse>> GetPaymentsByStudentIdAsync(Guid studentId, CancellationToken cancellationToken = default);
         Task<PaymentResponse?> GetPaymentByIdWithDetailsAsync(Guid paymentId, CancellationToken cancellationToken = default);

@@ -1,5 +1,6 @@
 using Application.DTOs.Exam;
 using Application.DTOs.Media;
+using Application.DTOs.Payment;
 using Application.Interfaces;
 using Application.Interfaces.BaseFilters;
 using CloudinaryDotNet;
@@ -16,12 +17,15 @@ using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Progress;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.PaymobPaymentService;
 using Infrastructure.Services.ReviewService;
 using Infrastructure.Services.SheetService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Polly;
+using System.Net;
 using System.Reflection;
 using System.Text;
 
@@ -59,7 +63,25 @@ namespace Edu_Base
                 cfg.RegisterServicesFromAssembly(Assembly.Load("Application"));
             });
 
+            // Program.cs or Startup.cs
+            builder.Services.AddHttpClient<IPaymentService, PaymentService>(client =>
+            {
+                // Configure the base address and default headers once
+                client.BaseAddress = new Uri($"{builder.Configuration["PayMobSettings:BaseUrl"]}");
+                client.DefaultRequestHeaders.Add("Authorization", $"Token {builder.Configuration["PayMobSettings:SecretTestKey"]}");
+
+                // Optional: Set default timeouts
+                client.Timeout = TimeSpan.FromSeconds(30);
+            })
+            // Polly for resilience (Retries, Circuit Breakers, Timeouts)
+            .AddPolicyHandler(Policy<HttpResponseMessage>
+                .Handle<HttpRequestException>()
+                .OrResult(msg => msg.StatusCode == HttpStatusCode.RequestTimeout)
+                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
+
+
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+            builder.Services.Configure<PaymobSettings>(builder.Configuration.GetSection("PayMobSettings"));
 
             builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google"));
 

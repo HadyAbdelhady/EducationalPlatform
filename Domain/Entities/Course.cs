@@ -67,7 +67,7 @@ namespace Domain.Entities
         public ICollection<CourseReview> CourseReviews { get; set; } = [];
         public ICollection<Sheet> Sheets { get; set; } = [];
         public ICollection<Exam> Exams { get; set; } = [];
-        public ICollection<Payment> Payments { get; set; } = [];
+        public ICollection<PaymentTransactions> Payments { get; set; } = [];
     }
 }
 

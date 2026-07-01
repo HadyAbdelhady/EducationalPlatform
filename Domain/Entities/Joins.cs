@@ -19,7 +19,7 @@ namespace Domain.Entities
         public int NumberOfCourseVideosWatched { get; set; } = 0;
 
         [Column("progress")]
-        public decimal? Progress { get; set; }
+        public decimal? Progress { get; set; } = 0;
 
         [Column("enrolled_at")]
         public DateTimeOffset EnrolledAt { get; set; } = EgyptTime.UtcNow;

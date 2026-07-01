@@ -4,10 +4,15 @@ using MediatR;
 
 namespace Application.Features.Exams.Command.SubmitExam
 {
+    public record SubmitExamRequest
+    {
+        public Guid ExamId { get; set; }
+        public List<StudentAnswersDTO> Answers { get; set; } = [];
+    }
     public record SubmitExamCommand : IRequest<Result<SubmissionResponse>>
     {
-        public Guid Student { get; set; }
-        public Guid Exam { get; set; }
+        public Guid StudentId { get; set; }
+        public Guid ExamId { get; set; }
         public List<StudentAnswersDTO> Answers { get; set; } = [];
     }
 

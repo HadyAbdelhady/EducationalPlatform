@@ -1,12 +1,13 @@
-using Application.DTOs.Payment;
+using Application.DTOs.Payment.PaymobRawDtos;
 using Application.Interfaces;
+using Domain.Entities;
 using Domain.enums;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class PaymentRepository(EducationDbContext context) : Repository<Domain.Entities.Payment>(context), IPaymentRepository
+    public class PaymentRepository(EducationDbContext context) : Repository<PaymentTransactions>(context), IPaymentRepository
     {
         public async Task<IEnumerable<PaymentResponse>> GetPaymentsByStudentIdAsync(Guid studentId, CancellationToken cancellationToken = default)
         {
@@ -20,10 +21,6 @@ namespace Infrastructure.Repositories
                     SectionId = p.SectionId,
                     Status = p.Status,
                     Amount = p.Amount,
-                    SenderAccount = p.SenderAccount,
-                    ReceiverAccount = p.ReceiverAccount,
-                    CommissionAccount1 = p.CommissionAccount1,
-                    CommissionAccount2 = p.CommissionAccount2,
                     CreatedAt = p.CreatedAt,
                     UpdatedAt = p.UpdatedAt
                 })
@@ -44,10 +41,6 @@ namespace Infrastructure.Repositories
                     SectionId = p.SectionId,
                     Status = p.Status,
                     Amount = p.Amount,
-                    SenderAccount = p.SenderAccount,
-                    ReceiverAccount = p.ReceiverAccount,
-                    CommissionAccount1 = p.CommissionAccount1,
-                    CommissionAccount2 = p.CommissionAccount2,
                     CreatedAt = p.CreatedAt,
                     UpdatedAt = p.UpdatedAt
                 })
@@ -67,10 +60,6 @@ namespace Infrastructure.Repositories
                     SectionId = p.SectionId,
                     Status = p.Status,
                     Amount = p.Amount,
-                    SenderAccount = p.SenderAccount,
-                    ReceiverAccount = p.ReceiverAccount,
-                    CommissionAccount1 = p.CommissionAccount1,
-                    CommissionAccount2 = p.CommissionAccount2,
                     CreatedAt = p.CreatedAt,
                     UpdatedAt = p.UpdatedAt
                 })

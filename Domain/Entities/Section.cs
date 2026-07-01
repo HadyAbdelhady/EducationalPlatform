@@ -54,7 +54,7 @@ namespace Domain.Entities
         public ICollection<StudentSection> StudentSections { get; set; } = [];
         public ICollection<SectionReview> SectionReviews { get; set; } = [];
         public ICollection<Exam> Exams { get; set; } = [];
-        public ICollection<Payment> Payments { get; set; } = [];
+        public ICollection<PaymentTransactions> Payments { get; set; } = [];
     }
 }
 

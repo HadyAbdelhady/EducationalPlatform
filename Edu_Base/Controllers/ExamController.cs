@@ -57,8 +57,18 @@ namespace Edu_Base.Controllers
         }
 
         [HttpPost("Submit")]
-        public async Task<IActionResult> SubmitExam([FromBody] SubmitExamCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> SubmitExam([FromBody] SubmitExamRequest request, CancellationToken cancellationToken)
         {
+            //var studentId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            var studentId = Guid.Parse("1c231d0f-006e-47ac-a589-59f42f63c94c") ;
+
+            var command = new SubmitExamCommand
+            {
+                ExamId = request.ExamId,
+                StudentId = studentId,
+                Answers = request.Answers
+            };
+
             var result = await _mediator.Send(command, cancellationToken);
             return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
         }

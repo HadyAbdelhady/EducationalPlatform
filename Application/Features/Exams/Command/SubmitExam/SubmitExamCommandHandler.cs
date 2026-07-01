@@ -16,12 +16,12 @@ namespace Application.Features.Exams.Command.SubmitExam
 
         public async Task<Result<SubmissionResponse>> Handle(SubmitExamCommand request, CancellationToken cancellationToken)
         {
-            ExamModelAnswer? ExamModelAnswer = await CollectExamModelAnswer(request.Exam, cancellationToken);
+            ExamModelAnswer? ExamModelAnswer = await CollectExamModelAnswer(request.ExamId, cancellationToken);
 
             var userRepository = unitOfWork.Repository<User>();
             var studentExamResultRepository = unitOfWork.Repository<StudentExamResult>();
 
-            var Student = await userRepository.GetByIdAsync(request.Student, cancellationToken);
+            var Student = await userRepository.GetByIdAsync(request.StudentId, cancellationToken);
 
             if (Student == null)
             {
@@ -35,7 +35,7 @@ namespace Application.Features.Exams.Command.SubmitExam
 
             // Find the existing StudentExamResult (created during exam generation)
             var examResult = await studentExamResultRepository
-                .FirstOrDefaultAsync(ser => ser.ExamId == request.Exam && ser.StudentId == request.Student, cancellationToken);
+                .FirstOrDefaultAsync(ser => ser.ExamId == request.ExamId && ser.StudentId == request.StudentId, cancellationToken);
 
             if (examResult == null)
             {
@@ -43,7 +43,7 @@ namespace Application.Features.Exams.Command.SubmitExam
             }
 
             // Check if exam is in progress (student must have started the exam)
-            if (examResult.Status != ExamResultStatus.InProgress)
+            if (examResult.Status == ExamResultStatus.InProgress)
             {
                 return Result<SubmissionResponse>.FailureStatusCode("Exam has already been submitted", ErrorType.Conflict);
             }
@@ -68,12 +68,12 @@ namespace Application.Features.Exams.Command.SubmitExam
                     QuestionId = answer.QuestionId,
                     ChosenAnswerId = answer.ChosenAnswerId,
                     ExamResultId = examResult.Id,
-                    StudentId = request.Student
+                    StudentId = request.StudentId
                 });
             }
 
             // Publish event to trigger any additional processing
-            await mediator.Publish(new ExamFinishedEvent(request.Exam, request.Student, examResult.Id), cancellationToken);
+            await mediator.Publish(new ExamFinishedEvent(request.ExamId, request.StudentId, examResult.Id), cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<SubmissionResponse>.Success(new SubmissionResponse
