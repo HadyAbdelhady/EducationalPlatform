@@ -1,6 +1,6 @@
-﻿using Application.DTOs;
-using Application.DTOs.Exam;
-using Application.ResultWrapper;
+﻿using Application.Common;
+using Application.Features.Exams.DTOs;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Exams.Query.GetExamSubmissionsList

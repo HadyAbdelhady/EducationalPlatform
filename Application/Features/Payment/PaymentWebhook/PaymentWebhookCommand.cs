@@ -1,5 +1,5 @@
-using Application.DTOs.Payment.PaymobRawDtos;
-using Application.ResultWrapper;
+﻿using Application.Features.Payment.DTOs.PaymobRawDtos;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Payment.PaymentWebhook

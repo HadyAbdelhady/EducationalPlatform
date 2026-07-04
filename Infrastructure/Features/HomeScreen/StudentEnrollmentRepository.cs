@@ -1,0 +1,55 @@
+﻿using Application.Common.Interfaces;
+using Application.Features.HomeScreen.Interfaces;
+using Domain.Entities;
+using Infrastructure.Common.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Features.HomeScreen
+{
+    public class StudentEnrollmentRepository(EducationDbContext context) : IStudentEnrollmentRepository
+    {
+        private readonly EducationDbContext _context = context;
+
+        public async Task<bool> IsStudentEnrolledInCourseAsync(Guid studentId, Guid courseId, CancellationToken cancellationToken = default)
+        {
+            return await _context.StudentCourses.AnyAsync(sc => sc.StudentId == studentId && 
+                                                          sc.CourseId == courseId,
+                                                          cancellationToken);
+        }
+
+        public async Task<bool> IsStudentEnrolledInSectionAsync(Guid studentId, Guid sectionId, CancellationToken cancellationToken = default)
+        {
+            return await _context.StudentSections
+                .AnyAsync(ss => ss.StudentId == studentId &&
+                                ss.SectionId == sectionId, cancellationToken);
+        }
+
+        public async Task<bool> CanStudentAccessSectionContentAsync(Guid studentId, Guid sectionId, CancellationToken cancellationToken = default)
+        {
+            if (await _context.StudentSections.AnyAsync(
+                    ss => ss.StudentId == studentId && ss.SectionId == sectionId,
+                    cancellationToken))
+            {
+                return true;
+            }
+
+            return await (
+                from sc in _context.StudentCourses
+                join sec in _context.Sections on sc.CourseId equals sec.CourseId
+                where sc.StudentId == studentId && sec.Id == sectionId
+                select sc
+            ).AnyAsync(cancellationToken);
+        }
+
+        public async Task AddStudentCourseAsync(StudentCourse studentCourse, CancellationToken cancellationToken = default)
+        {
+            await _context.StudentCourses.AddAsync(studentCourse, cancellationToken);
+        }
+
+        public async Task AddStudentSectionAsync(StudentSection studentSection, CancellationToken cancellationToken = default)
+        {
+            await _context.StudentSections.AddAsync(studentSection, cancellationToken);
+        }
+    }
+}
+

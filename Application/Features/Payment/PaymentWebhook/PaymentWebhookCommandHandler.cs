@@ -1,6 +1,8 @@
-using Application.DTOs.Payment.PaymobRawDtos;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Payment.DTOs.PaymobRawDtos;
+using Application.Common.Interfaces;
+using Application.Features.Auth.Interfaces;
+using Application.Features.Payment.Interfaces;
+using Application.Common;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;

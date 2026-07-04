@@ -1,6 +1,7 @@
-using Application.DTOs.Center;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Centers.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.Centers.Interfaces;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Centers.Queries.GetAllCenters

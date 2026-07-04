@@ -1,6 +1,7 @@
-using Application.DTOs.Auth;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Auth.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.Auth.Interfaces;
+using Application.Common;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
@@ -22,7 +23,7 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
             {
                 // Validate Google ID token
                 var isValidToken = await _googleAuthService.ValidateGoogleTokenAsync(request.IdToken, cancellationToken);
-                if (isValidToken == false)
+                if (isValidToken != true)
                 {
                     throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
                 }
@@ -64,13 +65,33 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                         IsDeleted = false
                     };
 
+                    // Step 1: Create instructor without PreferencesId first (breaks circular FK)
                     var instructor = new Instructor
                     {
-                        UserId = user.Id
+                        UserId = user.Id,
+                        PreferencesId = null
                     };
 
                     user.Instructor = instructor;
                     await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
+                    // Save user + instructor first so InstructorPreferences can reference instructor_id
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                    // Step 2: Create InstructorPreferences now that instructor exists
+                    var instructorPreferences = new InstructorPreferences
+                    {
+                        Id = Guid.NewGuid(),
+                        InstructorId = user.Id,
+                        ApplicationName = string.IsNullOrWhiteSpace(request.ApplicationName) ? user.FullName : request.ApplicationName,
+                        CreatedAt = EgyptTime.UtcNow,
+                        IsDeleted = false
+                    };
+                    await _unitOfWork.Repository<InstructorPreferences>().AddAsync(instructorPreferences, cancellationToken);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                    // Step 3: Link PreferencesId back onto instructor
+                    instructor.PreferencesId = instructorPreferences.Id;
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
                 }
                 else
                 {
@@ -112,7 +133,8 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
             }
             catch (Exception ex)
             {
-                return Result<AuthenticationResponse>.FailureStatusCode($"Error during Google login: {ex.Message}", ErrorType.InternalServerError);
+                var innerMsg = ex.InnerException != null ? $" Inner: {ex.InnerException.Message}" : "";
+                return Result<AuthenticationResponse>.FailureStatusCode($"Error during Google login: {ex.Message}{innerMsg}", ErrorType.InternalServerError);
             }
         }
     }

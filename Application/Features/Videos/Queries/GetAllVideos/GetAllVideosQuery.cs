@@ -1,6 +1,6 @@
-using Application.DTOs;
-using Application.DTOs.Videos;
-using Application.ResultWrapper;
+﻿using Application.Common;
+using Application.Features.Videos.DTOs;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Videos.Queries.GetAllVideos

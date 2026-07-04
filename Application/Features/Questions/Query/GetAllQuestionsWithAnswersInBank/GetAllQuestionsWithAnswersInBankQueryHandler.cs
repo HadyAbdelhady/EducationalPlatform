@@ -1,6 +1,7 @@
-﻿using Application.DTOs.Questions;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Questions.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.Questions.Interfaces;
+using Application.Common;
 using Domain.enums;
 using MediatR;
 

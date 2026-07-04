@@ -1,8 +1,8 @@
-using Application.DTOs.Exam;
+﻿using Application.Features.Exams.DTOs;
 using Application.Features.Exams.Command.ChangeExamStatus;
-using Application.HelperFunctions;
-using Application.Interfaces;
-using Application.ResultWrapper;
+using Application.Common;
+using Application.Common.Interfaces;
+using Application.Common;
 using Domain.Entities;
 using Domain.enums;
 using Domain.Events;

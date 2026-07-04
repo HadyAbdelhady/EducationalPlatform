@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Questions;
-using Application.ResultWrapper;
+﻿using Application.Features.Questions.DTOs;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Questions.Query.GetQuestionById

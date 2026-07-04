@@ -1,6 +1,7 @@
-﻿using Application.DTOs.Review;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Reviews.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.Reviews.Interfaces;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Reviews.Query.CheckReviewExists

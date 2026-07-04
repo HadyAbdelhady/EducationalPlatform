@@ -1,5 +1,5 @@
-using Application.DTOs.Videos;
-using Application.ResultWrapper;
+﻿using Application.Features.Videos.DTOs;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Videos.Queries.GetVideoById

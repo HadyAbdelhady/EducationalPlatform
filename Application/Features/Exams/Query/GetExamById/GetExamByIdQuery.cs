@@ -1,5 +1,5 @@
-﻿using Application.ResultWrapper;
-using Application.DTOs.Exam;
+﻿using Application.Common;
+using Application.Features.Exams.DTOs;
 using MediatR;
 
 namespace Application.Features.Exams.Query.GetExamById

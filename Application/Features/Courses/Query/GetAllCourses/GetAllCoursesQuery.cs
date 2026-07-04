@@ -1,6 +1,6 @@
-using Application.DTOs;
-using Application.DTOs.Courses;
-using Application.ResultWrapper;
+﻿using Application.Common;
+using Application.Features.Courses.DTOs;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Courses.Query.GetAllCourses

@@ -19,8 +19,8 @@ namespace Domain.Entities
 
         [Column("preferences_id")]
         [ForeignKey(nameof(InstructorPreferences))]
-        public Guid PreferencesId { get; set; }
-        public InstructorPreferences InstructorPreferences { get; set; } = null!;
+        public Guid? PreferencesId { get; set; }
+        public InstructorPreferences? InstructorPreferences { get; set; }
         public ICollection<InstructorCourse> InstructorCourses { get; set; } = [];
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];
         public ICollection<InstructorReview> InstructorReviews { get; set; } = [];

@@ -1,5 +1,5 @@
-using Application.DTOs.Review;
-using Application.ResultWrapper;
+﻿using Application.Features.Reviews.DTOs;
+using Application.Common;
 using Domain.enums;
 using MediatR;
 

@@ -1,5 +1,5 @@
 ﻿
-    using Application.ResultWrapper;
+    using Application.Common;
     using MediatR;
 
     namespace Application.Features.Sections.Commands.DeleteSection

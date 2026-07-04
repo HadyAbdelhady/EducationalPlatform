@@ -1,11 +1,13 @@
-using Application.Interfaces.BaseFilters;
-using Application.ResultWrapper;
-using Application.DTOs.Courses;
-using Application.Interfaces;
+﻿using Application.Common.Interfaces;
+using Application.Features.EducationYears.Interfaces;
+using Application.Common;
+using Application.Features.Courses.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.EducationYears.Interfaces;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using Application.HelperFunctions;
+using Application.Common;
 
 namespace Application.Features.Courses.Query.GetAllCourses
 {

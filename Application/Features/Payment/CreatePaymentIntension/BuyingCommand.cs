@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Payment;
-using Application.ResultWrapper;
+﻿using Application.Features.Payment.DTOs;
+using Application.Common;
 using Domain.enums;
 using MediatR;
 

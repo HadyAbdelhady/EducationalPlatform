@@ -1,5 +1,5 @@
-using Application.DTOs.Auth;
-using Application.ResultWrapper;
+﻿using Application.Features.Auth.DTOs;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Auth.Queries.CheckUserExists

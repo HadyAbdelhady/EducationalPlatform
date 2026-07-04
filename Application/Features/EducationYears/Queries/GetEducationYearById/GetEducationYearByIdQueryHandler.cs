@@ -1,6 +1,7 @@
-using Application.DTOs.EducationYear;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.EducationYears.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.EducationYears.Interfaces;
+using Application.Common;
 using Domain.enums;
 using MediatR;
 

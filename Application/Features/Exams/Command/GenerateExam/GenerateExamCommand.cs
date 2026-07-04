@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Exam;
-using Application.ResultWrapper;
+﻿using Application.Features.Exams.DTOs;
+using Application.Common;
 using Domain.enums;
 using MediatR;
 

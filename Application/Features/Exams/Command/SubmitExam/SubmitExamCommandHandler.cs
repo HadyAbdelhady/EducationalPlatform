@@ -1,7 +1,8 @@
-using Application.HelperFunctions;
-using Application.ResultWrapper;
-using Application.Interfaces;
-using Application.DTOs.Exam;
+﻿using Application.Common;
+using Application.Common;
+using Application.Common.Interfaces;
+using Application.Features.Exams.Interfaces;
+using Application.Features.Exams.DTOs;
 using Domain.Entities;
 using Domain.enums;
 using Domain.Events;

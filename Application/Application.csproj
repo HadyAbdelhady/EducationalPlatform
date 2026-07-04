@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -6,55 +6,6 @@
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
-    <Compile Remove="Features\Exams\Command\PublishExamResults\**" />
-    <Compile Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
-    <Compile Remove="Features\Exams\Query\CanStudentTakeExam\**" />
-    <Compile Remove="Features\Exams\Query\GetActiveExamAttempt\**" />
-    <Compile Remove="Features\Exams\Query\GetExamStatistics\**" />
-    <Compile Remove="Features\HomeScreen\InstructorHomeScreen\**" />
-    <Compile Remove="Features\Sections\**" />
-    <Compile Remove="Persistence\**" />
-    <EmbeddedResource Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
-    <EmbeddedResource Remove="Features\Exams\Command\PublishExamResults\**" />
-    <EmbeddedResource Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
-    <EmbeddedResource Remove="Features\Exams\Query\CanStudentTakeExam\**" />
-    <EmbeddedResource Remove="Features\Exams\Query\GetActiveExamAttempt\**" />
-    <EmbeddedResource Remove="Features\Exams\Query\GetExamStatistics\**" />
-    <EmbeddedResource Remove="Features\HomeScreen\InstructorHomeScreen\**" />
-    <EmbeddedResource Remove="Features\Sections\**" />
-    <EmbeddedResource Remove="Persistence\**" />
-    <None Remove="Features\Exams\Command\ProcessTimedOutExams\**" />
-    <None Remove="Features\Exams\Command\PublishExamResults\**" />
-    <None Remove="Features\Exams\Command\RemoveQuestionFromExam\**" />
-    <None Remove="Features\Exams\Query\CanStudentTakeExam\**" />
-    <None Remove="Features\Exams\Query\GetActiveExamAttempt\**" />
-    <None Remove="Features\Exams\Query\GetExamStatistics\**" />
-    <None Remove="Features\HomeScreen\InstructorHomeScreen\**" />
-    <None Remove="Features\Sections\**" />
-    <None Remove="Persistence\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Features\Sections\Commands\CreateSection\BulkCreateSectionCommand.cs" />
-    <Compile Include="Features\Sections\Commands\CreateSection\BulkCreateSectionCommandHandler.cs" />
-    <Compile Include="Features\Sections\Commands\CreateSection\CreateSectionCommand.cs" />
-    <Compile Include="Features\Sections\Commands\CreateSection\CreateSectionCommandHandler.cs" />
-    <Compile Include="Features\Sections\Commands\DeleteSection\BulkDeleteSectionCommand.cs" />
-    <Compile Include="Features\Sections\Commands\DeleteSection\BulkDeleteSectionCommandHandler.cs" />
-    <Compile Include="Features\Sections\Commands\DeleteSection\DeleteSectionCommand.cs" />
-    <Compile Include="Features\Sections\Commands\DeleteSection\DeleteSectionCommandHandler.cs" />
-    <Compile Include="Features\Sections\Commands\UpdateSection\UpdateSectionCommand.cs" />
-    <Compile Include="Features\Sections\Commands\UpdateSection\UpdateSectionCommandHandler.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQuery.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionDetails\GetSectionDetailsQueryHandler.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQuery.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionsForCourse\GetSectionsForCourseQueryHandler.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionsNamesForCourse\GetSectionsNamesForCourseQuery.cs" />
-    <Compile Include="Features\Sections\Query\GetSectionsNamesForCourse\GetSectionsNamesForCourseQueryHandler.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
@@ -66,10 +17,6 @@
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Sheets\Queries\" />
   </ItemGroup>
 
 </Project>

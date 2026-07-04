@@ -1,7 +1,8 @@
-using Application.DTOs.HomeScreen;
-using Application.HelperFunctions;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.HomeScreen.DTOs;
+using Application.Common;
+using Application.Common.Interfaces;
+using Application.Features.HomeScreen.Interfaces;
+using Application.Common;
 using Domain.enums;
 using MediatR;
 

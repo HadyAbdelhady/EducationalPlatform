@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Answer;
-using Application.ResultWrapper;
+﻿using Application.Features.Answers.DTOs;
+using Application.Common;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;

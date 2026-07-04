@@ -1,5 +1,5 @@
-using Application.DTOs.EducationYear;
-using Application.ResultWrapper;
+﻿using Application.Features.EducationYears.DTOs;
+using Application.Common;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 

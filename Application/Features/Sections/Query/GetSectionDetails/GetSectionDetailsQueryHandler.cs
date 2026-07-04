@@ -1,6 +1,7 @@
-using Application.DTOs.Sections;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Sections.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.Sections.Interfaces;
+using Application.Common;
 using Domain.enums;
 using MediatR;
 

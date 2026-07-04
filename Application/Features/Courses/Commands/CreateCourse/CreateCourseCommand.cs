@@ -1,5 +1,5 @@
-using Application.DTOs.Courses;
-using Application.ResultWrapper;
+﻿using Application.Features.Courses.DTOs;
+using Application.Common;
 using Microsoft.AspNetCore.Http;
 using MediatR;
 

@@ -1,4 +1,4 @@
-using Application.DTOs.EducationYear;
+﻿using Application.Features.EducationYears.DTOs;
 using FluentValidation;
 
 namespace Application.Features.EducationYears.Commands.CreateEducationYear

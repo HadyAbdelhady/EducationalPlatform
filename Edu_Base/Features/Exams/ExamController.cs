@@ -1,0 +1,200 @@
+﻿using Application.Common;
+using Application.Features.Exams.DTOs;
+using Application.Features.Exams.Command.DeleteExam;
+using Application.Features.Exams.Command.GenerateExam;
+using Application.Features.Exams.Command.StartExam;
+using Application.Features.Exams.Command.SubmitExam;
+using Application.Features.Exams.Query.GetAllStudentExams;
+using Application.Features.Exams.Query.GetExamCalendarDays;
+using Application.Features.Exams.Query.GetExamById;
+using Application.Features.Exams.Query.GetExamSubmissionsList;
+using Application.Features.Exams.Query.GetStudentExamResult;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Application.Features.Exams.Query.GetInstructorExams;
+
+namespace Edu_Base.Features.Exams
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ExamController(IMediator mediator) : ControllerBase
+    {
+        private readonly IMediator _mediator = mediator;
+
+        [HttpPatch("Start")]
+        public async Task<IActionResult> StartExam(Guid ExamId, CancellationToken cancellationToken)
+        {
+            var UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            //var UserId = Guid.Parse("1c231d0f-006e-47ac-a589-59f42f63c94c") ;
+            var command = new StartExamCommand
+            {
+                ExamId = ExamId,
+                StudentId = UserId
+            };
+
+            var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+        }
+
+        [HttpPost("Generate")]
+        public async Task<IActionResult> GenerateExam([FromBody] GenerateExamCommand command, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+        }
+
+        [HttpDelete("Delete/{examId}")]
+        public async Task<IActionResult> DeleteExam(Guid examId, CancellationToken cancellationToken)
+        {
+            var command = new DeleteExamCommand
+            {
+                ExamId = examId
+            };
+            var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+
+        }
+
+        [HttpPost("Submit")]
+        public async Task<IActionResult> SubmitExam([FromBody] SubmitExamRequest request, CancellationToken cancellationToken)
+        {
+            //var studentId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            var studentId = Guid.Parse("1c231d0f-006e-47ac-a589-59f42f63c94c") ;
+
+            var command = new SubmitExamCommand
+            {
+                ExamId = request.ExamId,
+                StudentId = studentId,
+                Answers = request.Answers
+            };
+
+            var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+        }
+
+        [HttpGet("GetExamById/{examId}")]
+        public async Task<IActionResult> GetExamById(Guid examId, CancellationToken cancellationToken)
+        {
+
+            var UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            var query = new GetExamByIdQuery { Id = examId, UserId = UserId };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+        }
+
+
+
+        [HttpGet("GetAllExams")]
+        public async Task<IActionResult> GetAllExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
+        {
+            var userId = Guid.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+            );
+            //var userId = Guid.Parse("17debbf6-44bb-4690-aced-673781a77f56");
+
+            var query = new GetAllExamsQuery
+            {
+                RequestSkeleton = request,
+                UserId = userId
+            };
+
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+        }
+
+        [HttpGet("GetExamSubmissions")]
+        public async Task<IActionResult> GetExamSubmissions([FromQuery] GetStudentsSubmittionsForExamRequest request, CancellationToken cancellationToken)
+        {
+            var Instructor = Guid.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+            );
+
+            //var Instructor = Guid.Parse("57786109-6eea-45f6-9f6f-a45dbcc1b62f");
+
+
+            var query = new GetExamSubmissionsListQuery
+            {
+                RequestSkeleton = request.RequestSkeleton,
+                InstructorId = Instructor,
+                ExamId = request.ExamId
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+
+        }
+
+        [HttpGet("GetStudentExamResult/{examId}")]
+        public async Task<IActionResult> GetStudentExamResult(Guid examId, CancellationToken cancellationToken)
+        {
+            var studentIdValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var studentIdValue = "d446bb09-477d-4c9e-b6fe-6971e6c80dc5";
+            if (string.IsNullOrWhiteSpace(studentIdValue) || !Guid.TryParse(studentIdValue, out var studentId))
+            {
+                return Unauthorized("User id not found in token.");
+            }
+
+            var query = new GetStudentExamResultQuery
+            {
+                ExamId = examId,
+                StudentId = studentId
+            };
+
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+        }
+
+        [HttpGet("GetExamCalendarDays")]
+        public async Task<IActionResult> GetExamCalendarDays(
+            [FromQuery] Guid? courseId,
+            [FromQuery] Guid? sectionId,
+            [FromQuery] Guid educationYearId,
+            CancellationToken cancellationToken)
+        {
+            var instructorIdValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var instructorIdValue = "1eb4f9e5-0327-47d5-a18c-ea1119d57827";
+
+            if (string.IsNullOrWhiteSpace(instructorIdValue) || !Guid.TryParse(instructorIdValue, out var instructorId))
+            {
+                return Unauthorized("User id not found in token.");
+            }
+
+            var query = new GetExamCalendarDaysQuery
+            {
+                CourseId = courseId,
+                SectionId = sectionId,
+                EducationYearId = educationYearId,
+                InstructorId = instructorId
+            };
+
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+        }
+
+        [HttpGet("GetInstructorExams")]
+        public async Task<IActionResult> GetInstructorNonRandomExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
+        {
+            var instructorIdValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var instructorIdValue = Guid.Parse("1bfcd481-6ab8-4c70-b0da-3dbd9764ba9c").ToString();
+
+
+            if (string.IsNullOrWhiteSpace(instructorIdValue) || !Guid.TryParse(instructorIdValue, out var instructorId))
+            {
+                return Unauthorized("User id not found in token.");
+            }
+
+            var query = new GetInstructorExamsQuery
+            {
+                Request = new GetInstructorExamsRequest
+                {
+                    RequestSkeleton = request,
+                    InstructorId = instructorId
+                }
+            };
+
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+        }
+    }
+}

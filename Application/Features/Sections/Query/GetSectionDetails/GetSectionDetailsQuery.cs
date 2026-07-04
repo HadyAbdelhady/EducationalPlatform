@@ -1,5 +1,5 @@
-using Application.DTOs.Sections;
-using Application.ResultWrapper;
+﻿using Application.Features.Sections.DTOs;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Sections.Query.GetSectionDetails

@@ -1,6 +1,7 @@
-using Application.DTOs.Auth;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Auth.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.Auth.Interfaces;
+using Application.Common;
 using Domain;
 using Domain.Entities;
 using Domain.enums;
@@ -23,7 +24,7 @@ namespace Application.Features.Auth.Commands.CenterAdminGoogleLogin
             {
                 var googleUserInfo = await _googleAuthService.ValidateGoogleTokenAsync(request.GoogleUserInfo.IdToken, cancellationToken);
 
-                if (googleUserInfo == false)
+                if (googleUserInfo != true)
                 {
                     throw new UnauthorizedAccessException("Invalid Google token or email not verified.");
                 }

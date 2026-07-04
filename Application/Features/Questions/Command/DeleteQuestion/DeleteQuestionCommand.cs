@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Application.ResultWrapper;
+using Application.Common;
 
 namespace Application.Features.Questions.Command.DeleteQuestion
 {

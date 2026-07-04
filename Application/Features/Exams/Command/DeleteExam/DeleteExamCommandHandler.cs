@@ -1,5 +1,5 @@
-using Application.ResultWrapper;
-using Application.Interfaces;
+﻿using Application.Common;
+using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Events;
 using MediatR;

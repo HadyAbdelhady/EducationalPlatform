@@ -1,0 +1,8 @@
+﻿namespace Application.Features.Sections.DTOs
+{
+    public class BulkDeleteSectionRequest
+    {
+        public Guid CourseId {  get; set; }
+        public List<Guid> SectionIds { get; set; } = [];
+    }
+}

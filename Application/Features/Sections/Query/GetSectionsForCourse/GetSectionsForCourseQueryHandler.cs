@@ -1,8 +1,8 @@
-﻿using Application.DTOs.Sections;
-using Application.HelperFunctions;
-using Application.Interfaces;
-using Application.Interfaces.BaseFilters;
-using Application.ResultWrapper;
+﻿using Application.Features.Sections.DTOs;
+using Application.Common;
+using Application.Common.Interfaces;
+using Application.Common.Interfaces;
+using Application.Common;
 using Domain.Entities;
 using MediatR;
 

@@ -1,0 +1,41 @@
+﻿using Application.Features.Exams.DTOs;
+using Application.Common.Interfaces;
+using Domain.enums;
+
+namespace Infrastructure.Features.Exams
+{
+    public class InstructorExamsFilterRegistry : IBaseFilterRegistry<InstructorExamsResponseDto>
+    {
+        public Dictionary<string, Func<IQueryable<InstructorExamsResponseDto>, string, IQueryable<InstructorExamsResponseDto>>> Filters { get; } = new()
+        {
+            ["courseid"] = (q, value) => q.Where(e => e.CourseId == Guid.Parse(value)),
+            ["sectionid"] = (q, value) => q.Where(e => e.SectionId == Guid.Parse(value)),
+            ["examstatus"] = (q, value) =>
+                Enum.TryParse<ExamStatus>(value, true, out var status)
+                    ? q.Where(e => e.ExamStatus == status)
+                    : q.Where(e => false),
+            ["examtype"] = (q, value) =>
+                Enum.TryParse<ExamType>(value, true, out var type)
+                    ? q.Where(e => e.ExamType == type)
+                    : q.Where(e => false),
+            ["name"] = (q, value) => q.Where(e => e.Name.Contains(value, StringComparison.OrdinalIgnoreCase)),
+            ["israndomized"] = (q, value) => q.Where(e => e.IsRandomized == bool.Parse(value)),
+            ["starttime"] = (q, value) => q.Where(e => e.StartTime >= DateTimeOffset.Parse(value)),
+            ["endtime"] = (q, value) => q.Where(e => e.EndTime <= DateTimeOffset.Parse(value)),
+        };
+
+        public Dictionary<string, Func<IQueryable<InstructorExamsResponseDto>, bool, IOrderedQueryable<InstructorExamsResponseDto>>> Sorts { get; } = new()
+        {
+            ["name"] = (q, desc) => desc ? q.OrderByDescending(e => e.Name) : q.OrderBy(e => e.Name),
+            ["createdat"] = (q, desc) => desc ? q.OrderByDescending(e => e.CreatedAt) : q.OrderBy(e => e.CreatedAt),
+            ["updatedat"] = (q, desc) => desc ? q.OrderByDescending(e => e.UpdatedAt) : q.OrderBy(e => e.UpdatedAt),
+            ["starttime"] = (q, desc) => desc ? q.OrderByDescending(e => e.StartTime) : q.OrderBy(e => e.StartTime),
+            ["endtime"] = (q, desc) => desc ? q.OrderByDescending(e => e.EndTime) : q.OrderBy(e => e.EndTime),
+            ["totalmark"] = (q, desc) => desc ? q.OrderByDescending(e => e.TotalMark) : q.OrderBy(e => e.TotalMark),
+            ["duration"] = (q, desc) => desc ? q.OrderByDescending(e => e.DurationInMinutes) : q.OrderBy(e => e.DurationInMinutes),
+            ["examstatus"] = (q, desc) => desc ? q.OrderByDescending(e => e.ExamStatus) : q.OrderBy(e => e.ExamStatus),
+            ["coursename"] = (q, desc) => desc ? q.OrderByDescending(e => e.CourseName) : q.OrderBy(e => e.CourseName),
+            ["sectionname"] = (q, desc) => desc ? q.OrderByDescending(e => e.SectionName) : q.OrderBy(e => e.SectionName),
+        };
+    }
+}

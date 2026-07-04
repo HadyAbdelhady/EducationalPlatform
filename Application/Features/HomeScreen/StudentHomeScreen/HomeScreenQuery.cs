@@ -1,5 +1,5 @@
-﻿using Application.DTOs.HomeScreen;
-using Application.ResultWrapper;
+﻿using Application.Features.HomeScreen.DTOs;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.HomeScreen.StudentHomeScreen

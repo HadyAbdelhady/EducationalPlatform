@@ -1,6 +1,7 @@
-using Application.DTOs.Auth;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Auth.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.Auth.Interfaces;
+using Application.Common;
 using Domain.enums;
 using MediatR;
 

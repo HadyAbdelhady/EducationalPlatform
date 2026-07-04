@@ -1,6 +1,6 @@
-using Application.DTOs.Exam;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Exams.DTOs;
+using Application.Common.Interfaces;
+using Application.Common;
 using Domain.Entities;
 using MediatR;
 

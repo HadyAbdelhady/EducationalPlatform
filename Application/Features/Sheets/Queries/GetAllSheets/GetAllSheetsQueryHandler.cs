@@ -1,7 +1,8 @@
-using Application.DTOs;
-using Application.DTOs.Sheets;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Common;
+using Application.Features.Sheets.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.Sheets.Interfaces;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Sheets.Queries.GetAllSheets

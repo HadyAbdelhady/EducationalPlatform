@@ -1,5 +1,5 @@
-using Application.DTOs.Center;
-using Application.ResultWrapper;
+﻿using Application.Features.Centers.DTOs;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Centers.Commands.AssignInstructorToCenter

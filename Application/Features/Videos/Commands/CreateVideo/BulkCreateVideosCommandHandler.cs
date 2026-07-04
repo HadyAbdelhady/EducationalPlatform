@@ -1,6 +1,6 @@
-using Application.DTOs.Videos;
-using Application.Interfaces;
-using Application.ResultWrapper;
+﻿using Application.Features.Videos.DTOs;
+using Application.Common.Interfaces;
+using Application.Common;
 using Domain.Entities;
 using Domain.enums;
 using Domain.Events;

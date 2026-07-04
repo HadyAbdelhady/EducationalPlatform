@@ -1,8 +1,10 @@
-using Application.DTOs.Exam;
-using Application.HelperFunctions;
-using Application.Interfaces;
-using Application.Interfaces.BaseFilters;
-using Application.ResultWrapper;
+﻿using Application.Features.Exams.DTOs;
+using Application.Common;
+using Application.Common.Interfaces;
+using Application.Features.Exams.Interfaces;
+using Application.Common.Interfaces;
+using Application.Features.Exams.Interfaces;
+using Application.Common;
 using Domain.Entities;
 using MediatR;
 

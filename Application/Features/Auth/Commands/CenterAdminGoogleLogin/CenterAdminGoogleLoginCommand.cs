@@ -1,6 +1,6 @@
-using Application.DTOs.Auth;
+﻿using Application.Features.Auth.DTOs;
 using Application.Features.Auth.Commands.StudentGoogleLogin;
-using Application.ResultWrapper;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.Auth.Commands.CenterAdminGoogleLogin

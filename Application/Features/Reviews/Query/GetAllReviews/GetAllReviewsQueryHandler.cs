@@ -1,7 +1,8 @@
-using Application.DTOs.Review;
+﻿using Application.Features.Reviews.DTOs;
 using Application.Features.Reviews.Query.GetAllReviews;
-using Application.Interfaces;
-using Application.ResultWrapper;
+using Application.Common.Interfaces;
+using Application.Features.Reviews.Interfaces;
+using Application.Common;
 using Domain.enums;
 using MediatR;
 

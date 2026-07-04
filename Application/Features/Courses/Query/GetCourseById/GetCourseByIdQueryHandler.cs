@@ -1,6 +1,7 @@
-using Application.ResultWrapper;
-using Application.DTOs.Courses;
-using Application.Interfaces;
+﻿using Application.Common;
+using Application.Features.Courses.DTOs;
+using Application.Common.Interfaces;
+using Application.Features.Courses.Interfaces;
 using Domain.enums;
 using MediatR;
 
