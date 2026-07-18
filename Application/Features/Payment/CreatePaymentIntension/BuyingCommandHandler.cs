@@ -1,4 +1,4 @@
-﻿using Application.Features.Payment.DTOs;
+using Application.Features.Payment.DTOs;
 using Application.Features.Payment.DTOs.PaymobRawDtos;
 using Application.Common.Interfaces;
 using Application.Features.EducationYears.Interfaces;
@@ -9,7 +9,7 @@ using Domain.Entities;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Payment.StudentBuys
+namespace Application.Features.Payment.CreatePaymentIntension
 {
     public class BuyingCommandHandler(
         IPaymentService paymentService,
@@ -22,6 +22,20 @@ namespace Application.Features.Payment.StudentBuys
 
         public async Task<Result<StudentBuyResponse>> Handle(BuyingCommand request, CancellationToken cancellationToken)
         {
+            var user = await _unitOfWork.GetRepository<Auth.Interfaces.IUserRepository>()
+                .GetByIdAsync(request.StudentId, cancellationToken);
+
+            if (user == null)
+            {
+                return Result<StudentBuyResponse>.FailureStatusCode("Student user not found.", ErrorType.NotFound);
+            }
+
+            var nameParts = user.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var firstName = nameParts.Length > 0 ? nameParts[0] : "Student";
+            var lastName = nameParts.Length > 1 ? string.Join(' ', nameParts.Skip(1)) : "User";
+            var email = !string.IsNullOrWhiteSpace(user.GmailExternal) ? user.GmailExternal : "student@educationalplatform.com";
+
+            var studentInfo = new DTOs.Student(firstName, lastName, email);
 
             var enrollmentRepo = _unitOfWork.GetRepository<IStudentEnrollmentRepository>();
             var studentEducationYearId = await _studentEducationYearProvider
@@ -38,8 +52,8 @@ namespace Application.Features.Payment.StudentBuys
             {
                 EntityId = request.EntityId,
                 EntityType = request.EntityToBuy,
-                PaymentMethods = request.PaymentMethod ? PaymentMethodKeys.Card : PaymentMethodKeys.Wallet,
-                Student = request.Student,
+                PaymentMethods = request.PaymentMethods,
+                Student = studentInfo,
             };
 
             var payment = new PaymentTransactions
@@ -53,6 +67,8 @@ namespace Application.Features.Payment.StudentBuys
             // add the payment transaction to the database before processing the payment - IMPORTANT: this ensures that we have a record of the transaction even if the payment processing fails
             await _unitOfWork.Repository<PaymentTransactions>().AddAsync(payment, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            string clientSecret = string.Empty;
 
             if (request.EntityToBuy == EntityToBuy.Course)
             {
@@ -82,7 +98,7 @@ namespace Application.Features.Payment.StudentBuys
                 testingPay.Items = [new OrderItem
                     {
                         Name = course.Name,
-                        Amount = (int)(course.Price),
+                        Amount = (int)course.Price,
                         Description = course.Description ?? "N/A",
                         Quantity = 1
                     }];
@@ -91,12 +107,17 @@ namespace Application.Features.Payment.StudentBuys
                     testingPay,
                     cancellationToken);
 
-                if (Intention.Confirmed)
+              if (string.IsNullOrEmpty(Intention.Id))
                 {
-                    payment.Amount = (decimal)course.Price!;
-                    payment.CourseId = course.Id;
-                    payment.PaymobIntentionId = Intention.Id;
+                    payment.Status = PaymentStatus.Failed;
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    return Result<StudentBuyResponse>.FailureStatusCode("Failed to initiate payment with the provider.", ErrorType.InternalServerError);
                 }
+
+                payment.Amount = (decimal)course.Price!;
+                payment.CourseId = course.Id;
+                payment.PaymobIntentionId = Intention.Id;
+                clientSecret = Intention.ClientSecret;
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -130,7 +151,7 @@ namespace Application.Features.Payment.StudentBuys
                 testingPay.Items = [new OrderItem
                     {
                         Name = section.Name,
-                        Amount = (int)(section.Price),
+                        Amount = (int)section.Price,
                         Description = section.Description ?? "N/A",
                         Quantity = 1
                     }];
@@ -139,14 +160,19 @@ namespace Application.Features.Payment.StudentBuys
                    testingPay,
                    cancellationToken);
 
-                if (Intention.Confirmed)
+                // Paymob returns confirmed=false on a freshly created intention (not yet paid).
+                // A real failure means no Id was returned.
+                if (string.IsNullOrEmpty(Intention.Id))
                 {
-                    payment.Amount = section!.Price!;
-                    payment.SectionId = section.Id;
-
-                    payment.PaymobIntentionId = Intention.Id;
-                    //payment.ClientSecret = Intention.ClientSecret;
+                    payment.Status = PaymentStatus.Failed;
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    return Result<StudentBuyResponse>.FailureStatusCode("Failed to initiate payment with the provider.", ErrorType.InternalServerError);
                 }
+
+                payment.Amount = section!.Price!;
+                payment.SectionId = section.Id;
+                payment.PaymobIntentionId = Intention.Id;
+                clientSecret = Intention.ClientSecret;
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
             }
@@ -159,7 +185,7 @@ namespace Application.Features.Payment.StudentBuys
                 EntityToBuy = request.EntityToBuy,
                 PamobData = new PaymentData
                 {
-                    //ClientSecret = payment.ClientSecret!,
+                    ClientSecret = clientSecret,
                     PaymentId = payment.PaymobIntentionId!,
                     PublicKey = _paymentService.GetPublicKey()
                 }

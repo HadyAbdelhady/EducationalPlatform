@@ -1,6 +1,5 @@
-﻿using Application.Features.Payment.DTOs;
+using Application.Features.Payment.DTOs;
 using Application.Features.Payment.DTOs.PaymobRawDtos;
-using Application.Common.Interfaces;
 using Application.Features.Payment.Interfaces;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
@@ -18,7 +17,7 @@ namespace Infrastructure.Features.Payment.PaymobPaymentService
         {
             CreatePaymentIntentionRequest intentionRequest = new()
             {
-                Amount = request.Money.Amount,
+                Amount = request.Money.Amount * 100,
                 Currency = request.Money.Currency,
                 PaymentMethods = [Convert.ToInt32(request.PaymentMethods)],
                 Items = request.Items,

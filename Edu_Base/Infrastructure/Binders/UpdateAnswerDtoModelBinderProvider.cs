@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
-namespace Infrastructure.Binders
+namespace Edu_Base.Infrastructure.Binders
 {
     public class UpdateAnswerDtoModelBinderProvider : IModelBinderProvider
     {

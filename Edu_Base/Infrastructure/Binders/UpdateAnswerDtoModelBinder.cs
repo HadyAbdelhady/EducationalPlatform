@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Text.Json;
 
-namespace Infrastructure.Binders
+namespace Edu_Base.Infrastructure.Binders
 {
     public class UpdateAnswerDtoModelBinder : IModelBinder
     {

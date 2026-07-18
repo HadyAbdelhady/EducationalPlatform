@@ -1,44 +1,37 @@
-﻿using Application.Features.Exams.DTOs;
-using Application.Common;
-using Application.Features.Payment.DTOs;
+﻿using Application.Common;
 using Application.Common.Interfaces;
 using Application.Features.Centers.Interfaces;
 using Application.Features.EducationYears.Interfaces;
+using Application.Features.Exams.DTOs;
+using Application.Features.Payment.DTOs;
 using Application.Features.Payment.Interfaces;
 using Application.Features.Questions.Interfaces;
 using Application.Features.Reviews.Interfaces;
 using Application.Features.Sheets.Interfaces;
-using Application.Features.Courses.Interfaces;
-using Application.Features.Auth.Interfaces;
-using Application.Features.HomeScreen.Interfaces;
 using CloudinaryDotNet;
 using Domain.Entities;
+using Edu_Base.Infrastructure.Binders;
 using FluentValidation;
 using Hangfire;
 using Hangfire.PostgreSql;
-using Infrastructure.Binders;
+using Infrastructure.Common;
+using Infrastructure.Common.Converters;
 using Infrastructure.Common.Data;
 using Infrastructure.Common.Middleware;
 using Infrastructure.Common.Persistence;
-using Infrastructure.Features.Centers;
+using Infrastructure.Common.Persistence.Interceptors;
+using Infrastructure.Common.Services;
 using Infrastructure.Features.Courses;
 using Infrastructure.Features.EducationYears;
 using Infrastructure.Features.Exams;
-using Infrastructure.Features.Questions;
-using Infrastructure.Features.Sections;
-using Infrastructure.Features.Videos;
-using Infrastructure.Features.Auth;
-using Infrastructure.Common.Converters;
-using Infrastructure.Features.HomeScreen;
-using Infrastructure.Features.Sheets;
-using Infrastructure.Features.Reviews;
-using Infrastructure.Common.Persistence.Interceptors;
 using Infrastructure.Features.HomeScreen.EnrollmentProgress;
-using Infrastructure.Common;
-using Infrastructure.Common.Services;
 using Infrastructure.Features.Payment.PaymobPaymentService;
+using Infrastructure.Features.Reviews;
 using Infrastructure.Features.Reviews.ReviewService;
+using Infrastructure.Features.Sections;
+using Infrastructure.Features.Sheets;
 using Infrastructure.Features.Sheets.SheetService;
+using Infrastructure.Features.Videos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -216,8 +209,8 @@ namespace Edu_Base
                 {
                     // Serialize enums as their string names in JSON responses
                     opts.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-                    opts.JsonSerializerOptions.Converters.Add(new Infrastructure.Common.Converters.EgyptTimeJsonConverter());
-                    opts.JsonSerializerOptions.Converters.Add(new Infrastructure.Common.Converters.NullableEgyptTimeJsonConverter());
+                    opts.JsonSerializerOptions.Converters.Add(new EgyptTimeJsonConverter());
+                    opts.JsonSerializerOptions.Converters.Add(new NullableEgyptTimeJsonConverter());
                 });
 
             // Swagger/OpenAPI Configuration
@@ -256,7 +249,7 @@ namespace Edu_Base
                     }
                 });
                 // Represent enums as strings in Swagger schema (use names instead of numeric values)
-                c.SchemaFilter<Edu_Base.Swagger.EnumSchemaFilter>();
+                c.SchemaFilter<Swagger.EnumSchemaFilter>();
             });
 
             var app = builder.Build();

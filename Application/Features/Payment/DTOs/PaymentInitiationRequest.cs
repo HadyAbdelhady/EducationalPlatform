@@ -1,4 +1,5 @@
-﻿using Application.Features.Payment.DTOs.PaymobRawDtos;
+using System.Text.Json.Serialization;
+using Application.Features.Payment.DTOs.PaymobRawDtos;
 using Domain.enums;
 
 namespace Application.Features.Payment.DTOs
@@ -11,9 +12,12 @@ namespace Application.Features.Payment.DTOs
         public Guid EntityId { get; set; }
         public EntityToBuy EntityType { get; set; }
         public Money Money { get; set; } = null!;
+        [JsonPropertyName("paymentMethod")]
         public PaymentMethodKeys PaymentMethods { get; set; }
         public List<OrderItem> Items { get; set; } = [];
-        public Student Student { get; set; } = null!;
+
+        [JsonIgnore]
+        public Student? Student { get; set; }
     }
 }
 

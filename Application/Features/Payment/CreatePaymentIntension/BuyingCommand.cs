@@ -1,9 +1,9 @@
-﻿using Application.Features.Payment.DTOs;
+using Application.Features.Payment.DTOs;
 using Application.Common;
 using Domain.enums;
 using MediatR;
 
-namespace Application.Features.Payment.StudentBuys
+namespace Application.Features.Payment.CreatePaymentIntension
 {
 
     public class BuyingCommand : IRequest<Result<StudentBuyResponse>>
@@ -14,9 +14,7 @@ namespace Application.Features.Payment.StudentBuys
 
         public Money Money { get; set; } = null!;
         
-        public bool PaymentMethod { get; set; }
-        public Student Student { get; set; } = null!;
-
+        public PaymentMethodKeys PaymentMethods { get; set; }
     }
 
     public class StudentBuyResponse

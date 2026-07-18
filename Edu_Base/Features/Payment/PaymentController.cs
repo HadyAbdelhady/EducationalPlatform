@@ -1,7 +1,7 @@
-﻿using Application.Features.Payment.DTOs;
+using Application.Features.Payment.CreatePaymentIntension;
+using Application.Features.Payment.DTOs;
 using Application.Features.Payment.DTOs.PaymobRawDtos;
 using Application.Features.Payment.PaymentWebhook;
-using Application.Features.Payment.StudentBuys;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,21 +14,19 @@ namespace Edu_Base.Features.Payment
     {
         private readonly IMediator _mediator = mediator;
         [HttpPost("Enroll")]
-        [Authorize(Roles = "Student")]
+        //[Authorize(Roles = "Student")]
         public async Task<IActionResult> EnrollStudentInCourseOrSection([FromBody] PaymentInitiationRequest request, CancellationToken cancellationToken)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            var UserName = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
-            var UserEmail = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
-            //var UserId = Guid.Parse("1c231d0f-006e-47ac-a589-59f42f63c94c"); // Hardcoded for testing purposes
+            //var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            var UserId = Guid.Parse("23669985-50b2-4e8b-9aef-9c30ea744565"); // Hardcoded for testing purposes
 
             var PaymentCommand = new BuyingCommand
             {
                 StudentId = UserId,
-                Student = new Student(UserName?.Split(" ")?[0], UserName?.Split(" ")?[1], UserEmail),
                 EntityId = request.EntityId,
                 EntityToBuy = request.EntityType,
-                Money = request.Money
+                Money = request.Money,
+                PaymentMethods = request.PaymentMethods,
             };
 
             var result = await _mediator.Send(PaymentCommand, cancellationToken);
