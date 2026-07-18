@@ -46,6 +46,7 @@ namespace Application.Features.Exams.DTOs
         {
             var totalMark = exam.TotalMark;
             var numberOfQuestions = exam.NumberOfQuestions;
+
             var passMarkPercentage = exam.PassMarkPercentage;
 
             return er => new ExamSubmissionDto
