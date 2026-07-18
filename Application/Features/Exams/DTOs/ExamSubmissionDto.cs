@@ -8,7 +8,7 @@ namespace Application.Features.Exams.DTOs
     {
         public Guid StudentId { get; set; }
         public string StudentName { get; set; } = string.Empty;
-
+        public string StudentProfilePicture { get; set; } = string.Empty;
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public ExamResultStatus Status { get; set; }
 

@@ -14,7 +14,7 @@ namespace Application.Features.Exams.DTOs
         int? Duration,
         string SectionName)
     {
-        public static ExamSubmissionProjectionContext FromExam(Domain.Entities.Exam exam) => new(
+        public static ExamSubmissionProjectionContext FromExam(Exam exam) => new(
             exam.Id,
             exam.Name,
             exam.TotalMark,
@@ -27,7 +27,7 @@ namespace Application.Features.Exams.DTOs
 
     public static class ExamSubmissionDtoMapping
     {
-        public static ExamDetails ToExamDetails(Domain.Entities.Exam exam) => new()
+        public static ExamDetails ToExamDetails(Exam exam) => new()
         {
             ExamId = exam.Id,
             ExamName = exam.Name,
@@ -52,6 +52,7 @@ namespace Application.Features.Exams.DTOs
             {
                 StudentId = er.StudentId,
                 StudentName = er.Student != null && er.Student.User != null ? er.Student.User.FullName : string.Empty,
+                StudentProfilePicture = er.Student != null && er.Student.User != null ? er.Student.User.PersonalPictureUrl! : string.Empty,
                 Status = er.Status,
                 ObtainedMarks = er.StudentMark,
                 TotalMark = totalMark,
