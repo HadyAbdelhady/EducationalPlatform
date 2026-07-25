@@ -1,4 +1,4 @@
-﻿using Application.Common;
+using Application.Common;
 using Application.Features.Courses.DTOs;
 using Application.Features.Courses.Commands.CreateCourse;
 using Application.Features.Courses.Commands.DeleteCourse;
@@ -38,7 +38,7 @@ namespace Edu_Base.Features.Courses
                 PictureFile = courseCreationRequest.PictureFile
             };
             var result = await _mediator.Send(createCourseCommand, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
 
         }
 
@@ -50,7 +50,7 @@ namespace Edu_Base.Features.Courses
 
             var query = new GetCourseByIdQuery { CourseId = courseId, UserId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("GetCoursesList")]
@@ -64,7 +64,7 @@ namespace Edu_Base.Features.Courses
                 UserID = UserId,
             };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpPatch("update")]
@@ -97,7 +97,7 @@ namespace Edu_Base.Features.Courses
                 CourseId = courseId
             };
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("GetCourseNamesByInstructor")]
@@ -108,7 +108,7 @@ namespace Edu_Base.Features.Courses
 
             var query = new GetCourseNamesByInstructorQuery { InstructorId = UserId, EducationalYearId = EducationalYearId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
     }
 }

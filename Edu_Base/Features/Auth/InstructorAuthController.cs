@@ -1,4 +1,4 @@
-﻿using Application.Features.Auth.DTOs;
+using Application.Features.Auth.DTOs;
 using Application.Features.Auth.Commands.GoogleLogout;
 using Application.Features.Auth.Commands.InstructorGoogleLogin;
 using Application.Features.Auth.Commands.StudentGoogleLogin;
@@ -50,7 +50,7 @@ namespace Edu_Base.Features.Auth
                     result.Value.IsNewUser);
             }
 
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
 
         }
 
@@ -70,7 +70,7 @@ namespace Edu_Base.Features.Auth
 
             _logger.LogInformation("Instructor logout successful for UserId: {UserId}", userId);
 
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
 
         }
 
@@ -82,7 +82,7 @@ namespace Edu_Base.Features.Auth
 
             var result = await _mediator.Send(loginWithRefreshToken, cancellationToken);
 
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
 
         }
     }

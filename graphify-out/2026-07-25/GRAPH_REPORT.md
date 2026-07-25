@@ -1,16 +1,16 @@
-# Graph Report - EducationalPlatform  (2026-07-25)
+# Graph Report - EducationalPlatform  (2026-07-04)
 
 ## Corpus Check
-- 457 files · ~71,287 words
+- 456 files · ~69,391 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2919 nodes · 6213 edges · 189 communities (181 shown, 8 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 102 edges (avg confidence: 0.8)
+- 2901 nodes · 6205 edges · 177 communities (169 shown, 8 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 103 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5d9ac5b3`
+- Built from commit: `b27fd37b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -189,23 +189,11 @@
 - [[_COMMUNITY_🧪 Testing Recommendations|🧪 Testing Recommendations]]
 - [[_COMMUNITY_graphify|graphify.md]]
 - [[_COMMUNITY_graphify|graphify.md]]
-- [[_COMMUNITY_DeleteSheetCommandHandler|DeleteSheetCommandHandler]]
-- [[_COMMUNITY_UpdateVideoCommand|UpdateVideoCommand]]
-- [[_COMMUNITY_SectionRepository|SectionRepository]]
-- [[_COMMUNITY_BulkCreateSectionRequest|BulkCreateSectionRequest]]
-- [[_COMMUNITY_.GetInstructorStudentPageAsync|.GetInstructorStudentPageAsync]]
-- [[_COMMUNITY_BulkDeleteSectionRequest|BulkDeleteSectionRequest]]
-- [[_COMMUNITY_AnswersSheetCreationRequest|AnswersSheetCreationRequest]]
-- [[_COMMUNITY_AnswersSheetUpdateRequest|AnswersSheetUpdateRequest]]
-- [[_COMMUNITY_SheetCreationRequest|SheetCreationRequest]]
-- [[_COMMUNITY_SheetUpdateRequest|SheetUpdateRequest]]
-- [[_COMMUNITY_CreateSectionRequest|CreateSectionRequest]]
-- [[_COMMUNITY_SectionUpdateRequest|SectionUpdateRequest]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Result` - 256 edges
 2. `Application.Common` - 188 edges
-3. `Application.Common.Interfaces` - 142 edges
+3. `Application.Common.Interfaces` - 143 edges
 4. `Domain.enums` - 137 edges
 5. `Domain.Entities` - 129 edges
 6. `IUnitOfWork` - 97 edges
@@ -217,47 +205,47 @@
 ## Surprising Connections (you probably didn't know these)
 - `CloudinaryService` --references--> `CloudinarySettings`  [EXTRACTED]
   Infrastructure/Common/Services/CloudinaryService.cs → Application/Common/CloudinarySettings.cs
-- `ExamFilterRegistry` --implements--> `IBaseFilterRegistry`  [EXTRACTED]
-  Infrastructure/Features/Exams/ExamQueryBuilding.cs → Application/Common/Interfaces/BaseFilterRegistry.cs
+- `CourseFilterRegistry` --implements--> `IBaseFilterRegistry`  [EXTRACTED]
+  Infrastructure/Features/Courses/CourseQueryBuilding.cs → Application/Common/Interfaces/BaseFilterRegistry.cs
 - `InstructorExamsFilterRegistry` --implements--> `IBaseFilterRegistry`  [EXTRACTED]
   Infrastructure/Features/Exams/InstructorExamsFilterRegistry.cs → Application/Common/Interfaces/BaseFilterRegistry.cs
 - `StudentExamResultFilterRegistry` --implements--> `IBaseFilterRegistry`  [EXTRACTED]
   Infrastructure/Features/Exams/StudentExamResultQueryBuilding.cs → Application/Common/Interfaces/BaseFilterRegistry.cs
-- `QuestionFilterRegistry` --implements--> `IBaseFilterRegistry`  [EXTRACTED]
-  Infrastructure/Features/Questions/QuestionFilterRegistry.cs → Application/Common/Interfaces/BaseFilterRegistry.cs
+- `ReviewServiceBase` --references--> `IBaseFilterRegistry`  [EXTRACTED]
+  Infrastructure/Features/Reviews/ReviewService/ReviewServiceBase.cs → Application/Common/Interfaces/BaseFilterRegistry.cs
 
 ## Import Cycles
 - None detected.
 
-## Communities (189 total, 8 thin omitted)
+## Communities (177 total, 8 thin omitted)
 
 ### Community 0 - "Infrastructure Progress"
-Cohesion: 0.25
-Nodes (15): CancellationToken, Dictionary, EnrollmentListItem, ExamProgressRow, Guid, int, IReadOnlyList, List (+7 more)
+Cohesion: 0.05
+Nodes (60): InstructorStudentProgressDto, InstructorStudentsProgressResponse, Guid, List, EnrollmentProgressDto, ExamProgressAggregate, ProgressGlobalSummary, SectionProgressAggregate (+52 more)
 
 ### Community 1 - "Application Infrastructure"
-Cohesion: 0.28
-Nodes (8): AddQuestionCommand, Guid, IFormFile, List, AddQuestionHandler, CancellationToken, Guid, Task
+Cohesion: 0.22
+Nodes (9): AddQuestionCommand, Guid, IFormFile, List, AddQuestionHandler, CancellationToken, Guid, Task (+1 more)
 
 ### Community 2 - "Application Features"
-Cohesion: 0.06
-Nodes (40): Action, Result, GoogleLogoutCommand, Guid, GoogleLogoutCommandHandler, CancellationToken, Task, CreateEducationYearCommand (+32 more)
+Cohesion: 0.05
+Nodes (46): Action, Result, DeleteAnswersSheetCommand, Guid, DeleteAnswersSheetCommandHandler, CancellationToken, Task, GoogleLogoutCommand (+38 more)
 
 ### Community 3 - "Application Infrastructure"
 Cohesion: 0.07
-Nodes (16): Infrastructure.Features.Auth, Infrastructure.Common, Infrastructure.Common.Data, Application.Features.EducationYears.Interfaces, Infrastructure.Features.Payment, Infrastructure.Features.Videos, Infrastructure.Common.Persistence.Interceptors, Edu_Base (+8 more)
+Nodes (23): Infrastructure.Features.Auth, Application.Features.Exams.Interfaces, Infrastructure.Common, Infrastructure.Common.Data, Infrastructure.Common.Services, Application.Features.EducationYears.Interfaces, Infrastructure.Features.Payment, Infrastructure.Features.Videos (+15 more)
 
 ### Community 4 - "Application Features"
-Cohesion: 0.07
-Nodes (38): CreateReviewCommand, Guid, CreateReviewCommandHandler, CancellationToken, Task, DeleteReviewCommand, Guid, DeleteReviewCommandHandler (+30 more)
+Cohesion: 0.05
+Nodes (57): CreateReviewCommand, Guid, CreateReviewCommandHandler, CancellationToken, Task, DeleteReviewCommand, Guid, DeleteReviewCommandHandler (+49 more)
 
 ### Community 5 - "Application Videos"
-Cohesion: 0.09
-Nodes (24): BulkCreateVideosRequest, Guid, List, SaveDirectVideoUploadRequest, Guid, UpdateVideoProgressRequest, Guid, VideoBulkCreationRequest (+16 more)
+Cohesion: 0.06
+Nodes (36): BulkCreateVideosCommand, Guid, List, BulkCreateVideosCommandHandler, CancellationToken, IMediator, List, Task (+28 more)
 
 ### Community 6 - "Edu Base"
-Cohesion: 0.12
-Nodes (19): GetAllReviewsResponse, DateTimeOffset, Guid, GetReviewByIdResponse, StudentReviewInfo, DateTimeOffset, Guid, GetAllReviewsQuery (+11 more)
+Cohesion: 0.22
+Nodes (8): GenerateExamCommand, DateTimeOffset, Dictionary, Guid, CancellationToken, Task, GenerateExamResponse, Guid
 
 ### Community 7 - "Application Eventhandlers"
 Cohesion: 0.05
@@ -265,7 +253,7 @@ Nodes (34): ExamAddedEventHandler, CancellationToken, Task, ExamDeletedEventHand
 
 ### Community 8 - "Application Features"
 Cohesion: 0.06
-Nodes (19): Application.Features.Sections.Commands.DeleteSection, Application.Features.Videos.Commands.DeleteVideo, Application.Features.Sheets.DTOs, Application.Features.AnswersSheets.Commands.UpdateAnswersSheet, Application.Features.EducationYears.Commands.DeleteEducationYear, Application.Features.AnswersSheets.Commands.CreateAnswersSheet, Application.Features.Sheets.Commands.UpdateSheet, Application.Features.AnswersSheets.Commands.DeleteAnswersSheet (+11 more)
+Nodes (17): Application.Features.Sections.Commands.DeleteSection, Application.Features.Videos.Commands.DeleteVideo, Application.Features.AnswersSheets.Commands.DeleteAnswersSheet, Application.Features.Courses.Commands.DeleteCourse, Application.Features.Videos.Queries.GetAllVideos, Application.Features.Videos.Queries.GetVideoById, Application.Features.Questions.Command.DeleteQuestion, Application.Features.Centers.Commands.DeleteCenter (+9 more)
 
 ### Community 9 - "Application Sections"
 Cohesion: 0.14
@@ -276,20 +264,20 @@ Cohesion: 0.07
 Nodes (32): UpdateAnswerDto, Guid, ExamEditDto, DateTimeOffset, Guid, ICollection, UpdateQuestionCommand, Guid (+24 more)
 
 ### Community 11 - "Domain Entities"
-Cohesion: 0.12
-Nodes (16): DateTimeOffset, Guid, ICollection, Course, DateTimeOffset, Guid, ICollection, EducationYear (+8 more)
+Cohesion: 0.11
+Nodes (22): DateTimeOffset, Guid, ICollection, Course, DateTimeOffset, Guid, PaymentTransactions, DateTimeOffset (+14 more)
 
 ### Community 12 - "Application Features"
-Cohesion: 0.11
-Nodes (13): Application.Features.Reviews.Commands.DeleteReview, Application.Features.Reviews.Commands.UpdateReview, Domain.enums, Application.Features.Reviews.DTOs, Infrastructure.Features.Exams, Application.Features.Reviews.Commands.CreateReview, Edu_Base.Features.Reviews, Application.Features.Reviews.Interfaces (+5 more)
+Cohesion: 0.12
+Nodes (12): Application.Features.Reviews.Commands.DeleteReview, Application.Features.Reviews.Commands.UpdateReview, Domain.enums, Application.Features.Reviews.DTOs, Application.Features.Reviews.Commands.CreateReview, Edu_Base.Features.Reviews, Application.Features.Reviews.Interfaces, Application.Features.Review.Query.GetAllReviews (+4 more)
 
 ### Community 13 - "Infrastructure Repositories"
-Cohesion: 0.07
-Nodes (32): IRefreshTokenRepository, CancellationToken, Guid, Task, IUserRepository, CancellationToken, Guid, Task (+24 more)
+Cohesion: 0.10
+Nodes (20): IRefreshTokenRepository, CancellationToken, Guid, Task, DateTime, Guid, RefreshToken, CancellationToken (+12 more)
 
 ### Community 14 - "Application Auth"
-Cohesion: 0.18
-Nodes (9): IJwtTokenService, ClaimsPrincipal, Guid, LoginWithRefreshTokenCommand, Guid, LoginWithRefreshTokenCommandHandler, CancellationToken, Task (+1 more)
+Cohesion: 0.08
+Nodes (31): IGoogleAuthService, CancellationToken, Task, IJwtTokenService, ClaimsPrincipal, Guid, CenterAdminGoogleLoginCommand, Guid (+23 more)
 
 ### Community 15 - "Edu Base"
 Cohesion: 0.04
@@ -300,47 +288,47 @@ Cohesion: 0.06
 Nodes (34): net9.0, CloudinaryDotNet (1.27.8), MediatR (12.4.1), Microsoft.AspNetCore.Http.Abstractions (2.2.0), Microsoft.NET.Sdk, net9.0, MediatR (12.4.1), Microsoft.NET.Sdk (+26 more)
 
 ### Community 17 - "Application Infrastructure"
-Cohesion: 0.10
+Cohesion: 0.11
 Nodes (24): IUnitOfWork, CancellationToken, Task, RemoveInstructorFromCenterCommand, Guid, RemoveInstructorFromCenterCommandHandler, CancellationToken, Task (+16 more)
 
 ### Community 18 - "Application Features"
-Cohesion: 0.07
-Nodes (35): AnswerDto, Guid, AllQuestionsInExamResponse, Guid, AnswerResponse, QuestionDetailsResponse, DateTimeOffset, Guid (+27 more)
+Cohesion: 0.06
+Nodes (40): AnswerDto, Guid, AllQuestionsInExamResponse, Guid, AnswerResponse, QuestionDetailsResponse, DateTimeOffset, Guid (+32 more)
 
 ### Community 19 - "Application Interfaces"
-Cohesion: 0.29
-Nodes (10): CancellationToken, Guid, HttpDelete, HttpGet, HttpPatch, HttpPost, IActionResult, IMediator (+2 more)
+Cohesion: 0.12
+Nodes (24): AnswersSheetCreationRequest, Guid, IFormFile, AnswersSheetUpdateRequest, Guid, IFormFile, SheetCreationRequest, DateTimeOffset (+16 more)
 
 ### Community 20 - "Infrastructure Csharp"
 Cohesion: 0.06
 Nodes (33): API Endpoints, Best Practices, Complete Endpoint List, Database Behavior, Error Handling, For Enterprise Apps, For Mobile Apps, For MVP/Prototype (+25 more)
 
 ### Community 21 - "Application Interfaces"
-Cohesion: 0.29
-Nodes (10): CancellationToken, Guid, HttpDelete, HttpGet, HttpPatch, HttpPost, IActionResult, IMediator (+2 more)
+Cohesion: 0.11
+Nodes (21): BulkCreateSectionRequest, BulkSectionDataForCreation, Guid, List, BulkDeleteSectionRequest, Guid, List, CreateSectionRequest (+13 more)
 
 ### Community 22 - "Application Questions"
-Cohesion: 0.09
-Nodes (11): CreateAnswerDto, Application.Features.Questions.Query.GetAllQuestionsInExam, Application.Features.Questions.Query.GetQuestionById, Application.Features.Questions.Command.UpdateQuestion, Application.Features.Questions.Query.GetAllQuestionsWithAnswersInBank, Application.Features.Questions.Command.AddQuestion, Edu_Base.Features.Questions, Application.Features.Questions.Query.GetAllQuestionsInBank (+3 more)
+Cohesion: 0.10
+Nodes (10): CreateAnswerDto, Application.Features.Questions.Query.GetAllQuestionsInExam, Application.Features.Questions.Query.GetQuestionById, Application.Features.Questions.Command.UpdateQuestion, Application.Features.Questions.Query.GetAllQuestionsWithAnswersInBank, Application.Features.Questions.Command.AddQuestion, Edu_Base.Features.Questions, Application.Features.Questions.DTOs (+2 more)
 
 ### Community 23 - "Application Features"
 Cohesion: 0.08
-Nodes (13): Application.Features.Exams.Command.ChangeExamStatus, Application.Features.Exams.Query.GetExamCalendarDays, Application.Features.Exams.Interfaces, Application.Features.Exams.Query.GetAllStudentExams, Application.Features.Exams.Query.GetExamSubmissionsList, Application.Features.Exams.DTOs, Application.Features.Exams.Command.GenerateExam, Application.Features.Exams.Query.GetInstructorExams (+5 more)
+Nodes (11): Application.Features.Exams.Command.ChangeExamStatus, Application.Features.Exams.Query.GetExamCalendarDays, Application.Features.Exams.Query.GetAllStudentExams, Application.Features.Exams.Query.GetExamSubmissionsList, Application.Features.Exams.DTOs, Application.Features.Exams.Command.GenerateExam, Application.Features.Exams.Query.GetInstructorExams, Application.Features.Exams.Query.GetExamById (+3 more)
 
 ### Community 24 - "Application Dtos"
-Cohesion: 0.10
-Nodes (31): InstructorCourseDto, InstructorDashboardResponse, InstructorStatsDto, PendingTaskDto, RecentActivityDto, UpcomingExamDto, UpcomingSheetDto, DateTimeOffset (+23 more)
+Cohesion: 0.13
+Nodes (26): InstructorCourseDto, InstructorDashboardResponse, InstructorStatsDto, PendingTaskDto, RecentActivityDto, UpcomingExamDto, UpcomingSheetDto, DateTimeOffset (+18 more)
 
 ### Community 25 - "Application Dtos"
 Cohesion: 0.07
 Nodes (28): 1. User Signup/Login with Google, 2. Store the JWT Token, 3. Use JWT Token for Subsequent API Calls, 401 Unauthorized (No Token or Invalid Token), 403 Forbidden (Valid Token but Insufficient Permissions), Accessing User Information in Controllers, appsettings.json, Authentication Flow (+20 more)
 
 ### Community 26 - "Application Sections"
-Cohesion: 0.24
-Nodes (14): GetSectionDetailsResponse, SectionData, SectionDetailsQueryModel, StudentSectionData, StudentVideoData, VideoData, DateTimeOffset, Guid (+6 more)
+Cohesion: 0.10
+Nodes (29): GetSectionDetailsResponse, SectionData, SectionDetailsQueryModel, StudentSectionData, StudentVideoData, VideoData, DateTimeOffset, Guid (+21 more)
 
 ### Community 27 - "Application Auth"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (10): Application.Features.Auth.Interfaces, Application.Features.Auth.Queries.CheckUserExists, Application.Features.Auth.Commands.CenterAdminGoogleLogin, Application.Features.Auth.Commands.GoogleLogout, Application.Features.Auth.DTOs, Application.Features.Exams.Command.StartExam, Application.Features.Auth.Commands.InstructorGoogleLogin, Application.Features.Auth.Commands.UserLoginWithRefreshToken (+2 more)
 
 ### Community 28 - "Edu Base"
@@ -352,48 +340,48 @@ Cohesion: 0.09
 Nodes (32): AssignInstructorToCenterCommand, Guid, AssignInstructorToCenterCommandHandler, CancellationToken, Task, CreateCenterCommand, CreateCenterCommandHandler, CancellationToken (+24 more)
 
 ### Community 30 - "Application Courses"
-Cohesion: 0.07
-Nodes (28): IRepository, CancellationToken, Expression, Func, Guid, IEnumerable, IQueryable, Task (+20 more)
+Cohesion: 0.06
+Nodes (30): IRepository, CancellationToken, Expression, Func, Guid, IEnumerable, IQueryable, Task (+22 more)
 
 ### Community 31 - "Application Features"
-Cohesion: 0.14
-Nodes (16): CourseDetailResponse, InstructorInfoDto, DateTimeOffset, Guid, List, ICourseRepository, CancellationToken, Task (+8 more)
+Cohesion: 0.10
+Nodes (10): Application.Features.Sheets.DTOs, Application.Features.AnswersSheets.Commands.UpdateAnswersSheet, Application.Features.AnswersSheets.Commands.CreateAnswersSheet, Application.Features.Sheets.Commands.UpdateSheet, Infrastructure.Features.Sheets.SheetService, Application.Features.AnswersSheets.Commands.ApproveAnswersSheet, Application.Features.Sheets.Commands.CreateSheet, Application.Features.Sheets.Queries.GetAllSheets (+2 more)
 
 ### Community 32 - "Domain Entities"
-Cohesion: 0.14
-Nodes (24): VideoDataForUpdatingProgress, DbContext, DbContextOptionsBuilder, DateTimeOffset, Guid, ICollection, Center, Guid (+16 more)
+Cohesion: 0.17
+Nodes (22): VideoDataForUpdatingProgress, DbContext, DbContextOptionsBuilder, DateTimeOffset, Guid, ICollection, EducationYear, Guid (+14 more)
 
 ### Community 33 - "Application Features"
 Cohesion: 0.19
 Nodes (13): CalculateObtainedMarks, IEnumerable, StudentAnswersDTO, SubmitExamCommand, SubmitExamRequest, Guid, List, SubmitExamCommandHandler (+5 more)
 
 ### Community 34 - "Application Features"
-Cohesion: 0.33
-Nodes (3): IPaymentService, CancellationToken, Task
+Cohesion: 0.27
+Nodes (6): IPaymentService, PaymentWebhookCommand, PaymentWebhookCommandHandler, CancellationToken, Task, Application.Features.Payment.PaymentWebhook
 
 ### Community 35 - "Application Features"
 Cohesion: 0.21
 Nodes (10): ICenterRepository, CancellationToken, Guid, IEnumerable, Task, CancellationToken, Guid, IEnumerable (+2 more)
 
 ### Community 36 - "Application Interfaces"
-Cohesion: 0.11
-Nodes (18): 1. Adding Dependencies, 1. Initiate Enrollment and Payment, 2. Fetching Payment Intent Details, 2. Get Course Details (Check Enrollment), 3. Displaying Paymob Checkout UI (WebView Approach), 3. Get Section Details (Check Enrollment), 4. Verification Flow, API Documentation (+10 more)
+Cohesion: 0.22
+Nodes (12): IUserRepository, CancellationToken, Guid, Task, DateOnly, DateTimeOffset, Guid, User (+4 more)
 
 ### Community 37 - "Domain Entities"
 Cohesion: 0.14
 Nodes (19): Infrastructure.Features.Reviews, DateTimeOffset, Guid, CourseReview, Review, SectionReview, VideoReview, Guid (+11 more)
 
 ### Community 38 - "Application Interfaces"
-Cohesion: 0.16
-Nodes (6): Application.Features.Videos.Queries.GetAllVideos, Application.Features.Videos.Queries.GetVideoById, Application.Features.Videos.DTOs, Application.Features.Videos.Commands.UpdateVideoProgress, Application.Features.Videos.Commands.CreateVideo, Edu_Base.Features.Videos
+Cohesion: 0.19
+Nodes (14): PaymentResponse, DateTimeOffset, Guid, IPaymentRepository, CancellationToken, Guid, IEnumerable, Task (+6 more)
 
 ### Community 39 - "Application Features"
-Cohesion: 0.12
-Nodes (15): AddAnswerToQuestionCommand, Guid, AddAnswerToQuestionCommandHandler, CancellationToken, Guid, Task, PaymentWebhookCommand, PaymentWebhookCommandHandler (+7 more)
+Cohesion: 0.09
+Nodes (23): AddAnswerToQuestionCommand, Guid, AddAnswerToQuestionCommandHandler, CancellationToken, Guid, Task, DeleteCenterCommand, Guid (+15 more)
 
 ### Community 40 - "Application Payment"
-Cohesion: 0.22
-Nodes (5): Edu_Base.Features.Payment, Application.Features.Payment.PaymentWebhook, Application.Features.Payment.DTOs, Application.Features.Payment.CreatePaymentIntension, Infrastructure.Features.Payment.PaymobPaymentService
+Cohesion: 0.18
+Nodes (8): HMACStringKeys, DateTimeOffset, PaymentWebhookRequest, Application.Features.Payment.StudentBuys, Edu_Base.Features.Payment, Application.Features.Payment.DTOs, Infrastructure.Features.Payment.PaymobPaymentService, Application.Features.Payment.DTOs.PaymobRawDtos
 
 ### Community 41 - "Application Videos"
 Cohesion: 0.16
@@ -408,32 +396,32 @@ Cohesion: 0.17
 Nodes (13): Infrastructure.Common.Converters, DateTime, DateTimeOffset, EgyptTime, DateTimeOffset, EgyptTimeJsonConverter, NullableEgyptTimeJsonConverter, JsonConverter (+5 more)
 
 ### Community 44 - "Edu Base"
-Cohesion: 0.09
-Nodes (14): Edu_Base.Features.Centers, Infrastructure.Common.Services, Application.Features.Centers.DTOs, Application.Common.Interfaces, Application.Features.Centers.Commands.RemoveInstructorFromCenter, Application.Features.Centers.Commands.UpdateCenter, Application.Features.Centers.Interfaces, Application.Features.Centers.Commands.DeleteCenter (+6 more)
+Cohesion: 0.13
+Nodes (9): Edu_Base.Features.Centers, Application.Features.Centers.DTOs, Application.Features.Centers.Commands.RemoveInstructorFromCenter, Application.Features.Centers.Commands.UpdateCenter, Application.Features.Centers.Interfaces, Application.Features.Centers.Commands.AssignInstructorToCenter, Application.Features.Centers.Commands.CreateCenter, Application.Features.Centers.Queries.GetAllCenters (+1 more)
 
 ### Community 45 - "Application Infrastructure"
 Cohesion: 0.14
 Nodes (15): GetSheetsRequest, Guid, ISheetRepository, Guid, IQueryable, SheetTargetType, SheetType, Guid (+7 more)
 
 ### Community 46 - "Application Features"
-Cohesion: 0.13
-Nodes (9): AbstractValidator, CenterAdminGoogleLoginCommandValidator, InstructorGoogleLoginCommandValidator, DateOnly, CreateEducationYearCommandValidator, DeleteEducationYearCommandValidator, UpdateEducationYearCommandValidator, GetEducationYearByIdQueryValidator (+1 more)
+Cohesion: 0.14
+Nodes (8): AbstractValidator, CenterAdminGoogleLoginCommandValidator, InstructorGoogleLoginCommandValidator, DateOnly, DeleteEducationYearCommandValidator, UpdateEducationYearCommandValidator, GetEducationYearByIdQueryValidator, Application.Features.EducationYears.Commands.DeleteEducationYear
 
 ### Community 47 - "Application Dtos"
-Cohesion: 0.12
-Nodes (20): ExamDetails, ExamSubmissionDto, ExamSubmissionsListResponse, DateTimeOffset, Guid, ExamSubmissionDtoMapping, ExamSubmissionProjectionContext, Expression (+12 more)
+Cohesion: 0.11
+Nodes (21): ExamDetails, ExamSubmissionDto, ExamSubmissionsListResponse, DateTimeOffset, Guid, ExamSubmissionDtoMapping, ExamSubmissionProjectionContext, Expression (+13 more)
 
 ### Community 48 - "Application Homescreen"
-Cohesion: 0.12
-Nodes (10): Application.Features.HomeScreen.DTOs, Application.Features.HomeScreen.Interfaces, Application.Features.HomeScreen.StudentProgress, Infrastructure.Features.HomeScreen.EnrollmentProgress, Application.Features.HomeScreen.InstructorDashboard, Application.Features.HomeScreen.StudentHomeScreen, Domain, Edu_Base.Features.HomeScreen (+2 more)
+Cohesion: 0.13
+Nodes (9): Application.Features.HomeScreen.DTOs, Application.Features.HomeScreen.Interfaces, Application.Features.HomeScreen.StudentProgress, Application.Features.HomeScreen.InstructorDashboard, Application.Features.HomeScreen.StudentHomeScreen, Domain, Edu_Base.Features.HomeScreen, Infrastructure.Features.HomeScreen (+1 more)
 
 ### Community 49 - "Application Features"
-Cohesion: 0.31
+Cohesion: 0.27
 Nodes (8): BuyingCommand, PaymentData, StudentBuyResponse, Guid, BuyingCommandHandler, CancellationToken, Task, EntityToBuy
 
 ### Community 50 - "Application Features"
-Cohesion: 0.26
-Nodes (6): Application.Features.Sections.Commands.UpdateSection, Edu_Base.Features.Sections, Application.Features.Sections.Interfaces, Application.Features.Sections.Query.GetSectionsForCourse, Application.Features.Sections.DTOs, Application.Features.Sections.Query.GetSectionDetails
+Cohesion: 0.16
+Nodes (8): Application.Features.Sections.Commands.UpdateSection, Application.Features.Sections.Query.GetSectionsNamesFourCourse, Edu_Base.Features.Sections, Application.Features.Sections.Interfaces, Application.Features.Sections.Query.GetSectionsForCourse, Application.Features.Sections.Commands.CreateSection, Application.Features.Sections.DTOs, Application.Features.Sections.Query.GetSectionDetails
 
 ### Community 51 - "Application Features"
 Cohesion: 0.28
@@ -445,7 +433,7 @@ Nodes (16): AssignInstructorToCenterRequest, CreateCenterRequest, UpdateCenterRe
 
 ### Community 53 - "Application Videos"
 Cohesion: 0.27
-Nodes (8): VideoByUserIdResponse, DateTimeOffset, Guid, GetVideoByIdQuery, Guid, GetVideoByIdQueryHandler, CancellationToken, Task
+Nodes (8): VideoByUserIdResponse, DateTimeOffset, Guid, GetAllVideosQuery, Guid, GetAllVideosQueryHandler, CancellationToken, Task
 
 ### Community 54 - "Edu Base"
 Cohesion: 0.15
@@ -456,8 +444,8 @@ Cohesion: 0.08
 Nodes (23): Best Practices, Business Rules, Client-Side Integration Examples, Common Error Types, Create Education Year, Create Education Year, cURL Examples, Delete Education Year (+15 more)
 
 ### Community 56 - "Application Courses"
-Cohesion: 0.21
-Nodes (6): Application.Features.Courses.Query.GetCourseById, Application.Features.Courses.DTOs, Edu_Base.Features.Courses, Application.Features.Courses.Interfaces, Application.Features.Courses.Query.GetCourseNamesByInstructor, Application.Features.Courses.Commands.CreateCourse
+Cohesion: 0.19
+Nodes (7): Application.Features.Courses.Query.GetCourseById, Application.Features.Courses.DTOs, Edu_Base.Features.Courses, Application.Features.Courses.Interfaces, Application.Features.Courses.Query.GetAllCourses, Application.Features.Courses.Query.GetCourseNamesByInstructor, Application.Features.Courses.Commands.CreateCourse
 
 ### Community 57 - "Edu Base"
 Cohesion: 0.08
@@ -480,44 +468,44 @@ Cohesion: 0.19
 Nodes (11): CreateSheetCommand, DateTimeOffset, Guid, IFormFile, CreateSheetCommandHandler, CancellationToken, IMediator, Task (+3 more)
 
 ### Community 62 - "Application Interfaces"
-Cohesion: 0.07
-Nodes (35): IScheduler, CancellationToken, DateTimeOffset, Task, GenerateExamCommand, DateTimeOffset, Dictionary, Guid (+27 more)
+Cohesion: 0.25
+Nodes (12): GetStudentsSubmittionsForExamRequest, Guid, CancellationToken, Guid, HttpDelete, HttpGet, HttpPatch, HttpPost (+4 more)
 
 ### Community 63 - "Infrastructure Binders"
 Cohesion: 0.15
-Nodes (9): Edu_Base.Infrastructure.Binders, Task, UpdateAnswerDtoModelBinder, IModelBinder, UpdateAnswerDtoModelBinderProvider, IModelBinder, IModelBinderProvider, ModelBinderProviderContext (+1 more)
+Nodes (9): Infrastructure.Binders, Task, UpdateAnswerDtoModelBinder, IModelBinder, UpdateAnswerDtoModelBinderProvider, IModelBinder, IModelBinderProvider, ModelBinderProviderContext (+1 more)
 
 ### Community 64 - "Domain Entities"
-Cohesion: 0.09
-Nodes (21): IBaseFilterRegistry, Dictionary, Func, IOrderedQueryable, IQueryable, Infrastructure.Features.Sections, Dictionary, Func (+13 more)
+Cohesion: 0.10
+Nodes (20): IBaseFilterRegistry, Dictionary, Func, IOrderedQueryable, IQueryable, Dictionary, Func, IOrderedQueryable (+12 more)
 
 ### Community 65 - "Edu Base"
-Cohesion: 0.19
-Nodes (12): CenterAdminGoogleLoginCommand, Guid, CenterAdminGoogleLoginCommandHandler, CancellationToken, Task, InstructorGoogleLoginCommand, InstructorGoogleLoginCommandHandler, CancellationToken (+4 more)
+Cohesion: 0.11
+Nodes (13): IScheduler, CancellationToken, DateTimeOffset, Task, Infrastructure.Common.Persistence, DisplayName, CancellationToken, DateTimeOffset (+5 more)
 
 ### Community 66 - "Application Features"
-Cohesion: 0.38
-Nodes (11): EnrollmentProgressDto, ExamProgressAggregate, ProgressGlobalSummary, SectionProgressAggregate, SheetProgressAggregate, StudentEnrollmentProgressResponse, UpcomingMilestoneDto, VideoProgressAggregate (+3 more)
+Cohesion: 0.24
+Nodes (8): UpdateEducationYearCommand, Guid, UpdateEducationYearCommandHandler, CancellationToken, Task, EducationYearResponse, Guid, UpdateEducationYearRequest
 
 ### Community 67 - "Application Features"
-Cohesion: 0.07
-Nodes (26): CreateAnswersSheetCommand, Guid, IFormFile, CreateAnswersSheetCommandHandler, CancellationToken, Task, CourseResponse, DateTimeOffset (+18 more)
+Cohesion: 0.15
+Nodes (13): CreateAnswersSheetCommand, Guid, IFormFile, CreateAnswersSheetCommandHandler, CancellationToken, Task, IStudentEducationYearProvider, CancellationToken (+5 more)
 
 ### Community 68 - "Application Features"
 Cohesion: 0.24
 Nodes (9): UpdateAnswersSheetCommand, Guid, IFormFile, UpdateAnswersSheetCommandHandler, CancellationToken, Task, AnswersSheetUpdateResponse, DateTimeOffset (+1 more)
 
 ### Community 69 - "Application Sheets"
-Cohesion: 0.15
-Nodes (14): SheetResponse, DateTimeOffset, Guid, ISheetService, ISheetServiceFactory, GetAllSheetsQuery, Guid, GetAllSheetsQueryHandler (+6 more)
+Cohesion: 0.22
+Nodes (10): PaginatedResult, IReadOnlyList, SheetResponse, DateTimeOffset, Guid, GetAllSheetsQuery, Guid, GetAllSheetsQueryHandler (+2 more)
 
 ### Community 70 - "Application Features"
 Cohesion: 0.33
 Nodes (8): CourseData, GetCourseNamesByInstructorQuery, Guid, List, GetCourseNamesByInstructorQueryHandler, CancellationToken, List, Task
 
 ### Community 71 - "Application Features"
-Cohesion: 0.29
-Nodes (9): GetSectionsNamesForCourseQuery, SectionData, Guid, List, GetSectionsNamesForCourseQueryHandler, CancellationToken, List, Task (+1 more)
+Cohesion: 0.33
+Nodes (8): GetSectionsNamesForCourseQuery, SectionData, Guid, List, GetSectionsNamesForCourseQueryHandler, CancellationToken, List, Task
 
 ### Community 72 - "Application Interfaces"
 Cohesion: 0.20
@@ -528,8 +516,8 @@ Cohesion: 0.11
 Nodes (18): Adding new answers (null IDs):, Answers Field (Clean JSON Array), Architecture Benefits, Basic Question Fields, Common Issues & Solutions, Debugging Tips, Endpoint, Example Form Data (+10 more)
 
 ### Community 74 - "Application Interfaces"
-Cohesion: 0.16
-Nodes (10): CreatePaymentIntentionRequest, List, HMACStringKeys, DateTimeOffset, PaymentWebhookRequest, Extras, OrderItem, UpdateIntentionRequest (+2 more)
+Cohesion: 0.18
+Nodes (14): CreatePaymentIntentionRequest, List, BillingData, Extras, OrderItem, UpdateIntentionRequest, List, PaymobWebhookData (+6 more)
 
 ### Community 75 - "Infrastructure Middleware"
 Cohesion: 0.18
@@ -544,8 +532,8 @@ Cohesion: 0.24
 Nodes (9): CreateCourseCommand, Guid, IFormFile, CreateCourseCommandHandler, CancellationToken, Task, CourseCreationResponse, DateTime (+1 more)
 
 ### Community 78 - "Application Features"
-Cohesion: 0.21
-Nodes (8): EnrollmentProgressType, EnrollmentProgressTypeExtensions, DateTimeOffset, EnrollmentListItem, ExamProgressRow, InstructorStudentSummary, SheetProgressRow, SubscribedSectionItem
+Cohesion: 0.25
+Nodes (7): CreateEducationYearCommand, Guid, CreateEducationYearCommandHandler, CancellationToken, Task, CreateEducationYearCommandValidator, CreateEducationYearRequest
 
 ### Community 79 - "Application Features"
 Cohesion: 0.12
@@ -564,8 +552,8 @@ Cohesion: 0.27
 Nodes (8): UpdateSectionCommand, Guid, UpdateSectionCommandHandler, CancellationToken, Task, SectionUpdateResponse, DateTime, Guid
 
 ### Community 83 - "Edu Base"
-Cohesion: 0.25
-Nodes (7): ControllerBase, CancellationToken, HttpGet, IActionResult, IMediator, Task, SharedAuthController
+Cohesion: 0.20
+Nodes (9): ControllerBase, IMediator, CenterAdminAuthController, CancellationToken, HttpGet, IActionResult, IMediator, Task (+1 more)
 
 ### Community 84 - "Edu Base"
 Cohesion: 0.15
@@ -588,16 +576,16 @@ Cohesion: 0.20
 Nodes (11): InstructorGoogleLoginRequest, DateOnly, CancellationToken, Guid, HttpPatch, HttpPost, IActionResult, ILogger (+3 more)
 
 ### Community 89 - "Application Interfaces"
-Cohesion: 0.11
-Nodes (15): Infrastructure.Features.Questions, DateTimeOffset, Guid, Answer, DateTimeOffset, Guid, ICollection, Question (+7 more)
+Cohesion: 0.14
+Nodes (11): DateTimeOffset, Guid, Answer, Guid, ExamQuestions, DateTimeOffset, Guid, ICollection (+3 more)
 
 ### Community 90 - "Infrastructure Persistence"
 Cohesion: 0.28
 Nodes (6): DbContextEventData, CancellationToken, SoftDeleteInterceptor, InterceptionResult, SaveChangesInterceptor, ValueTask
 
 ### Community 91 - "Edu Base"
-Cohesion: 0.19
-Nodes (12): CreateEducationYearRequest, UpdateEducationYearRequest, CancellationToken, Guid, HttpDelete, HttpGet, HttpPost, HttpPut (+4 more)
+Cohesion: 0.28
+Nodes (10): CancellationToken, Guid, HttpDelete, HttpGet, HttpPost, HttpPut, IActionResult, IMediator (+2 more)
 
 ### Community 92 - "Infrastructure Services"
 Cohesion: 0.22
@@ -649,27 +637,27 @@ Nodes (6): IExamRepository, CancellationToken, Dictionary, Guid, IQueryable, Tas
 
 ### Community 104 - "Domain Entities"
 Cohesion: 0.25
-Nodes (9): InstructorStudentProgressDto, InstructorStudentsProgressResponse, Guid, List, GetInstructorStudentsProgressQuery, Guid, GetInstructorStudentsProgressQueryHandler, CancellationToken (+1 more)
+Nodes (6): DateTimeOffset, Guid, ICollection, Center, Guid, CenterAdmin
 
 ### Community 105 - "Application Dtos"
-Cohesion: 0.21
-Nodes (10): UpdateSheetCommand, DateTimeOffset, Guid, IFormFile, UpdateSheetCommandHandler, CancellationToken, Task, SheetUpdateResponse (+2 more)
+Cohesion: 0.20
+Nodes (9): UpdateSheetCommand, DateTimeOffset, Guid, IFormFile, CancellationToken, Task, SheetUpdateResponse, DateTimeOffset (+1 more)
 
 ### Community 106 - "Application Dtos"
 Cohesion: 0.40
 Nodes (6): CancellationToken, Dictionary, Guid, IQueryable, Task, ExamRepository
 
 ### Community 107 - "Application Dtos"
-Cohesion: 0.29
-Nodes (7): EnrollmentListItem, ExamProgressRow, IEnumerable, IReadOnlyList, SheetProgressRow, SubscribedSectionItem, EnrollmentProgressMapper
+Cohesion: 0.27
+Nodes (8): CourseResponse, DateTimeOffset, Guid, GetAllCoursesQuery, Guid, GetAllCoursesQueryHandler, CancellationToken, Task
 
 ### Community 108 - "Application Features"
-Cohesion: 0.48
-Nodes (6): IntentionDetail, PaymentIntentionResponse, PaymentKey, PaymentMethod, DateTime, List
+Cohesion: 0.29
+Nodes (8): IntentionDetail, PaymentIntentionResponse, PaymentKey, PaymentMethod, DateTime, List, CancellationToken, Task
 
 ### Community 109 - "Application Features"
-Cohesion: 0.25
-Nodes (7): UpdateCourseCommand, Guid, IFormFile, UpdateCourseCommandHandler, CancellationToken, Task, Application.Features.Courses.Commands.UpdateCourse
+Cohesion: 0.33
+Nodes (6): UpdateCourseCommand, Guid, IFormFile, UpdateCourseCommandHandler, CancellationToken, Task
 
 ### Community 110 - "Application Features"
 Cohesion: 0.20
@@ -680,8 +668,8 @@ Cohesion: 0.20
 Nodes (10): Application Layer (13 files), Commands & Handlers (6 files), Configuration Files (2 files), Documentation (3 files), DTOs (5 files), 📁 Files Created, Infrastructure Layer (2 files), Interfaces (2 files) (+2 more)
 
 ### Community 112 - "Application Features"
-Cohesion: 0.14
-Nodes (18): BulkCreateVideosCommand, Guid, List, BulkCreateVideosCommandHandler, CancellationToken, IMediator, List, Task (+10 more)
+Cohesion: 0.33
+Nodes (6): CreateVideoCommand, Guid, CreateVideoCommandHandler, CancellationToken, IMediator, Task
 
 ### Community 113 - "Edu Base"
 Cohesion: 0.29
@@ -696,28 +684,28 @@ Cohesion: 0.40
 Nodes (5): DeleteCourseCommand, Guid, DeleteCourseCommandHandler, CancellationToken, Task
 
 ### Community 116 - "Application Features"
-Cohesion: 0.18
-Nodes (9): CenterAdminGoogleLoginRequest, DateOnly, Guid, CancellationToken, HttpPost, IActionResult, IMediator, Task (+1 more)
+Cohesion: 0.22
+Nodes (7): CenterAdminGoogleLoginRequest, DateOnly, Guid, CancellationToken, HttpPost, IActionResult, Task
 
 ### Community 117 - "Application Features"
-Cohesion: 0.25
-Nodes (6): IGoogleAuthService, CancellationToken, Task, StudentGoogleLoginCommandHandler, CancellationToken, Task
+Cohesion: 0.40
+Nodes (5): InstructorDashboardQuery, Guid, InstructorDashboardQueryHandler, CancellationToken, Task
 
 ### Community 118 - "Application Features"
-Cohesion: 0.16
-Nodes (15): PaginatedResult, IReadOnlyList, ExamListDto, DateTimeOffset, Guid, GetAllExamsQuery, Guid, GetAllStudentExamsQueryHandler (+7 more)
+Cohesion: 0.31
+Nodes (8): ExamListDto, DateTimeOffset, Guid, GetAllExamsQuery, Guid, GetAllStudentExamsQueryHandler, CancellationToken, Task
 
 ### Community 119 - "Application Features"
-Cohesion: 0.36
-Nodes (6): CheckUserExistsResponse, Guid, CheckUserExistsQuery, CheckUserExistsQueryHandler, CancellationToken, Task
+Cohesion: 0.10
+Nodes (20): CheckUserExistsResponse, Guid, CheckUserExistsQuery, CheckUserExistsQueryHandler, CancellationToken, Task, ChangeExamStatusCommand, ChangeExamStatusCommandHandler (+12 more)
 
 ### Community 120 - "Application Features"
 Cohesion: 0.50
 Nodes (4): IStudentEnrollmentRepository, CancellationToken, Guid, Task
 
 ### Community 121 - "Infrastructure Services"
-Cohesion: 0.39
-Nodes (6): CancellationToken, HttpPost, IActionResult, IMediator, Task, PaymentController
+Cohesion: 0.33
+Nodes (7): Authorize, CancellationToken, HttpPost, IActionResult, IMediator, Task, PaymentController
 
 ### Community 122 - "Infrastructure Data"
 Cohesion: 0.22
@@ -736,48 +724,48 @@ Cohesion: 0.25
 Nodes (6): QuestionSheetDetailsResponse, DateTimeOffset, Guid, SheetItemResponse, DateTimeOffset, Guid
 
 ### Community 126 - "Infrastructure Persistence"
-Cohesion: 0.42
-Nodes (8): BillingData, PaymobWebhookData, PaymobWebhookMerchant, PaymobWebhookObj, PaymobWebhookOrder, PaymobWebhookPayload, PaymobWebhookPaymentKeyClaims, PaymobWebhookSourceData
+Cohesion: 0.32
+Nodes (6): ISheetService, ISheetServiceFactory, int, AnswersSheetListingService, SheetServiceFactory, TargetedSheetListingService
 
 ### Community 127 - "Infrastructure Persistence"
-Cohesion: 0.09
-Nodes (21): ApproveAnswersSheetCommand, Guid, ApproveAnswersSheetCommandHandler, CancellationToken, Task, ChangeExamStatusCommand, ChangeExamStatusCommandHandler, CancellationToken (+13 more)
+Cohesion: 0.33
+Nodes (6): DeleteExamCommand, Guid, DeleteExamCommandHandler, CancellationToken, IMediator, Task
 
 ### Community 128 - "Infrastructure Persistence"
 Cohesion: 0.29
 Nodes (5): AllAnswersSheetsByStudentResponse, Guid, SheetItem, DateTimeOffset, Guid
 
 ### Community 129 - "Infrastructure Persistence"
-Cohesion: 0.32
-Nodes (7): GetSectionsForCourseQuery, Guid, List, GetSectionsForCourseQueryHandler, CancellationToken, List, Task
+Cohesion: 0.38
+Nodes (4): UpdateVideoProgressCommand, UpdateVideoProgressCommandHandler, CancellationToken, Task
 
 ### Community 130 - "Infrastructure Persistence"
 Cohesion: 0.29
 Nodes (7): API Endpoints, Instructor Endpoints, POST `/api/InstructorAuth/google-login`, POST `/api/InstructorAuth/logout`, POST `/api/StudentAuth/google-login`, POST `/api/StudentAuth/logout`, Student Endpoints
 
 ### Community 131 - "Infrastructure Persistence"
-Cohesion: 0.50
-Nodes (5): CancellationToken, Guid, HashSet, Task, EnrollmentProgressRepository
+Cohesion: 0.40
+Nodes (5): ApproveAnswersSheetCommand, Guid, ApproveAnswersSheetCommandHandler, CancellationToken, Task
 
 ### Community 132 - "Application Dtos"
-Cohesion: 0.43
-Nodes (5): IEnrollmentProgressRepository, CancellationToken, Guid, HashSet, Task
+Cohesion: 0.40
+Nodes (5): GetEducationYearByIdQuery, Guid, GetEducationYearByIdQueryHandler, CancellationToken, Task
 
 ### Community 133 - "Application Dtos"
 Cohesion: 0.33
 Nodes (5): ExamDetailsQueryModel, DateTimeOffset, Guid, ICollection, ExamType
 
 ### Community 134 - "Application Dtos"
-Cohesion: 0.25
-Nodes (6): GradeMapping, StudentProgressQuery, Guid, StudentProgressQueryHandler, CancellationToken, Task
+Cohesion: 0.40
+Nodes (5): StudentProgressQuery, Guid, StudentProgressQueryHandler, CancellationToken, Task
 
 ### Community 136 - "Application Dtos"
-Cohesion: 0.38
-Nodes (6): DeleteQuestionCommand, Guid, DeleteQuestionHandler, CancellationToken, Guid, Task
+Cohesion: 0.40
+Nodes (5): GetQuestionByIdQuery, Guid, GetQuestionByIdQueryHandler, CancellationToken, Task
 
 ### Community 140 - "Infrastructure Middleware"
 Cohesion: 0.40
-Nodes (5): DeleteAnswersSheetCommand, Guid, DeleteAnswersSheetCommandHandler, CancellationToken, Task
+Nodes (5): BulkDeleteSectionCommand, BulkDeleteSectionCommandHandler, CancellationToken, IMediator, Task
 
 ### Community 141 - "Infrastructure Middleware"
 Cohesion: 0.40
@@ -809,35 +797,31 @@ Nodes (3): ModelBuilder, ModelBuilder, EducationDbContextModelCreating
 
 ### Community 149 - "CourseFilterRegistry"
 Cohesion: 0.40
-Nodes (5): DeleteCenterCommand, Guid, DeleteCenterCommandHandler, CancellationToken, Task
+Nodes (5): Dictionary, Func, IOrderedQueryable, IQueryable, CourseFilterRegistry
 
 ### Community 150 - "StudentEducationYearProvider"
 Cohesion: 0.40
-Nodes (5): GetExamByIdQuery, Guid, GetExamByIdQueryHandler, CancellationToken, Task
+Nodes (4): CancellationToken, Guid, Task, StudentEducationYearProvider
 
 ### Community 151 - "InstructorExamsFilterRegistry"
 Cohesion: 0.40
 Nodes (5): Dictionary, Func, IOrderedQueryable, IQueryable, InstructorExamsFilterRegistry
 
 ### Community 152 - "StudentExamResultFilterRegistry"
-Cohesion: 0.09
-Nodes (21): IExamResultRepository, DateTimeOffset, Guid, ICollection, Exam, Guid, ExamQuestions, DateTimeOffset (+13 more)
+Cohesion: 0.40
+Nodes (5): Dictionary, Func, IOrderedQueryable, IQueryable, StudentExamResultFilterRegistry
 
 ### Community 153 - "AnswersSheetFilterRegistry"
-Cohesion: 0.26
-Nodes (11): DateTimeOffset, Guid, ICollection, AnswersSheet, Sheet, SheetBase, Dictionary, Func (+3 more)
+Cohesion: 0.40
+Nodes (5): Dictionary, Func, IOrderedQueryable, IQueryable, AnswersSheetFilterRegistry
 
 ### Community 154 - "SheetFilterRegistry"
 Cohesion: 0.40
-Nodes (5): GetAllQuestionsWithAnswersInExamQuery, Guid, GetAllQuestionsWithAnswersInExamQueryHandler, CancellationToken, Task
+Nodes (5): Dictionary, Func, IOrderedQueryable, IQueryable, SheetFilterRegistry
 
 ### Community 155 - "VideoFilterRegistry"
-Cohesion: 0.20
-Nodes (9): DateTimeOffset, Guid, ICollection, Video, Dictionary, Func, IOrderedQueryable, IQueryable (+1 more)
-
-### Community 156 - "StudentGoogleLoginCommandValidator"
-Cohesion: 0.25
-Nodes (6): GoogleUserInfo, StudentGoogleLoginCommand, DateOnly, Guid, StudentGoogleLoginCommandValidator, DateOnly
+Cohesion: 0.40
+Nodes (5): Dictionary, Func, IOrderedQueryable, IQueryable, VideoFilterRegistry
 
 ### Community 157 - "CourseByStudentRequest"
 Cohesion: 0.50
@@ -879,10 +863,6 @@ Nodes (4): 3.1 Ensure PostgreSQL is Running, 3.2 Create Database, 3.3 Run Migrat
 Cohesion: 0.50
 Nodes (4): Option A: Using Swagger UI, Option B: Using Google OAuth Playground, Option C: Using cURL or Postman, Step 5: Test the Endpoints
 
-### Community 167 - "GradeMapping.cs"
-Cohesion: 0.47
-Nodes (4): ISectionRepository, CancellationToken, List, Task
-
 ### Community 168 - "Validation Rules"
 Cohesion: 0.67
 Nodes (3): Instructor Validation, Student Validation, Validation Rules
@@ -903,65 +883,25 @@ Nodes (3): 📊 Database Schema Impact, Modified Tables, No Schema Changes Requi
 Cohesion: 0.67
 Nodes (3): Integration Tests, 🧪 Testing Recommendations, Unit Tests
 
-### Community 177 - "DeleteSheetCommandHandler"
-Cohesion: 0.40
-Nodes (5): DeleteSheetCommand, Guid, DeleteSheetCommandHandler, CancellationToken, Task
-
-### Community 178 - "UpdateVideoCommand"
-Cohesion: 0.40
-Nodes (5): UpdateVideoCommand, Guid, UpdateVideoCommandHandler, CancellationToken, Task
-
-### Community 179 - "SectionRepository"
-Cohesion: 0.47
-Nodes (4): CancellationToken, List, Task, SectionRepository
-
-### Community 180 - "BulkCreateSectionRequest"
-Cohesion: 0.50
-Nodes (4): BulkCreateSectionRequest, BulkSectionDataForCreation, Guid, List
-
-### Community 181 - ".GetInstructorStudentPageAsync"
-Cohesion: 0.40
-Nodes (4): HashSet, InstructorStudentSummary, Page, TotalCount
-
-### Community 182 - "BulkDeleteSectionRequest"
-Cohesion: 0.50
-Nodes (3): BulkDeleteSectionRequest, Guid, List
-
-### Community 183 - "AnswersSheetCreationRequest"
-Cohesion: 0.50
-Nodes (3): AnswersSheetCreationRequest, Guid, IFormFile
-
-### Community 184 - "AnswersSheetUpdateRequest"
-Cohesion: 0.50
-Nodes (3): AnswersSheetUpdateRequest, Guid, IFormFile
-
-### Community 185 - "SheetCreationRequest"
-Cohesion: 0.50
-Nodes (4): SheetCreationRequest, DateTimeOffset, Guid, IFormFile
-
-### Community 186 - "SheetUpdateRequest"
-Cohesion: 0.50
-Nodes (4): SheetUpdateRequest, DateTimeOffset, Guid, IFormFile
-
 ## Knowledge Gaps
-- **351 isolated node(s):** `net9.0`, `CloudinaryDotNet (1.27.8)`, `FluentValidation.DependencyInjectionExtensions (11.10.0)`, `MediatR (12.4.1)`, `Microsoft.AspNetCore.Http.Abstractions (2.2.0)` (+346 more)
+- **338 isolated node(s):** `net9.0`, `CloudinaryDotNet (1.27.8)`, `FluentValidation.DependencyInjectionExtensions (11.10.0)`, `MediatR (12.4.1)`, `Microsoft.AspNetCore.Http.Abstractions (2.2.0)` (+333 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Result` connect `Application Features` to `Application Infrastructure`, `Infrastructure Persistence`, `Application Features`, `Application Dtos`, `Edu Base`, `Application Features`, `Application Dtos`, `Application Edu`, `Application Sections`, `Infrastructure Middleware`, `Infrastructure Middleware`, `Application Auth`, `Application Infrastructure`, `Application Features`, `CourseFilterRegistry`, `StudentEducationYearProvider`, `Application Dtos`, `SheetFilterRegistry`, `Application Sections`, `StudentGoogleLoginCommandValidator`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Application Infrastructure`, `Application Dtos`, `Application Features`, `DeleteSheetCommandHandler`, `UpdateVideoCommand`, `Application Videos`, `Application Sheets`, `Application Interfaces`, `Edu Base`, `Application Features`, `Application Features`, `Application Sheets`, `Application Features`, `Application Features`, `Application Courses`, `Application Features`, `Application Features`, `Application Features`, `Application Sections`, `Application Features`, `Application Features`, `Domain Entities`, `Application Dtos`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Infrastructure Persistence`?**
-  _High betweenness centrality (0.232) - this node is a cross-community bridge._
-- **Why does `Application.Common` connect `Application Features` to `Application Infrastructure`, `Application Dtos`, `Application Helperfunctions`, `Application Features`, `Application Questions`, `Application Features`, `Application Auth`, `StudentGoogleLoginCommandValidator`, `Application Features`, `Application Interfaces`, `Application Payment`, `Application Videos`, `Edu Base`, `Application Dtos`, `Application Homescreen`, `Application Features`, `Application Features`, `Application Courses`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Edu Base`, `Domain Enums`, `Application Features`, `Domain Entities`, `Application Features`, `Application Features`, `Application Features`, `Infrastructure Persistence`?**
-  _High betweenness centrality (0.084) - this node is a cross-community bridge._
-- **Why does `Domain.enums` connect `Application Features` to `Application Features`, `Application Infrastructure`, `Application Features`, `Application Dtos`, `Application Features`, `Application Features`, `Application Questions`, `Application Features`, `Application Dtos`, `AnswersSheetFilterRegistry`, `Application Auth`, `Application Courses`, `Application Interfaces`, `Application Videos`, `Edu Base`, `Application Infrastructure`, `Application Dtos`, `Application Homescreen`, `Application Features`, `Application Features`, `Application Courses`, `Application Features`, `Application Features`, `Edu Base`, `Domain Enums`, `Application Dtos`, `Application Features`?**
-  _High betweenness centrality (0.069) - this node is a cross-community bridge._
+- **Why does `Result` connect `Application Features` to `Application Infrastructure`, `Infrastructure Persistence`, `Application Dtos`, `Application Features`, `Edu Base`, `Application Dtos`, `Application Features`, `Application Dtos`, `Application Edu`, `Application Sections`, `Infrastructure Middleware`, `Infrastructure Middleware`, `Application Auth`, `Application Infrastructure`, `Application Features`, `Application Sections`, `Application Videos`, `Application Features`, `Application Courses`, `Application Features`, `Application Features`, `Application Features`, `Application Infrastructure`, `Application Dtos`, `Application Features`, `Application Videos`, `Application Sheets`, `Application Features`, `Application Features`, `Application Features`, `Application Sheets`, `Application Features`, `Application Features`, `Application Courses`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Application Sections`, `Application Features`, `Application Features`, `Application Dtos`, `Application Dtos`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Application Features`, `Infrastructure Persistence`?**
+  _High betweenness centrality (0.231) - this node is a cross-community bridge._
+- **Why does `Application.Common` connect `Application Features` to `Infrastructure Progress`, `Application Infrastructure`, `Application Helperfunctions`, `Application Features`, `Application Features`, `Application Questions`, `Application Features`, `Application Auth`, `Application Features`, `Application Features`, `Application Features`, `GradeMapping.cs`, `Application Videos`, `Edu Base`, `Application Features`, `Application Dtos`, `Application Homescreen`, `Application Features`, `Application Features`, `Application Courses`, `Application Features`, `Application Sheets`, `Application Features`, `Application Features`, `Edu Base`, `Domain Enums`, `Application Features`, `Application Features`, `Infrastructure Persistence`?**
+  _High betweenness centrality (0.083) - this node is a cross-community bridge._
+- **Why does `Application.Common.Interfaces` connect `Application Infrastructure` to `Application Features`, `Application Features`, `Application Auth`, `GoogleAuthService.cs`, `Application Infrastructure`, `Application Questions`, `Application Features`, `Application Auth`, `Application Features`, `Domain Entities`, `Application Payment`, `Domain Interfaces`, `Edu Base`, `Application Homescreen`, `Application Features`, `Application Courses`, `Application Features`, `Domain Entities`, `Edu Base`, `Edu Base`?**
+  _High betweenness centrality (0.072) - this node is a cross-community bridge._
 - **What connects `net9.0`, `CloudinaryDotNet (1.27.8)`, `FluentValidation.DependencyInjectionExtensions (11.10.0)` to the rest of the system?**
-  _351 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _338 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Infrastructure Progress` be split into smaller, more focused modules?**
+  _Cohesion score 0.054858934169279 - nodes in this community are weakly interconnected._
 - **Should `Application Features` be split into smaller, more focused modules?**
-  _Cohesion score 0.0602322206095791 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.049678550555230856 - nodes in this community are weakly interconnected._
 - **Should `Application Infrastructure` be split into smaller, more focused modules?**
-  _Cohesion score 0.07446808510638298 - nodes in this community are weakly interconnected._
-- **Should `Application Features` be split into smaller, more focused modules?**
-  _Cohesion score 0.07207792207792207 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07355769230769231 - nodes in this community are weakly interconnected._

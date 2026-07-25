@@ -175,17 +175,5 @@
   "173": "graphify.md",
   "174": "graphify.md",
   "175": "ExceptionLoggingMiddleware.cs",
-  "176": "ExceptionLoggingMiddlewareExtensions.cs",
-  "177": "DeleteSheetCommandHandler",
-  "178": "UpdateVideoCommand",
-  "179": "SectionRepository",
-  "180": "BulkCreateSectionRequest",
-  "181": ".GetInstructorStudentPageAsync",
-  "182": "BulkDeleteSectionRequest",
-  "183": "AnswersSheetCreationRequest",
-  "184": "AnswersSheetUpdateRequest",
-  "185": "SheetCreationRequest",
-  "186": "SheetUpdateRequest",
-  "187": "CreateSectionRequest",
-  "188": "SectionUpdateRequest"
+  "176": "ExceptionLoggingMiddlewareExtensions.cs"
 }

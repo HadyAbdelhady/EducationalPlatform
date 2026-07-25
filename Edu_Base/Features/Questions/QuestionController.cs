@@ -1,4 +1,4 @@
-﻿using Application.Features.Questions.DTOs;
+using Application.Features.Questions.DTOs;
 using Application.Features.Answers.Command.AnswerQuestion;
 using Application.Features.Questions.Command.AddQuestion;
 using Application.Features.Questions.Command.DeleteQuestion;
@@ -25,7 +25,7 @@ namespace Edu_Base.Features.Questions
 
             _logger.LogInformation("Fetching course detail for CourseId: {CourseId}", command.QuestionString);
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         //[HttpPatch("{id}")]
@@ -46,14 +46,14 @@ namespace Edu_Base.Features.Questions
         public async Task<IActionResult> UpdateForm([FromForm] UpdateQuestionCommand command)
         {
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete([FromBody] DeleteQuestionCommand command)
         {
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("{id}")]
@@ -62,7 +62,7 @@ namespace Edu_Base.Features.Questions
             _logger.LogInformation("Fetching question detail for QuestionId: {QuestionId}", id);
             var query = new GetQuestionByIdQuery { QuestionId = id };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("QuestionBank")]
@@ -76,7 +76,7 @@ namespace Edu_Base.Features.Questions
                 PageNumber = questionRequest.PageNumber
             };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("exam/{examId}")]
@@ -85,7 +85,7 @@ namespace Edu_Base.Features.Questions
             _logger.LogInformation("Fetching all questions in exam: {ExamId}", examId);
             var query = new GetAllQuestionsWithAnswersInExamQuery { ExamId = examId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpPost("{questionId}/answers")]

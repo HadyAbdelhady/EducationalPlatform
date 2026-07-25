@@ -1,4 +1,4 @@
-﻿using Application.Features.Centers.DTOs;
+using Application.Features.Centers.DTOs;
 using Application.Features.Centers.Commands.AssignInstructorToCenter;
 using Application.Features.Centers.Commands.CreateCenter;
 using Application.Features.Centers.Commands.DeleteCenter;
@@ -28,14 +28,14 @@ namespace Edu_Base.Features.Centers
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new GetAllCentersQuery(), cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new GetCenterByIdQuery { Id = id }, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         // ── Commands (CenterAdmin only) ───────────────────────────────────────────
@@ -47,7 +47,7 @@ namespace Edu_Base.Features.Centers
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new CreateCenterCommand { Request = request }, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpPut("{id:guid}")]
@@ -58,7 +58,7 @@ namespace Edu_Base.Features.Centers
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new UpdateCenterCommand { Id = id, Request = request }, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpDelete("{id:guid}")]
@@ -66,7 +66,7 @@ namespace Edu_Base.Features.Centers
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new DeleteCenterCommand { Id = id }, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpPost("{centerId:guid}/instructors")]
@@ -79,7 +79,7 @@ namespace Edu_Base.Features.Centers
             var result = await _mediator.Send(
                 new AssignInstructorToCenterCommand { CenterId = centerId, Request = request },
                 cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpDelete("{centerId:guid}/instructors/{instructorId:guid}")]
@@ -92,7 +92,7 @@ namespace Edu_Base.Features.Centers
             var result = await _mediator.Send(
                 new RemoveInstructorFromCenterCommand { CenterId = centerId, InstructorId = instructorId },
                 cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
     }
 }

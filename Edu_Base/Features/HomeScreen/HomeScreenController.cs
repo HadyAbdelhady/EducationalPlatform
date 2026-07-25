@@ -1,4 +1,4 @@
-﻿using Application.Features.HomeScreen.InstructorDashboard;
+using Application.Features.HomeScreen.InstructorDashboard;
 using Application.Features.HomeScreen.InstructorStudentsProgress;
 using Application.Features.HomeScreen.StudentHomeScreen;
 using Application.Features.HomeScreen.StudentProgress;
@@ -22,7 +22,7 @@ namespace Edu_Base.Features.HomeScreen
             var result = await _mediator.Send(query, cancellationToken);
 
             return result.IsSuccess
-                ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+                ? Ok(result) : StatusCode((int)result.ErrorType, result);
 
         }
 
@@ -109,7 +109,7 @@ namespace Edu_Base.Features.HomeScreen
 
             return result.IsSuccess
                 ? Ok(result)
-                : StatusCode((int)result.ErrorType, result.Error);
+                : StatusCode((int)result.ErrorType, result);
 
         }
 

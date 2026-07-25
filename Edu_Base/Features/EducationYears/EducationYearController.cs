@@ -1,4 +1,4 @@
-﻿using Application.Features.EducationYears.DTOs;
+using Application.Features.EducationYears.DTOs;
 using Application.Features.EducationYears.Commands.CreateEducationYear;
 using Application.Features.EducationYears.Commands.DeleteEducationYear;
 using Application.Features.EducationYears.Commands.UpdateEducationYear;
@@ -23,7 +23,7 @@ namespace Edu_Base.Features.EducationYears
 
             var query = new GetEducationYearsQuery { InstructorId = null, ApplicationName = ApplicationName };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("{id:guid}")]
@@ -31,7 +31,7 @@ namespace Edu_Base.Features.EducationYears
         {
             var query = new GetEducationYearByIdQuery { Id = id };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpPost]
@@ -42,7 +42,7 @@ namespace Edu_Base.Features.EducationYears
 
             var command = new CreateEducationYearCommand { EducationYear = request, InstructorId = UserId };
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpPut("{id:guid}")]
@@ -50,7 +50,7 @@ namespace Edu_Base.Features.EducationYears
         {
             var command = new UpdateEducationYearCommand { Id = id, EducationYear = request };
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpDelete("{id:guid}")]
@@ -58,7 +58,7 @@ namespace Edu_Base.Features.EducationYears
         {
             var command = new DeleteEducationYearCommand { Id = id };
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
     }
 }

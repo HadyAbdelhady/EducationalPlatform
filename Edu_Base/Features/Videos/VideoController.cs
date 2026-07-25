@@ -1,4 +1,4 @@
-﻿using Application.Common;
+using Application.Common;
 using Application.Features.Videos.DTOs;
 using Application.Features.Videos.Commands.CreateVideo;
 using Application.Features.Videos.Commands.DeleteVideo;
@@ -127,7 +127,7 @@ namespace Edu_Base.Features.Videos
                 };
 
                 var result = await _mediator.Send(createVideoCommand, cancellationToken);
-                return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+                return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
             }
             catch (Exception ex)
             {
@@ -152,7 +152,7 @@ namespace Edu_Base.Features.Videos
             };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("{videoId:guid}")]
@@ -165,7 +165,7 @@ namespace Edu_Base.Features.Videos
             var query = new GetVideoByIdQuery { VideoId = videoId, StudentId = StudentId };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         #endregion
@@ -186,7 +186,7 @@ namespace Edu_Base.Features.Videos
 
             var result = await _mediator.Send(bulkCreateVideosCommand, cancellationToken);
 
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpPatch("Update")]
@@ -204,7 +204,7 @@ namespace Edu_Base.Features.Videos
                 VideoUrl = videoUpdateRequest.VideoUrl,
             };
             var result = await _mediator.Send(UpdateVideoCommand, cancellationToken);
-            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpDelete("Delete")]
@@ -215,7 +215,7 @@ namespace Edu_Base.Features.Videos
                 VideoId = videoId
             };
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpPatch("MarkVideoWatched/{VideoId}")]

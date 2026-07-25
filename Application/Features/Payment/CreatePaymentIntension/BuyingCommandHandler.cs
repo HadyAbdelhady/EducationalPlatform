@@ -187,7 +187,6 @@ namespace Application.Features.Payment.CreatePaymentIntension
                 {
                     ClientSecret = clientSecret,
                     PaymentId = payment.PaymobIntentionId!,
-                    PublicKey = _paymentService.GetPublicKey()
                 }
             };
             return Result<StudentBuyResponse>.Success(response);

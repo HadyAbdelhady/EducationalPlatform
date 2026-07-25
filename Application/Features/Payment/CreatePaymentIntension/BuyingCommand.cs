@@ -28,7 +28,6 @@ namespace Application.Features.Payment.CreatePaymentIntension
     public class PaymentData
     {
         public string PaymentId { get; set; } = string.Empty;
-        public string PublicKey { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
     }
 

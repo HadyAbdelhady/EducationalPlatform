@@ -1,4 +1,4 @@
-﻿using Application.Common;
+using Application.Common;
 using Application.Features.Sheets.DTOs;
 using Application.Features.AnswersSheets.Commands.ApproveAnswersSheet;
 using Application.Features.AnswersSheets.Commands.CreateAnswersSheet;
@@ -267,7 +267,7 @@ namespace Edu_Base.Features.Sheets
             };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("GetAllQuestionSheetsBySection/{sectionId}")]
@@ -278,7 +278,7 @@ namespace Edu_Base.Features.Sheets
 
             var query = new GetAllSheetsQuery { SheetType = SheetType.QuestionSheet, TargetType = SheetTargetType.Section, TargetId = sectionId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("GetAllAnswerSheetsByStudent")]
@@ -299,7 +299,7 @@ namespace Edu_Base.Features.Sheets
                 RequestSkeleton = requestSkeleton ?? new GetAllEntityRequestSkeleton()
             };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
     }
 }

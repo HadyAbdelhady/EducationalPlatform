@@ -1,4 +1,4 @@
-﻿using Application.Common;
+using Application.Common;
 using Application.Features.Exams.DTOs;
 using Application.Features.Exams.Command.DeleteExam;
 using Application.Features.Exams.Command.GenerateExam;
@@ -34,14 +34,14 @@ namespace Edu_Base.Features.Exams
             };
 
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpPost("Generate")]
         public async Task<IActionResult> GenerateExam([FromBody] GenerateExamCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpDelete("Delete/{examId}")]
@@ -52,7 +52,7 @@ namespace Edu_Base.Features.Exams
                 ExamId = examId
             };
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
 
         }
 
@@ -70,7 +70,7 @@ namespace Edu_Base.Features.Exams
             };
 
             var result = await _mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("GetExamById/{examId}")]
@@ -81,7 +81,7 @@ namespace Edu_Base.Features.Exams
             //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
             var query = new GetExamByIdQuery { Id = examId, UserId = UserId };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
 
@@ -101,7 +101,7 @@ namespace Edu_Base.Features.Exams
             };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("GetExamSubmissions")]
@@ -121,7 +121,7 @@ namespace Edu_Base.Features.Exams
                 ExamId = request.ExamId
             };
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
 
         }
 
@@ -142,7 +142,7 @@ namespace Edu_Base.Features.Exams
             };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("GetExamCalendarDays")]
@@ -169,7 +169,7 @@ namespace Edu_Base.Features.Exams
             };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
         [HttpGet("GetInstructorExams")]
@@ -194,7 +194,7 @@ namespace Edu_Base.Features.Exams
             };
 
             var result = await _mediator.Send(query, cancellationToken);
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
     }
 }
