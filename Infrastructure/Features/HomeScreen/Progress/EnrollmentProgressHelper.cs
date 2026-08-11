@@ -21,8 +21,28 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
                 .AsNoTracking()
                 .Where(sc => sc.StudentId == studentId);
 
-            if (scope.AllowedCourseIds is not null)
-                courseQuery = courseQuery.Where(sc => scope.AllowedCourseIds.Contains(sc.CourseId));
+            var allowedCourses = scope.AllowedCourseIds;
+            var allowedSections = scope.AllowedSectionIds;
+
+            if (allowedCourses is not null && allowedSections is not null)
+            {
+                courseQuery = courseQuery.Where(sc =>
+                    allowedCourses.Contains(sc.CourseId) ||
+                    _context.Sections.Any(sec =>
+                        allowedSections.Contains(sec.Id) &&
+                        sec.CourseId == sc.CourseId));
+            }
+            else if (allowedCourses is not null)
+            {
+                courseQuery = courseQuery.Where(sc => allowedCourses.Contains(sc.CourseId));
+            }
+            else if (allowedSections is not null)
+            {
+                courseQuery = courseQuery.Where(sc =>
+                    _context.Sections.Any(sec =>
+                        allowedSections.Contains(sec.Id) &&
+                        sec.CourseId == sc.CourseId));
+            }
 
             var sectionQuery = _context.StudentSections
                 .AsNoTracking()
@@ -30,11 +50,20 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
                 .Where(ss => !_context.StudentCourses.Any(sc =>
                     sc.StudentId == studentId && sc.CourseId == ss.Section.CourseId));
 
-            if (scope.AllowedSectionIds is not null)
-                sectionQuery = sectionQuery.Where(ss => scope.AllowedSectionIds.Contains(ss.SectionId));
-
-            if (scope.AllowedCourseIds is not null)
-                sectionQuery = sectionQuery.Where(ss => scope.AllowedCourseIds.Contains(ss.Section.CourseId));
+            if (allowedCourses is not null && allowedSections is not null)
+            {
+                sectionQuery = sectionQuery.Where(ss =>
+                    allowedSections.Contains(ss.SectionId) ||
+                    allowedCourses.Contains(ss.Section.CourseId));
+            }
+            else if (allowedSections is not null)
+            {
+                sectionQuery = sectionQuery.Where(ss => allowedSections.Contains(ss.SectionId));
+            }
+            else if (allowedCourses is not null)
+            {
+                sectionQuery = sectionQuery.Where(ss => allowedCourses.Contains(ss.Section.CourseId));
+            }
 
             return await courseQuery.CountAsync(cancellationToken)
                    + await sectionQuery.CountAsync(cancellationToken);
@@ -154,23 +183,30 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
             int pageSize,
             CancellationToken cancellationToken = default)
         {
-            var courseLight = courseIds.Count > 0
+            var courseLight = courseIds.Count > 0 || sectionIds.Count > 0
                 ? await _context.StudentCourses
                     .AsNoTracking()
-                    .Where(sc => courseIds.Contains(sc.CourseId))
+                    .Where(sc =>
+                        courseIds.Contains(sc.CourseId) ||
+                        _context.Sections.Any(sec =>
+                            sectionIds.Contains(sec.Id) && sec.CourseId == sc.CourseId))
                     .Where(sc => !studentId.HasValue || sc.StudentId == studentId)
                     .Select(sc => new { sc.StudentId, sc.EnrolledAt })
                     .ToListAsync(cancellationToken)
                 : [];
 
-            var sectionLight = sectionIds.Count > 0
+            var sectionLight = courseIds.Count > 0 || sectionIds.Count > 0
                 ? await _context.StudentSections
                     .AsNoTracking()
-                    .Where(ss => sectionIds.Contains(ss.SectionId))
+                    .Where(ss =>
+                        sectionIds.Contains(ss.SectionId) ||
+                        courseIds.Contains(ss.Section.CourseId))
                     .Where(ss => !studentId.HasValue || ss.StudentId == studentId)
                     .Where(ss => !_context.StudentCourses.Any(sc =>
                         sc.StudentId == ss.StudentId &&
-                        courseIds.Contains(sc.CourseId) &&
+                        (courseIds.Contains(sc.CourseId) ||
+                         _context.Sections.Any(sec =>
+                             sectionIds.Contains(sec.Id) && sec.CourseId == sc.CourseId)) &&
                         sc.CourseId == ss.Section.CourseId))
                     .Select(ss => new { ss.StudentId, ss.EnrolledAt })
                     .ToListAsync(cancellationToken)
@@ -219,8 +255,28 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
                 .AsNoTracking()
                 .Where(sc => studentIds.Contains(sc.StudentId));
 
-            if (scope.AllowedCourseIds is not null)
-                query = query.Where(sc => scope.AllowedCourseIds.Contains(sc.CourseId));
+            var allowedCourses = scope.AllowedCourseIds;
+            var allowedSections = scope.AllowedSectionIds;
+
+            if (allowedCourses is not null && allowedSections is not null)
+            {
+                query = query.Where(sc =>
+                    allowedCourses.Contains(sc.CourseId) ||
+                    _context.Sections.Any(sec =>
+                        allowedSections.Contains(sec.Id) &&
+                        sec.CourseId == sc.CourseId));
+            }
+            else if (allowedCourses is not null)
+            {
+                query = query.Where(sc => allowedCourses.Contains(sc.CourseId));
+            }
+            else if (allowedSections is not null)
+            {
+                query = query.Where(sc =>
+                    _context.Sections.Any(sec =>
+                        allowedSections.Contains(sec.Id) &&
+                        sec.CourseId == sc.CourseId));
+            }
 
             return await query
                 .Select(sc => new EnrollmentListItem
@@ -251,12 +307,23 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
                     sc.StudentId == ss.StudentId &&
                     sc.CourseId == ss.Section.CourseId));
 
-            if (scope.AllowedSectionIds is not null)
-                query = query.Where(ss => scope.AllowedSectionIds.Contains(ss.SectionId));
+            var allowedCourses = scope.AllowedCourseIds;
+            var allowedSections = scope.AllowedSectionIds;
 
-            if (scope.AllowedCourseIds is not null)
-                query = query.Where(ss => scope.AllowedCourseIds.Contains(ss.Section.CourseId));
-
+            if (allowedCourses is not null && allowedSections is not null)
+            {
+                query = query.Where(ss =>
+                    allowedSections.Contains(ss.SectionId) ||
+                    allowedCourses.Contains(ss.Section.CourseId));
+            }
+            else if (allowedSections is not null)
+            {
+                query = query.Where(ss => allowedSections.Contains(ss.SectionId));
+            }
+            else if (allowedCourses is not null)
+            {
+                query = query.Where(ss => allowedCourses.Contains(ss.Section.CourseId));
+            }
             return await query
                 .Select(ss => new EnrollmentListItem
                 {
