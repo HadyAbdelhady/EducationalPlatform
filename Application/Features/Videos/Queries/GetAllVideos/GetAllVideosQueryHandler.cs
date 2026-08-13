@@ -1,11 +1,10 @@
 ﻿using Application.Features.Videos.DTOs;
 using Application.Common;
 using Application.Common.Interfaces;
-using Application.Common.Interfaces;
-using Application.Common;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Videos.Queries.GetAllVideos
 {
@@ -25,30 +24,35 @@ namespace Application.Features.Videos.Queries.GetAllVideos
                                         .ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _videoFilterRegistry.Filters)
                                         .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _videoFilterRegistry.Sorts);
 
-                var response = videos.Select(v => new VideoByUserIdResponse()
+                var videosQuery = videos.Select(v => new VideoByUserIdResponse()
                 {
                     Id = v.Id,
                     Name = v.Name,
                     VideoUrl = v.VideoUrl,
                     Description = v.Description,
                     Progress = v.StudentVideos.Where(s => s.StudentId == request.StudentId && s.VideoId == v.Id).Select(s => s.Progress).FirstOrDefault(),
-                    NumberOfTutorialSheets = v.Sheets.Where(sh => sh.Type == SheetType.TutorialSheet).ToList().Count,
-                    NumberOfQuestionsSheets = v.Sheets.Where(sh => sh.Type == SheetType.QuestionSheet).ToList().Count,
+                    NumberOfTutorialSheets = v.Sheets.Count(sh => sh.Type == SheetType.TutorialSheet),
+                    NumberOfQuestionsSheets = v.Sheets.Count(sh => sh.Type == SheetType.QuestionSheet),
                     SectionId = v.SectionId,
                     CreatedAt = v.CreatedAt,
                     UpdatedAt = v.UpdatedAt ?? v.CreatedAt,
-                }).ToList();
+                });
 
                 int pageSize = 10;
                 int skip = (request.GetAllEntityRequestSkeleton.PageNumber - 1) * pageSize;
-                var paginatedResponse = response.Skip(skip).Take(pageSize).ToList();
+
+                var totalCount = await videosQuery.CountAsync(cancellationToken);
+                var paginatedResponse = await videosQuery
+                    .Skip(skip)
+                    .Take(pageSize)
+                    .ToListAsync(cancellationToken);
 
                 return Result<PaginatedResult<VideoByUserIdResponse>>.Success(new PaginatedResult<VideoByUserIdResponse>
                 {
                     Items = paginatedResponse,
                     PageNumber = request.GetAllEntityRequestSkeleton.PageNumber,
                     PageSize = pageSize,
-                    TotalCount = response.Count
+                    TotalCount = totalCount
                 });
             }
             catch (UnauthorizedAccessException auth)

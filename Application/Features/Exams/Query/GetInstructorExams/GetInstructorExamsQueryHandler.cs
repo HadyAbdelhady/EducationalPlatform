@@ -2,11 +2,9 @@
 using Application.Common;
 using Application.Common.Interfaces;
 using Application.Features.Exams.Interfaces;
-using Application.Common.Interfaces;
-using Application.Features.Exams.Interfaces;
-using Application.Common;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Exams.Query.GetInstructorExams
 {
@@ -22,19 +20,20 @@ namespace Application.Features.Exams.Query.GetInstructorExams
             GetInstructorExamsQuery request,
             CancellationToken cancellationToken)
         {
-            // Get exams for the instructor from repository
-            var examsQuery = await _examRepository.GetInstructorNonRandomExamsQuery(request.Request.InstructorId, cancellationToken);
+            var examsQuery = _examRepository.GetInstructorNonRandomExamsQuery(request.Request.InstructorId);
 
             var filteredSortedQuery = examsQuery
                 .ApplyFilters(request.Request.RequestSkeleton.Filters, _instructorExamsFilterRegistry.Filters)
                 .ApplySort(request.Request.RequestSkeleton.SortBy, request.Request.RequestSkeleton.IsDescending, _instructorExamsFilterRegistry.Sorts);
 
-            var examDtos = filteredSortedQuery.ToList();
-
-            // Pagination
             int pageSize = 10;
             int skip = (request.Request.RequestSkeleton.PageNumber - 1) * pageSize;
-            var paginatedExams = examDtos.Skip(skip).Take(pageSize).ToList();
+
+            var totalCount = await filteredSortedQuery.CountAsync(cancellationToken);
+            var paginatedExams = await filteredSortedQuery
+                .Skip(skip)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
 
             // Get courses and sections hashmap from repository
             var coursesSectionsHashMap = await _examRepository.GetInstructorCoursesSectionsHashMapAsync(request.Request.InstructorId, cancellationToken);
@@ -72,7 +71,7 @@ namespace Application.Features.Exams.Query.GetInstructorExams
                         Items = paginatedExams,
                         PageNumber = request.Request.RequestSkeleton.PageNumber,
                         PageSize = pageSize,
-                        TotalCount = examDtos.Count
+                        TotalCount = totalCount
                     },
                     CoursesSections = coursesSectionsDto
                 });

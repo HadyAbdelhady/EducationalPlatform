@@ -1,11 +1,10 @@
 ﻿using Application.Features.Exams.DTOs;
 using Application.Common;
 using Application.Common.Interfaces;
-using Application.Common.Interfaces;
-using Application.Common;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Exams.Query.GetExamSubmissionsList
 {
@@ -45,12 +44,12 @@ namespace Application.Features.Exams.Query.GetExamSubmissionsList
             const int pageSize = 10;
             var skip = (request.RequestSkeleton.PageNumber - 1) * pageSize;
 
-            var totalCount = submissionsQuery.Count();
-            var submissions = submissionsQuery
+            var totalCount = await submissionsQuery.CountAsync(cancellationToken);
+            var submissions = await submissionsQuery
                 .Skip(skip)
                 .Take(pageSize)
                 .Select(ExamSubmissionDtoMapping.Project(examContext))
-                .ToList();
+                .ToListAsync(cancellationToken);
 
             return Result<ExamSubmissionsListResponse>.Success(new ExamSubmissionsListResponse
             {

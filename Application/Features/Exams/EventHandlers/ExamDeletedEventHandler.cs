@@ -13,29 +13,23 @@ namespace Application.Features.Exams.EventHandlers
         {
             var courseRepo = _unitOfWork.Repository<Course>();
 
-            // Load course + the specific section that owns the exam
-            var CoueseList =  courseRepo
-                .Find(
-                    predicate: c => c.Id == notification.CourseId,
-                    cancellationToken: cancellationToken,
-                    includes: c => c.Sections.Where(s => s.Id == notification.SectionId)
-                );
-            if (!CoueseList.Any())
+            var course = await courseRepo.FirstOrDefaultAsync(
+                c => c.Id == notification.CourseId,
+                cancellationToken,
+                c => c.Sections.Where(s => s.Id == notification.SectionId));
+
+            if (course == null)
             {
-                throw new ArgumentException("No Courses Found");
+                throw new ArgumentException($"Could not find course with {notification.CourseId}");
             }
-            var course = CoueseList.FirstOrDefault() ?? throw new ArgumentException($"Could not find course with {notification.CourseId} Found");
 
-            var section = course.Sections.FirstOrDefault() ?? throw new ArgumentException($"Could not find Section with {notification.SectionId} Found");
+            var section = course.Sections.FirstOrDefault(s => s.Id == notification.SectionId)
+                ?? throw new ArgumentException($"Could not find Section with {notification.SectionId}");
 
-            // Update domain state
             course.NumberOfExams--;
             section.NumberOfExams--;
 
-            // Apply update — SaveChangesAsync is called by the command handler after Publish
             courseRepo.Update(course);
         }
     }
-
-
 }

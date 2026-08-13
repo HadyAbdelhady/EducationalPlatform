@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Application.Common;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Exams.Query.GetExamCalendarDays
 {
@@ -17,7 +18,6 @@ namespace Application.Features.Exams.Query.GetExamCalendarDays
             var coursesRepo = _unitOfWork.Repository<Course>().GetAll(cancellationToken);
             var sectionsRepo = _unitOfWork.Repository<Section>().GetAll(cancellationToken);
 
-          
             var examsFromCourse =
                 from e in examsRepo
                 join c in coursesRepo on e.CourseId equals c.Id
@@ -30,7 +30,7 @@ namespace Application.Features.Exams.Query.GetExamCalendarDays
                 from e in examsRepo
                 join s in sectionsRepo on e.SectionId equals s.Id
                 join c in coursesRepo on s.CourseId equals c.Id
-                where  c.EducationYearId == request.EducationYearId
+                where c.EducationYearId == request.EducationYearId
                       && e.InstructorId == request.InstructorId
                       && e.StartTime.HasValue
                 select e;
@@ -53,26 +53,19 @@ namespace Application.Features.Exams.Query.GetExamCalendarDays
                      sectionsRepo.Any(s => s.Id == e.SectionId.Value && s.CourseId == courseId)));
             }
 
-            var items = examsQuery
-                .Select(e => new
+            var items = await examsQuery
+                .Select(e => new ExamCalendarItemDto
                 {
-                    Date = e.StartTime!.Value.Date,
+                    Date = e.StartTime!.Value.Date.ToString("yyyy-MM-dd"),
                     Type = e.SectionId.HasValue ? "Section" : "Course",
                     ExamName = e.Name
-                })
-                .ToList()
-                .Select(x => new ExamCalendarItemDto
-                {
-                    Date = x.Date.ToString("yyyy-MM-dd"),
-                    Type = x.Type,
-                    ExamName = x.ExamName
                 })
                 .OrderBy(i => i.Date)
                 .ThenBy(i => i.Type)
                 .ThenBy(i => i.ExamName)
-                .ToList();
+                .ToListAsync(cancellationToken);
 
-            return await Task.FromResult(Result<List<ExamCalendarItemDto>>.Success(items));
+            return Result<List<ExamCalendarItemDto>>.Success(items);
         }
     }
 }

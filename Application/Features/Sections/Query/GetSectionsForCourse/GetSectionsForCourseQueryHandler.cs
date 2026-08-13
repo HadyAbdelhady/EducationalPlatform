@@ -1,10 +1,9 @@
 ﻿using Application.Features.Sections.DTOs;
 using Application.Common;
 using Application.Common.Interfaces;
-using Application.Common.Interfaces;
-using Application.Common;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Sections.Query.GetSectionsForCourse
 {
@@ -24,7 +23,7 @@ namespace Application.Features.Sections.Query.GetSectionsForCourse
                                                       .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _sectionFilterRegistry.Sorts);
 
 
-            var response = sections.Select(s => new SectionDetailsQueryModel
+            var response = await sections.Select(s => new SectionDetailsQueryModel
             {
                 Section = new SectionData
                 {
@@ -64,7 +63,7 @@ namespace Application.Features.Sections.Query.GetSectionsForCourse
                         })
                         .FirstOrDefault()
                 }).ToList()
-            }).ToList();
+            }).ToListAsync(cancellationToken);
             return Result<List<SectionDetailsQueryModel>>.Success(response);
         }
     }

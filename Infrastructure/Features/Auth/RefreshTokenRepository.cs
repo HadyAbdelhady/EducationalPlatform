@@ -29,10 +29,10 @@ namespace Infrastructure.Features.Auth
                 .FirstOrDefaultAsync(rt => rt.Token == token, cancellationToken);
         }
 
-        public async Task DeleteRefreshTokenAsync(RefreshToken refreshToken, CancellationToken cancellationToken)
+        public Task DeleteRefreshTokenAsync(RefreshToken refreshToken, CancellationToken cancellationToken)
         {
             Remove(refreshToken);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

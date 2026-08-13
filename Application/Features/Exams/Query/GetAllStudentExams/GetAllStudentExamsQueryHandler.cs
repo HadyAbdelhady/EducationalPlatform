@@ -1,11 +1,10 @@
 ﻿using Application.Features.Exams.DTOs;
 using Application.Common;
 using Application.Common.Interfaces;
-using Application.Common.Interfaces;
-using Application.Common;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Exams.Query.GetAllStudentExams
 {
@@ -24,7 +23,7 @@ namespace Application.Features.Exams.Query.GetAllStudentExams
                 .ApplyFilters(request.RequestSkeleton.Filters, _examFilterRegistry.Filters)
                 .ApplySort(request.RequestSkeleton.SortBy, request.RequestSkeleton.IsDescending, _examFilterRegistry.Sorts);
 
-            var response = exams.Select(e => new ExamListDto
+            var examsQuery = exams.Select(e => new ExamListDto
             {
                 ExamId = e.Id,
                 Name = e.Name,
@@ -52,33 +51,24 @@ namespace Application.Features.Exams.Query.GetAllStudentExams
                     .Where(se => se.StudentId == request.UserId)
                     .Select(se => se.TakenAt)
                     .FirstOrDefault(),
-                //NotStartedCount = e.ExamResults
-                //    .Count(r => r.Status == ExamResultStatus.NotStarted),
-
-                //InProgressCount = e.ExamResults
-                //    .Count(r => r.Status == ExamResultStatus.InProgress),
-
-                //PassedCount = e.ExamResults
-                //    .Count(r => r.Status == ExamResultStatus.Passed),
-
-                //FailedCount = e.ExamResults
-                //    .Count(r => r.Status == ExamResultStatus.Failed),
-
-                //CompletedCount = e.ExamResults
-                //    .Count(r => r.Status == ExamResultStatus.Passed || r.Status == ExamResultStatus.Failed)
-            })
-            .ToList();
+            });
 
             int pageSize = 10;
             int skip = (request.RequestSkeleton.PageNumber - 1) * pageSize;
 
+            var totalCount = await examsQuery.CountAsync(cancellationToken);
+            var paginatedItems = await examsQuery
+                .Skip(skip)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
             return Result<PaginatedResult<ExamListDto>>.Success(
                 new PaginatedResult<ExamListDto>
                 {
-                    Items = [.. response.Skip(skip).Take(pageSize)],
+                    Items = paginatedItems,
                     PageNumber = request.RequestSkeleton.PageNumber,
                     PageSize = pageSize,
-                    TotalCount = response.Count
+                    TotalCount = totalCount
                 });
         }
     }

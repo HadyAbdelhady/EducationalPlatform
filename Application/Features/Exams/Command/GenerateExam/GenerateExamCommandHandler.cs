@@ -2,11 +2,11 @@
 using Application.Features.Exams.Command.ChangeExamStatus;
 using Application.Common;
 using Application.Common.Interfaces;
-using Application.Common;
 using Domain.Entities;
 using Domain.enums;
 using Domain.Events;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Exams.Command.GenerateExam
 {
@@ -21,19 +21,20 @@ namespace Application.Features.Exams.Command.GenerateExam
             var QuestionRepository = _unitOfWork.Repository<Question>();
 
 
-            var question = QuestionRepository.Find(q => q.CourseId == request.CourseId &&
-                                                                                        (!request.SectionId.HasValue || q.SectionId == request.SectionId)
-                                                                                        , cancellationToken);
+            var questionQuery = QuestionRepository.Find(q => q.CourseId == request.CourseId &&
+                (!request.SectionId.HasValue || q.SectionId == request.SectionId),
+                cancellationToken);
 
-            if (!question.Any())
+            if (!await questionQuery.AnyAsync(cancellationToken))
             {
                 return Result<GenerateExamResponse>.FailureStatusCode("Question does not exist.", ErrorType.NotFound);
             }
 
-            if (question.Count() < request.NumberOfQuestions)
+            var questionCount = await questionQuery.CountAsync(cancellationToken);
+            if (questionCount < request.NumberOfQuestions)
             {
                 return Result<GenerateExamResponse>.FailureStatusCode(
-                    $"Not enough questions available. Requested: {request.NumberOfQuestions}, Available: {question.Count()}.",
+                    $"Not enough questions available. Requested: {request.NumberOfQuestions}, Available: {questionCount}.",
                     ErrorType.BadRequest
                 );
             }
@@ -72,10 +73,11 @@ namespace Application.Features.Exams.Command.GenerateExam
 
             if (request.IsRandomized)
             {
-                question.ToList().Shuffle();
+                var questions = await questionQuery.ToListAsync(cancellationToken);
+                questions.Shuffle();
                 decimal markPerQuestion = request.ExamTotalMark / request.NumberOfQuestions;
 
-                newExam.ExamQuestions = [.. question
+                newExam.ExamQuestions = [.. questions
                 .Take(request.NumberOfQuestions)
                 .Select(q => new ExamQuestions
                 {

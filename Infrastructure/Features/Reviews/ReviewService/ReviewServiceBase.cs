@@ -4,15 +4,11 @@ using Application.Common;
 using Application.Common.Interfaces;
 using Application.Features.Auth.Interfaces;
 using Application.Features.Reviews.Interfaces;
-using Application.Common.Interfaces;
-using Application.Features.Auth.Interfaces;
-using Application.Features.Reviews.Interfaces;
-using Application.Common;
 using Domain;
 using Domain.Entities;
 using Domain.enums;
 using Domain.Interfaces;
-using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Features.Reviews.ReviewService
 {
@@ -189,9 +185,9 @@ namespace Infrastructure.Features.Reviews.ReviewService
                 var reviews = reviewRepository.Find(r => r.EntityId == entityId, cancellationToken);
 
                 decimal? newRating = null;
-                if (reviews.Any())
+                if (await reviews.AnyAsync(cancellationToken))
                 {
-                    newRating = reviews.Average(r => r.StarRating);
+                    newRating = await reviews.AverageAsync(r => r.StarRating, cancellationToken);
                 }
 
                 instructorUser!.Instructor!.Rating = newRating;
@@ -228,9 +224,9 @@ namespace Infrastructure.Features.Reviews.ReviewService
             var reviews = reviewRepository.Find(r => r.EntityId == entityId, cancellationToken);
 
             decimal? newRating = null;
-            if (reviews.Any())
+            if (await reviews.AnyAsync(cancellationToken))
             {
-                newRating = reviews.Average(r => r.StarRating);
+                newRating = await reviews.AverageAsync(r => r.StarRating, cancellationToken);
             }
 
             var updatedEntity = updateRatingAction(entity, newRating);
@@ -242,22 +238,11 @@ namespace Infrastructure.Features.Reviews.ReviewService
         {
             try
             {
-                var reviews = _unitOfWork.Repository<TReview>()
+                var response = await _unitOfWork.Repository<TReview>()
                     .Find(r => r.EntityId == request.EntityId,
                         cancellationToken, r => r.Student!.User!)
                     .ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _filterRegistry.Filters)
-                    .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _filterRegistry.Sorts);
-
-                var reviewsList = reviews.ToList();
-
-                if (reviewsList.Count == 0)
-                {
-                    return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
-                        $"No reviews found for entity with ID {request.EntityId}.",
-                        ErrorType.NotFound);
-                }
-
-                var response = reviewsList
+                    .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _filterRegistry.Sorts)
                     .Select(r => new GetAllReviewsResponse
                     {
                         Id = r.Id,
@@ -266,13 +251,21 @@ namespace Infrastructure.Features.Reviews.ReviewService
                         Comment = r.Comment,
                         CreatedAt = r.CreatedAt,
                         UpdatedAt = r.UpdatedAt ?? r.CreatedAt,
-                        Student = r.Student?.User != null ? new StudentReviewInfo
+                        Student = r.Student != null && r.Student.User != null ? new StudentReviewInfo
                         {
                             StudentId = r.StudentId,
                             FullName = r.Student.User.FullName,
                             PersonalPictureUrl = r.Student.User.PersonalPictureUrl
                         } : null
-                    }).ToList();
+                    })
+                    .ToListAsync(cancellationToken);
+
+                if (response.Count == 0)
+                {
+                    return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
+                        $"No reviews found for entity with ID {request.EntityId}.",
+                        ErrorType.NotFound);
+                }
 
                 return Result<List<GetAllReviewsResponse>>.Success(response);
             }

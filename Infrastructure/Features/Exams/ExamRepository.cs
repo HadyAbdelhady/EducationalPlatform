@@ -111,9 +111,9 @@ namespace Infrastructure.Features.Exams
             return hashMap;
         }
 
-        public async Task<IQueryable<InstructorExamsResponseDto>> GetInstructorNonRandomExamsQuery(Guid instructorId, CancellationToken cancellationToken)
+        public IQueryable<InstructorExamsResponseDto> GetInstructorNonRandomExamsQuery(Guid instructorId)
         {
-            return await Task.FromResult(_context.Exams
+            return _context.Exams
                 .Where(e => e.InstructorId == instructorId)
                 .Select(e => new InstructorExamsResponseDto
                 {
@@ -146,7 +146,7 @@ namespace Infrastructure.Features.Exams
                         ? e.Section!.StudentSections.Count(ss => !e.Course!.StudentCourses.Any(sc => sc.StudentId == ss.StudentId)) + e.Course!.StudentCourses.Count
                         : e.Course!.StudentCourses.Count) - e.ExamResults.Count(r => r.Status != ExamResultStatus.NotStarted),
                     InProgressCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.InProgress)
-                }));
+                });
         }
     }
 

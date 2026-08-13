@@ -13,29 +13,28 @@ namespace Application.Features.Exams.EventHandlers
         {
             var courseRepo = _unitOfWork.Repository<Course>();
 
-            // Load course + the specific section that owns the exam
-            var CoueseList =  courseRepo
-                .Find(
-                    predicate: c => c.Id == notification.CourseId,
-                    cancellationToken: cancellationToken,
-                    includes: c => c.Sections.Where(s => s.Id == notification.SectionId)
-                );
-            if (!CoueseList.Any())
-            {
-                throw new ArgumentException("No Courses Found");
-            }
-            var course = CoueseList.FirstOrDefault() ?? throw new ArgumentException($"Could not find course with {notification.CourseId} Found");
+            var course = notification.SectionId.HasValue
+                ? await courseRepo.FirstOrDefaultAsync(
+                    c => c.Id == notification.CourseId,
+                    cancellationToken,
+                    c => c.Sections.Where(s => s.Id == notification.SectionId))
+                : await courseRepo.GetByIdAsync(notification.CourseId, cancellationToken);
 
-            // Update domain state
+            if (course == null)
+            {
+                throw new ArgumentException($"Could not find course with {notification.CourseId}");
+            }
+
             course.NumberOfExams++;
 
-            var section = course.Sections.FirstOrDefault();
+            var section = notification.SectionId.HasValue
+                ? course.Sections.FirstOrDefault(s => s.Id == notification.SectionId)
+                : course.Sections.FirstOrDefault();
             if (section != null)
             {
                 section.NumberOfExams++;
             }
 
-            // Apply update (EF Core tracks changes if using change tracking)
             courseRepo.Update(course);
         }
     }

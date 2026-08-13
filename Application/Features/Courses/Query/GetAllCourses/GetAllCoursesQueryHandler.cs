@@ -2,12 +2,10 @@
 using Application.Features.EducationYears.Interfaces;
 using Application.Common;
 using Application.Features.Courses.DTOs;
-using Application.Common.Interfaces;
-using Application.Features.EducationYears.Interfaces;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using Application.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Courses.Query.GetAllCourses
 {
@@ -37,7 +35,7 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     Courses = Courses.Where(c => c.EducationYearId == studentEducationYearId.Value);
                 }
 
-                var response = Courses
+                var coursesQuery = Courses
                 .Select(course => new
                 {
                     course,
@@ -80,19 +78,23 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     ThumbnailUrl = x.course.IntroVideoUrl!,
                     CreatedAt = x.course.CreatedAt,
                     UpdatedAt = x.course.UpdatedAt
-                }).ToList();
-
+                });
 
                 int pageSize = 10;
                 int skip = (request.GetAllEntityRequestSkeleton.PageNumber - 1) * pageSize;
-                var PaginatedResponse = response.Skip(skip).Take(pageSize).ToList();
+
+                var totalCount = await coursesQuery.CountAsync(cancellationToken);
+                var paginatedResponse = await coursesQuery
+                    .Skip(skip)
+                    .Take(pageSize)
+                    .ToListAsync(cancellationToken);
 
                 return Result<PaginatedResult<CourseResponse>>.Success(new PaginatedResult<CourseResponse>
                 {
-                    Items = PaginatedResponse,
+                    Items = paginatedResponse,
                     PageNumber = request.GetAllEntityRequestSkeleton.PageNumber,
                     PageSize = pageSize,
-                    TotalCount = response.Count
+                    TotalCount = totalCount
                 });
             }
             catch (UnauthorizedAccessException auth)

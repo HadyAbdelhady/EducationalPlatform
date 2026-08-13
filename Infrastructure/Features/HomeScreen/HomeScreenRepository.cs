@@ -133,57 +133,47 @@ namespace Infrastructure.Features.HomeScreen
             }
             var instructorCourseIds = await instructorCoursesQuery.Select(ic => ic.CourseId).ToListAsync(cancellationToken);
 
+            var filteredInstructorCourses = _context.InstructorCourses
+                .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value));
+
+            var courses = await filteredInstructorCourses
+                .Select(ic => new InstructorCourseDto
+                {
+                    Id = ic.Course.Id,
+                    Name = ic.Course.Name,
+                    PictureUrl = ic.Course.PictureUrl,
+                    NumberOfStudents = ic.Course.NumberOfStudentsEnrolled,
+                    Rating = ic.Course.Rating,
+                    Revenue = _context.Payments
+                        .Where(p => p.CourseId == ic.CourseId && p.Status == PaymentStatus.Completed)
+                        .Sum(p => p.Amount),
+                    CreatedAt = ic.Course.CreatedAt,
+                    NumberOfVideos = ic.Course.NumberOfVideos,
+                    NumberOfExams = ic.Course.NumberOfExams,
+                    NumberOfSheets = ic.Course.NumberOfQuestionSheets
+                })
+                .OrderByDescending(c => c.CreatedAt)
+                .Take(6)
+                .ToListAsync(cancellationToken);
+
+            var stats = new InstructorStatsDto
+            {
+                TotalCourses = instructorCourseIds.Count,
+                TotalStudents = await filteredInstructorCourses.SumAsync(ic => ic.Course.NumberOfStudentsEnrolled, cancellationToken),
+                TotalRevenue = await filteredInstructorCourses
+                    .SelectMany(ic => ic.Course.Payments)
+                    .Where(p => p.Status == PaymentStatus.Completed)
+                    .SumAsync(p => p.Amount, cancellationToken),
+                AverageRating = await filteredInstructorCourses.AverageAsync(ic => ic.Course.Rating ?? 0, cancellationToken),
+                TotalVideos = await filteredInstructorCourses.SumAsync(ic => ic.Course.NumberOfVideos, cancellationToken),
+                TotalExams = await filteredInstructorCourses.SumAsync(ic => ic.Course.NumberOfExams, cancellationToken),
+                TotalSheets = await filteredInstructorCourses.SumAsync(ic => ic.Course.NumberOfQuestionSheets, cancellationToken)
+            };
+
             InstructorDashboardResponse? response = new()
             {
-                // Instructor's courses with metrics
-                Courses = [.. _context.InstructorCourses
-                    .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
-                    .Select(ic => new InstructorCourseDto
-                    {
-                        Id = ic.Course.Id,
-                        Name = ic.Course.Name,
-                        PictureUrl = ic.Course.PictureUrl,
-                        NumberOfStudents = ic.Course.NumberOfStudentsEnrolled,
-                        Rating = ic.Course.Rating,
-                        Revenue = _context.Payments
-                            .Where(p => p.CourseId == ic.CourseId && p.Status == PaymentStatus.Completed)
-                            .Sum(p => p.Amount),
-                        CreatedAt = ic.Course.CreatedAt,
-                        NumberOfVideos = ic.Course.NumberOfVideos,
-                        NumberOfExams = ic.Course.NumberOfExams,
-                        NumberOfSheets = ic.Course.NumberOfQuestionSheets
-                    })
-                    .OrderByDescending(c => c.CreatedAt)
-                    .Take(6)],
-
-                // Instructor statistics
-                Stats =
-                [
-                    new()
-                    {
-                        TotalCourses = instructorCourseIds.Count,
-                        TotalStudents = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
-                            .Sum(ic => ic.Course.NumberOfStudentsEnrolled),
-                        TotalRevenue = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
-                            .SelectMany(ic => ic.Course.Payments)
-                            .Where(p => p.Status == PaymentStatus.Completed)
-                            .Sum(p => p.Amount),
-                        AverageRating = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
-                            .Average(ic => ic.Course.Rating ?? 0),
-                        TotalVideos = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
-                            .Sum(ic => ic.Course.NumberOfVideos),
-                        TotalExams = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
-                            .Sum(ic => ic.Course.NumberOfExams),
-                        TotalSheets = _context.InstructorCourses
-                            .Where(ic => ic.InstructorId == instructorId && (!educationYearId.HasValue || ic.Course.EducationYearId == educationYearId.Value))
-                            .Sum(ic => ic.Course.NumberOfQuestionSheets)
-                    }
-                ]
+                Courses = courses,
+                Stats = [stats]
             };
 
             // Recent activities
@@ -266,8 +256,7 @@ namespace Infrastructure.Features.HomeScreen
                                     .ThenBy(t => t.DueDate)
                                     .Take(8)];
 
-            // Upcoming exams
-            response.UpcomingExams = [.. _context.Exams
+            response.UpcomingExams = await _context.Exams
                 .Where(e => e.InstructorId == instructorId && (!educationYearId.HasValue || e.Course.EducationYearId == educationYearId.Value) && e.StartTime.HasValue && e.StartTime.Value >= instructorNow)
                 .OrderBy(e => e.StartTime)
                 .Select(e => new UpcomingExamDto
@@ -281,10 +270,10 @@ namespace Infrastructure.Features.HomeScreen
                     Status = e.Status.ToString(),
                     NumberOfEnrolledStudents = _context.StudentCourses.Count(sc => sc.CourseId == e.CourseId)
                 })
-                .Take(5)];
+                .Take(5)
+                .ToListAsync(cancellationToken);
 
-            // Upcoming sheets
-            response.UpcomingSheets = [.. _context.Sheets
+            response.UpcomingSheets = await _context.Sheets
                 .Where(s => s.InstructorId == instructorId && (!educationYearId.HasValue || (s.Course != null && s.Course.EducationYearId == educationYearId.Value)) && s.DueDate.HasValue && s.DueDate.Value >= instructorNow.AddDays(-7))
                 .OrderBy(s => s.DueDate)
                 .Select(s => new UpcomingSheetDto
@@ -297,7 +286,8 @@ namespace Infrastructure.Features.HomeScreen
                     Status = "Published",
                     NumberOfSubmittedStudents = s.AnswersSheets.Count
                 })
-                .Take(5)];
+                .Take(5)
+                .ToListAsync(cancellationToken);
 
             response.CurrentTime = EgyptTime.UtcNow;
 
