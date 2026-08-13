@@ -14,18 +14,20 @@ namespace Edu_Base.Features.Videos
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VideoController(IMediator mediator, ILogger<VideoController> logger, ICloudinaryCore cloudinaryService) : ControllerBase
+    public class VideoController(
+        IMediator mediator,
+        ILogger<VideoController> logger,
+        ICloudinaryCore cloudinaryService,
+        ICurrentUserService currentUser) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger _logger = logger;
         private readonly ICloudinaryCore _cloudinaryService = cloudinaryService;
+        private readonly ICurrentUserService _currentUser = currentUser;
 
         private Guid? GetUserIdFromClaims()
         {
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-                return null;
-            return userId;
+            return _currentUser.TryGetUserId(out var userId) ? userId : null;
         }
 
         private string GetUserRoleFromClaims()
@@ -222,9 +224,10 @@ namespace Edu_Base.Features.Videos
         [Obsolete("Use PATCH api/Video/progress instead.")]
         public async Task<IActionResult> MarkVideoWatched(Guid VideoId, CancellationToken cancellationToken)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+            if (!_currentUser.TryGetUserId(out var userId))
+                return Unauthorized("User id not found in token.");
 
-            var command = new UpdateVideoProgressCommand(VideoId, UserId, 100);
+            var command = new UpdateVideoProgressCommand(VideoId, userId, 100);
 
             var result = await _mediator.Send(command, cancellationToken);
             return result ? Ok() : StatusCode(500, "Failed to mark video as watched.");
@@ -236,8 +239,7 @@ namespace Edu_Base.Features.Videos
             if (request == null)
                 return BadRequest("Update video progress request must be sent.");
 
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            if (!_currentUser.TryGetUserId(out var userId))
                 return Unauthorized("User id claim is missing or invalid.");
 
             if (request.VideoId == Guid.Empty)

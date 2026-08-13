@@ -1,4 +1,5 @@
 using Application.Common;
+using Application.Common.Interfaces;
 using Application.Features.Sheets.DTOs;
 using Application.Features.AnswersSheets.Commands.ApproveAnswersSheet;
 using Application.Features.AnswersSheets.Commands.CreateAnswersSheet;
@@ -12,7 +13,6 @@ using Domain;
 using Domain.enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,21 +20,10 @@ namespace Edu_Base.Features.Sheets
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SheetsController(IMediator mediator) : ControllerBase
+    public class SheetsController(IMediator mediator, ICurrentUserService currentUser) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
-
-        private bool TryGetCurrentUserId(out Guid userId)
-        {
-            var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(claim) || !Guid.TryParse(claim, out userId))
-            {
-                userId = default;
-                return false;
-            }
-
-            return true;
-        }
+        private readonly ICurrentUserService _currentUser = currentUser;
 
         [HttpPost]
         public async Task<IActionResult> CreateSheet([FromForm] SheetCreationRequest request, CancellationToken cancellationToken)
@@ -121,7 +110,7 @@ namespace Edu_Base.Features.Sheets
         [HttpPost("answers")]
         public async Task<IActionResult> CreateAnswersSheet(AnswersSheetCreationRequest answersSheetCreationRequest, CancellationToken cancellationToken)
         {
-            if (!TryGetCurrentUserId(out var userId))
+            if (!_currentUser.TryGetUserId(out var userId))
             {
                 return Unauthorized();
             }
@@ -156,7 +145,7 @@ namespace Edu_Base.Features.Sheets
         [HttpPatch("answers")]
         public async Task<IActionResult> UpdateAnswersSheet(AnswersSheetUpdateRequest answersSheetUpdateRequest, CancellationToken cancellationToken)
         {
-            if (!TryGetCurrentUserId(out var userId))
+            if (!_currentUser.TryGetUserId(out var userId))
             {
                 return Unauthorized();
             }
@@ -191,7 +180,7 @@ namespace Edu_Base.Features.Sheets
         [HttpDelete("answers/{answersSheetId}")]
         public async Task<IActionResult> DeleteAnswersSheet(Guid answersSheetId, CancellationToken cancellationToken)
         {
-            if (!TryGetCurrentUserId(out var userId))
+            if (!_currentUser.TryGetUserId(out var userId))
             {
                 return Unauthorized();
             }
@@ -209,12 +198,13 @@ namespace Edu_Base.Features.Sheets
         [HttpGet("answers/Approve/{answersSheetId}")]
         public async Task<IActionResult> ApproveAnswersSheet(Guid answersSheetId, CancellationToken cancellationToken)
         {
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized("User id not found in token.");
 
             var answersSheetCommand = new ApproveAnswersSheetCommand
             {
                 AnswersSheetId = answersSheetId,
-                InstructorId = Guid.Parse(userIdClaim!)
+                InstructorId = instructorId
             };
 
             var result = await _mediator.Send(answersSheetCommand, cancellationToken);
@@ -286,7 +276,7 @@ namespace Edu_Base.Features.Sheets
             [FromQuery] GetAllEntityRequestSkeleton? requestSkeleton,
             CancellationToken cancellationToken)
         {
-            if (!TryGetCurrentUserId(userId: out Guid userId))
+            if (!_currentUser.TryGetUserId(out Guid userId))
             {
                 return Unauthorized();
             }

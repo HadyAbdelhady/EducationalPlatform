@@ -57,12 +57,12 @@ namespace Application.Features.Payment.DTOs.PaymobRawDtos
         /// URL to receive webhook notifications about payment status changes.
         /// </summary>
         [JsonPropertyName("notification_url")]
-        public string NotificationUrl { get; set; } = "https://www.google.com/"; // Replace with your actual success URL
+        public string NotificationUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// URL to redirect the user after payment completion.
         /// </summary>
         [JsonPropertyName("redirection_url")]
-        public string RedirectionUrl { get; set; } = "https://www.google.com/"; // Replace with your actual success URL
+        public string RedirectionUrl { get; set; } = string.Empty;
     }
 }

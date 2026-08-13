@@ -1,4 +1,4 @@
-﻿using Infrastructure.Common;
+using Infrastructure.Common;
 using Microsoft.EntityFrameworkCore;
 using Application.Common.Interfaces;
 using Application.Features.Auth.Interfaces;
@@ -31,8 +31,12 @@ namespace Infrastructure.Features.Auth
 
             return await _context.Users
                 .Include(u => u.Student)
-                .ThenInclude(s => s!.ExamResults)
-                    .ThenInclude(se => se.Exam)
+                    .ThenInclude(s => s!.ExamResults)
+                        .ThenInclude(se => se.Exam)
+                .Include(u => u.Student)
+                    .ThenInclude(s => s!.StudentCourses)
+                .Include(u => u.Student)
+                    .ThenInclude(s => s!.StudentSections)
                 .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         }
         public async Task<User?> GetInstructorByIdWithRelationsAsync(Guid userId, CancellationToken cancellationToken = default)

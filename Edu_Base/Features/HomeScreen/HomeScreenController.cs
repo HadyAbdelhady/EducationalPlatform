@@ -1,3 +1,4 @@
+using Application.Common.Interfaces;
 using Application.Features.HomeScreen.InstructorDashboard;
 using Application.Features.HomeScreen.InstructorStudentsProgress;
 using Application.Features.HomeScreen.StudentHomeScreen;
@@ -9,10 +10,15 @@ namespace Edu_Base.Features.HomeScreen
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class HomeScreenController(IMediator mediator, ILogger<HomeScreenController> logger) : ControllerBase
+    public class HomeScreenController(
+        IMediator mediator,
+        ILogger<HomeScreenController> logger,
+        ICurrentUserService currentUser) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<HomeScreenController> _logger = logger;
+        private readonly ICurrentUserService _currentUser = currentUser;
+
         [HttpGet("student/{studentId}")]
         public async Task<IActionResult> GetStudentHomeScreen(Guid studentId, CancellationToken cancellationToken)
         {
@@ -37,11 +43,8 @@ namespace Edu_Base.Features.HomeScreen
             [FromQuery] int milestonesPageSize = 10,
             CancellationToken cancellationToken = default)
         {
-            var studentIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out var studentId))
-            {
+            if (!_currentUser.TryGetUserId(out var studentId))
                 return Unauthorized();
-            }
 
             if (coursesPage > 0)
                 enrollmentsPage = coursesPage;
@@ -74,11 +77,8 @@ namespace Edu_Base.Features.HomeScreen
             CancellationToken cancellationToken = default)
 
         {
-            var instructorIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(instructorIdClaim) || !Guid.TryParse(instructorIdClaim, out var instructorId))
-            {
+            if (!_currentUser.TryGetUserId(out var instructorId))
                 return Unauthorized();
-            }
 
             _logger.LogInformation(
                 "Fetching students progress for InstructorId: {InstructorId}, CourseId: {CourseId}, SectionId: {SectionId}",

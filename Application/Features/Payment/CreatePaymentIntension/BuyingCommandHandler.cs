@@ -48,14 +48,6 @@ namespace Application.Features.Payment.CreatePaymentIntension
                     ErrorType.BadRequest);
             }
 
-            var testingPay = new PaymentInitiationRequest
-            {
-                EntityId = request.EntityId,
-                EntityType = request.EntityToBuy,
-                PaymentMethods = request.PaymentMethods,
-                Student = studentInfo,
-            };
-
             var payment = new PaymentTransactions
             {
                 Id = Guid.NewGuid(),
@@ -63,6 +55,16 @@ namespace Application.Features.Payment.CreatePaymentIntension
                 Status = PaymentStatus.Pending,
                 CreatedAt = DateTimeOffset.UtcNow
             };
+
+            var testingPay = new PaymentInitiationRequest
+            {
+                EntityId = request.EntityId,
+                EntityType = request.EntityToBuy,
+                PaymentMethods = request.PaymentMethods,
+                Student = studentInfo,
+                SpecialReference = payment.Id.ToString()
+            };
+
 
             // add the payment transaction to the database before processing the payment - IMPORTANT: this ensures that we have a record of the transaction even if the payment processing fails
             await _unitOfWork.Repository<PaymentTransactions>().AddAsync(payment, cancellationToken);

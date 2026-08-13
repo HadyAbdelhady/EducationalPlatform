@@ -40,3 +40,6 @@ project.nuget.cache
 *.csproj.AssemblyReference.cache
 *.csproj.CoreCompileInputs.cache
 .cascade-reference.md
+
+# Graphify knowledge graph (local / generated)
+graphify-out/

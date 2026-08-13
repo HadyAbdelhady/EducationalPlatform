@@ -18,6 +18,12 @@ namespace Application.Features.Payment.DTOs
 
         [JsonIgnore]
         public Student? Student { get; set; }
+
+        /// <summary>
+        /// Internal payment record ID sent to Paymob as special_reference for webhook correlation.
+        /// </summary>
+        [JsonIgnore]
+        public string? SpecialReference { get; set; }
     }
 }
 

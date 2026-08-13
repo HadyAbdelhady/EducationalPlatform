@@ -8,6 +8,7 @@ namespace Application.Features.Payment.Interfaces
         Task<PaymentIntentionResponse> CreateIntentionAsync(PaymentInitiationRequest request, CancellationToken cancellationToken = default);
         bool VerifyHmacSignature(string concatenatedHmacString, string HmacSignature);
         string GetPublicKey();
+        string GetHmac();
     }
 }
 

@@ -32,6 +32,7 @@ using Infrastructure.Features.Sections;
 using Infrastructure.Features.Sheets;
 using Infrastructure.Features.Sheets.SheetService;
 using Infrastructure.Features.Videos;
+using Edu_Base.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -134,6 +135,8 @@ namespace Edu_Base
 
 
             // Service Registration
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryCore, CloudinaryService>();

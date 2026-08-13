@@ -1,4 +1,5 @@
 ﻿using Application.Common;
+using Application.Common.Interfaces;
 using Application.Features.Sections.DTOs;
 using Application.Features.Sections.Commands.CreateSection;
 using Application.Features.Sections.Commands.DeleteSection;
@@ -13,9 +14,10 @@ namespace Edu_Base.Features.Sections
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SectionController(IMediator mediator) : ControllerBase
+    public class SectionController(IMediator mediator, ICurrentUserService currentUser) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ICurrentUserService _currentUser = currentUser;
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateSection(CreateSectionRequest sectionCreationRequest, CancellationToken cancellationToken)
@@ -53,12 +55,13 @@ namespace Edu_Base.Features.Sections
         [HttpGet("course/{courseId}")]
         public async Task<IActionResult> GetSectionsForCourse([FromQuery] GetAllEntityRequestSkeleton request, Guid courseId)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            if (!_currentUser.TryGetUserId(out var userId))
+                return Unauthorized("User id not found in token.");
+
             var query = new GetSectionsForCourseQuery
             {
                 CourseId = courseId,
-                UserId = UserId,
+                UserId = userId,
                 GetAllEntityRequestSkeleton = request
             };
             var result = await _mediator.Send(query, CancellationToken.None);
@@ -112,9 +115,10 @@ namespace Edu_Base.Features.Sections
         [HttpGet("{sectionId}/details")]
         public async Task<IActionResult> GetSectionDetails(Guid sectionId, CancellationToken cancellationToken)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
-            var query = new GetSectionDetailsQuery { SectionId = sectionId, UserId = UserId };
+            if (!_currentUser.TryGetUserId(out var userId))
+                return Unauthorized("User id not found in token.");
+
+            var query = new GetSectionDetailsQuery { SectionId = sectionId, UserId = userId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }

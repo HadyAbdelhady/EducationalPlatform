@@ -1,4 +1,5 @@
 using Application.Common;
+using Application.Common.Interfaces;
 using Application.Features.Courses.DTOs;
 using Application.Features.Courses.Commands.CreateCourse;
 using Application.Features.Courses.Commands.DeleteCourse;
@@ -13,9 +14,10 @@ namespace Edu_Base.Features.Courses
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CourseController(IMediator mediator) : ControllerBase
+    public class CourseController(IMediator mediator, ICurrentUserService currentUser) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ICurrentUserService _currentUser = currentUser;
 
         [HttpPost("create")]
         //[ValidateAntiForgeryToken]
@@ -45,10 +47,10 @@ namespace Edu_Base.Features.Courses
         [HttpGet("GetCourseDetailById/{courseId}")]
         public async Task<IActionResult> GetCourseDetailById(Guid courseId, CancellationToken cancellationToken)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            if (!_currentUser.TryGetUserId(out var userId))
+                return Unauthorized("User id not found in token.");
 
-            var query = new GetCourseByIdQuery { CourseId = courseId, UserId = UserId };
+            var query = new GetCourseByIdQuery { CourseId = courseId, UserId = userId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
@@ -56,12 +58,13 @@ namespace Edu_Base.Features.Courses
         [HttpGet("GetCoursesList")]
         public async Task<IActionResult> GetCoursesList([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            if (!_currentUser.TryGetUserId(out var userId))
+                return Unauthorized("User id not found in token.");
+
             var query = new GetAllCoursesQuery
             {
                 GetAllEntityRequestSkeleton = request,
-                UserID = UserId,
+                UserID = userId,
             };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
@@ -103,10 +106,10 @@ namespace Edu_Base.Features.Courses
         [HttpGet("GetCourseNamesByInstructor")]
         public async Task<IActionResult> GetCourseNamesByInstructor([FromQuery] Guid EducationalYearId, CancellationToken cancellationToken)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid UserId = Guid.Parse("d446bb09-477d-4c9e-b6fe-6971e6c80dc5");
+            if (!_currentUser.TryGetUserId(out var userId))
+                return Unauthorized("User id not found in token.");
 
-            var query = new GetCourseNamesByInstructorQuery { InstructorId = UserId, EducationalYearId = EducationalYearId };
+            var query = new GetCourseNamesByInstructorQuery { InstructorId = userId, EducationalYearId = EducationalYearId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }

@@ -1,3 +1,4 @@
+using Application.Common.Interfaces;
 using Application.Features.EducationYears.DTOs;
 using Application.Features.EducationYears.Commands.CreateEducationYear;
 using Application.Features.EducationYears.Commands.DeleteEducationYear;
@@ -11,16 +12,14 @@ namespace Edu_Base.Features.EducationYears
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EducationYearController(IMediator mediator) : ControllerBase
+    public class EducationYearController(IMediator mediator, ICurrentUserService currentUser) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ICurrentUserService _currentUser = currentUser;
 
         [HttpGet]
         public async Task<IActionResult> GetEducationYears([FromQuery] string? ApplicationName, CancellationToken cancellationToken = default)
         {
-            //var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid UserId = Guid.Parse("2cfd78cb-f08e-4ebe-a667-92eb59b9c19d");
-
             var query = new GetEducationYearsQuery { InstructorId = null, ApplicationName = ApplicationName };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
@@ -37,10 +36,10 @@ namespace Edu_Base.Features.EducationYears
         [HttpPost]
         public async Task<IActionResult> CreateEducationYear([FromBody] CreateEducationYearRequest request, CancellationToken cancellationToken = default)
         {
-            var UserId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
-            //Guid UserId = Guid.Parse("57786109-6eea-45f6-9f6f-a45dbcc1b62f");
+            if (!_currentUser.TryGetUserId(out var userId))
+                return Unauthorized("User id not found in token.");
 
-            var command = new CreateEducationYearCommand { EducationYear = request, InstructorId = UserId };
+            var command = new CreateEducationYearCommand { EducationYear = request, InstructorId = userId };
             var result = await _mediator.Send(command, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
