@@ -22,10 +22,18 @@ namespace Infrastructure.Features.Reviews.ReviewService
         {
             try
             {
-                var reviewExistsResult = await DoesReviewExist(request.StudentId, request.EntityId, cancellationToken);
-                if (reviewExistsResult.IsSuccess && reviewExistsResult.Value != null)
+                var studentExists = await _unitOfWork.GetRepository<IUserRepository>()
+                    .DoesStudentExistAsync(request.StudentId, cancellationToken);
+                if (!studentExists)
                 {
-                    return Result<ReviewResponse>.FailureStatusCode("You have already submitted a review.", ErrorType.BadRequest);
+                    return Result<ReviewResponse>.FailureStatusCode("Student not found.", ErrorType.NotFound);
+                }
+
+                var alreadyReviewed = await _unitOfWork.Repository<TReview>()
+                    .AnyAsync(r => r.StudentId == request.StudentId && r.EntityId == request.EntityId, cancellationToken);
+                if (alreadyReviewed)
+                {
+                    return Result<ReviewResponse>.FailureStatusCode("You have already submitted a review.", ErrorType.Conflict);
                 }
 
                 TReview newReview = new()
@@ -61,26 +69,29 @@ namespace Infrastructure.Features.Reviews.ReviewService
             }
         }
 
-        public virtual async Task<Result<string>> DeleteReviewAsync(Guid reviewId, CancellationToken cancellationToken = default)
+        public virtual async Task<Result<string>> DeleteReviewAsync(Guid reviewId, Guid studentId, CancellationToken cancellationToken = default)
         {
             try
             {
                 var review = await _unitOfWork.Repository<TReview>().GetByIdAsync(reviewId, cancellationToken);
-                var entityId = review?.EntityId;
-
-                var reviewExists = await _unitOfWork.Repository<TReview>().AnyAsync(r => r.Id == reviewId, cancellationToken);
-                if (!reviewExists)
+                if (review is null)
                 {
-                    return Result<string>.FailureStatusCode($"Review not found", ErrorType.NotFound);
+                    return Result<string>.FailureStatusCode("Review not found", ErrorType.NotFound);
                 }
+
+                if (review.StudentId != studentId)
+                {
+                    return Result<string>.FailureStatusCode(
+                        "You are not allowed to delete this review.",
+                        ErrorType.Forbidden);
+                }
+
+                var entityId = review.EntityId;
 
                 await _unitOfWork.Repository<TReview>().RemoveAsync(reviewId, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                if (entityId.HasValue)
-                {
-                    await UpdateEntityRatingAsync(entityId.Value, cancellationToken);
-                }
+                await UpdateEntityRatingAsync(entityId, cancellationToken);
 
                 return Result<string>.Success($"Review with ID: {reviewId} deleted Successfully.");
             }
@@ -99,7 +110,14 @@ namespace Infrastructure.Features.Reviews.ReviewService
             var review = await _unitOfWork.Repository<TReview>().GetByIdAsync(request.ReviewId, cancellationToken);
             if (review is null)
             {
-                return Result<ReviewResponse>.FailureStatusCode($"Review not found", ErrorType.NotFound);
+                return Result<ReviewResponse>.FailureStatusCode("Review not found", ErrorType.NotFound);
+            }
+
+            if (review.StudentId != request.StudentId)
+            {
+                return Result<ReviewResponse>.FailureStatusCode(
+                    "You are not allowed to update this review.",
+                    ErrorType.Forbidden);
             }
 
             review.Comment = request.Comment;
@@ -181,6 +199,9 @@ namespace Infrastructure.Features.Reviews.ReviewService
                 var instructorUser =
                     await userRepository.GetInstructorByIdWithRelationsAsync(entityId, cancellationToken);
 
+                if (instructorUser?.Instructor is null)
+                    return;
+
                 var reviewRepository = _unitOfWork.Repository<InstructorReview>();
                 var reviews = reviewRepository.Find(r => r.EntityId == entityId, cancellationToken);
 
@@ -190,7 +211,7 @@ namespace Infrastructure.Features.Reviews.ReviewService
                     newRating = await reviews.AverageAsync(r => r.StarRating, cancellationToken);
                 }
 
-                instructorUser!.Instructor!.Rating = newRating;
+                instructorUser.Instructor.Rating = newRating;
                 userRepository.Update(instructorUser);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
             }
@@ -234,11 +255,18 @@ namespace Infrastructure.Features.Reviews.ReviewService
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task<Result<List<GetAllReviewsResponse>>> GetAllReviewsAsync(ReviewGettingRequest request, CancellationToken cancellationToken = default)
+        public virtual async Task<Result<PaginatedResult<GetAllReviewsResponse>>> GetAllReviewsAsync(ReviewGettingRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
-                var response = await _unitOfWork.Repository<TReview>()
+                var pageNumber = request.GetAllEntityRequestSkeleton.PageNumber < 1
+                    ? 1
+                    : request.GetAllEntityRequestSkeleton.PageNumber;
+                var pageSize = request.GetAllEntityRequestSkeleton.PageSize <= 0
+                    ? 10
+                    : request.GetAllEntityRequestSkeleton.PageSize;
+
+                var query = _unitOfWork.Repository<TReview>()
                     .Find(r => r.EntityId == request.EntityId,
                         cancellationToken, r => r.Student!.User!)
                     .ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _filterRegistry.Filters)
@@ -257,21 +285,25 @@ namespace Infrastructure.Features.Reviews.ReviewService
                             FullName = r.Student.User.FullName,
                             PersonalPictureUrl = r.Student.User.PersonalPictureUrl
                         } : null
-                    })
+                    });
+
+                var totalCount = await query.CountAsync(cancellationToken);
+                var items = await query
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
                     .ToListAsync(cancellationToken);
 
-                if (response.Count == 0)
+                return Result<PaginatedResult<GetAllReviewsResponse>>.Success(new PaginatedResult<GetAllReviewsResponse>
                 {
-                    return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
-                        $"No reviews found for entity with ID {request.EntityId}.",
-                        ErrorType.NotFound);
-                }
-
-                return Result<List<GetAllReviewsResponse>>.Success(response);
+                    Items = items,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    TotalCount = totalCount
+                });
             }
             catch (Exception ex)
             {
-                return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
+                return Result<PaginatedResult<GetAllReviewsResponse>>.FailureStatusCode(
                     $"An error occurred while retrieving reviews: {ex.Message}",
                     ErrorType.InternalServerError);
             }

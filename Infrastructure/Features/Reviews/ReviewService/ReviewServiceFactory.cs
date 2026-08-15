@@ -1,12 +1,10 @@
-﻿using Infrastructure.Common;
+﻿using Application.Common;
+using Application.Common.Interfaces;
+using Application.Features.Auth.Interfaces;
+using Application.Features.HomeScreen.Interfaces;
+using Application.Features.Profiles.Interfaces;
 using Application.Features.Reviews.DTOs;
-using Application.Common.Interfaces;
-using Application.Features.Auth.Interfaces;
 using Application.Features.Reviews.Interfaces;
-using Application.Common.Interfaces;
-using Application.Features.Auth.Interfaces;
-using Application.Features.Reviews.Interfaces;
-using Application.Common;
 using Domain.Entities;
 using Domain.enums;
 
@@ -46,12 +44,20 @@ namespace Infrastructure.Features.Reviews.ReviewService
 
         public override async Task<Result<ReviewResponse>> CreateReviewAsync(ReviewCreationRequest request, CancellationToken cancellationToken = default)
         {
-            var video = await _unitOfWork.Repository<Video>().AnyAsync(v => v.Id == request.EntityId, cancellationToken);
-            if (!video)
+            var video = await _unitOfWork.Repository<Video>().GetByIdAsync(request.EntityId, cancellationToken);
+            if (video is null)
                 return Result<ReviewResponse>.FailureStatusCode("Video not found.", ErrorType.NotFound);
 
-            var response = await base.CreateReviewAsync(request, cancellationToken);
-            return response;
+            var hasAccess = await _unitOfWork.GetRepository<IStudentEnrollmentRepository>()
+                .CanStudentAccessSectionContentAsync(request.StudentId, video.SectionId, cancellationToken);
+            if (!hasAccess)
+            {
+                return Result<ReviewResponse>.FailureStatusCode(
+                    "You are not enrolled in the course or section that contains this video.",
+                    ErrorType.Forbidden);
+            }
+
+            return await base.CreateReviewAsync(request, cancellationToken);
         }
 
     }
@@ -67,8 +73,16 @@ namespace Infrastructure.Features.Reviews.ReviewService
             if (!instructor)
                 return Result<ReviewResponse>.FailureStatusCode("Instructor not found.", ErrorType.NotFound);
 
-            var response = await base.CreateReviewAsync(request, cancellationToken);
-            return response;
+            var hasSharedContent = await _unitOfWork.GetRepository<IProfileRepository>()
+                .HasSharedContentAsync(request.EntityId, request.StudentId, cancellationToken);
+            if (!hasSharedContent)
+            {
+                return Result<ReviewResponse>.FailureStatusCode(
+                    "You are not enrolled in any content from this instructor.",
+                    ErrorType.Forbidden);
+            }
+
+            return await base.CreateReviewAsync(request, cancellationToken);
         }
 
     }
@@ -84,8 +98,16 @@ namespace Infrastructure.Features.Reviews.ReviewService
             if (!section)
                 return Result<ReviewResponse>.FailureStatusCode("Section not found.", ErrorType.NotFound);
 
-            var response = await base.CreateReviewAsync(request, cancellationToken);
-            return response;
+            var hasAccess = await _unitOfWork.GetRepository<IStudentEnrollmentRepository>()
+                .CanStudentAccessSectionContentAsync(request.StudentId, request.EntityId, cancellationToken);
+            if (!hasAccess)
+            {
+                return Result<ReviewResponse>.FailureStatusCode(
+                    "You are not enrolled in the course or section.",
+                    ErrorType.Forbidden);
+            }
+
+            return await base.CreateReviewAsync(request, cancellationToken);
         }
 
     }
@@ -101,8 +123,16 @@ namespace Infrastructure.Features.Reviews.ReviewService
             if (!courseExists)
                 return Result<ReviewResponse>.FailureStatusCode("Course not found.", ErrorType.NotFound);
 
-            var response = await base.CreateReviewAsync(request, cancellationToken);
-            return response;
+            var isEnrolled = await _unitOfWork.GetRepository<IStudentEnrollmentRepository>()
+                .IsStudentEnrolledInCourseAsync(request.StudentId, request.EntityId, cancellationToken);
+            if (!isEnrolled)
+            {
+                return Result<ReviewResponse>.FailureStatusCode(
+                    "You are not enrolled in this course.",
+                    ErrorType.Forbidden);
+            }
+
+            return await base.CreateReviewAsync(request, cancellationToken);
         }
 
     }

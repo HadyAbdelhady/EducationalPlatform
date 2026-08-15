@@ -1,6 +1,7 @@
 using Application.Features.Payment.DTOs.PaymobRawDtos;
 using Application.Common.Interfaces;
 using Application.Features.Auth.Interfaces;
+using Application.Features.HomeScreen.Interfaces;
 using Application.Features.Payment.Interfaces;
 using Application.Common;
 using Domain.Entities;
@@ -116,71 +117,27 @@ namespace Application.Features.Payment.PaymentWebhook
 
             System.Diagnostics.Debug.WriteLine("✅ Webhook indicates SUCCESSFUL payment - processing enrollment");
 
-            // ✅ FIX: Update payment status
             PaymentTransaction.Status = PaymentStatus.Completed;
             PaymentTransaction.UpdatedAt = DateTimeOffset.UtcNow;
 
-            // ✅ FIX: Get the user and student
-            var User = await _unitOfWork.GetRepository<IUserRepository>()
-                .GetStudentByIdWithRelationsAsync(PaymentTransaction.StudentId, cancellationToken);
+            var studentExists = await _unitOfWork.GetRepository<IUserRepository>()
+                .DoesStudentExistAsync(PaymentTransaction.StudentId, cancellationToken);
 
-            if (User == null)
+            if (!studentExists)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ User not found: {PaymentTransaction.StudentId}");
-                return Result<bool>.FailureStatusCode("User not found", ErrorType.NotFound);
-            }
-
-            System.Diagnostics.Debug.WriteLine($"✅ User found: {User.Id}");
-
-            Student? student = User.Student;
-            if (student == null)
-            {
-                System.Diagnostics.Debug.WriteLine($"❌ Student profile not found for user: {User.Id}");
+                System.Diagnostics.Debug.WriteLine($"❌ Student not found: {PaymentTransaction.StudentId}");
                 return Result<bool>.FailureStatusCode("Student not found", ErrorType.NotFound);
             }
 
-            System.Diagnostics.Debug.WriteLine($"✅ Student found: {student.UserId}");
+            var enrollmentRepo = _unitOfWork.GetRepository<IStudentEnrollmentRepository>();
+            await enrollmentRepo.EnrollFromPaymentAsync(
+                PaymentTransaction.StudentId,
+                PaymentTransaction.CourseId,
+                PaymentTransaction.SectionId,
+                cancellationToken);
 
-            // ✅ FIX: Enroll student in course or section
-            if (PaymentTransaction.CourseId.HasValue)
-            {
-                System.Diagnostics.Debug.WriteLine($"Enrolling in Course: {PaymentTransaction.CourseId.Value}");
-
-                var StudentEnrollment = new StudentCourse
-                {
-                    StudentId = student.UserId,
-                    CourseId = PaymentTransaction.CourseId.Value,
-                };
-                student.StudentCourses.Add(StudentEnrollment);
-
-                System.Diagnostics.Debug.WriteLine($"✅ Course enrollment record added");
-            }
-            else if (PaymentTransaction.SectionId.HasValue)
-            {
-                System.Diagnostics.Debug.WriteLine($"Enrolling in Section: {PaymentTransaction.SectionId.Value}");
-
-                var studentEnrollment = new StudentSection()
-                {
-                    StudentId = student.UserId,
-                    SectionId = PaymentTransaction.SectionId.Value,
-                };
-                student.StudentSections.Add(studentEnrollment);
-
-                System.Diagnostics.Debug.WriteLine($"✅ Section enrollment record added");
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine($"⚠️ Payment has neither CourseId nor SectionId!");
-                // This is odd, but don't fail - just mark payment as completed
-            }
-
-            // ✅ FIX: Update both PaymentTransaction and Student in the repository
             _unitOfWork.Repository<PaymentTransactions>().Update(PaymentTransaction);
-            _unitOfWork.Repository<User>().Update(User);
-
-            System.Diagnostics.Debug.WriteLine("Calling SaveChangesAsync...");
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            System.Diagnostics.Debug.WriteLine("✅ Database changes saved");
 
             System.Diagnostics.Debug.WriteLine("=== WEBHOOK PROCESSING COMPLETED SUCCESSFULLY ===");
             return Result<bool>.Success(true);

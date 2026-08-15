@@ -95,12 +95,45 @@ namespace Application.Features.Payment.CreatePaymentIntension
                 if (existingEnrollment)
                     return Result<StudentBuyResponse>.FailureStatusCode("Student is already enrolled.", ErrorType.Conflict);
 
+                var catalogPrice = (decimal)course.Price!;
+                var remainingPrice = await enrollmentRepo.GetRemainingCoursePriceAsync(
+                    request.StudentId,
+                    course.Id,
+                    catalogPrice,
+                    cancellationToken);
 
-                testingPay.Money = new((decimal)course.Price!, "EGP");
+                payment.CourseId = course.Id;
+                payment.Amount = remainingPrice;
+
+                if (remainingPrice == 0)
+                {
+                    payment.Status = PaymentStatus.Completed;
+                    payment.UpdatedAt = DateTimeOffset.UtcNow;
+                    await enrollmentRepo.EnrollFromPaymentAsync(
+                        request.StudentId,
+                        course.Id,
+                        null,
+                        cancellationToken);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                    return Result<StudentBuyResponse>.Success(new StudentBuyResponse
+                    {
+                        StudentId = request.StudentId,
+                        EntityId = request.EntityId,
+                        EntityToBuy = request.EntityToBuy,
+                        PamobData = new PaymentData
+                        {
+                            ClientSecret = string.Empty,
+                            PaymentId = string.Empty,
+                        }
+                    });
+                }
+
+                testingPay.Money = new(remainingPrice, "EGP");
                 testingPay.Items = [new OrderItem
                     {
                         Name = course.Name,
-                        Amount = (int)course.Price,
+                        Amount = (int)remainingPrice,
                         Description = course.Description ?? "N/A",
                         Quantity = 1
                     }];
@@ -116,8 +149,6 @@ namespace Application.Features.Payment.CreatePaymentIntension
                     return Result<StudentBuyResponse>.FailureStatusCode("Failed to initiate payment with the provider.", ErrorType.InternalServerError);
                 }
 
-                payment.Amount = (decimal)course.Price!;
-                payment.CourseId = course.Id;
                 payment.PaymobIntentionId = Intention.Id;
                 clientSecret = Intention.ClientSecret;
 
@@ -141,7 +172,7 @@ namespace Application.Features.Payment.CreatePaymentIntension
                         ErrorType.BadRequest);
                 }
 
-                var existingEnrollment = await enrollmentRepo.IsStudentEnrolledInSectionAsync(
+                var existingEnrollment = await enrollmentRepo.CanStudentAccessSectionContentAsync(
                     request.StudentId,
                     request.EntityId,
                     cancellationToken);
@@ -173,6 +204,7 @@ namespace Application.Features.Payment.CreatePaymentIntension
 
                 payment.Amount = section!.Price!;
                 payment.SectionId = section.Id;
+                payment.CourseId = section.CourseId;
                 payment.PaymobIntentionId = Intention.Id;
                 clientSecret = Intention.ClientSecret;
 

@@ -28,7 +28,12 @@ namespace Application.Features.Videos.Queries.GetAllVideos
                 {
                     Id = v.Id,
                     Name = v.Name,
-                    VideoUrl = v.VideoUrl,
+                    VideoUrl = request.StudentId == null
+                        ? v.VideoUrl
+                        : (v.Section!.StudentSections.Any(ss => ss.StudentId == request.StudentId)
+                           || v.Section.Course!.StudentCourses.Any(sc => sc.StudentId == request.StudentId)
+                           ? v.VideoUrl
+                           : string.Empty),
                     Description = v.Description,
                     Progress = v.StudentVideos.Where(s => s.StudentId == request.StudentId && s.VideoId == v.Id).Select(s => s.Progress).FirstOrDefault(),
                     NumberOfTutorialSheets = v.Sheets.Count(sh => sh.Type == SheetType.TutorialSheet),

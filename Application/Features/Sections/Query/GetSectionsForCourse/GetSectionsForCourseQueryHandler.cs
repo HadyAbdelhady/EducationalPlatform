@@ -46,13 +46,17 @@ namespace Application.Features.Sections.Query.GetSectionsForCourse
                                                   NumberOfSectionVideosWatched = ss.NumberOfSectionVideosWatched
                                               })
                                               .FirstOrDefault(),
-                IsEnrolled = s.StudentSections.Any(ss => ss.StudentId == request.UserId),
+                IsEnrolled = s.StudentSections.Any(ss => ss.StudentId == request.UserId)
+                             || s.Course!.StudentCourses.Any(sc => sc.StudentId == request.UserId),
 
                 Videos = s.Videos.Select(v => new VideoData
                 {
                     Id = v.Id,
                     Name = v.Name,
-                    VideoUrl = v.VideoUrl,
+                    VideoUrl = s.StudentSections.Any(ss => ss.StudentId == request.UserId)
+                               || s.Course!.StudentCourses.Any(sc => sc.StudentId == request.UserId)
+                               ? v.VideoUrl
+                               : string.Empty,
                     Rating = v.Rating,
                     StudentVideo = v.StudentVideos
                         .Where(sv => sv.StudentId == request.UserId)

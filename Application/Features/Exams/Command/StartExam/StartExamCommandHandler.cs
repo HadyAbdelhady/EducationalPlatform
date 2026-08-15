@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.Features.Auth.Interfaces;
+using Application.Features.HomeScreen.Interfaces;
 using Application.Common;
 using Domain.Entities;
 using Domain.enums;
@@ -39,6 +40,24 @@ namespace Application.Features.Exams.Command.StartExam
             if (exam == null)
             {
                 return Result<StartedExamResponse>.FailureStatusCode("Exam not found", ErrorType.NotFound);
+            }
+
+            var enrollmentRepo = _unitOfWork.GetRepository<IStudentEnrollmentRepository>();
+            var hasAccess = exam.SectionId.HasValue
+                ? await enrollmentRepo.CanStudentAccessSectionContentAsync(
+                    request.StudentId,
+                    exam.SectionId.Value,
+                    cancellationToken)
+                : await enrollmentRepo.IsStudentEnrolledInCourseAsync(
+                    request.StudentId,
+                    exam.CourseId,
+                    cancellationToken);
+
+            if (!hasAccess)
+            {
+                return Result<StartedExamResponse>.FailureStatusCode(
+                    "You are not enrolled in the course or section that contains this exam.",
+                    ErrorType.Forbidden);
             }
 
             // For FixedTimeExam, check if exam has started

@@ -22,7 +22,7 @@ namespace Infrastructure.Features.Courses
                             Description = course.Description,
                             PictureUrl = course.PictureUrl,
                             CreatedAt = course.CreatedAt,
-                            IsEnrolled = course.StudentCourses.Count != 0,
+                            IsEnrolled = course.StudentCourses.Any(sc => sc.StudentId == request.UserId),
                             UpdatedAt = course.UpdatedAt ?? course.CreatedAt,
                             Price = course.Price ?? 0,
                             IntroVideoUrl = course.IntroVideoUrl,
@@ -30,7 +30,7 @@ namespace Infrastructure.Features.Courses
                             NumberOfSheets = course.NumberOfQuestionSheets,
                             NumberOfSections = course.NumberOfSections,
                             NumberOfStudents = course.NumberOfStudentsEnrolled,
-                            NumberOfEnrolledSections = course.StudentCourses.Count != 0
+                            NumberOfEnrolledSections = course.StudentCourses.Any(sc => sc.StudentId == request.UserId)
                                                                   ? 0
                                                                   : course.Sections
                                                                           .SelectMany(s => s.StudentSections)
@@ -38,8 +38,10 @@ namespace Infrastructure.Features.Courses
                                                                           .Distinct().Count(),
 
                             Rating = course.Rating,
-                            NumberOfWatchedVideos = course.StudentCourses.Select(sc => sc.NumberOfCourseVideosWatched)
-                                                                         .FirstOrDefault(),
+                            NumberOfWatchedVideos = course.StudentCourses
+                                .Where(sc => sc.StudentId == request.UserId)
+                                .Select(sc => sc.NumberOfCourseVideosWatched)
+                                .FirstOrDefault(),
 
                             // Instructors
                             Instructors = course.InstructorCourses

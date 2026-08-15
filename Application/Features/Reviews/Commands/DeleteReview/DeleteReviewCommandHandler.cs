@@ -15,7 +15,7 @@ namespace Application.Features.Reviews.Commands.DeleteReview
         {
             var reviewService = _reviewServiceFactory.GetReviewService(request.EntityType);
 
-            return reviewService.DeleteReviewAsync(request.ReviewId, cancellationToken);
+            return reviewService.DeleteReviewAsync(request.ReviewId, request.StudentId, cancellationToken);
         }
     }
 }

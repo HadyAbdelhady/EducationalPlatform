@@ -20,10 +20,13 @@ namespace Application.Features.Sections.Commands.DeleteSection
                 var section = await sectionRepo.GetByIdAsync(request.SectionId, cancellationToken)
                     ?? throw new KeyNotFoundException("Section not found");
 
-                var hasEnrolledStudents = await sectionRepo
+                var hasEnrolledStudentsInSection = await sectionRepo
                     .AnyAsync(s => s.Id == request.SectionId && s.StudentSections.Any(), cancellationToken);
 
-                if (hasEnrolledStudents)
+                var hasEnrolledStudentsInCourse = await courseRepo
+                    .AnyAsync(c => c.Id == section.CourseId && c.StudentCourses.Any(), cancellationToken);
+
+                if (hasEnrolledStudentsInSection || hasEnrolledStudentsInCourse)
                 {
                     return Result<string>.FailureStatusCode(
                         "Cannot delete this section because there are students enrolled.",

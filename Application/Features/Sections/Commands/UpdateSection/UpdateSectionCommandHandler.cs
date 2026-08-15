@@ -28,7 +28,24 @@ namespace Application.Features.Sections.Commands.UpdateSection
                 if (request.Price.HasValue && section.StudentSections.Count == 0)
                     section.Price = request.Price.Value;
 
-                section.CourseId = request.CourseId;
+                if (request.CourseId != section.CourseId)
+                {
+                    var hasEnrolledStudentsInSection = await sectionRepo
+                        .AnyAsync(s => s.Id == request.SectionId && s.StudentSections.Any(), cancellationToken);
+
+                    var hasEnrolledStudentsInCourse = await _unitOfWork.Repository<Course>()
+                        .AnyAsync(c => c.Id == section.CourseId && c.StudentCourses.Any(), cancellationToken);
+
+                    if (hasEnrolledStudentsInSection || hasEnrolledStudentsInCourse)
+                    {
+                        return Result<SectionUpdateResponse>.FailureStatusCode(
+                            "Cannot move this section because there are students enrolled.",
+                            ErrorType.Conflict);
+                    }
+
+                    section.CourseId = request.CourseId;
+                }
+
                 section.UpdatedAt = EgyptTime.UtcNow;
 
                 sectionRepo.Update(section);

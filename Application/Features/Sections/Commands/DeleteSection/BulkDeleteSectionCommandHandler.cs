@@ -32,10 +32,13 @@ namespace Application.Features.Sections.Commands.DeleteSection
 
             var SectionList = sections.ToList();
 
-            var hasEnrolledStudents = await sectionRepo
+            var hasEnrolledStudentsInSection = await sectionRepo
                 .AnyAsync(s => request.SectionIds.Contains(s.Id) && s.StudentSections.Any(), cancellationToken);
 
-            if (hasEnrolledStudents)
+            var hasEnrolledStudentsInCourse = await _unitOfWork.Repository<Course>()
+                .AnyAsync(c => c.Id == request.CourseId && c.StudentCourses.Any(), cancellationToken);
+
+            if (hasEnrolledStudentsInSection || hasEnrolledStudentsInCourse)
             {
                 return Result<string>.FailureStatusCode(
                     "Cannot delete one or more sections because there are students enrolled.",

@@ -1,6 +1,5 @@
 ﻿using Application.Features.Reviews.DTOs;
 using Application.Features.Reviews.Query.GetAllReviews;
-using Application.Common.Interfaces;
 using Application.Features.Reviews.Interfaces;
 using Application.Common;
 using Domain.enums;
@@ -9,11 +8,11 @@ using MediatR;
 namespace Application.Features.Review.Query.GetAllReviews
 {
     public class GetAllReviewsQueryHandler(IReviewServiceFactory reviewServiceFactory)
-        : IRequestHandler<GetAllReviewsQuery, Result<List<GetAllReviewsResponse>>>
+        : IRequestHandler<GetAllReviewsQuery, Result<PaginatedResult<GetAllReviewsResponse>>>
     {
         private readonly IReviewServiceFactory _reviewServiceFactory = reviewServiceFactory;
 
-        public async Task<Result<List<GetAllReviewsResponse>>> Handle(GetAllReviewsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PaginatedResult<GetAllReviewsResponse>>> Handle(GetAllReviewsQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -21,19 +20,20 @@ namespace Application.Features.Review.Query.GetAllReviews
                 return await reviewService.GetAllReviewsAsync(new ReviewGettingRequest
                 {
                     EntityId = request.EntityId,
+                    EntityType = request.EntityType,
                     GetAllEntityRequestSkeleton = request.GetAllEntityRequestSkeleton,
                 }, cancellationToken);
 
             }
             catch (NotImplementedException ex)
             {
-                return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
+                return Result<PaginatedResult<GetAllReviewsResponse>>.FailureStatusCode(
                     ex.Message,
                     ErrorType.BadRequest);
             }
             catch (Exception ex)
             {
-                return Result<List<GetAllReviewsResponse>>.FailureStatusCode(
+                return Result<PaginatedResult<GetAllReviewsResponse>>.FailureStatusCode(
                     $"An error occurred while retrieving reviews: {ex.Message}",
                     ErrorType.InternalServerError);
             }

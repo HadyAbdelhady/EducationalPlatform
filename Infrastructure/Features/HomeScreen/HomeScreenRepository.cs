@@ -22,8 +22,8 @@ namespace Infrastructure.Features.HomeScreen
                 .Select(s => s.EducationYearId)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            var query = from sc in _context.StudentCourses
-                        where sc.StudentId == studentId
+            var query = from student in _context.Students
+                        where student.UserId == studentId
                         select new StudentHomeScreenResponse
                         {
                             // Enrolled courses - scope to student's education year for consistency
@@ -49,7 +49,8 @@ namespace Infrastructure.Features.HomeScreen
                             Videos = _context.Videos
                                 .Where(v => v.Section != null 
                                         && v.Section.Course.EducationYearId == studentEducationYearId 
-                                        && v.Section.StudentSections.Any(ss => ss.StudentId == studentId))
+                                        && (v.Section.StudentSections.Any(ss => ss.StudentId == studentId)
+                                            || v.Section.Course.StudentCourses.Any(sc => sc.StudentId == studentId)))
                                 .OrderByDescending(v => v.CreatedAt)
                                 .Select(v => new LatestVideoDto
                                 {
@@ -66,9 +67,11 @@ namespace Infrastructure.Features.HomeScreen
                                 .Where(e => e.StartTime.HasValue &&
                                            e.EndTime > EgyptTime.UtcNow &&
                                            e.Course.EducationYearId == studentEducationYearId &&
-                                           _context.StudentCourses
+                                           (_context.StudentCourses
                                                .Any(sc3 => sc3.StudentId == studentId &&
-                                                        sc3.CourseId == e.CourseId))
+                                                        sc3.CourseId == e.CourseId)
+                                            || (e.SectionId != null && e.Section!.StudentSections
+                                               .Any(ss => ss.StudentId == studentId))))
                                 .Select(e => new StudentExamDto
                                 {
                                     Id = e.Id,
@@ -83,21 +86,39 @@ namespace Infrastructure.Features.HomeScreen
                                 .Take(3)
                                 .ToList(),
 
-                            // Sheets from enrolled courses - scope to student's education year
+                            // Sheets from enrolled courses/sections - scope to student's education year
                             Sheets = _context.Sheets
-                                .Where(s => s.CourseId.HasValue &&
-                                           s.Course != null &&
-                                           s.Course.EducationYearId == studentEducationYearId &&
-                                           s.DueDate.HasValue &&
+                                .Where(s => s.DueDate.HasValue &&
                                            s.DueDate > EgyptTime.UtcNow &&
-                                           _context.StudentCourses
-                                               .Any(sc4 => sc4.StudentId == studentId &&
-                                                        sc4.CourseId == s.CourseId!.Value))
+                                           (
+                                               (s.CourseId.HasValue &&
+                                                s.Course != null &&
+                                                s.Course.EducationYearId == studentEducationYearId &&
+                                                _context.StudentCourses.Any(sc4 =>
+                                                    sc4.StudentId == studentId &&
+                                                    sc4.CourseId == s.CourseId!.Value))
+                                               ||
+                                               (s.SectionId.HasValue &&
+                                                s.Section != null &&
+                                                s.Section.Course.EducationYearId == studentEducationYearId &&
+                                                (s.Section.StudentSections.Any(ss => ss.StudentId == studentId) ||
+                                                 s.Section.Course.StudentCourses.Any(sc => sc.StudentId == studentId)))
+                                               ||
+                                               (s.VideoId.HasValue &&
+                                                s.Video != null &&
+                                                s.Video.Section.Course.EducationYearId == studentEducationYearId &&
+                                                (s.Video.Section.StudentSections.Any(ss => ss.StudentId == studentId) ||
+                                                 s.Video.Section.Course.StudentCourses.Any(sc => sc.StudentId == studentId)))
+                                           ))
                                 .Select(s => new StudentSheetDto
                                 {
                                     Id = s.Id,
                                     Title = s.Name,
-                                    CourseName = s.Course != null ? s.Course.Name : string.Empty,
+                                    CourseName = s.Course != null
+                                        ? s.Course.Name
+                                        : (s.Section != null
+                                            ? s.Section.Course.Name
+                                            : (s.Video != null ? s.Video.Section.Course.Name : string.Empty)),
                                     SheetUrl = s.SheetUrl,
                                     AnswerSheetID = s.AnswersSheets
                                                     .Where(ans => ans.StudentId == studentId)

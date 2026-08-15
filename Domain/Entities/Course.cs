@@ -43,7 +43,7 @@ namespace Domain.Entities
         public int NumberOfQuestionSheets { get; set; } = 0;
 
         [Column("rating")]
-        public decimal? Rating { get; set; } = 1;
+        public decimal? Rating { get; set; } = null;
 
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }

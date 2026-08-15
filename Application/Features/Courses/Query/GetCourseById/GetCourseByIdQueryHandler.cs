@@ -2,6 +2,7 @@
 using Application.Features.Courses.DTOs;
 using Application.Common.Interfaces;
 using Application.Features.Courses.Interfaces;
+using Application.Features.HomeScreen.Interfaces;
 using Domain.enums;
 using MediatR;
 
@@ -18,6 +19,16 @@ namespace Application.Features.Courses.Query.GetCourseById
                 var response = await _unitOfWork.GetRepository<ICourseRepository>()
                                                                  .GetCourseDetailResponseByIdAsync(request, cancellationToken)
                                                                         ?? throw new KeyNotFoundException($"Course with ID {request.CourseId} not found.");
+
+                if (!response.IsEnrolled)
+                {
+                    var enrollmentRepo = _unitOfWork.GetRepository<IStudentEnrollmentRepository>();
+                    response.Price = await enrollmentRepo.GetRemainingCoursePriceAsync(
+                        request.UserId,
+                        request.CourseId,
+                        response.Price,
+                        cancellationToken);
+                }
 
                 return Result<CourseDetailResponse>.Success(response);
             }

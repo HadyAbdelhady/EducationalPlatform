@@ -16,5 +16,6 @@ namespace Application.Features.Reviews.DTOs
         [Range(1, 5, ErrorMessage = "Rate Must be between 1 and 5.")]
         public int StarRating { get; set; }
         public string Comment { get; set; } = string.Empty;
+        public Guid StudentId { get; set; }
     }
 }

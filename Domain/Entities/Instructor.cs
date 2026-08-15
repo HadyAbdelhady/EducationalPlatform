@@ -15,7 +15,7 @@ namespace Domain.Entities
         public User User { get; set; } = null!;
 
         [Column("rating")]
-        public decimal? Rating { get; set; } = 1;
+        public decimal? Rating { get; set; } = null;
 
         [Column("preferences_id")]
         [ForeignKey(nameof(InstructorPreferences))]

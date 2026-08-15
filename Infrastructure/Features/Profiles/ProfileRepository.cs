@@ -1,6 +1,5 @@
 using Application.Features.Profiles.DTOs;
 using Application.Features.Profiles.Interfaces;
-using Application.Features.Reviews.DTOs;
 using Infrastructure.Common.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -102,31 +101,6 @@ namespace Infrastructure.Features.Profiles
                 studentId,
                 cancellationToken);
 
-            // ponytail: cap 20 newest; empty list OK (don't use ReviewService NotFound-on-empty)
-            instructor.Reviews = await _context.InstructorReviews
-                .AsNoTracking()
-                .Where(r => r.EntityId == instructorId)
-                .OrderByDescending(r => r.CreatedAt)
-                .Take(20)
-                .Select(r => new GetAllReviewsResponse
-                {
-                    Id = r.Id,
-                    StudentId = r.StudentId,
-                    StarRating = r.StarRating,
-                    Comment = r.Comment,
-                    CreatedAt = r.CreatedAt,
-                    UpdatedAt = r.UpdatedAt ?? r.CreatedAt,
-                    Student = r.Student != null && r.Student.User != null
-                        ? new StudentReviewInfo
-                        {
-                            StudentId = r.StudentId,
-                            FullName = r.Student.User.FullName,
-                            PersonalPictureUrl = r.Student.User.PersonalPictureUrl
-                        }
-                        : null
-                })
-                .ToListAsync(cancellationToken);
-
             return instructor;
         }
 
@@ -135,73 +109,70 @@ namespace Infrastructure.Features.Profiles
             Guid studentId,
             CancellationToken cancellationToken)
         {
-            var taughtCourseIds = await _context.InstructorCourses
+            var courses = await _context.InstructorCourses
                 .AsNoTracking()
                 .Where(ic => ic.InstructorId == instructorId)
-                .Select(ic => ic.CourseId)
-                .ToListAsync(cancellationToken);
-
-            var taughtSectionIds = await _context.InstructorSections
-                .AsNoTracking()
-                .Where(ins => ins.InstructorId == instructorId)
-                .Select(ins => ins.SectionId)
-                .ToListAsync(cancellationToken);
-
-            var courseEnrollments = await _context.StudentCourses
-                .AsNoTracking()
-                .Where(sc => sc.StudentId == studentId &&
-                             (taughtCourseIds.Contains(sc.CourseId) ||
-                              _context.InstructorSections.Any(ins =>
-                                  ins.InstructorId == instructorId &&
-                                  ins.Section.CourseId == sc.CourseId)))
-                .Select(sc => new SharedEnrollmentDto
+                .Select(ic => new SharedEnrollmentDto
                 {
-                    CourseId = sc.CourseId,
-                    CourseName = sc.Course.Name,
-                    EnrolledAt = sc.EnrolledAt,
-                    Description = sc.Course.Description,
-                    PictureUrl = sc.Course.PictureUrl,
-                    Price = sc.Course.Price,
-                    NumberOfVideos = sc.Course.NumberOfVideos,
-                    NumberOfSections = sc.Course.NumberOfSections,
-                    NumberOfSheets = sc.Course.NumberOfQuestionSheets,
-                    NumberOfExams = sc.Course.NumberOfExams,
-                    NumberOfStudents = sc.Course.NumberOfStudentsEnrolled,
-                    Rating = sc.Course.Rating
+                    CourseId = ic.CourseId,
+                    CourseName = ic.Course.Name,
+                    Description = ic.Course.Description,
+                    PictureUrl = ic.Course.PictureUrl,
+                    Price = ic.Course.Price,
+                    NumberOfVideos = ic.Course.NumberOfVideos,
+                    NumberOfSections = ic.Course.NumberOfSections,
+                    NumberOfSheets = ic.Course.NumberOfQuestionSheets,
+                    NumberOfExams = ic.Course.NumberOfExams,
+                    NumberOfStudents = ic.Course.NumberOfStudentsEnrolled,
+                    Rating = ic.Course.Rating,
+                    IsEnrolled = ic.Course.StudentCourses.Any(sc => sc.StudentId == studentId),
+                    EnrolledAt = ic.Course.StudentCourses
+                        .Where(sc => sc.StudentId == studentId)
+                        .Select(sc => (DateTimeOffset?)sc.EnrolledAt)
+                        .FirstOrDefault()
                 })
                 .ToListAsync(cancellationToken);
 
-            var enrolledCourseIds = courseEnrollments
-                .Where(e => e.CourseId.HasValue)
-                .Select(e => e.CourseId!.Value)
+            var taughtCourseIds = courses
+                .Where(c => c.CourseId.HasValue)
+                .Select(c => c.CourseId!.Value)
                 .ToHashSet();
 
-            var sectionEnrollments = await _context.StudentSections
+            var sections = await _context.InstructorSections
                 .AsNoTracking()
-                .Where(ss => ss.StudentId == studentId &&
-                             (taughtSectionIds.Contains(ss.SectionId) ||
-                              taughtCourseIds.Contains(ss.Section.CourseId)))
-                .Where(ss => !enrolledCourseIds.Contains(ss.Section.CourseId))
-                .Select(ss => new SharedEnrollmentDto
+                .Where(ins => ins.InstructorId == instructorId &&
+                              !taughtCourseIds.Contains(ins.Section.CourseId))
+                .Select(ins => new SharedEnrollmentDto
                 {
-                    CourseId = ss.Section.CourseId,
-                    CourseName = ss.Section.Course!.Name,
-                    SectionId = ss.SectionId,
-                    SectionName = ss.Section.Name,
-                    EnrolledAt = ss.EnrolledAt,
-                    Description = ss.Section.Description,
-                    Price = ss.Section.Price,
-                    NumberOfVideos = ss.Section.NumberOfVideos,
-                    NumberOfSheets = ss.Section.NumberOfQuestionSheets,
-                    NumberOfExams = ss.Section.NumberOfExams,
-                    NumberOfStudents = ss.Section.StudentSections.Count(),
-                    Rating = ss.Section.Rating
+                    CourseId = ins.Section.CourseId,
+                    CourseName = ins.Section.Course!.Name,
+                    SectionId = ins.SectionId,
+                    SectionName = ins.Section.Name,
+                    Description = ins.Section.Description,
+                    Price = ins.Section.Price,
+                    NumberOfVideos = ins.Section.NumberOfVideos,
+                    NumberOfSheets = ins.Section.NumberOfQuestionSheets,
+                    NumberOfExams = ins.Section.NumberOfExams,
+                    NumberOfStudents = ins.Section.NumberOfStudentsEnrolled,
+                    Rating = ins.Section.Rating,
+                    IsEnrolled = ins.Section.StudentSections.Any(ss => ss.StudentId == studentId) ||
+                                 ins.Section.Course!.StudentCourses.Any(sc => sc.StudentId == studentId),
+                    EnrolledAt = ins.Section.StudentSections
+                        .Where(ss => ss.StudentId == studentId)
+                        .Select(ss => (DateTimeOffset?)ss.EnrolledAt)
+                        .FirstOrDefault()
+                        ?? ins.Section.Course!.StudentCourses
+                            .Where(sc => sc.StudentId == studentId)
+                            .Select(sc => (DateTimeOffset?)sc.EnrolledAt)
+                            .FirstOrDefault()
                 })
                 .ToListAsync(cancellationToken);
 
-            return courseEnrollments
-                .Concat(sectionEnrollments)
-                .OrderByDescending(e => e.EnrolledAt)
+            return courses
+                .Concat(sections)
+                .OrderByDescending(e => e.IsEnrolled)
+                .ThenByDescending(e => e.EnrolledAt)
+                .ThenBy(e => e.CourseName)
                 .ToList();
         }
     }

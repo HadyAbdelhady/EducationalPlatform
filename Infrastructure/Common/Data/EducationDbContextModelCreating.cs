@@ -323,6 +323,7 @@ namespace Infrastructure.Common.Data
             {
 
                 b.Property(x => x.EntityId).HasColumnName("course_id");
+                b.HasIndex(x => new { x.StudentId, x.EntityId }).IsUnique();
                 b.HasOne(x => x.Student)
                     .WithMany(x => x.CourseReviews)
                     .HasForeignKey(x => x.StudentId)
@@ -337,6 +338,7 @@ namespace Infrastructure.Common.Data
             modelBuilder.Entity<SectionReview>(b =>
             {
                 b.Property(x => x.EntityId).HasColumnName("section_id");
+                b.HasIndex(x => new { x.StudentId, x.EntityId }).IsUnique();
 
                 b.HasOne(x => x.Student)
                     .WithMany(x => x.SectionReviews)
@@ -352,6 +354,7 @@ namespace Infrastructure.Common.Data
             modelBuilder.Entity<VideoReview>(b =>
             {
                 b.Property(x => x.EntityId).HasColumnName("video_id");
+                b.HasIndex(x => new { x.StudentId, x.EntityId }).IsUnique();
 
                 b.HasOne(x => x.Student)
                     .WithMany(x => x.VideoReviews)
@@ -367,6 +370,7 @@ namespace Infrastructure.Common.Data
             modelBuilder.Entity<InstructorReview>(b =>
             {
                 b.Property(x => x.EntityId).HasColumnName("instructor_id");
+                b.HasIndex(x => new { x.StudentId, x.EntityId }).IsUnique();
 
                 b.HasOne(x => x.Student)
                     .WithMany(x => x.InstructorReviews)

@@ -8,6 +8,7 @@ namespace Application.Features.Reviews.Commands.UpdateReview
     public class UpdateReviewCommand : IRequest<Result<ReviewResponse>>
     {
         public Guid ReviewId { get; set; }
+        public Guid StudentId { get; set; }
         public required ReviewEntityType EntityType { get; set; }
         public int StarRating { get; set; }
         public string Comment { get; set; } = string.Empty;

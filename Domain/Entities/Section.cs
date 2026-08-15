@@ -30,8 +30,11 @@ namespace Domain.Entities
         [Column("number_of_question_sheets")]
         public int NumberOfQuestionSheets { get; set; }
 
+        [Column("number_of_students_enrolled")]
+        public int NumberOfStudentsEnrolled { get; set; } = 0;
+
         [Column("rating")]
-        public decimal? Rating { get; set; } = 1;
+        public decimal? Rating { get; set; } = null;
 
         [Column("course_id")]
         [ForeignKey(nameof(Course))]

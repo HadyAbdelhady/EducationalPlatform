@@ -22,7 +22,8 @@ namespace Application.Features.Reviews.Commands.UpdateReview
                 EntityType = request.EntityType,
                 ReviewId = request.ReviewId,
                 StarRating = request.StarRating,
-            }, cancellationToken); ;
+                StudentId = request.StudentId,
+            }, cancellationToken);
         }
     }
 }

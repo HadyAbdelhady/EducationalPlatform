@@ -53,13 +53,13 @@ namespace Infrastructure.Features.Auth
         public async Task<bool> DoesInstructorExistAsync(Guid instructorId, CancellationToken cancellationToken)
         {
             return await _context.Users
-                .Include(u => u.Instructor).Where(u => u.Id == instructorId).AnyAsync(cancellationToken);
+                .AnyAsync(u => u.Id == instructorId && u.Instructor != null, cancellationToken);
         }
 
         public async Task<bool> DoesStudentExistAsync(Guid studentId, CancellationToken cancellationToken)
         {
             return await _context.Users
-                .Include(u => u.Student).Where(u => u.Id == studentId).AnyAsync(cancellationToken);
+                .AnyAsync(u => u.Id == studentId && u.Student != null, cancellationToken);
         }
 
 

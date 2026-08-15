@@ -40,12 +40,29 @@ namespace Infrastructure.Features.HomeScreen
                 })
                 .ToListAsync(cancellationToken);
 
+            var sectionOnlyWatched = await _context.StudentSections
+                .AsNoTracking()
+                .Where(ss => ss.StudentId == studentId)
+                .Where(ss => !_context.StudentCourses.Any(sc =>
+                    sc.StudentId == studentId && sc.CourseId == ss.Section.CourseId))
+                .Select(ss => new
+                {
+                    ss.NumberOfSectionVideosWatched,
+                    SectionNumberOfVideos = ss.Section.NumberOfVideos
+                })
+                .ToListAsync(cancellationToken);
+
             var inProgressCoursesCount = studentCoursesAll
                 .Count(sc =>
                     sc.CourseNumberOfVideos > 0 &&
-                    sc.NumberOfCourseVideosWatched < sc.CourseNumberOfVideos);
+                    sc.NumberOfCourseVideosWatched < sc.CourseNumberOfVideos)
+                + sectionOnlyWatched
+                .Count(ss =>
+                    ss.SectionNumberOfVideos > 0 &&
+                    ss.NumberOfSectionVideosWatched < ss.SectionNumberOfVideos);
 
-            var completedLessonsCount = studentCoursesAll.Sum(sc => sc.NumberOfCourseVideosWatched);
+            var completedLessonsCount = studentCoursesAll.Sum(sc => sc.NumberOfCourseVideosWatched)
+                + sectionOnlyWatched.Sum(ss => ss.NumberOfSectionVideosWatched);
 
             var examResults = await _context.ExamResults
                 .AsNoTracking()

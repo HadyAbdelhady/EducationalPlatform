@@ -2,6 +2,7 @@
 using Application.Features.EducationYears.Interfaces;
 using Application.Common;
 using Application.Features.Courses.DTOs;
+using Application.Features.HomeScreen.Interfaces;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
@@ -88,6 +89,16 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     .Skip(skip)
                     .Take(pageSize)
                     .ToListAsync(cancellationToken);
+
+                var enrollmentRepo = _unitOfWork.GetRepository<IStudentEnrollmentRepository>();
+                foreach (var course in paginatedResponse.Where(c => !c.IsEnrolled))
+                {
+                    course.Price = await enrollmentRepo.GetRemainingCoursePriceAsync(
+                        request.UserID,
+                        course.Id,
+                        course.Price,
+                        cancellationToken);
+                }
 
                 return Result<PaginatedResult<CourseResponse>>.Success(new PaginatedResult<CourseResponse>
                 {

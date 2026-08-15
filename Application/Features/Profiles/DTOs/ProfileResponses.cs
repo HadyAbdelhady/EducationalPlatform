@@ -9,7 +9,8 @@ namespace Application.Features.Profiles.DTOs
         public string? CourseName { get; set; }
         public Guid? SectionId { get; set; }
         public string? SectionName { get; set; }
-        public DateTimeOffset EnrolledAt { get; set; }
+        public bool IsEnrolled { get; set; }
+        public DateTimeOffset? EnrolledAt { get; set; }
 
         public string? Description { get; set; }
         public string? PictureUrl { get; set; }

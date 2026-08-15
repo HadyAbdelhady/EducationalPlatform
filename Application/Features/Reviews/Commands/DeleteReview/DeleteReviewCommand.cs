@@ -7,6 +7,7 @@ namespace Application.Features.Reviews.Commands.DeleteReview
     public class DeleteReviewCommand : IRequest<Result<string>>
     {
         public Guid ReviewId { get; set; }
+        public Guid StudentId { get; set; }
         public required ReviewEntityType EntityType { get; set; }
     }
 }

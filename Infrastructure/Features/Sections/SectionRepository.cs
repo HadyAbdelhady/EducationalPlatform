@@ -40,12 +40,17 @@ namespace Infrastructure.Features.Sections
                                                NumberOfSectionVideosWatched = ss.NumberOfSectionVideosWatched
                                            })
                                            .FirstOrDefault(),
+                                       IsEnrolled = s.StudentSections.Any(ss => ss.StudentId == Request.UserId)
+                                                    || s.Course!.StudentCourses.Any(sc => sc.StudentId == Request.UserId),
 
                                        Videos = s.Videos.Select(v => new VideoData
                                        {
                                            Id = v.Id,
                                            Name = v.Name,
-                                           VideoUrl = v.VideoUrl,
+                                           VideoUrl = s.StudentSections.Any(ss => ss.StudentId == Request.UserId)
+                                                      || s.Course!.StudentCourses.Any(sc => sc.StudentId == Request.UserId)
+                                                      ? v.VideoUrl
+                                                      : string.Empty,
                                            Rating = v.Rating,
                                            StudentVideo = v.StudentVideos
                                                .Where(sv => sv.StudentId == Request.UserId)
@@ -88,13 +93,17 @@ namespace Infrastructure.Features.Sections
                                                NumberOfSectionVideosWatched = ss.NumberOfSectionVideosWatched
                                            })
                                            .FirstOrDefault(),
-                                    IsEnrolled = s.StudentSections.Any(ss => ss.StudentId == Request.UserId),
+                                    IsEnrolled = s.StudentSections.Any(ss => ss.StudentId == Request.UserId)
+                                                 || s.Course!.StudentCourses.Any(sc => sc.StudentId == Request.UserId),
 
                                     Videos = s.Videos.Select(v => new VideoData
                                     {
                                         Id = v.Id,
                                         Name = v.Name,
-                                        VideoUrl = v.VideoUrl,
+                                        VideoUrl = s.StudentSections.Any(ss => ss.StudentId == Request.UserId)
+                                                   || s.Course!.StudentCourses.Any(sc => sc.StudentId == Request.UserId)
+                                                   ? v.VideoUrl
+                                                   : string.Empty,
                                         Rating = v.Rating,
                                         StudentVideo = v.StudentVideos
                                             .Where(sv => sv.StudentId == Request.UserId)

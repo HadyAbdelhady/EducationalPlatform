@@ -150,7 +150,7 @@ namespace Edu_Base.Features.Videos
             var query = new GetAllVideosQuery
             {
                 GetAllEntityRequestSkeleton = request,
-                StudentId = GetUserIdFromClaims()
+                StudentId = IsStudent() ? GetUserIdFromClaims() : null
             };
 
             var result = await _mediator.Send(query, cancellationToken);
