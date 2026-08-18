@@ -63,12 +63,7 @@ namespace Infrastructure.Features.Sheets.SheetService
                         .ApplyFilters(skeleton.Filters, _sheetFilterRegistry.Filters)
                         .ApplySort(skeleton.SortBy, skeleton.IsDescending, _sheetFilterRegistry.Sorts);
 
-                    var totalCount = await query.CountAsync(cancellationToken);
-                    var skip = (skeleton.PageNumber - 1) * PageSize;
-
                     var items = await query
-                        .Skip(skip)
-                        .Take(PageSize)
                         .Select(sh => new SheetResponse
                         {
                             Id = sh.Id,
@@ -78,15 +73,9 @@ namespace Infrastructure.Features.Sheets.SheetService
                             DueDate = sh.DueDate,
                             UpdatedAt = sh.UpdatedAt,
                         })
-                        .ToListAsync(cancellationToken);
+                        .ToPaginatedResultAsync(skeleton.PageNumber, PageSize, cancellationToken);
 
-                    return Result<PaginatedResult<SheetResponse>>.Success(new PaginatedResult<SheetResponse>
-                    {
-                        Items = items,
-                        PageNumber = skeleton.PageNumber,
-                        PageSize = PageSize,
-                        TotalCount = totalCount,
-                    });
+                    return Result<PaginatedResult<SheetResponse>>.Success(items);
                 }
                 catch (Exception ex)
                 {
@@ -155,12 +144,7 @@ namespace Infrastructure.Features.Sheets.SheetService
                         .ApplyFilters(skeleton.Filters, _answersSheetFilterRegistry.Filters)
                         .ApplySort(skeleton.SortBy, skeleton.IsDescending, _answersSheetFilterRegistry.Sorts);
 
-                    var totalCount = await query.CountAsync(cancellationToken);
-                    var skip = (skeleton.PageNumber - 1) * PageSize;
-
                     var items = await query
-                        .Skip(skip)
-                        .Take(PageSize)
                         .Select(a => new SheetResponse
                         {
                             Id = a.Id,
@@ -173,15 +157,9 @@ namespace Infrastructure.Features.Sheets.SheetService
                             QuestionsSheetName = a.QuestionsSheet != null ? a.QuestionsSheet.Name : string.Empty,
                             IsApproved = a.IsApproved,
                         })
-                        .ToListAsync(cancellationToken);
+                        .ToPaginatedResultAsync(skeleton.PageNumber, PageSize, cancellationToken);
 
-                    return Result<PaginatedResult<SheetResponse>>.Success(new PaginatedResult<SheetResponse>
-                    {
-                        Items = items,
-                        PageNumber = skeleton.PageNumber,
-                        PageSize = PageSize,
-                        TotalCount = totalCount,
-                    });
+                    return Result<PaginatedResult<SheetResponse>>.Success(items);
                 }
                 catch (Exception ex)
                 {

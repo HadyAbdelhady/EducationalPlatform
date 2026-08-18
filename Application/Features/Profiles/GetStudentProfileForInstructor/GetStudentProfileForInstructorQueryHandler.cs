@@ -68,6 +68,7 @@ namespace Application.Features.Profiles.GetStudentProfileForInstructor
                     request.StudentId,
                     page: 1,
                     pageSize: 1,
+                    search: null,
                     cancellationToken);
 
                 profile.Enrollments = progress.Students.Items.FirstOrDefault()?.Enrollments ?? [];

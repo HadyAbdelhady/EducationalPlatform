@@ -41,26 +41,14 @@ namespace Application.Features.Exams.Query.GetExamSubmissionsList
                 .ApplyFilters(request.RequestSkeleton.Filters, _studentExamResultFilterRegistry.Filters)
                 .ApplySort(request.RequestSkeleton.SortBy, request.RequestSkeleton.IsDescending, _studentExamResultFilterRegistry.Sorts);
 
-            const int pageSize = 10;
-            var skip = (request.RequestSkeleton.PageNumber - 1) * pageSize;
-
-            var totalCount = await submissionsQuery.CountAsync(cancellationToken);
             var submissions = await submissionsQuery
-                .Skip(skip)
-                .Take(pageSize)
                 .Select(ExamSubmissionDtoMapping.Project(examContext))
-                .ToListAsync(cancellationToken);
+                .ToPaginatedResultAsync(request.RequestSkeleton.PageNumber, 10, cancellationToken);
 
             return Result<ExamSubmissionsListResponse>.Success(new ExamSubmissionsListResponse
             {
                 Exam = ExamSubmissionDtoMapping.ToExamDetails(exam),
-                Submissions = new PaginatedResult<ExamSubmissionDto>
-                {
-                    Items = submissions,
-                    PageNumber = request.RequestSkeleton.PageNumber,
-                    PageSize = pageSize,
-                    TotalCount = totalCount
-                }
+                Submissions = submissions
             });
         }
     }

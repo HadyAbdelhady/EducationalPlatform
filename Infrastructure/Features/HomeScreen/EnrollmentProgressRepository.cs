@@ -128,6 +128,7 @@ namespace Infrastructure.Features.HomeScreen
             Guid? studentId,
             int page,
             int pageSize,
+            string? search,
             CancellationToken cancellationToken = default)
         {
             page = page < 1 ? 1 : page;
@@ -137,13 +138,7 @@ namespace Infrastructure.Features.HomeScreen
             {
                 return new InstructorStudentsProgressResponse
                 {
-                    Students = new PaginatedResult<InstructorStudentProgressDto>
-                    {
-                        Items = [],
-                        PageNumber = page,
-                        PageSize = pageSize,
-                        TotalCount = 0
-                    }
+                    Students = QueryableFilterExtensions.EmptyPaginatedResult<InstructorStudentProgressDto>(page, pageSize)
                 };
             }
 
@@ -155,6 +150,7 @@ namespace Infrastructure.Features.HomeScreen
                 studentId,
                 page,
                 pageSize,
+                search,
                 cancellationToken);
 
             var pageStudentIds = pageSummaries.Select(s => s.StudentId).ToList();
@@ -164,14 +160,21 @@ namespace Infrastructure.Features.HomeScreen
                 cancellationToken);
 
             var studentDtos = pageSummaries
-                .Select(summary => new InstructorStudentProgressDto
+                .Select(summary =>
                 {
-                    StudentId = summary.StudentId,
-                    StudentName = summary.StudentName,
-                    StudentEmail = summary.StudentEmail,
-                    Enrollments = progressByStudent.TryGetValue(summary.StudentId, out var enrollments)
-                        ? enrollments
-                        : []
+                    var enrollments = progressByStudent.TryGetValue(summary.StudentId, out var items)
+                        ? items
+                        : [];
+
+                    return new InstructorStudentProgressDto
+                    {
+                        StudentId = summary.StudentId,
+                        StudentName = summary.StudentName,
+                        StudentEmail = summary.StudentEmail,
+                        StudentPictureUrl = summary.StudentPictureUrl,
+                        Overall = EnrollmentProgressMapper.AggregateOverallProgress(enrollments),
+                        Enrollments = enrollments
+                    };
                 })
                 .ToList();
 
@@ -231,20 +234,9 @@ namespace Infrastructure.Features.HomeScreen
                 });
 
             var milestonesQuery = upcomingExamsQuery.Concat(upcomingSheetsQuery);
-            var milestonesTotalCount = await milestonesQuery.CountAsync(cancellationToken);
-            var milestonesItems = await milestonesQuery
+            return await milestonesQuery
                 .OrderBy(m => m.DueAt)
-                .Skip((milestonesPage - 1) * milestonesPageSize)
-                .Take(milestonesPageSize)
-                .ToListAsync(cancellationToken);
-
-            return new PaginatedResult<UpcomingMilestoneDto>
-            {
-                Items = milestonesItems,
-                PageNumber = milestonesPage,
-                PageSize = milestonesPageSize,
-                TotalCount = milestonesTotalCount
-            };
+                .ToPaginatedResultAsync(milestonesPage, milestonesPageSize, cancellationToken);
         }
     }
 }

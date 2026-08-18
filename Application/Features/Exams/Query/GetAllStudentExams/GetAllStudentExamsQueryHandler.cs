@@ -53,23 +53,12 @@ namespace Application.Features.Exams.Query.GetAllStudentExams
                     .FirstOrDefault(),
             });
 
-            int pageSize = 10;
-            int skip = (request.RequestSkeleton.PageNumber - 1) * pageSize;
+            var paginatedItems = await examsQuery.ToPaginatedResultAsync(
+                request.RequestSkeleton.PageNumber,
+                10,
+                cancellationToken);
 
-            var totalCount = await examsQuery.CountAsync(cancellationToken);
-            var paginatedItems = await examsQuery
-                .Skip(skip)
-                .Take(pageSize)
-                .ToListAsync(cancellationToken);
-
-            return Result<PaginatedResult<ExamListDto>>.Success(
-                new PaginatedResult<ExamListDto>
-                {
-                    Items = paginatedItems,
-                    PageNumber = request.RequestSkeleton.PageNumber,
-                    PageSize = pageSize,
-                    TotalCount = totalCount
-                });
+            return Result<PaginatedResult<ExamListDto>>.Success(paginatedItems);
         }
     }
 

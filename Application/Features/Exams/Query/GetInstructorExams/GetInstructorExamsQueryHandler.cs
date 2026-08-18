@@ -26,14 +26,10 @@ namespace Application.Features.Exams.Query.GetInstructorExams
                 .ApplyFilters(request.Request.RequestSkeleton.Filters, _instructorExamsFilterRegistry.Filters)
                 .ApplySort(request.Request.RequestSkeleton.SortBy, request.Request.RequestSkeleton.IsDescending, _instructorExamsFilterRegistry.Sorts);
 
-            int pageSize = 10;
-            int skip = (request.Request.RequestSkeleton.PageNumber - 1) * pageSize;
-
-            var totalCount = await filteredSortedQuery.CountAsync(cancellationToken);
-            var paginatedExams = await filteredSortedQuery
-                .Skip(skip)
-                .Take(pageSize)
-                .ToListAsync(cancellationToken);
+            var paginatedExams = await filteredSortedQuery.ToPaginatedResultAsync(
+                request.Request.RequestSkeleton.PageNumber,
+                10,
+                cancellationToken);
 
             // Get courses and sections hashmap from repository
             var coursesSectionsHashMap = await _examRepository.GetInstructorCoursesSectionsHashMapAsync(request.Request.InstructorId, cancellationToken);
@@ -66,13 +62,7 @@ namespace Application.Features.Exams.Query.GetInstructorExams
             return Result<InstructorExamsResult>.Success(
                 new InstructorExamsResult
                 {
-                    Exams = new PaginatedResult<InstructorExamsResponseDto>
-                    {
-                        Items = paginatedExams,
-                        PageNumber = request.Request.RequestSkeleton.PageNumber,
-                        PageSize = pageSize,
-                        TotalCount = totalCount
-                    },
+                    Exams = paginatedExams,
                     CoursesSections = coursesSectionsDto
                 });
         }

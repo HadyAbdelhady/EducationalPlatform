@@ -1,4 +1,6 @@
-﻿namespace Application.Common
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Application.Common
 {
     public static class QueryableFilterExtensions
     {
@@ -49,6 +51,44 @@
             }
 
             return query;
+        }
+
+        public static async Task<PaginatedResult<T>> ToPaginatedResultAsync<T>(
+            this IQueryable<T> query,
+            int pageNumber,
+            int pageSize,
+            CancellationToken cancellationToken = default)
+        {
+            pageNumber = pageNumber < 1 ? 1 : pageNumber;
+            pageSize = pageSize <= 0 ? 10 : pageSize;
+
+            var totalCount = await query.CountAsync(cancellationToken);
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return new PaginatedResult<T>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
+        }
+
+        public static PaginatedResult<T> EmptyPaginatedResult<T>(int pageNumber, int pageSize)
+        {
+            pageNumber = pageNumber < 1 ? 1 : pageNumber;
+            pageSize = pageSize <= 0 ? 10 : pageSize;
+
+            return new PaginatedResult<T>
+            {
+                Items = [],
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = 0
+            };
         }
     }
 }

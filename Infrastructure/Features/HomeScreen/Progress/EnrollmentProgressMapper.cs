@@ -144,5 +144,62 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
                     .FirstOrDefault()
             };
         }
+
+        public static StudentOverallProgressDto AggregateOverallProgress(
+            IReadOnlyList<EnrollmentProgressDto> enrollments)
+        {
+            if (enrollments.Count == 0)
+                return new StudentOverallProgressDto();
+
+            var watchedCount = enrollments.Sum(e => e.Videos.WatchedCount);
+            var totalVideoCount = enrollments.Sum(e => e.Videos.TotalCount);
+
+            var scoredExams = enrollments
+                .Where(e => e.Exams.AverageScorePercent.HasValue)
+                .Select(e => (
+                    Average: e.Exams.AverageScorePercent!.Value,
+                    Weight: e.Exams.PassedCount + e.Exams.FailedCount))
+                .Where(x => x.Weight > 0)
+                .ToList();
+
+            var bestScores = enrollments
+                .Where(e => e.Exams.BestScorePercent.HasValue)
+                .Select(e => e.Exams.BestScorePercent!.Value)
+                .ToList();
+
+            return new StudentOverallProgressDto
+            {
+                Videos = BuildVideoAggregate(watchedCount, totalVideoCount, null),
+                Exams = new ExamProgressAggregate
+                {
+                    TotalCount = enrollments.Sum(e => e.Exams.TotalCount),
+                    NotStartedCount = enrollments.Sum(e => e.Exams.NotStartedCount),
+                    InProgressCount = enrollments.Sum(e => e.Exams.InProgressCount),
+                    PassedCount = enrollments.Sum(e => e.Exams.PassedCount),
+                    FailedCount = enrollments.Sum(e => e.Exams.FailedCount),
+                    AverageScorePercent = scoredExams.Count > 0
+                        ? Math.Round(scoredExams.Sum(x => x.Average * x.Weight) / scoredExams.Sum(x => x.Weight), 2)
+                        : null,
+                    BestScorePercent = bestScores.Count > 0 ? Math.Round(bestScores.Max(), 2) : null
+                },
+                Sheets = new SheetProgressAggregate
+                {
+                    TotalCount = enrollments.Sum(e => e.Sheets.TotalCount),
+                    NotSubmittedCount = enrollments.Sum(e => e.Sheets.NotSubmittedCount),
+                    SubmittedPendingCount = enrollments.Sum(e => e.Sheets.SubmittedPendingCount),
+                    ApprovedCount = enrollments.Sum(e => e.Sheets.ApprovedCount),
+                    NextDueDate = enrollments
+                        .Where(e => e.Sheets.NextDueDate.HasValue)
+                        .Select(e => e.Sheets.NextDueDate)
+                        .OrderBy(d => d)
+                        .FirstOrDefault(),
+                    LastSubmittedAt = enrollments
+                        .Where(e => e.Sheets.LastSubmittedAt.HasValue)
+                        .Select(e => e.Sheets.LastSubmittedAt)
+                        .OrderByDescending(d => d)
+                        .FirstOrDefault()
+                }
+            };
+        }
     }
 }

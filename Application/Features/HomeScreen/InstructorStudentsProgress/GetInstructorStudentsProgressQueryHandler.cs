@@ -36,6 +36,7 @@ namespace Application.Features.HomeScreen.InstructorStudentsProgress
                     request.StudentId,
                     request.Page,
                     request.PageSize,
+                    request.Search,
                     cancellationToken);
 
                 return Result<InstructorStudentsProgressResponse>.Success(response);

@@ -81,17 +81,13 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     UpdatedAt = x.course.UpdatedAt
                 });
 
-                int pageSize = 10;
-                int skip = (request.GetAllEntityRequestSkeleton.PageNumber - 1) * pageSize;
-
-                var totalCount = await coursesQuery.CountAsync(cancellationToken);
-                var paginatedResponse = await coursesQuery
-                    .Skip(skip)
-                    .Take(pageSize)
-                    .ToListAsync(cancellationToken);
+                var paginatedResponse = await coursesQuery.ToPaginatedResultAsync(
+                    request.GetAllEntityRequestSkeleton.PageNumber,
+                    10,
+                    cancellationToken);
 
                 var enrollmentRepo = _unitOfWork.GetRepository<IStudentEnrollmentRepository>();
-                foreach (var course in paginatedResponse.Where(c => !c.IsEnrolled))
+                foreach (var course in paginatedResponse.Items.Where(c => !c.IsEnrolled))
                 {
                     course.Price = await enrollmentRepo.GetRemainingCoursePriceAsync(
                         request.UserID,
@@ -100,13 +96,7 @@ namespace Application.Features.Courses.Query.GetAllCourses
                         cancellationToken);
                 }
 
-                return Result<PaginatedResult<CourseResponse>>.Success(new PaginatedResult<CourseResponse>
-                {
-                    Items = paginatedResponse,
-                    PageNumber = request.GetAllEntityRequestSkeleton.PageNumber,
-                    PageSize = pageSize,
-                    TotalCount = totalCount
-                });
+                return Result<PaginatedResult<CourseResponse>>.Success(paginatedResponse);
             }
             catch (UnauthorizedAccessException auth)
             {

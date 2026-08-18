@@ -43,22 +43,12 @@ namespace Application.Features.Videos.Queries.GetAllVideos
                     UpdatedAt = v.UpdatedAt ?? v.CreatedAt,
                 });
 
-                int pageSize = 10;
-                int skip = (request.GetAllEntityRequestSkeleton.PageNumber - 1) * pageSize;
+                var paginatedResponse = await videosQuery.ToPaginatedResultAsync(
+                    request.GetAllEntityRequestSkeleton.PageNumber,
+                    10,
+                    cancellationToken);
 
-                var totalCount = await videosQuery.CountAsync(cancellationToken);
-                var paginatedResponse = await videosQuery
-                    .Skip(skip)
-                    .Take(pageSize)
-                    .ToListAsync(cancellationToken);
-
-                return Result<PaginatedResult<VideoByUserIdResponse>>.Success(new PaginatedResult<VideoByUserIdResponse>
-                {
-                    Items = paginatedResponse,
-                    PageNumber = request.GetAllEntityRequestSkeleton.PageNumber,
-                    PageSize = pageSize,
-                    TotalCount = totalCount
-                });
+                return Result<PaginatedResult<VideoByUserIdResponse>>.Success(paginatedResponse);
             }
             catch (UnauthorizedAccessException auth)
             {

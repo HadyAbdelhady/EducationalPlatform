@@ -19,6 +19,7 @@ namespace Application.Features.HomeScreen.Interfaces
             Guid? studentId,
             int page,
             int pageSize,
+            string? search,
             CancellationToken cancellationToken = default);
     }
 }

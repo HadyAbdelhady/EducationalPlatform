@@ -287,19 +287,9 @@ namespace Infrastructure.Features.Reviews.ReviewService
                         } : null
                     });
 
-                var totalCount = await query.CountAsync(cancellationToken);
-                var items = await query
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync(cancellationToken);
+                var items = await query.ToPaginatedResultAsync(pageNumber, pageSize, cancellationToken);
 
-                return Result<PaginatedResult<GetAllReviewsResponse>>.Success(new PaginatedResult<GetAllReviewsResponse>
-                {
-                    Items = items,
-                    PageNumber = pageNumber,
-                    PageSize = pageSize,
-                    TotalCount = totalCount
-                });
+                return Result<PaginatedResult<GetAllReviewsResponse>>.Success(items);
             }
             catch (Exception ex)
             {

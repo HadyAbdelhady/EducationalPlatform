@@ -181,36 +181,67 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
             Guid? studentId,
             int page,
             int pageSize,
+            string? search,
             CancellationToken cancellationToken = default)
         {
-            var courseLight = courseIds.Count > 0 || sectionIds.Count > 0
-                ? await _context.StudentCourses
-                    .AsNoTracking()
-                    .Where(sc =>
-                        courseIds.Contains(sc.CourseId) ||
-                        _context.Sections.Any(sec =>
-                            sectionIds.Contains(sec.Id) && sec.CourseId == sc.CourseId))
-                    .Where(sc => !studentId.HasValue || sc.StudentId == studentId)
-                    .Select(sc => new { sc.StudentId, sc.EnrolledAt })
-                    .ToListAsync(cancellationToken)
-                : [];
+            if (courseIds.Count == 0 && sectionIds.Count == 0)
+                return (0, []);
 
-            var sectionLight = courseIds.Count > 0 || sectionIds.Count > 0
-                ? await _context.StudentSections
+            List<Guid>? matchingStudentIds = null;
+            var term = search?.Trim();
+            if (!string.IsNullOrEmpty(term) && term.Length >= 2)
+            {
+                matchingStudentIds = await _context.Students
                     .AsNoTracking()
-                    .Where(ss =>
-                        sectionIds.Contains(ss.SectionId) ||
-                        courseIds.Contains(ss.Section.CourseId))
-                    .Where(ss => !studentId.HasValue || ss.StudentId == studentId)
-                    .Where(ss => !_context.StudentCourses.Any(sc =>
-                        sc.StudentId == ss.StudentId &&
-                        (courseIds.Contains(sc.CourseId) ||
-                         _context.Sections.Any(sec =>
-                             sectionIds.Contains(sec.Id) && sec.CourseId == sc.CourseId)) &&
-                        sc.CourseId == ss.Section.CourseId))
-                    .Select(ss => new { ss.StudentId, ss.EnrolledAt })
-                    .ToListAsync(cancellationToken)
-                : [];
+                    .Where(s =>
+                        s.User.FullName.Contains(term) ||
+                        s.User.PhoneNumber.Contains(term) ||
+                        s.ParentPhoneNumber.Contains(term))
+                    .Select(s => s.UserId)
+                    .ToListAsync(cancellationToken);
+
+                if (matchingStudentIds.Count == 0)
+                    return (0, []);
+            }
+
+            var courseQuery = _context.StudentCourses
+                .AsNoTracking()
+                .Where(sc =>
+                    courseIds.Contains(sc.CourseId) ||
+                    _context.Sections.Any(sec =>
+                        sectionIds.Contains(sec.Id) && sec.CourseId == sc.CourseId));
+
+            if (studentId.HasValue)
+                courseQuery = courseQuery.Where(sc => sc.StudentId == studentId.Value);
+
+            if (matchingStudentIds is not null)
+                courseQuery = courseQuery.Where(sc => matchingStudentIds.Contains(sc.StudentId));
+
+            var courseLight = await courseQuery
+                .Select(sc => new { sc.StudentId, sc.EnrolledAt })
+                .ToListAsync(cancellationToken);
+
+            var sectionQuery = _context.StudentSections
+                .AsNoTracking()
+                .Where(ss =>
+                    sectionIds.Contains(ss.SectionId) ||
+                    courseIds.Contains(ss.Section.CourseId))
+                .Where(ss => !_context.StudentCourses.Any(sc =>
+                    sc.StudentId == ss.StudentId &&
+                    (courseIds.Contains(sc.CourseId) ||
+                     _context.Sections.Any(sec =>
+                         sectionIds.Contains(sec.Id) && sec.CourseId == sc.CourseId)) &&
+                    sc.CourseId == ss.Section.CourseId));
+
+            if (studentId.HasValue)
+                sectionQuery = sectionQuery.Where(ss => ss.StudentId == studentId.Value);
+
+            if (matchingStudentIds is not null)
+                sectionQuery = sectionQuery.Where(ss => matchingStudentIds.Contains(ss.StudentId));
+
+            var sectionLight = await sectionQuery
+                .Select(ss => new { ss.StudentId, ss.EnrolledAt })
+                .ToListAsync(cancellationToken);
 
             var grouped = courseLight
                 .Concat(sectionLight)
@@ -236,7 +267,8 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
                 {
                     StudentId = s.UserId,
                     StudentName = s.User.FullName,
-                    StudentEmail = s.User.GmailExternal
+                    StudentEmail = s.User.GmailExternal,
+                    StudentPictureUrl = s.User.PersonalPictureUrl
                 })
                 .ToListAsync(cancellationToken);
 
@@ -537,6 +569,7 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
             public Guid StudentId { get; init; }
             public string StudentName { get; init; } = string.Empty;
             public string? StudentEmail { get; init; }
+            public string? StudentPictureUrl { get; init; }
         }
     }
 }

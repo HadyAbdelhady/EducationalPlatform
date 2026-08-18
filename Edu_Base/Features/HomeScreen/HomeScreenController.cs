@@ -72,6 +72,7 @@ namespace Edu_Base.Features.HomeScreen
             [FromQuery] Guid? courseId = null,
             [FromQuery] Guid? sectionId = null,
             [FromQuery] Guid? studentId = null,
+            [FromQuery] string? search = null,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             CancellationToken cancellationToken = default)
@@ -92,6 +93,7 @@ namespace Edu_Base.Features.HomeScreen
                 CourseId = courseId,
                 SectionId = sectionId,
                 StudentId = studentId,
+                Search = search,
                 Page = page,
                 PageSize = pageSize
             };
