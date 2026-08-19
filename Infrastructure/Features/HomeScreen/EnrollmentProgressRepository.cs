@@ -129,6 +129,7 @@ namespace Infrastructure.Features.HomeScreen
             int page,
             int pageSize,
             string? search,
+            Guid? educationYearId,
             CancellationToken cancellationToken = default)
         {
             page = page < 1 ? 1 : page;
@@ -151,6 +152,7 @@ namespace Infrastructure.Features.HomeScreen
                 page,
                 pageSize,
                 search,
+                educationYearId,
                 cancellationToken);
 
             var pageStudentIds = pageSummaries.Select(s => s.StudentId).ToList();
@@ -172,8 +174,12 @@ namespace Infrastructure.Features.HomeScreen
                         StudentName = summary.StudentName,
                         StudentEmail = summary.StudentEmail,
                         StudentPictureUrl = summary.StudentPictureUrl,
-                        Overall = EnrollmentProgressMapper.AggregateOverallProgress(enrollments),
-                        Enrollments = enrollments
+                        PhoneNumber = summary.PhoneNumber,
+                        ParentPhoneNumber = summary.ParentPhoneNumber,
+                        LocationMaps = summary.LocationMaps,
+                        Gender = summary.Gender,
+                        EducationYearId = summary.EducationYearId,
+                        Overall = EnrollmentProgressMapper.AggregateOverallProgress(enrollments)
                     };
                 })
                 .ToList();
@@ -187,6 +193,90 @@ namespace Infrastructure.Features.HomeScreen
                     PageSize = pageSize,
                     TotalCount = totalCount
                 }
+            };
+        }
+
+        public async Task<InstructorStudentEnrollmentsResponse> GetInstructorStudentEnrollmentsAsync(
+            Guid instructorId,
+            Guid studentId,
+            HashSet<Guid> allowedCourseIds,
+            HashSet<Guid> allowedSectionIds,
+            CancellationToken cancellationToken = default)
+        {
+            var scope = EnrollmentProgressScope.ForInstructor(allowedCourseIds, allowedSectionIds);
+            var progressByStudent = await _progressHelper.BuildEnrollmentProgressForStudentsAsync(
+                [studentId],
+                scope,
+                cancellationToken);
+
+            var enrollments = progressByStudent.TryGetValue(studentId, out var items)
+                ? items
+                : [];
+
+            var instructorName = await _context.Instructors
+                .AsNoTracking()
+                .Where(i => i.UserId == instructorId)
+                .Select(i => i.User.FullName)
+                .FirstOrDefaultAsync(cancellationToken) ?? string.Empty;
+
+            var instructorReviews = await _context.InstructorReviews
+                .AsNoTracking()
+                .Where(r => r.StudentId == studentId && r.EntityId == instructorId)
+                .Select(r => new StudentContentReviewDto
+                {
+                    Id = r.Id,
+                    Type = "Instructor",
+                    EntityId = r.EntityId,
+                    EntityName = instructorName,
+                    StarRating = r.StarRating,
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt
+                })
+                .ToListAsync(cancellationToken);
+
+            var courseReviews = allowedCourseIds.Count == 0
+                ? []
+                : await _context.CourseReviews
+                    .AsNoTracking()
+                    .Where(r => r.StudentId == studentId && allowedCourseIds.Contains(r.EntityId))
+                    .Select(r => new StudentContentReviewDto
+                    {
+                        Id = r.Id,
+                        Type = "Course",
+                        EntityId = r.EntityId,
+                        EntityName = r.Course.Name,
+                        StarRating = r.StarRating,
+                        Comment = r.Comment,
+                        CreatedAt = r.CreatedAt
+                    })
+                    .ToListAsync(cancellationToken);
+
+            var sectionReviews = allowedSectionIds.Count == 0
+                ? []
+                : await _context.SectionReviews
+                    .AsNoTracking()
+                    .Where(r => r.StudentId == studentId && allowedSectionIds.Contains(r.EntityId))
+                    .Select(r => new StudentContentReviewDto
+                    {
+                        Id = r.Id,
+                        Type = "Section",
+                        EntityId = r.EntityId,
+                        EntityName = r.Section.Name,
+                        StarRating = r.StarRating,
+                        Comment = r.Comment,
+                        CreatedAt = r.CreatedAt
+                    })
+                    .ToListAsync(cancellationToken);
+
+            return new InstructorStudentEnrollmentsResponse
+            {
+                StudentId = studentId,
+                Enrollments = enrollments,
+                Reviews = instructorReviews
+                    .Concat(courseReviews)
+                    .Concat(sectionReviews)
+                    .OrderByDescending(r => r.CreatedAt)
+                    .ToList()
             };
         }
 

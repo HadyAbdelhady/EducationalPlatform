@@ -107,6 +107,13 @@ namespace Application.Features.Payment.CreatePaymentIntension
 
                 if (remainingPrice == 0)
                 {
+                    if (catalogPrice > 0)
+                    {
+                        return Result<StudentBuyResponse>.FailureStatusCode(
+                            "Remaining course balance is covered by section purchases. Buy any new sections individually.",
+                            ErrorType.BadRequest);
+                    }
+
                     payment.Status = PaymentStatus.Completed;
                     payment.UpdatedAt = DateTimeOffset.UtcNow;
                     await enrollmentRepo.EnrollFromPaymentAsync(

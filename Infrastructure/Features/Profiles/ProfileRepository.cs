@@ -125,7 +125,9 @@ namespace Infrastructure.Features.Profiles
                     NumberOfExams = ic.Course.NumberOfExams,
                     NumberOfStudents = ic.Course.NumberOfStudentsEnrolled,
                     Rating = ic.Course.Rating,
-                    IsEnrolled = ic.Course.StudentCourses.Any(sc => sc.StudentId == studentId),
+                    IsEnrolled = ic.Course.StudentCourses.Any(sc => sc.StudentId == studentId)
+                        || (ic.Course.Sections.Any()
+                            && ic.Course.Sections.All(s => s.StudentSections.Any(ss => ss.StudentId == studentId))),
                     EnrolledAt = ic.Course.StudentCourses
                         .Where(sc => sc.StudentId == studentId)
                         .Select(sc => (DateTimeOffset?)sc.EnrolledAt)

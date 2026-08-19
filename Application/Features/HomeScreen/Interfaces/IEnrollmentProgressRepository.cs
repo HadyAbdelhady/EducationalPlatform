@@ -20,6 +20,14 @@ namespace Application.Features.HomeScreen.Interfaces
             int page,
             int pageSize,
             string? search,
+            Guid? educationYearId,
+            CancellationToken cancellationToken = default);
+
+        Task<InstructorStudentEnrollmentsResponse> GetInstructorStudentEnrollmentsAsync(
+            Guid instructorId,
+            Guid studentId,
+            HashSet<Guid> allowedCourseIds,
+            HashSet<Guid> allowedSectionIds,
             CancellationToken cancellationToken = default);
     }
 }

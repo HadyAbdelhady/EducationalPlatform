@@ -61,17 +61,14 @@ namespace Application.Features.Profiles.GetStudentProfileForInstructor
                     cancellationToken);
 
                 var progressRepo = _unitOfWork.GetRepository<IEnrollmentProgressRepository>();
-                var progress = await progressRepo.GetInstructorStudentsProgressAsync(
+                var enrollments = await progressRepo.GetInstructorStudentEnrollmentsAsync(
                     request.InstructorId,
+                    request.StudentId,
                     scope.CourseIds,
                     scope.SectionIds,
-                    request.StudentId,
-                    page: 1,
-                    pageSize: 1,
-                    search: null,
                     cancellationToken);
 
-                profile.Enrollments = progress.Students.Items.FirstOrDefault()?.Enrollments ?? [];
+                profile.Enrollments = enrollments.Enrollments;
 
                 return Result<StudentProfileForInstructorResponse>.Success(profile);
             }

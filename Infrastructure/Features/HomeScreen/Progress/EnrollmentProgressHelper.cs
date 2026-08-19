@@ -1,4 +1,4 @@
-﻿using Infrastructure.Features.HomeScreen.EnrollmentProgress;
+﻿using Application.Common;
 using Application.Features.HomeScreen.DTOs;
 using Domain.enums;
 using Infrastructure.Common.Data;
@@ -182,6 +182,7 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
             int page,
             int pageSize,
             string? search,
+            Guid? educationYearId,
             CancellationToken cancellationToken = default)
         {
             if (courseIds.Count == 0 && sectionIds.Count == 0)
@@ -191,12 +192,13 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
             var term = search?.Trim();
             if (!string.IsNullOrEmpty(term) && term.Length >= 2)
             {
+                var pattern = SearchLike.ContainsPattern(term);
                 matchingStudentIds = await _context.Students
                     .AsNoTracking()
                     .Where(s =>
-                        s.User.FullName.Contains(term) ||
-                        s.User.PhoneNumber.Contains(term) ||
-                        s.ParentPhoneNumber.Contains(term))
+                        EF.Functions.ILike(s.User.FullName, pattern, "\\") ||
+                        EF.Functions.ILike(s.User.PhoneNumber, pattern, "\\") ||
+                        EF.Functions.ILike(s.ParentPhoneNumber, pattern, "\\"))
                     .Select(s => s.UserId)
                     .ToListAsync(cancellationToken);
 
@@ -213,6 +215,9 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
 
             if (studentId.HasValue)
                 courseQuery = courseQuery.Where(sc => sc.StudentId == studentId.Value);
+
+            if (educationYearId.HasValue)
+                courseQuery = courseQuery.Where(sc => sc.Student.EducationYearId == educationYearId.Value);
 
             if (matchingStudentIds is not null)
                 courseQuery = courseQuery.Where(sc => matchingStudentIds.Contains(sc.StudentId));
@@ -235,6 +240,9 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
 
             if (studentId.HasValue)
                 sectionQuery = sectionQuery.Where(ss => ss.StudentId == studentId.Value);
+
+            if (educationYearId.HasValue)
+                sectionQuery = sectionQuery.Where(ss => ss.Student.EducationYearId == educationYearId.Value);
 
             if (matchingStudentIds is not null)
                 sectionQuery = sectionQuery.Where(ss => matchingStudentIds.Contains(ss.StudentId));
@@ -268,7 +276,12 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
                     StudentId = s.UserId,
                     StudentName = s.User.FullName,
                     StudentEmail = s.User.GmailExternal,
-                    StudentPictureUrl = s.User.PersonalPictureUrl
+                    StudentPictureUrl = s.User.PersonalPictureUrl,
+                    PhoneNumber = s.User.PhoneNumber,
+                    ParentPhoneNumber = s.ParentPhoneNumber,
+                    LocationMaps = s.User.LocationMaps,
+                    Gender = s.User.Gender,
+                    EducationYearId = s.EducationYearId
                 })
                 .ToListAsync(cancellationToken);
 
@@ -570,6 +583,11 @@ namespace Infrastructure.Features.HomeScreen.EnrollmentProgress
             public string StudentName { get; init; } = string.Empty;
             public string? StudentEmail { get; init; }
             public string? StudentPictureUrl { get; init; }
+            public string PhoneNumber { get; init; } = string.Empty;
+            public string ParentPhoneNumber { get; init; } = string.Empty;
+            public string? LocationMaps { get; init; }
+            public string Gender { get; init; } = string.Empty;
+            public Guid EducationYearId { get; init; }
         }
     }
 }

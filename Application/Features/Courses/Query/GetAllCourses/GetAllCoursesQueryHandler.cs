@@ -36,15 +36,19 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     Courses = Courses.Where(c => c.EducationYearId == studentEducationYearId.Value);
                 }
 
+                var userId = request.UserID;
                 var coursesQuery = Courses
                 .Select(course => new
                 {
                     course,
 
-                    StudentCourse = course.StudentCourses.Where(sc => sc.StudentId == request.UserID && sc.CourseId == course.Id),
+                    StudentCourse = course.StudentCourses.Where(sc => sc.StudentId == userId && sc.CourseId == course.Id),
 
                     SubscribedSections = course.Sections.SelectMany(s => s.StudentSections)
-                                                        .Where(ss => ss.StudentId == request.UserID)
+                                                        .Where(ss => ss.StudentId == userId),
+
+                    OwnsAllCurrentSections = course.Sections.Any()
+                        && course.Sections.All(s => s.StudentSections.Any(ss => ss.StudentId == userId))
                 })
                 .Select(x => new CourseResponse
                 {
@@ -56,7 +60,7 @@ namespace Application.Features.Courses.Query.GetAllCourses
                     Price = x.course.Price ?? 0,
                     Rating = x.course.Rating,
 
-                    IsEnrolled = x.StudentCourse.Any(),
+                    IsEnrolled = x.StudentCourse.Any() || x.OwnsAllCurrentSections,
 
                     NumberOfStudents = x.course.NumberOfStudentsEnrolled,
                     NumberOfVideos = x.course.NumberOfVideos,
@@ -68,9 +72,9 @@ namespace Application.Features.Courses.Query.GetAllCourses
                                                                                 .FirstOrDefault()
                                                             : 0,
 
-                    NumberOfSubscriptedSections = x.StudentCourse.Any()
-                                                                  ? 0
-                                                                  : x.SubscribedSections.Distinct().Count(),
+                    NumberOfSubscriptedSections = (x.StudentCourse.Any() || x.OwnsAllCurrentSections)
+                        ? 0
+                        : x.SubscribedSections.Distinct().Count(),
 
                     ProgressPercentage = x.StudentCourse.Any()
                                                              ? x.StudentCourse.Select(xx => xx.Progress).FirstOrDefault()

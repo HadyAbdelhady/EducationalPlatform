@@ -1,5 +1,8 @@
 using Application.Common.Interfaces;
 using Application.Features.HomeScreen.InstructorDashboard;
+using Application.Features.HomeScreen.InstructorStudentEnrollments;
+using Application.Features.HomeScreen.InstructorStudentExams;
+using Application.Features.HomeScreen.InstructorStudentSheets;
 using Application.Features.HomeScreen.InstructorStudentsProgress;
 using Application.Features.HomeScreen.StudentHomeScreen;
 using Application.Features.HomeScreen.StudentProgress;
@@ -73,6 +76,7 @@ namespace Edu_Base.Features.HomeScreen
             [FromQuery] Guid? sectionId = null,
             [FromQuery] Guid? studentId = null,
             [FromQuery] string? search = null,
+            [FromQuery] Guid? educationYearId = null,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             CancellationToken cancellationToken = default)
@@ -94,6 +98,66 @@ namespace Edu_Base.Features.HomeScreen
                 SectionId = sectionId,
                 StudentId = studentId,
                 Search = search,
+                EducationYearId = educationYearId,
+                Page = page,
+                PageSize = pageSize
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("instructor/students/{studentId}/progress")]
+        public async Task<IActionResult> GetInstructorStudentEnrollments(
+            Guid studentId,
+            CancellationToken cancellationToken = default)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized();
+
+            var query = new GetInstructorStudentEnrollmentsQuery
+            {
+                InstructorId = instructorId,
+                StudentId = studentId
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("instructor/students/{studentId}/exams")]
+        public async Task<IActionResult> GetInstructorStudentExams(
+            Guid studentId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            CancellationToken cancellationToken = default)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized();
+
+            var query = new GetInstructorStudentExamsQuery
+            {
+                InstructorId = instructorId,
+                StudentId = studentId,
+                Page = page,
+                PageSize = pageSize
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("instructor/students/{studentId}/sheets")]
+        public async Task<IActionResult> GetInstructorStudentSheets(
+            Guid studentId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            CancellationToken cancellationToken = default)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized();
+
+            var query = new GetInstructorStudentSheetsQuery
+            {
+                InstructorId = instructorId,
+                StudentId = studentId,
                 Page = page,
                 PageSize = pageSize
             };

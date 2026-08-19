@@ -19,7 +19,7 @@ namespace Domain.Entities
         public int NumberOfCourseVideosWatched { get; set; } = 0;
 
         [Column("progress")]
-        public decimal? Progress { get; set; } = 0;
+        public decimal Progress { get; set; } = 0;
 
         [Column("enrolled_at")]
         public DateTimeOffset EnrolledAt { get; set; } = EgyptTime.UtcNow;
@@ -49,13 +49,13 @@ namespace Domain.Entities
         public DateTimeOffset EnrolledAt { get; set; } = EgyptTime.UtcNow;
 
         [Column("updated_at")]
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         [Column("number_of_section_videos_watched")]
         public int NumberOfSectionVideosWatched { get; set; } = 0;
 
         [Column("progress")]
-        public decimal? Progress { get; set; }
+        public decimal Progress { get; set; } = 0;
 
         [Column("is_deleted")]
         public bool IsDeleted { get; set; } = false;

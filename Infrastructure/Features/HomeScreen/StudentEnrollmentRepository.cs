@@ -13,9 +13,21 @@ namespace Infrastructure.Features.HomeScreen
 
         public async Task<bool> IsStudentEnrolledInCourseAsync(Guid studentId, Guid courseId, CancellationToken cancellationToken = default)
         {
-            return await _context.StudentCourses.AnyAsync(sc => sc.StudentId == studentId &&
-                                                          sc.CourseId == courseId,
-                                                          cancellationToken);
+            if (await HasStudentCourseAsync(studentId, courseId, cancellationToken))
+                return true;
+
+            var totalSections = await _context.Sections.CountAsync(
+                s => s.CourseId == courseId,
+                cancellationToken);
+
+            if (totalSections == 0)
+                return false;
+
+            var ownedSections = await _context.StudentSections.CountAsync(
+                ss => ss.StudentId == studentId && ss.Section.CourseId == courseId,
+                cancellationToken);
+
+            return ownedSections == totalSections;
         }
 
         public async Task<bool> IsStudentEnrolledInSectionAsync(Guid studentId, Guid sectionId, CancellationToken cancellationToken = default)
@@ -113,7 +125,7 @@ namespace Infrastructure.Features.HomeScreen
             if (!courseId.HasValue)
                 return;
 
-            if (await IsStudentEnrolledInCourseAsync(studentId, courseId.Value, cancellationToken))
+            if (await HasStudentCourseAsync(studentId, courseId.Value, cancellationToken))
                 return;
 
             var alreadyCountedAsStudent = await _context.StudentSections
@@ -127,12 +139,26 @@ namespace Infrastructure.Features.HomeScreen
                 },
                 cancellationToken);
 
+            var leftoverSections = await _context.StudentSections
+                .Where(ss => ss.StudentId == studentId && ss.Section.CourseId == courseId.Value)
+                .ToListAsync(cancellationToken);
+
+            if (leftoverSections.Count > 0)
+                _context.StudentSections.RemoveRange(leftoverSections);
+
             if (!alreadyCountedAsStudent)
             {
                 var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId.Value, cancellationToken);
                 if (course is not null)
                     course.NumberOfStudentsEnrolled++;
             }
+        }
+
+        private Task<bool> HasStudentCourseAsync(Guid studentId, Guid courseId, CancellationToken cancellationToken)
+        {
+            return _context.StudentCourses.AnyAsync(
+                sc => sc.StudentId == studentId && sc.CourseId == courseId,
+                cancellationToken);
         }
     }
 }

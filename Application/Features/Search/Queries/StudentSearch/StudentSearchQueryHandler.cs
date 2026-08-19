@@ -52,10 +52,12 @@ namespace Application.Features.Search.Queries.StudentSearch
 
                 var studentId = request.UserId;
 
+                var pattern = SearchLike.ContainsPattern(term);
+
                 var coursesQuery = _unitOfWork.Repository<Course>()
                     .GetAll(cancellationToken)
                     .AsNoTracking()
-                    .Where(c => c.EducationYearId == educationYearId.Value && c.Name.Contains(term))
+                    .Where(c => c.EducationYearId == educationYearId.Value && EF.Functions.ILike(c.Name, pattern, "\\"))
                     .OrderBy(c => c.Name)
                     .Select(c => new CourseSearchItemDto
                     {
@@ -64,12 +66,14 @@ namespace Application.Features.Search.Queries.StudentSearch
                         PictureUrl = c.PictureUrl,
                         Price = c.Price ?? 0,
                         IsEnrolled = c.StudentCourses.Any(sc => sc.StudentId == studentId)
+                            || (c.Sections.Any()
+                                && c.Sections.All(s => s.StudentSections.Any(ss => ss.StudentId == studentId)))
                     });
 
                 var sectionsQuery = _unitOfWork.Repository<Section>()
                     .GetAll(cancellationToken)
                     .AsNoTracking()
-                    .Where(s => s.Course!.EducationYearId == educationYearId.Value && s.Name.Contains(term))
+                    .Where(s => s.Course!.EducationYearId == educationYearId.Value && EF.Functions.ILike(s.Name, pattern, "\\"))
                     .OrderBy(s => s.Name)
                     .Select(s => new SectionSearchItemDto
                     {
@@ -93,7 +97,7 @@ namespace Application.Features.Search.Queries.StudentSearch
                         .AsNoTracking()
                         .Where(c => c.Id == centerId.Value)
                         .SelectMany(c => c.CenterInstructors)
-                        .Where(ci => !ci.IsDeleted && ci.Instructor.User.FullName.Contains(term))
+                        .Where(ci => !ci.IsDeleted && EF.Functions.ILike(ci.Instructor.User.FullName, pattern, "\\"))
                         .OrderBy(ci => ci.Instructor.User.FullName)
                         .Select(ci => new InstructorSearchItemDto
                         {

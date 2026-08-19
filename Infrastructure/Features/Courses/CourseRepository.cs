@@ -22,7 +22,9 @@ namespace Infrastructure.Features.Courses
                             Description = course.Description,
                             PictureUrl = course.PictureUrl,
                             CreatedAt = course.CreatedAt,
-                            IsEnrolled = course.StudentCourses.Any(sc => sc.StudentId == request.UserId),
+                            IsEnrolled = course.StudentCourses.Any(sc => sc.StudentId == request.UserId)
+                                || (course.Sections.Any()
+                                    && course.Sections.All(s => s.StudentSections.Any(ss => ss.StudentId == request.UserId))),
                             UpdatedAt = course.UpdatedAt ?? course.CreatedAt,
                             Price = course.Price ?? 0,
                             IntroVideoUrl = course.IntroVideoUrl,
@@ -30,7 +32,9 @@ namespace Infrastructure.Features.Courses
                             NumberOfSheets = course.NumberOfQuestionSheets,
                             NumberOfSections = course.NumberOfSections,
                             NumberOfStudents = course.NumberOfStudentsEnrolled,
-                            NumberOfEnrolledSections = course.StudentCourses.Any(sc => sc.StudentId == request.UserId)
+                            NumberOfEnrolledSections = (course.StudentCourses.Any(sc => sc.StudentId == request.UserId)
+                                || (course.Sections.Any()
+                                    && course.Sections.All(s => s.StudentSections.Any(ss => ss.StudentId == request.UserId))))
                                                                   ? 0
                                                                   : course.Sections
                                                                           .SelectMany(s => s.StudentSections)
