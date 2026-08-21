@@ -14,13 +14,11 @@ namespace Infrastructure.Features.EducationYears
         {
             if (instructorId == null)
             {
-                return await _context.InstructorPreferences
+                return await _context.Instructors
                     .AsNoTracking()
+                    .Where(i => i.ApplicationName == applicationName)
+                    .SelectMany(i => i.EducationYears)
                     .OrderByDescending(ey => ey.CreatedAt)
-                    .Where(I => I.ApplicationName == applicationName)
-                    .Include(x => x.Instructor)
-                        .ThenInclude(i => i.EducationYears)
-                    .SelectMany(ip => ip.Instructor.EducationYears)
                     .Select(ey => new EducationYearDto
                     {
                         Id = ey.Id,

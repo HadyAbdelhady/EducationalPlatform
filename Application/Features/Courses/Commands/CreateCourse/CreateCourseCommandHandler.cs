@@ -46,6 +46,7 @@ namespace Application.Features.Courses.Commands.CreateCourse
                     IntroVideoUrl = request.IntroVideoUrl,
                     CreatedAt = EgyptTime.UtcNow,
                     UpdatedAt = EgyptTime.UtcNow,
+                    Rating = 0,
                 };
 
                 await _unitOfWork.Repository<Course>().AddAsync(newCourse, cancellationToken);

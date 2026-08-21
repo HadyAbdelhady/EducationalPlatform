@@ -1,4 +1,3 @@
-using Domain.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,10 +16,9 @@ namespace Domain.Entities
         [Column("rating")]
         public decimal? Rating { get; set; } = null;
 
-        [Column("preferences_id")]
-        [ForeignKey(nameof(InstructorPreferences))]
-        public Guid? PreferencesId { get; set; }
-        public InstructorPreferences? InstructorPreferences { get; set; }
+        [Column("application_name")]
+        public string ApplicationName { get; set; } = string.Empty;
+
         public ICollection<InstructorCourse> InstructorCourses { get; set; } = [];
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];
         public ICollection<InstructorReview> InstructorReviews { get; set; } = [];
@@ -31,5 +29,3 @@ namespace Domain.Entities
         public ICollection<CenterInstructorEducationYear> CenterInstructorYears { get; set; } = [];
     }
 }
-
-

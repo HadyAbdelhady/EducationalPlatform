@@ -40,8 +40,6 @@ namespace Infrastructure.Common.Data
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<Sheet> Sheets => Set<Sheet>();
         public DbSet<AnswersSheet> AnswersSheets => Set<AnswersSheet>();
-        public DbSet<InstructorPreferences> InstructorPreferences => Set<InstructorPreferences>();
-
         // Center mode entities
         public DbSet<Center> Centers => Set<Center>();
         public DbSet<CenterInstructor> CenterInstructors => Set<CenterInstructor>();

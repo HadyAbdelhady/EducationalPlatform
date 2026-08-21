@@ -27,6 +27,7 @@ namespace Application.Features.Sections.Commands.CreateSection
                     NumberOfVideos = request.NumberOfVideos,
                     CourseId = request.CourseId,
                     CreatedAt = EgyptTime.UtcNow,
+                    Rating = 0,
                     UpdatedAt = EgyptTime.UtcNow,
                 };
 

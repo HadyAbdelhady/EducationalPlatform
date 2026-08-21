@@ -65,32 +65,17 @@ namespace Application.Features.Auth.Commands.InstructorGoogleLogin
                         IsDeleted = false
                     };
 
-                    // Step 1: Create instructor without PreferencesId first (breaks circular FK)
                     var instructor = new Instructor
                     {
                         UserId = user.Id,
-                        PreferencesId = null
+                        Rating = 1,
+                        ApplicationName = string.IsNullOrWhiteSpace(request.ApplicationName)
+                            ? user.FullName
+                            : request.ApplicationName
                     };
 
                     user.Instructor = instructor;
                     await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
-                    // Save user + instructor first so InstructorPreferences can reference instructor_id
-                    await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                    // Step 2: Create InstructorPreferences now that instructor exists
-                    var instructorPreferences = new InstructorPreferences
-                    {
-                        Id = Guid.NewGuid(),
-                        InstructorId = user.Id,
-                        ApplicationName = string.IsNullOrWhiteSpace(request.ApplicationName) ? user.FullName : request.ApplicationName,
-                        CreatedAt = EgyptTime.UtcNow,
-                        IsDeleted = false
-                    };
-                    await _unitOfWork.Repository<InstructorPreferences>().AddAsync(instructorPreferences, cancellationToken);
-                    await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                    // Step 3: Link PreferencesId back onto instructor
-                    instructor.PreferencesId = instructorPreferences.Id;
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                 }
                 else
