@@ -18,9 +18,9 @@ namespace Edu_Base.Features.EducationYears
         private readonly ICurrentUserService _currentUser = currentUser;
 
         [HttpGet]
-        public async Task<IActionResult> GetEducationYears([FromQuery] string? ApplicationName, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetEducationYears([FromQuery] Guid instructorId, CancellationToken cancellationToken = default)
         {
-            var query = new GetEducationYearsQuery { InstructorId = null, ApplicationName = ApplicationName };
+            var query = new GetEducationYearsQuery { InstructorId = instructorId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }

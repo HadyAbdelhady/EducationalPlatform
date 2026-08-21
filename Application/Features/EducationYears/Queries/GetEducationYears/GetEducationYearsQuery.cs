@@ -6,8 +6,6 @@ namespace Application.Features.EducationYears.Queries.GetEducationYears
 {
     public class GetEducationYearsQuery : IRequest<Result<List<EducationYearDto>>>
     {
-        public Guid? InstructorId { get; set; }
-        public string? ApplicationName { get; set; }
-
+        public Guid InstructorId { get; set; }
     }
 }

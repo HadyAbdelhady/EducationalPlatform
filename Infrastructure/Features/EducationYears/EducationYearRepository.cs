@@ -10,35 +10,18 @@ namespace Infrastructure.Features.EducationYears
 {
     public class EducationYearRepository(EducationDbContext context) : Repository<EducationYear>(context), IEducationYearRepository
     {
-        public async Task<List<EducationYearDto>> GetActiveEducationYearsForInstructorAsync(Guid? instructorId, string? applicationName = null)
+        public async Task<List<EducationYearDto>> GetActiveEducationYearsForInstructorAsync(Guid instructorId)
         {
-            if (instructorId == null)
-            {
-                return await _context.Instructors
-                    .AsNoTracking()
-                    .Where(i => i.ApplicationName == applicationName)
-                    .SelectMany(i => i.EducationYears)
-                    .OrderByDescending(ey => ey.CreatedAt)
-                    .Select(ey => new EducationYearDto
-                    {
-                        Id = ey.Id,
-                        EducationYearName = ey.EducationYearName
-                    })
-                    .ToListAsync();
-            }
-            else
-            {
-                return await _context.EducationYears
-                    .AsNoTracking()
-                    .Where(I => I.InstructorId == instructorId)
-                    .OrderByDescending(ey => ey.CreatedAt)
-                    .Select(ey => new EducationYearDto
-                    {
-                        Id = ey.Id,
-                        EducationYearName = ey.EducationYearName
-                    })
-                    .ToListAsync();
-            }
+            return await _context.EducationYears
+                .AsNoTracking()
+                .Where(ey => ey.InstructorId == instructorId)
+                .OrderByDescending(ey => ey.CreatedAt)
+                .Select(ey => new EducationYearDto
+                {
+                    Id = ey.Id,
+                    EducationYearName = ey.EducationYearName
+                })
+                .ToListAsync();
         }
 
 
