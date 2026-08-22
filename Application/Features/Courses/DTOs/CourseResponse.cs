@@ -1,10 +1,9 @@
-﻿namespace Application.Features.Courses.DTOs
+namespace Application.Features.Courses.DTOs
 {
     public class CourseResponse
     {
         public Guid Id { get; set; }
-        public Guid EducationYearId { get; set; }
-        public string? EducationYearName { get; set; }
+        public string EducationYearName { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string? PictureUrl { get; set; }

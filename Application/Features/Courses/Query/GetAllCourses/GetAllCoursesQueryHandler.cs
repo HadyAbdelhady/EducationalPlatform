@@ -1,19 +1,19 @@
-﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces;
 using Application.Features.EducationYears.Interfaces;
 using Application.Common;
 using Application.Features.Courses.DTOs;
+using Application.Features.Courses.Interfaces;
 using Application.Features.HomeScreen.Interfaces;
 using Domain.Entities;
 using Domain.enums;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Courses.Query.GetAllCourses
 {
     public class GetAllCoursesQueryHandler(IUnitOfWork unitOfWork,
                                             IBaseFilterRegistry<Course> courseFilterRegistry,
                                             IStudentEducationYearProvider studentEducationYearProvider) : IRequestHandler<GetAllCoursesQuery,
-                                                                                                                            Result<PaginatedResult<CourseResponse>>>
+                                                                                                                           Result<PaginatedResult<CourseResponse>>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IBaseFilterRegistry<Course> _courseFilterRegistry = courseFilterRegistry;
@@ -23,72 +23,8 @@ namespace Application.Features.Courses.Query.GetAllCourses
         {
             try
             {
-                var Courses = _unitOfWork.Repository<Course>()
-                                                         .GetAll(cancellationToken)
-                                                         .ApplyFilters(request.GetAllEntityRequestSkeleton.Filters, _courseFilterRegistry.Filters)
-                                                         .ApplySort(request.GetAllEntityRequestSkeleton.SortBy, request.GetAllEntityRequestSkeleton.IsDescending, _courseFilterRegistry.Sorts);
-                ;
-
-                // For students: filter by their education year. Instructors/admins use Filters["educationyearid"] from request.
-                var studentEducationYearId = await _studentEducationYearProvider.GetEducationYearIdByUserIdAsync(request.UserID, cancellationToken);
-                if (studentEducationYearId.HasValue)
-                {
-                    Courses = Courses.Where(c => c.EducationYearId == studentEducationYearId.Value);
-                }
-
-                var userId = request.UserID;
-                var coursesQuery = Courses
-                .Select(course => new
-                {
-                    course,
-
-                    StudentCourse = course.StudentCourses.Where(sc => sc.StudentId == userId && sc.CourseId == course.Id),
-
-                    SubscribedSections = course.Sections.SelectMany(s => s.StudentSections)
-                                                        .Where(ss => ss.StudentId == userId),
-
-                    OwnsAllCurrentSections = course.Sections.Any()
-                        && course.Sections.All(s => s.StudentSections.Any(ss => ss.StudentId == userId))
-                })
-                .Select(x => new CourseResponse
-                {
-                    Id = x.course.Id,
-                    EducationYearId = x.course.EducationYearId,
-                    Title = x.course.Name,
-                    Description = x.course.Description ?? string.Empty,
-                    PictureUrl = x.course.PictureUrl,
-                    Price = x.course.Price ?? 0,
-                    Rating = x.course.Rating,
-
-                    IsEnrolled = x.StudentCourse.Any() || x.OwnsAllCurrentSections,
-
-                    NumberOfStudents = x.course.NumberOfStudentsEnrolled,
-                    NumberOfVideos = x.course.NumberOfVideos,
-                    NumberOfSections = x.course.NumberOfSections,
-                    NumberOfSheets = x.course.NumberOfQuestionSheets,
-
-                    NumberOfWatchedVideos = x.StudentCourse.Any()
-                                                            ? x.StudentCourse.Select(xx => xx.NumberOfCourseVideosWatched)
-                                                                                .FirstOrDefault()
-                                                            : 0,
-
-                    NumberOfSubscriptedSections = (x.StudentCourse.Any() || x.OwnsAllCurrentSections)
-                        ? 0
-                        : x.SubscribedSections.Distinct().Count(),
-
-                    ProgressPercentage = x.StudentCourse.Any()
-                                                             ? x.StudentCourse.Select(xx => xx.Progress).FirstOrDefault()
-                                                             : x.SubscribedSections.Select(ss => ss.Progress).Average(),
-
-                    ThumbnailUrl = x.course.IntroVideoUrl!,
-                    CreatedAt = x.course.CreatedAt,
-                    UpdatedAt = x.course.UpdatedAt
-                });
-
-                var paginatedResponse = await coursesQuery.ToPaginatedResultAsync(
-                    request.GetAllEntityRequestSkeleton.PageNumber,
-                    10,
-                    cancellationToken);
+                var paginatedResponse = await _unitOfWork.GetRepository<ICourseRepository>()
+                    .GetCoursesPaginatedAsync(request, _courseFilterRegistry, _studentEducationYearProvider, cancellationToken);
 
                 var enrollmentRepo = _unitOfWork.GetRepository<IStudentEnrollmentRepository>();
                 foreach (var course in paginatedResponse.Items.Where(c => !c.IsEnrolled))
