@@ -84,7 +84,7 @@ namespace Edu_Base.Features.Profiles
         [HttpPatch("picture")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateProfilePicture(
-            [FromForm] IFormFile file,
+            IFormFile file,
             CancellationToken cancellationToken = default)
         {
             if (!_currentUser.TryGetUserId(out var studentId))
