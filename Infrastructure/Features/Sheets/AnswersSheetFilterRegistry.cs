@@ -11,6 +11,14 @@ namespace Infrastructure.Features.Sheets
             ["questionsheetid"] = (q, value) => q.Where(a => a.QuestionsSheetId == Guid.Parse(value)),
             ["isapproved"] = (q, value) => q.Where(a => a.IsApproved == bool.Parse(value)),
             ["instructorid"] = (q, value) => q.Where(a => a.QuestionsSheet.InstructorId == Guid.Parse(value)),
+            ["courseid"] = (q, value) => q.Where(a =>
+                a.QuestionsSheet.CourseId == Guid.Parse(value) ||
+                (a.QuestionsSheet.Section != null && a.QuestionsSheet.Section.CourseId == Guid.Parse(value)) ||
+                (a.QuestionsSheet.Video != null && a.QuestionsSheet.Video.Section.CourseId == Guid.Parse(value))),
+            ["sectionid"] = (q, value) => q.Where(a =>
+                a.QuestionsSheet.SectionId == Guid.Parse(value) ||
+                (a.QuestionsSheet.Video != null && a.QuestionsSheet.Video.SectionId == Guid.Parse(value))),
+            ["videoid"] = (q, value) => q.Where(a => a.QuestionsSheet.VideoId == Guid.Parse(value)),
             ["name"] = (q, value) => q.Where(a => a.Name.Contains(value)),
         };
 

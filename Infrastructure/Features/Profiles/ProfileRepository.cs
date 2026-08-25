@@ -67,6 +67,7 @@ namespace Infrastructure.Features.Profiles
                     FullName = s.User.FullName,
                     Email = s.User.GmailExternal,
                     PersonalPictureUrl = s.User.PersonalPictureUrl,
+                    PhoneNumber = s.User.PhoneNumber,
                     EducationYearId = s.EducationYearId,
                     EducationYearName = s.EducationYear.EducationYearName,
                     CenterId = s.CenterId,

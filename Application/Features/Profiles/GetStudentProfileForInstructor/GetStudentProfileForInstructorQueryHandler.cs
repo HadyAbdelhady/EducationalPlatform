@@ -32,7 +32,8 @@ namespace Application.Features.Profiles.GetStudentProfileForInstructor
                         ErrorType.NotFound);
                 }
 
-                if (!await repo.HasSharedContentAsync(
+                var isSelf = request.InstructorId == request.StudentId;
+                if (!isSelf && !await repo.HasSharedContentAsync(
                         request.InstructorId,
                         request.StudentId,
                         cancellationToken))
@@ -54,21 +55,24 @@ namespace Application.Features.Profiles.GetStudentProfileForInstructor
                         ErrorType.NotFound);
                 }
 
-                var scope = await _instructorContentScopeService.ResolveAsync(
-                    request.InstructorId,
-                    courseId: null,
-                    sectionId: null,
-                    cancellationToken);
+                if (!isSelf)
+                {
+                    var scope = await _instructorContentScopeService.ResolveAsync(
+                        request.InstructorId,
+                        courseId: null,
+                        sectionId: null,
+                        cancellationToken);
 
-                var progressRepo = _unitOfWork.GetRepository<IEnrollmentProgressRepository>();
-                var enrollments = await progressRepo.GetInstructorStudentEnrollmentsAsync(
-                    request.InstructorId,
-                    request.StudentId,
-                    scope.CourseIds,
-                    scope.SectionIds,
-                    cancellationToken);
+                    var progressRepo = _unitOfWork.GetRepository<IEnrollmentProgressRepository>();
+                    var enrollments = await progressRepo.GetInstructorStudentEnrollmentsAsync(
+                        request.InstructorId,
+                        request.StudentId,
+                        scope.CourseIds,
+                        scope.SectionIds,
+                        cancellationToken);
 
-                profile.Enrollments = enrollments.Enrollments;
+                    profile.Enrollments = enrollments.Enrollments;
+                }
 
                 return Result<StudentProfileForInstructorResponse>.Success(profile);
             }

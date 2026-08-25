@@ -1,4 +1,5 @@
-﻿using Application.Features.Auth.DTOs;
+﻿using Application.Features.EducationYears.Interfaces;
+using Application.Features.Auth.DTOs;
 using Application.Common.Interfaces;
 using Application.Features.Auth.Interfaces;
 using Application.Common;
@@ -119,6 +120,18 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                 // Save all changes in a single transaction
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+                var educationYearName = user.Student?.EducationYear?.EducationYearName;
+                if (string.IsNullOrWhiteSpace(educationYearName))
+                {
+                    var educationYearId = user.Student?.EducationYearId ?? request.EducationYearId;
+                    if (educationYearId != Guid.Empty)
+                    {
+                        var educationYear = await _unitOfWork.GetRepository<IEducationYearRepository>()
+                            .GetEducationYearByIdAsync(educationYearId, cancellationToken);
+                        educationYearName = educationYear?.EducationYearName;
+                    }
+                }
+
                 // Return authentication response
                 return Result<AuthenticationResponse>.Success(new AuthenticationResponse
                 {
@@ -126,9 +139,8 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                     FullName = user.FullName,
                     Email = user.GmailExternal ?? string.Empty,
                     ProfilePictureUrl = user.PersonalPictureUrl,
-                    //UserRole = "Student",
+                    EducationYearName = educationYearName,
                     IsNewUser = isNewUser,
-                    //AuthenticatedAt = DateTimeOffset.UtcNow,
                     Token = accesstoken,
                     TokenExpiresAt = tokenExpiration,
                     RefreshToken = refreshToken

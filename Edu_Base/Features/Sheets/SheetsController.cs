@@ -9,6 +9,8 @@ using Application.Features.Sheets.Commands.CreateSheet;
 using Application.Features.Sheets.Commands.DeleteSheet;
 using Application.Features.Sheets.Commands.UpdateSheet;
 using Application.Features.Sheets.Queries.GetAllSheets;
+using Application.Features.Sheets.Queries.GetInstructorSheetsWithSubmissions;
+using Application.Features.Sheets.Queries.GetSubmittedAnswers;
 using Domain;
 using Domain.enums;
 using MediatR;
@@ -288,6 +290,62 @@ namespace Edu_Base.Features.Sheets
                 TargetId = userId,
                 RequestSkeleton = requestSkeleton ?? new GetAllEntityRequestSkeleton()
             };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        /// <summary>
+        /// Returns the authenticated instructor's question sheets, each with every student's submitted answers.
+        /// Example: GET /api/Sheets/GetInstructorSheetsWithSubmissions
+        /// </summary>
+        [HttpGet("GetInstructorSheetsWithSubmissions")]
+        public async Task<IActionResult> GetInstructorSheetsWithSubmissions(
+            [FromQuery] GetAllEntityRequestSkeleton? requestSkeleton,
+            CancellationToken cancellationToken)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized("User id not found in token.");
+
+            var query = new GetInstructorSheetsWithSubmissionsQuery
+            {
+                InstructorId = instructorId,
+                RequestSkeleton = requestSkeleton ?? new GetAllEntityRequestSkeleton()
+            };
+
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        /// <summary>
+        /// Returns all student answer submissions for question sheets inside a course or section
+        /// (including sheets attached to that course/section's videos).
+        /// Example: GET /api/Sheets/GetSubmittedAnswers?targetType=Course&amp;targetId={courseId}
+        /// Example: GET /api/Sheets/GetSubmittedAnswers?targetType=Section&amp;targetId={sectionId}
+        /// </summary>
+        [HttpGet("GetSubmittedAnswers")]
+        public async Task<IActionResult> GetSubmittedAnswers(
+            [FromQuery] SheetTargetType targetType,
+            [FromQuery] Guid targetId,
+            [FromQuery] GetAllEntityRequestSkeleton? requestSkeleton,
+            CancellationToken cancellationToken)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized("User id not found in token.");
+
+            if (targetType is not (SheetTargetType.Course or SheetTargetType.Section))
+                return BadRequest("targetType must be Course or Section.");
+
+            if (targetId == Guid.Empty)
+                return BadRequest("targetId cannot be empty.");
+
+            var query = new GetSubmittedAnswersQuery
+            {
+                InstructorId = instructorId,
+                TargetType = targetType,
+                TargetId = targetId,
+                RequestSkeleton = requestSkeleton ?? new GetAllEntityRequestSkeleton()
+            };
+
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
