@@ -77,6 +77,29 @@ namespace Application.Common
             };
         }
 
+        public static PaginatedResult<T> ToPaginatedResult<T>(
+            this IEnumerable<T> items,
+            int pageNumber,
+            int pageSize)
+        {
+            pageNumber = pageNumber < 1 ? 1 : pageNumber;
+            pageSize = pageSize <= 0 ? 10 : pageSize;
+
+            var list = items as IReadOnlyList<T> ?? items.ToList();
+            var pageItems = list
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PaginatedResult<T>
+            {
+                Items = pageItems,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = list.Count
+            };
+        }
+
         public static PaginatedResult<T> EmptyPaginatedResult<T>(int pageNumber, int pageSize)
         {
             pageNumber = pageNumber < 1 ? 1 : pageNumber;

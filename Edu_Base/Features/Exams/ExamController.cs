@@ -10,6 +10,7 @@ using Application.Features.Exams.Query.GetExamCalendarDays;
 using Application.Features.Exams.Query.GetExamById;
 using Application.Features.Exams.Query.GetExamSubmissionsList;
 using Application.Features.Exams.Query.GetStudentExamResult;
+using Application.Features.Exams.Query.GetStudentExamSubmission;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Application.Features.Exams.Query.GetInstructorExams;
@@ -78,15 +79,13 @@ namespace Edu_Base.Features.Exams
         [HttpGet("GetExamById/{examId}")]
         public async Task<IActionResult> GetExamById(Guid examId, CancellationToken cancellationToken)
         {
-            if (!_currentUser.TryGetUserId(out var userId))
+            if (!_currentUser.TryGetUserId(out var studentId))
                 return Unauthorized("User id not found in token.");
 
-            var query = new GetExamByIdQuery { Id = examId, UserId = userId };
+            var query = new GetExamByIdQuery { Id = examId, UserId = studentId };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
-
-
 
         [HttpGet("GetAllExams")]
         public async Task<IActionResult> GetAllExams([FromQuery] GetAllEntityRequestSkeleton request, CancellationToken cancellationToken)
@@ -116,12 +115,12 @@ namespace Edu_Base.Features.Exams
                 InstructorId = instructorId,
                 ExamId = request.ExamId
             };
-            var result = await _mediator.Send(query, cancellationToken);
+            Result<ExamSubmissionsListResponse>? result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
 
         }
 
-        [HttpGet("GetStudentExamResult/{examId}/{studentId}")]
+        [HttpGet("GetStudentExamResultOverview/{examId}/{studentId}")]
         public async Task<IActionResult> GetStudentExamResult(Guid examId, Guid studentId, CancellationToken cancellationToken)
         {
             if (!_currentUser.TryGetUserId(out _))
@@ -135,6 +134,28 @@ namespace Edu_Base.Features.Exams
 
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("GetStudentExamSubmission/{examId}/{studentId}")]
+        public async Task<IActionResult> GetStudentExamSubmission(
+            Guid examId,
+            Guid studentId,
+            [FromQuery] GetAllEntityRequestSkeleton request,
+            CancellationToken cancellationToken)
+        {
+            if (!_currentUser.TryGetUserId(out var callerUserId))
+                return Unauthorized("User id not found in token.");
+
+            var query = new GetStudentExamSubmissionQuery
+            {
+                ExamId = examId,
+                StudentId = studentId,
+                CallerUserId = callerUserId,
+                RequestSkeleton = request
+            };
+
+            var submissionResult = await _mediator.Send(query, cancellationToken);
+            return submissionResult.IsSuccess ? Ok(submissionResult) : StatusCode((int)submissionResult.ErrorType, submissionResult);
         }
 
         [HttpGet("GetExamCalendarDays")]
