@@ -121,10 +121,10 @@ namespace Edu_Base.Features.Exams
 
         }
 
-        [HttpGet("GetStudentExamResult/{examId}")]
-        public async Task<IActionResult> GetStudentExamResult(Guid examId, CancellationToken cancellationToken)
+        [HttpGet("GetStudentExamResult/{examId}/{studentId}")]
+        public async Task<IActionResult> GetStudentExamResult(Guid examId, Guid studentId, CancellationToken cancellationToken)
         {
-            if (!_currentUser.TryGetUserId(out var studentId))
+            if (!_currentUser.TryGetUserId(out _))
                 return Unauthorized("User id not found in token.");
 
             var query = new GetStudentExamResultQuery
