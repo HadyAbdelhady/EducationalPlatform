@@ -14,7 +14,7 @@ namespace Domain.Entities
         public User User { get; set; } = null!;
 
         [Column("rating")]
-        public decimal? Rating { get; set; } = null;
+        public decimal? Rating { get; set; } = 1;
 
         [Column("application_name")]
         public string ApplicationName { get; set; } = string.Empty;

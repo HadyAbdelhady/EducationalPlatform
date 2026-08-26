@@ -89,23 +89,31 @@ namespace Infrastructure.Features.Exams
                 .FirstOrDefaultAsync(e => e.Id == examId, ct);
         }
 
-        public async Task<Dictionary<Guid, Dictionary<Guid, string>>> GetInstructorCoursesSectionsHashMapAsync(Guid instructorId, CancellationToken cancellationToken)
+        public async Task<CoursesSectionsHashMap> GetInstructorCoursesSectionsHashMapAsync(Guid instructorId, CancellationToken cancellationToken)
         {
             var courses = await _context.Courses
+                .AsNoTracking()
                 .Where(c => c.InstructorCourses.Any(ic => ic.InstructorId == instructorId))
-                .Include(c => c.Sections)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Name,
+                    Sections = c.Sections.Select(s => new { s.Id, s.Name })
+                })
                 .ToListAsync(cancellationToken);
 
-            var hashMap = new Dictionary<Guid, Dictionary<Guid, string>>();
+            var hashMap = new CoursesSectionsHashMap();
 
             foreach (var course in courses)
             {
-                hashMap[course.Id] = [];
-
-                foreach (var section in course.Sections)
+                hashMap.Courses[course.Id] = new CourseSectionInfo
                 {
-                    hashMap[course.Id][section.Id] = section.Name;
-                }
+                    Id = course.Id,
+                    Name = course.Name,
+                    Sections = course.Sections.ToDictionary(
+                        s => s.Id,
+                        s => new SectionInfo { Id = s.Id, Name = s.Name })
+                };
             }
 
             return hashMap;
@@ -114,7 +122,8 @@ namespace Infrastructure.Features.Exams
         public IQueryable<InstructorExamsResponseDto> GetInstructorNonRandomExamsQuery(Guid instructorId)
         {
             return _context.Exams
-                .Where(e => e.InstructorId == instructorId)
+                .AsNoTracking()
+                .Where(e => e.InstructorId == instructorId && !e.IsDeleted)
                 .Select(e => new InstructorExamsResponseDto
                 {
                     ExamId = e.Id,
@@ -132,19 +141,26 @@ namespace Infrastructure.Features.Exams
                     IsRandomized = e.IsRandomized,
                     PassMarkPercentage = e.PassMarkPercentage,
                     CourseId = e.CourseId,
-                    CourseName = e.Course!.Name,
-                    SectionId = e.SectionId!,
-                    SectionName = e.Section!.Name,
-
-                    // Calculate exam statistics
-                    StudentCount = e.SectionId != null 
-                        ? e.Section!.StudentSections.Count(ss => !e.Course!.StudentCourses.Any(sc => sc.StudentId == ss.StudentId)) + e.Course!.StudentCourses.Count
-                        : e.Course!.StudentCourses.Count,
+                    CourseName = e.Course != null ? e.Course.Name : string.Empty,
+                    SectionId = e.SectionId,
+                    SectionName = e.Section != null ? e.Section.Name : null,
+                    StudentCount =
+                        _context.StudentCourses.Count(sc => sc.CourseId == e.CourseId)
+                        + _context.StudentSections.Count(ss =>
+                            e.SectionId != null
+                            && ss.SectionId == e.SectionId
+                            && !_context.StudentCourses.Any(sc =>
+                                sc.CourseId == e.CourseId && sc.StudentId == ss.StudentId)),
                     PassedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.Passed),
                     FailedCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.Failed),
-                    NotStartedCount = (e.SectionId != null 
-                        ? e.Section!.StudentSections.Count(ss => !e.Course!.StudentCourses.Any(sc => sc.StudentId == ss.StudentId)) + e.Course!.StudentCourses.Count
-                        : e.Course!.StudentCourses.Count) - e.ExamResults.Count(r => r.Status != ExamResultStatus.NotStarted),
+                    NotStartedCount =
+                        _context.StudentCourses.Count(sc => sc.CourseId == e.CourseId)
+                        + _context.StudentSections.Count(ss =>
+                            e.SectionId != null
+                            && ss.SectionId == e.SectionId
+                            && !_context.StudentCourses.Any(sc =>
+                                sc.CourseId == e.CourseId && sc.StudentId == ss.StudentId))
+                        - e.ExamResults.Count(r => r.Status != ExamResultStatus.NotStarted),
                     InProgressCount = e.ExamResults.Count(r => r.Status == ExamResultStatus.InProgress)
                 });
         }

@@ -154,7 +154,7 @@ namespace Edu_Base.Features.Exams
                 RequestSkeleton = request
             };
 
-            var submissionResult = await _mediator.Send(query, cancellationToken);
+            Result<StudentExamSubmissionDetailDto>? submissionResult = await _mediator.Send(query, cancellationToken);
             return submissionResult.IsSuccess ? Ok(submissionResult) : StatusCode((int)submissionResult.ErrorType, submissionResult);
         }
 

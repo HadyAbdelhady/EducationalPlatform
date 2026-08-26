@@ -11,7 +11,7 @@ namespace Application.Features.Exams.Interfaces
         Task<ExamDetailsQueryModel?> GetExamByIdWithQuestionsAndAnswersAsync(Guid ExamId, CancellationToken cancellationToken = default);
         Task<Exam?> GetExamEntityByIdAsync(Guid examId, CancellationToken ct);
         Task<ExamModelAnswer?> GetExamWithQuestionsAndAnswersByIdAsync(Guid examId, CancellationToken cancellationToken = default);
-        Task<Dictionary<Guid, Dictionary<Guid, string>>> GetInstructorCoursesSectionsHashMapAsync(Guid instructorId, CancellationToken cancellationToken);
+        Task<CoursesSectionsHashMap> GetInstructorCoursesSectionsHashMapAsync(Guid instructorId, CancellationToken cancellationToken);
         IQueryable<InstructorExamsResponseDto> GetInstructorNonRandomExamsQuery(Guid instructorId);
     }
 }
