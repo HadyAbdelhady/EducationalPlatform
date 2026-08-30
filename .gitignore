@@ -43,3 +43,12 @@ project.nuget.cache
 
 # Graphify knowledge graph (local / generated)
 graphify-out/
+.agents/skills/heavy-test/SKILL.md
+.agents/skills/decide-then-build/SKILL.md
+.agents/skills/kill-bug/SKILL.md
+.agents/skills/llm-council/SKILL.md
+.agents/skills/onboard-explain/SKILL.md
+.agents/skills/ponytail/SKILL.md
+.agents/skills/ship-feature/SKILL.md
+.agents/skills/ship-simple/SKILL.md
+.agents/skills/story-blueprint/SKILL.md

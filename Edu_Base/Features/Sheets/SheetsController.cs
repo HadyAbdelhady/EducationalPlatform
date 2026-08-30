@@ -11,6 +11,7 @@ using Application.Features.Sheets.Commands.UpdateSheet;
 using Application.Features.Sheets.Queries.GetAllSheets;
 using Application.Features.Sheets.Queries.GetInstructorSheetsWithSubmissions;
 using Application.Features.Sheets.Queries.GetSubmittedAnswers;
+using Application.Features.Sheets.Queries.GetLiveSheet;
 using Domain;
 using Domain.enums;
 using MediatR;
@@ -346,6 +347,21 @@ namespace Edu_Base.Features.Sheets
                 RequestSkeleton = requestSkeleton ?? new GetAllEntityRequestSkeleton()
             };
 
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("{sheetId}/live")]
+        public async Task<IActionResult> GetLiveSheet(Guid sheetId, CancellationToken cancellationToken)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized();
+
+            var query = new GetLiveSheetQuery
+            {
+                SheetId = sheetId,
+                InstructorId = instructorId
+            };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }

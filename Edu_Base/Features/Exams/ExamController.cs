@@ -14,6 +14,7 @@ using Application.Features.Exams.Query.GetStudentExamSubmission;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Application.Features.Exams.Query.GetInstructorExams;
+using Application.Features.Exams.Query.GetLiveExam;
 
 namespace Edu_Base.Features.Exams
 {
@@ -195,6 +196,21 @@ namespace Edu_Base.Features.Exams
                 }
             };
 
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("{examId}/live")]
+        public async Task<IActionResult> GetLiveExam(Guid examId, CancellationToken cancellationToken)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized("User id not found in token.");
+
+            var query = new GetLiveExamQuery
+            {
+                ExamId = examId,
+                InstructorId = instructorId
+            };
             var result = await _mediator.Send(query, cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }

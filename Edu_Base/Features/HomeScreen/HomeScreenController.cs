@@ -4,6 +4,10 @@ using Application.Features.HomeScreen.InstructorStudentEnrollments;
 using Application.Features.HomeScreen.InstructorStudentExams;
 using Application.Features.HomeScreen.InstructorStudentSheets;
 using Application.Features.HomeScreen.InstructorStudentsProgress;
+using Application.Features.HomeScreen.InstructorSchedule;
+using Application.Features.HomeScreen.InstructorAttention;
+using Application.Features.HomeScreen.InstructorAtRisk;
+using Application.Features.HomeScreen.InstructorPayments;
 using Application.Features.HomeScreen.StudentHomeScreen;
 using Application.Features.HomeScreen.StudentProgress;
 using MediatR;
@@ -179,8 +183,85 @@ namespace Edu_Base.Features.HomeScreen
 
         }
 
+        [HttpGet("instructor/schedule")]
+        public async Task<IActionResult> GetInstructorSchedule(
+            [FromQuery] Guid educationYearId,
+            [FromQuery] int days = 7,
+            CancellationToken cancellationToken = default)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized();
+
+            var query = new InstructorScheduleQuery
+            {
+                InstructorId = instructorId,
+                EducationYearId = educationYearId,
+                Days = days
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("instructor/attention")]
+        public async Task<IActionResult> GetInstructorAttention(
+            [FromQuery] Guid educationYearId,
+            CancellationToken cancellationToken = default)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized();
+
+            var query = new InstructorAttentionQuery
+            {
+                InstructorId = instructorId,
+                EducationYearId = educationYearId
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("instructor/at-risk")]
+        public async Task<IActionResult> GetInstructorAtRiskStudents(
+            [FromQuery] Guid educationYearId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20,
+            CancellationToken cancellationToken = default)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized();
+
+            var query = new InstructorAtRiskQuery
+            {
+                InstructorId = instructorId,
+                EducationYearId = educationYearId,
+                Page = page,
+                PageSize = pageSize
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpGet("instructor/payments")]
+        public async Task<IActionResult> GetInstructorPayments(
+            [FromQuery] Guid educationYearId,
+            [FromQuery] int days = 7,
+            CancellationToken cancellationToken = default)
+        {
+            if (!_currentUser.TryGetUserId(out var instructorId))
+                return Unauthorized();
+
+            var query = new InstructorPaymentsQuery
+            {
+                InstructorId = instructorId,
+                EducationYearId = educationYearId,
+                Days = days
+            };
+            var result = await _mediator.Send(query, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
     }
 
 }
+
 
 
