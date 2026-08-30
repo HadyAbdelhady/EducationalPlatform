@@ -52,6 +52,7 @@ namespace Application.Features.HomeScreen.InstructorStudentExams
                 var courseIds = scope.CourseIds;
                 var sectionIds = scope.SectionIds;
 
+                var now = EgyptTime.UtcNow;
                 var examsQuery = _unitOfWork.Repository<Exam>()
                     .GetAll(cancellationToken)
                     .AsNoTracking()
@@ -65,7 +66,13 @@ namespace Application.Features.HomeScreen.InstructorStudentExams
                         ExamId = e.Id,
                         Name = e.Name,
                         Description = e.Description,
-                        ExamStatus = e.Status,
+                        ExamStatus = e.Status == ExamStatus.Draft
+                            ? ExamStatus.Draft
+                            : (e.Status == ExamStatus.Finished || (e.EndTime != null && e.EndTime <= now)
+                                ? ExamStatus.Finished
+                                : (e.StartTime != null && e.StartTime <= now
+                                    ? ExamStatus.Started
+                                    : ExamStatus.Scheduled)),
                         StudentExamStatusResult = e.ExamResults
                             .Where(se => se.StudentId == studentId)
                             .Select(se => se.Status)

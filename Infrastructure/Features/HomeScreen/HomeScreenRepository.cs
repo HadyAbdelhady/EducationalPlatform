@@ -1,4 +1,4 @@
-﻿using Application.Features.HomeScreen.DTOs;
+using Application.Features.HomeScreen.DTOs;
 using Application.Common.Interfaces;
 using Application.Features.HomeScreen.Interfaces;
 using Domain;
@@ -64,7 +64,8 @@ namespace Infrastructure.Features.HomeScreen
 
                             // Exams from enrolled courses - scope to student's education year
                             Exams = _context.Exams
-                                .Where(e => e.StartTime.HasValue &&
+                                .Where(e => e.Status != ExamStatus.Draft &&
+                                           e.StartTime.HasValue &&
                                            e.EndTime > EgyptTime.UtcNow &&
                                            e.Course.EducationYearId == studentEducationYearId &&
                                            (_context.StudentCourses

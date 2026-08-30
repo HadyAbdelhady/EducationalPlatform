@@ -1,4 +1,4 @@
-﻿using Infrastructure.Common;
+using Infrastructure.Common;
 using Application.Features.Exams.Command.UpdateExam;
 using Microsoft.EntityFrameworkCore;
 using Application.Features.Questions.DTOs;
@@ -7,6 +7,7 @@ using Application.Common.Interfaces;
 using Application.Features.Exams.Interfaces;
 using Application.Features.Exams.DTOs;
 using Infrastructure.Common.Data;
+using Domain;
 using Domain.Entities;
 using Domain.enums;
 
@@ -48,6 +49,7 @@ namespace Infrastructure.Features.Exams
                 throw new ArgumentException("ExamId cannot be empty.");
             }
             return await _context.Exams
+                                 .Where(e => e.Id == ExamId)
                                  .Select(e => new ExamDetailsQueryModel
                                  {
                                      ExamId = e.Id,
@@ -59,25 +61,27 @@ namespace Infrastructure.Features.Exams
                                      TotalMark = e.TotalMark,
                                      ExamType = e.ExamType,
                                      EndDate = e.EndTime,
-                                     AllQuestionsInExam = e.ExamQuestions.Where(ex => ex.ExamId == ExamId)
-                                                                         .Select(eq => new QuestionsInExamWithAnswersResponse
-                                                                         {
-                                                                             Id = eq.Question.Id,
-                                                                             QuestionMark = eq.QuestionMark,
-                                                                             CourseId = eq.Question.CourseId,
-                                                                             QuestionImageUrl = eq.Question.QuestionImageUrl,
-                                                                             QuestionString = eq.Question.QuestionString ?? string.Empty,
-                                                                             SectionId = eq.Question.SectionId ?? Guid.Empty,
-                                                                             AllAnswersInExam = eq.Question.Answers.Select(a => new AnswerDto
-                                                                             {
-                                                                                 Id = a.Id,
-                                                                                 AnswerString = a.AnswerText,
-                                                                                 IsCorrect = a.IsCorrect,
-                                                                                 QuestionId = a.QuestionId ?? Guid.Empty
-                                                                             }).ToList()
-                                                                         }).ToList()
+                                     AllQuestionsInExam = e.ExamQuestions
+                                         .Select(eq => new QuestionsInExamWithAnswersResponse
+                                         {
+                                             Id = eq.Question.Id,
+                                             QuestionMark = eq.QuestionMark,
+                                             CourseId = eq.Question.CourseId,
+                                             QuestionImageUrl = eq.Question.QuestionImageUrl,
+                                             QuestionString = eq.Question.QuestionString ?? string.Empty,
+                                             SectionId = eq.Question.SectionId ?? Guid.Empty,
+                                             AllAnswersInExam = eq.Question.Answers
+                                                 .Where(a => !a.IsDeleted)
+                                                 .Select(a => new AnswerDto
+                                                 {
+                                                     Id = a.Id,
+                                                     AnswerString = a.AnswerText,
+                                                     IsCorrect = a.IsCorrect,
+                                                     QuestionId = a.QuestionId ?? Guid.Empty
+                                                 }).ToList()
+                                         }).ToList()
                                  })
-                                 .FirstOrDefaultAsync(ex => ex.ExamId == ExamId, cancellationToken);
+                                 .FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<Exam?> GetExamEntityByIdAsync(Guid examId, CancellationToken ct)
@@ -129,7 +133,13 @@ namespace Infrastructure.Features.Exams
                     ExamId = e.Id,
                     Name = e.Name,
                     Description = e.Description,
-                    ExamStatus = e.Status,
+                    ExamStatus = e.Status == ExamStatus.Draft
+                        ? ExamStatus.Draft
+                        : (e.Status == ExamStatus.Finished || (e.EndTime != null && e.EndTime <= EgyptTime.UtcNow)
+                            ? ExamStatus.Finished
+                            : (e.StartTime != null && e.StartTime <= EgyptTime.UtcNow
+                                ? ExamStatus.Started
+                                : ExamStatus.Scheduled)),
                     ExamType = e.ExamType,
                     StartTime = e.StartTime,
                     EndTime = e.EndTime,

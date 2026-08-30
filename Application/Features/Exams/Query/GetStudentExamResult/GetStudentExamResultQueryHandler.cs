@@ -1,4 +1,4 @@
-﻿using Application.Features.Exams.DTOs;
+using Application.Features.Exams.DTOs;
 using Application.Common.Interfaces;
 using Application.Common;
 using Domain.Entities;
@@ -39,7 +39,28 @@ namespace Application.Features.Exams.Query.GetStudentExamResult
 
             if (examResult == null)
             {
-                return Result<ExamSubmissionDto>.FailureStatusCode("Exam result not found for this student", ErrorType.NotFound);
+                var user = await _unitOfWork.Repository<User>()
+                    .FirstOrDefaultAsync(
+                        predicate: u => u.Id == request.StudentId,
+                        cancellationToken: cancellationToken);
+
+                var notStartedDto = new ExamSubmissionDto
+                {
+                    StudentId = request.StudentId,
+                    StudentName = user?.FullName ?? string.Empty,
+                    StudentProfilePicture = user?.PersonalPictureUrl ?? string.Empty,
+                    Status = ExamResultStatus.NotStarted,
+                    ObtainedMarks = 0,
+                    TotalMark = exam.TotalMark,
+                    PassMarkPercentage = exam.PassMarkPercentage,
+                    TakenAt = null,
+                    SubmittedAt = default,
+                    NumberOfAnswersSubmitted = 0,
+                    TotalQuestions = exam.NumberOfQuestions,
+                    IsCompleted = false
+                };
+
+                return Result<ExamSubmissionDto>.Success(notStartedDto);
             }
 
             var dto = ExamSubmissionDtoMapping.MapFrom(examResult, ExamSubmissionProjectionContext.FromExam(exam));

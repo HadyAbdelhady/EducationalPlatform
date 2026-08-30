@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces;
+using Domain;
 using Domain.Entities;
 using Domain.enums;
 using Microsoft.EntityFrameworkCore;
@@ -23,11 +24,27 @@ namespace Infrastructure.Features.Exams
                     q.Where(e => e.SectionId == Guid.Parse(value)),
 
                 ["status"] = (q, value) =>
-                    q.Where(e => e.Status == Enum.Parse<ExamStatus>(value, true)),
+                {
+                    if (!Enum.TryParse<ExamStatus>(value, true, out var status))
+                        return q.Where(e => false);
+
+                    var now = EgyptTime.UtcNow;
+                    return status switch
+                    {
+                        ExamStatus.Draft => q.Where(e => e.Status == ExamStatus.Draft),
+                        ExamStatus.Scheduled => q.Where(e => e.Status != ExamStatus.Draft && e.Status != ExamStatus.Finished && (e.StartTime == null || e.StartTime > now) && (e.EndTime == null || e.EndTime > now)),
+                        ExamStatus.Started => q.Where(e => e.Status != ExamStatus.Draft && e.Status != ExamStatus.Finished && e.StartTime <= now && (e.EndTime == null || e.EndTime > now)),
+                        ExamStatus.Finished => q.Where(e => e.Status == ExamStatus.Finished || (e.Status != ExamStatus.Draft && e.EndTime != null && e.EndTime <= now)),
+                        _ => q
+                    };
+                },
 
                 ["studentstatus"] = (q, value) =>
-                    q.Where(e => e.ExamResults.Any(r =>
-                        r.Status == Enum.Parse<ExamResultStatus>(value, true))),
+                    Enum.TryParse<ExamResultStatus>(value, true, out var status)
+                        ? (status == ExamResultStatus.NotStarted
+                            ? q.Where(e => !e.ExamResults.Any(r => r.Status == ExamResultStatus.InProgress || r.Status == ExamResultStatus.Passed || r.Status == ExamResultStatus.Failed))
+                            : q.Where(e => e.ExamResults.Any(r => r.Status == status)))
+                        : q,
 
 
                 ["examtype"] = (q, value) =>
@@ -50,9 +67,20 @@ namespace Infrastructure.Features.Exams
                      .Include(e => e.ExamResults.Where(r => r.StudentId == Guid.Parse(value))),
 
                 ["examstatus"] = (q, value) =>
-                    Enum.TryParse<ExamStatus>(value, true, out var status)
-                        ? q.Where(e => e.Status == status)
-                        : q.Where(e => false),
+                {
+                    if (!Enum.TryParse<ExamStatus>(value, true, out var status))
+                        return q.Where(e => false);
+
+                    var now = EgyptTime.UtcNow;
+                    return status switch
+                    {
+                        ExamStatus.Draft => q.Where(e => e.Status == ExamStatus.Draft),
+                        ExamStatus.Scheduled => q.Where(e => e.Status != ExamStatus.Draft && e.Status != ExamStatus.Finished && (e.StartTime == null || e.StartTime > now) && (e.EndTime == null || e.EndTime > now)),
+                        ExamStatus.Started => q.Where(e => e.Status != ExamStatus.Draft && e.Status != ExamStatus.Finished && e.StartTime <= now && (e.EndTime == null || e.EndTime > now)),
+                        ExamStatus.Finished => q.Where(e => e.Status == ExamStatus.Finished || (e.Status != ExamStatus.Draft && e.EndTime != null && e.EndTime <= now)),
+                        _ => q
+                    };
+                },
             };
 
         public Dictionary<string, Func<IQueryable<Exam>, bool, IOrderedQueryable<Exam>>> Sorts { get; }
