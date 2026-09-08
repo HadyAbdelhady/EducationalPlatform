@@ -1,4 +1,4 @@
-﻿using Application.Features.Sheets.DTOs;
+using Application.Features.Sheets.DTOs;
 using Application.Common.Interfaces;
 using Application.Common;
 using Domain.Entities;
@@ -32,12 +32,16 @@ namespace Application.Features.AnswersSheets.Commands.ApproveAnswersSheet
                 return Result<string>.FailureStatusCode("You're unauthorized to approve this answers sheet", ErrorType.UnAuthorized);
             }
 
-            answersSheet.IsApproved = true;
+            answersSheet.IsApproved = request.IsApproved;
 
             _unitOfWork.Repository<AnswersSheet>().Update(answersSheet);
             await _unitOfWork.Repository<AnswersSheet>().SaveChangesAsync(cancellationToken);
 
-            return Result<string>.Success("Answers sheet approved successfully.");
+            var message = request.IsApproved
+                ? "Answers sheet approved successfully."
+                : "Answers sheet rejected successfully.";
+
+            return Result<string>.Success(message);
         }
     }
 }

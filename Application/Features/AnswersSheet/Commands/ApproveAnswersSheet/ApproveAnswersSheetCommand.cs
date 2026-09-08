@@ -1,4 +1,4 @@
-﻿using Application.Common;
+using Application.Common;
 using MediatR;
 
 namespace Application.Features.AnswersSheets.Commands.ApproveAnswersSheet
@@ -7,5 +7,6 @@ namespace Application.Features.AnswersSheets.Commands.ApproveAnswersSheet
     {
         public Guid AnswersSheetId { get; set; }
         public Guid InstructorId { get; set; }
+        public bool IsApproved { get; set; }
     }
 }

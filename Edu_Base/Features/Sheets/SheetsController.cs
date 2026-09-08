@@ -198,8 +198,8 @@ namespace Edu_Base.Features.Sheets
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
-        [HttpGet("answers/Approve/{answersSheetId}")]
-        public async Task<IActionResult> ApproveAnswersSheet(Guid answersSheetId, CancellationToken cancellationToken)
+        [HttpPatch("answers/{answersSheetId}/review")]
+        public async Task<IActionResult> ReviewAnswersSheet(Guid answersSheetId, [FromQuery] bool isApproved, CancellationToken cancellationToken)
         {
             if (!_currentUser.TryGetUserId(out var instructorId))
                 return Unauthorized("User id not found in token.");
@@ -207,7 +207,8 @@ namespace Edu_Base.Features.Sheets
             var answersSheetCommand = new ApproveAnswersSheetCommand
             {
                 AnswersSheetId = answersSheetId,
-                InstructorId = instructorId
+                InstructorId = instructorId,
+                IsApproved = isApproved
             };
 
             var result = await _mediator.Send(answersSheetCommand, cancellationToken);
