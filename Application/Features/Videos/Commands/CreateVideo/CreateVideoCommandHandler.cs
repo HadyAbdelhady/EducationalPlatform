@@ -30,6 +30,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
                     UpdatedAt = EgyptTime.UtcNow,
                     Rating = 1
 
+
                 };
 
                 var section = await _unitOfWork.Repository<Section>().GetByIdAsync(SectionId, cancellationToken);
