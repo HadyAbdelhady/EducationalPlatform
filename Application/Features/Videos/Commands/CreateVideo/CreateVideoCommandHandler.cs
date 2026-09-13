@@ -28,6 +28,7 @@ namespace Application.Features.Videos.Commands.CreateVideo
                     Description = request.Description,
                     CreatedAt = EgyptTime.UtcNow,
                     UpdatedAt = EgyptTime.UtcNow,
+                    Rating = 1
 
                 };
 

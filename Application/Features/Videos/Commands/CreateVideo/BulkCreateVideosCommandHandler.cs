@@ -33,6 +33,8 @@ namespace Application.Features.Videos.Commands.CreateVideo
                         Description = video.Description,
                         VideoUrl = video.VideoUrl,
                         SectionId = request.SectionId,
+                        Rating = 1
+
                     };
                     videosTobeAdded.Add(newVideo);
 
