@@ -1,0 +1,14 @@
+.gitignore
+  h_62ffff2fbd0461 55-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e09eba3ebe849e220f69e32a3f1557be5d4efb64",
+  "prompts": {},
+  "humans": {
+    "h_62ffff2fbd0461": {
+      "author": "HadyAbdelhady <hadyabdelhady1@gmail.com>"
+    }
+  }
+}
