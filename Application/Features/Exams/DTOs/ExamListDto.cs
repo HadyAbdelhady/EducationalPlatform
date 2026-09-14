@@ -25,11 +25,6 @@ namespace Application.Features.Exams.DTOs
         public DateTimeOffset? TakenAt { get; set; }
         public decimal ObtainedMarks { get; set; }
         public bool IsTaken { get; set; }
-        //public int NotStartedCount { get; set; }
-        //public int InProgressCount { get; set; }
-        //public int PassedCount { get; set; }
-        //public int FailedCount { get; set; }
-        //public int CompletedCount { get; set; }
     }
 
 }
