@@ -1,0 +1,26 @@
+Application/Features/Exams/Common/ExamQueryExtensions.cs
+  h_62ffff2fbd0461 1-14
+Application/Features/Exams/DTOs/ExamSubmissionDtoMapping.cs
+  h_62ffff2fbd0461 1,86-104
+Application/Features/Exams/Query/GetAllExams/GetAllExamsQuery.cs
+  h_62ffff2fbd0461 2,5
+Application/Features/Exams/Query/GetAllExams/GetAllExamsQueryHandler.cs
+  h_62ffff2fbd0461 1-136
+Application/Features/Exams/Query/GetStudentExamResult/GetStudentExamResultQueryHandler.cs
+  h_62ffff2fbd0461 47-51
+Edu_Base/Features/Exams/ExamController.cs
+  h_62ffff2fbd0461 8
+Infrastructure/Features/Exams/ExamQueryBuilding.cs
+  h_62ffff2fbd0461 2,12-27,43,67,70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fa47162c76638b21b02f936e7377eecfbe4523c0",
+  "prompts": {},
+  "humans": {
+    "h_62ffff2fbd0461": {
+      "author": "HadyAbdelhady <hadyabdelhady1@gmail.com>"
+    }
+  }
+}
