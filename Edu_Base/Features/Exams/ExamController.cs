@@ -5,7 +5,7 @@ using Application.Features.Exams.Command.DeleteExam;
 using Application.Features.Exams.Command.GenerateExam;
 using Application.Features.Exams.Command.StartExam;
 using Application.Features.Exams.Command.SubmitExam;
-using Application.Features.Exams.Query.GetAllStudentExams;
+using Application.Features.Exams.Query.GetAllExams;
 using Application.Features.Exams.Query.GetExamCalendarDays;
 using Application.Features.Exams.Query.GetExamById;
 using Application.Features.Exams.Query.GetExamSubmissionsList;

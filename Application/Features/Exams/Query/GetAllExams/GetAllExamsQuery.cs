@@ -1,9 +1,8 @@
-﻿using Application.Common;
-using Application.Features.Exams.DTOs;
 using Application.Common;
+using Application.Features.Exams.DTOs;
 using MediatR;
 
-namespace Application.Features.Exams.Query.GetAllStudentExams
+namespace Application.Features.Exams.Query.GetAllExams
 {
     public class GetAllExamsQuery : IRequest<Result<PaginatedResult<ExamListDto>>>
     {

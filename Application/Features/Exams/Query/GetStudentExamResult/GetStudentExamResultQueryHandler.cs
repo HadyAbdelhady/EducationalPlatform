@@ -44,21 +44,11 @@ namespace Application.Features.Exams.Query.GetStudentExamResult
                         predicate: u => u.Id == request.StudentId,
                         cancellationToken: cancellationToken);
 
-                var notStartedDto = new ExamSubmissionDto
-                {
-                    StudentId = request.StudentId,
-                    StudentName = user?.FullName ?? string.Empty,
-                    StudentProfilePicture = user?.PersonalPictureUrl ?? string.Empty,
-                    Status = ExamResultStatus.NotStarted,
-                    ObtainedMarks = 0,
-                    TotalMark = exam.TotalMark,
-                    PassMarkPercentage = exam.PassMarkPercentage,
-                    TakenAt = null,
-                    SubmittedAt = default,
-                    NumberOfAnswersSubmitted = 0,
-                    TotalQuestions = exam.NumberOfQuestions,
-                    IsCompleted = false
-                };
+                var notStartedDto = ExamSubmissionDtoMapping.MapNotStarted(
+                    request.StudentId,
+                    user?.FullName ?? string.Empty,
+                    user?.PersonalPictureUrl,
+                    exam);
 
                 return Result<ExamSubmissionDto>.Success(notStartedDto);
             }

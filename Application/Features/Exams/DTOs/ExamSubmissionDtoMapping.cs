@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Domain.Entities;
 using Domain.enums;
 
@@ -81,6 +81,25 @@ namespace Application.Features.Exams.DTOs
                 NumberOfAnswersSubmitted = er.StudentSubmissions?.Count ?? 0,
                 TotalQuestions = exam.NumberOfQuestions,
                 IsCompleted = er.Status == ExamResultStatus.Passed || er.Status == ExamResultStatus.Failed
+            };
+        }
+
+        public static ExamSubmissionDto MapNotStarted(Guid studentId, string studentName, string? profilePicture, Exam exam)
+        {
+            return new ExamSubmissionDto
+            {
+                StudentId = studentId,
+                StudentName = studentName,
+                StudentProfilePicture = profilePicture ?? string.Empty,
+                Status = ExamResultStatus.NotStarted,
+                ObtainedMarks = 0,
+                TotalMark = exam.TotalMark,
+                PassMarkPercentage = exam.PassMarkPercentage,
+                TakenAt = null,
+                SubmittedAt = default,
+                NumberOfAnswersSubmitted = 0,
+                TotalQuestions = exam.NumberOfQuestions,
+                IsCompleted = false
             };
         }
     }
