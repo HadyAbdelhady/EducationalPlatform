@@ -149,5 +149,14 @@ namespace Infrastructure.Features.Courses
                 10,
                 cancellationToken);
         }
+
+        public Task<Guid?> GetCourseInstructorIdAsync(Guid courseId, CancellationToken cancellationToken = default)
+        {
+            return _context.InstructorCourses
+                .AsNoTracking()
+                .Where(ic => ic.CourseId == courseId)
+                .Select(ic => (Guid?)ic.InstructorId)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace Application.Features.Courses.Interfaces
             IBaseFilterRegistry<Course> courseFilterRegistry,
             IStudentEducationYearProvider studentEducationYearProvider,
             CancellationToken cancellationToken = default);
+        Task<Guid?> GetCourseInstructorIdAsync(Guid courseId, CancellationToken cancellationToken = default);
     }
 }

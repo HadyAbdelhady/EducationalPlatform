@@ -62,7 +62,13 @@ namespace Infrastructure.Features.Auth
                 .AnyAsync(u => u.Id == studentId && u.Student != null, cancellationToken);
         }
 
-
-
+        public Task<Guid?> GetStudentCenterIdAsync(Guid studentId, CancellationToken cancellationToken = default)
+        {
+            return _context.Students
+                .AsNoTracking()
+                .Where(s => s.UserId == studentId)
+                .Select(s => s.CenterId)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }

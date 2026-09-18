@@ -1,10 +1,11 @@
-﻿using Application.Common;
+using Application.Common;
 using Application.Common.Interfaces;
 using Application.Features.Centers.Interfaces;
 using Application.Features.EducationYears.Interfaces;
 using Application.Features.Exams.DTOs;
 using Application.Features.Payment.DTOs;
 using Application.Features.Payment.Interfaces;
+using Application.Features.Payment.MonthlyPayout;
 using Application.Features.Questions.Interfaces;
 using Application.Features.Reviews.Interfaces;
 using Application.Features.Sheets.Interfaces;
@@ -26,6 +27,7 @@ using Infrastructure.Features.EducationYears;
 using Infrastructure.Features.Exams;
 using Infrastructure.Features.HomeScreen.EnrollmentProgress;
 using Infrastructure.Features.Payment.PaymobPaymentService;
+using Infrastructure.Features.Payment.PayoutRepository;
 using Infrastructure.Features.Reviews;
 using Infrastructure.Features.Reviews.ReviewService;
 using Infrastructure.Features.Sections;
@@ -164,6 +166,7 @@ namespace Edu_Base
             builder.Services.AddScoped<IInstructorContentScopeService, InstructorContentScopeService>();
             builder.Services.AddScoped<ICenterContentScopeService, CenterContentScopeService>();
             builder.Services.AddScoped<IScheduler, HangfireScheduler>();
+            builder.Services.AddScoped<IPayoutRepository, PayoutRepository>();
 
 
             // CORS Configuration (optional - configure as needed)
@@ -272,6 +275,17 @@ namespace Edu_Base
 
             app.UseScreenshotCheck();
             app.UseHangfireDashboard();
+
+            // ── Monthly payout recurring job ── runs 00:00 on the 15th, Africa/Cairo ──
+            RecurringJob.AddOrUpdate<MediatorHangfireBridge>(
+                "monthly-payout",
+                x => x.SendAsync(new MonthlyPayoutCommand()),
+                "0 0 15 * *",
+                new RecurringJobOptions
+                {
+                    TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Africa/Cairo")
+                });
+
             app.MapControllers();
 
             app.Run();

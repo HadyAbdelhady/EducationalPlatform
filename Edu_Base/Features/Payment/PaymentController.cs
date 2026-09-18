@@ -2,8 +2,11 @@ using Application.Common.Interfaces;
 using Application.Features.Payment.CreatePaymentIntension;
 using Application.Features.Payment.DTOs;
 using Application.Features.Payment.DTOs.PaymobRawDtos;
+using Application.Features.Payment.MonthlyPayout;
 using Application.Features.Payment.PaymentCallback;
 using Application.Features.Payment.PaymentWebhook;
+using Application.Features.Payment.Payout;
+using Application.Features.Payment.Refund;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -79,6 +82,56 @@ namespace Edu_Base.Features.Payment
                 },
                 cancellationToken);
 
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        // ── Refund ──────────────────────────────────────────────────
+        [HttpPost("Refund")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> RefundPayment([FromBody] RefundPaymentRequest request, CancellationToken cancellationToken)
+        {
+            if (!_currentUser.TryGetUserId(out var userId))
+                return Unauthorized("User id not found in token.");
+
+            var result = await _mediator.Send(new RefundCommand(request.PaymentId, userId), cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        // ── Admin payout endpoints ─────────────────────────────────────
+        [HttpGet("Admin/Payout")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAdminPayoutSummary(CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new GetAdminPayoutSummaryQuery(), cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpPost("Admin/TriggerPayout")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> TriggerMonthlyPayout(CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new MonthlyPayoutCommand(), cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        // ── CenterAdmin statement ────────────────────────────────────
+        [HttpGet("Center/Statement")]
+        [Authorize(Roles = "CenterAdmin")]
+        public async Task<IActionResult> GetCenterStatement([FromQuery] Guid centerId, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new GetCenterStatementQuery(centerId), cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        // ── Instructor balance ───────────────────────────────────────
+        [HttpGet("Instructor/Balance")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> GetInstructorBalance(CancellationToken cancellationToken)
+        {
+            if (!_currentUser.TryGetUserId(out var userId))
+                return Unauthorized("User id not found in token.");
+
+            var result = await _mediator.Send(new GetInstructorBalanceQuery(userId), cancellationToken);
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
     }

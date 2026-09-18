@@ -1,4 +1,3 @@
-﻿using Application.Common;
 using Application.Common;
 using Application.Common.Interfaces;
 using Application.Features.Exams.Interfaces;
@@ -43,10 +42,10 @@ namespace Application.Features.Exams.Command.SubmitExam
                 return Result<SubmissionResponse>.FailureStatusCode("Exam has not been started yet", ErrorType.NotFound);
             }
 
-            // Check if exam is in progress (student must have started the exam)
-            if (examResult.Status == ExamResultStatus.InProgress)
+            // Student must be InProgress to submit; any other status means not started or already submitted
+            if (examResult.Status != ExamResultStatus.InProgress)
             {
-                return Result<SubmissionResponse>.FailureStatusCode("Exam has already been submitted", ErrorType.Conflict);
+                return Result<SubmissionResponse>.FailureStatusCode("Exam is not in progress", ErrorType.Conflict);
             }
 
             // Calculate marks

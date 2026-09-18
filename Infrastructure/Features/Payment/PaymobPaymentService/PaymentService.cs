@@ -1,4 +1,4 @@
-﻿using Application.Features.Payment.DTOs;
+using Application.Features.Payment.DTOs;
 using Application.Features.Payment.DTOs.PaymobRawDtos;
 using Application.Features.Payment.Interfaces;
 using Microsoft.Extensions.Options;
@@ -129,6 +129,68 @@ namespace Infrastructure.Features.Payment.PaymobPaymentService
 
         public string GetPublicKey() => _settings.GetPublicKey();
         public string GetHmac() => _settings.GetHmac();
+
+        /// <inheritdoc/>
+        public async Task<string?> RefundAsync(string paymobTransactionId, int amountCents, CancellationToken cancellationToken = default)
+        {
+            // Paymob refund endpoint: POST /api/acceptance/void_refund/refund
+            var body = new { transaction_id = paymobTransactionId, amount_cents = amountCents };
+            var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.PostAsync("/api/acceptance/void_refund/refund", content, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Paymob refund failed: {await response.Content.ReadAsStringAsync(cancellationToken)}");
+                    return null;
+                }
+
+                var json = await response.Content.ReadAsStringAsync(cancellationToken);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                // Paymob returns { id: <int>, ... } for the refund transaction
+                return doc.RootElement.TryGetProperty("id", out var idEl) ? idEl.ToString() : "ok";
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ RefundAsync exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<string?> SendPayoutAsync(string recipientId, decimal amountEgp, string reference, CancellationToken cancellationToken = default)
+        {
+            // TODO: confirm exact Paymob Send / Disbursement endpoint URL with Paymob before go-live.
+            // ponytail: placeholder uses the documented endpoint shape; swap the path once confirmed.
+            var body = new
+            {
+                recipient_id = recipientId,
+                amount = (int)(amountEgp * 100), // Paymob Send expects piastres
+                currency = "EGP",
+                description = reference
+            };
+            var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.PostAsync("/v1/ecommerce/payouts/", content, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Paymob Send failed: {await response.Content.ReadAsStringAsync(cancellationToken)}");
+                    return null;
+                }
+
+                var json = await response.Content.ReadAsStringAsync(cancellationToken);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                return doc.RootElement.TryGetProperty("id", out var idEl) ? idEl.ToString() : "ok";
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ SendPayoutAsync exception: {ex.Message}");
+                return null;
+            }
+        }
 
         private static async Task<string> EnsureSuccessAsync(HttpResponseMessage response, CancellationToken cancellationToken)
         {

@@ -13,7 +13,7 @@ namespace Infrastructure.Common.Data
 
             // PostgreSQL Enum configurations
             modelBuilder.HasPostgresEnum(schema: "public", name: "exam_status", ["Submitted", "Graded", "Pending"]);
-            modelBuilder.HasPostgresEnum(schema: "public", name: "payment_status", ["Pending", "Completed", "Failed"]);
+            modelBuilder.HasPostgresEnum(schema: "public", name: "payment_status", ["Pending", "Completed", "Failed", "Refunded"]);
             modelBuilder.HasPostgresEnum("public", "UsageCategory", ["ProfilePicture", "Thumbnail"]);
 
             // Query Filters (cannot be done with Data Annotations)
@@ -43,6 +43,8 @@ namespace Infrastructure.Common.Data
             modelBuilder.Entity<ChatMessage>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<PaymentTransactions>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<StudentExamResult>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<CenterInstructor>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<ExamQuestions>().HasQueryFilter(x => !x.IsDeleted);
 
             // Enum conversions (cannot be done with Data Annotations)
             modelBuilder.Entity<Sheet>()
@@ -532,6 +534,57 @@ namespace Infrastructure.Common.Data
                     .WithMany(x => x.CenterAdmins)
                     .HasForeignKey(x => x.CenterId)
                     .HasConstraintName("center_admins_center_id_fkey");
+            });
+
+            // ── Payout entity configuration ───────────────────────────────────────
+
+            modelBuilder.Entity<PaymentTransactions>(b =>
+            {
+                b.Property(x => x.PayeeType)
+                    .HasConversion<EnumToStringConverter<PayeeType>>();
+            });
+
+            modelBuilder.Entity<PayoutAccount>(b =>
+            {
+                b.HasIndex(x => new { x.PayeeType, x.PayeeId }).IsUnique();
+                b.Property(x => x.PayeeType)
+                    .HasConversion<EnumToStringConverter<PayeeType>>();
+            });
+
+            modelBuilder.Entity<PayoutBatch>(b =>
+            {
+                b.HasIndex(x => new { x.PayeeType, x.PayeeId, x.PeriodYear, x.PeriodMonth }).IsUnique();
+                b.Property(x => x.PayeeType)
+                    .HasConversion<EnumToStringConverter<PayeeType>>();
+                b.Property(x => x.Status)
+                    .HasConversion<EnumToStringConverter<PayoutBatchStatus>>();
+                b.HasMany(x => x.Payments)
+                    .WithOne(x => x.PayoutBatch)
+                    .HasForeignKey(x => x.PayoutBatchId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.SetNull);
+                b.HasMany(x => x.LedgerLines)
+                    .WithOne(x => x.PayoutBatch)
+                    .HasForeignKey(x => x.PayoutBatchId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<PayoutLedgerLine>(b =>
+            {
+                b.Property(x => x.PayeeType)
+                    .HasConversion<EnumToStringConverter<PayeeType>>();
+                b.Property(x => x.Type)
+                    .HasConversion<EnumToStringConverter<LedgerLineType>>();
+                // ponytail: partial unique index — one credit line per sale, subscription lines have no PaymentId
+                b.HasIndex(x => x.PaymentId)
+                    .IsUnique()
+                    .HasFilter("payment_id IS NOT NULL");
+                b.HasOne(x => x.Payment)
+                    .WithMany()
+                    .HasForeignKey(x => x.PaymentId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
         }
     }

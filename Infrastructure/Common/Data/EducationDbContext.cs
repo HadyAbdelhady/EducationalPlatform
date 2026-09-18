@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Infrastructure.Common.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +45,11 @@ namespace Infrastructure.Common.Data
         public DbSet<CenterInstructor> CenterInstructors => Set<CenterInstructor>();
         public DbSet<CenterInstructorEducationYear> CenterInstructorEducationYears => Set<CenterInstructorEducationYear>();
         public DbSet<CenterAdmin> CenterAdmins => Set<CenterAdmin>();
+
+        // ── Payout ledger ─────────────────────────────────────────────────
+        public DbSet<PayoutAccount> PayoutAccounts => Set<PayoutAccount>();
+        public DbSet<PayoutBatch> PayoutBatches => Set<PayoutBatch>();
+        public DbSet<PayoutLedgerLine> PayoutLedgerLines => Set<PayoutLedgerLine>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

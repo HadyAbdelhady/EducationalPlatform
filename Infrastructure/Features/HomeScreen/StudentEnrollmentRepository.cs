@@ -1,4 +1,4 @@
-﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces;
 using Application.Features.HomeScreen.Interfaces;
 using Domain.Entities;
 using Domain.enums;
@@ -159,6 +159,43 @@ namespace Infrastructure.Features.HomeScreen
             return _context.StudentCourses.AnyAsync(
                 sc => sc.StudentId == studentId && sc.CourseId == courseId,
                 cancellationToken);
+        }
+
+        public async Task UnenrollFromPaymentAsync(
+            Guid studentId,
+            Guid? courseId,
+            Guid? sectionId,
+            CancellationToken cancellationToken = default)
+        {
+            if (sectionId.HasValue)
+            {
+                var ss = await _context.StudentSections
+                    .FirstOrDefaultAsync(x => x.StudentId == studentId && x.SectionId == sectionId.Value, cancellationToken);
+
+                if (ss == null) return;
+
+                var section = await _context.Sections.FirstOrDefaultAsync(s => s.Id == sectionId.Value, cancellationToken);
+
+                _context.StudentSections.Remove(ss);
+
+                if (section != null && section.NumberOfStudentsEnrolled > 0)
+                    section.NumberOfStudentsEnrolled--;
+
+                return;
+            }
+
+            if (!courseId.HasValue) return;
+
+            var sc = await _context.StudentCourses
+                .FirstOrDefaultAsync(x => x.StudentId == studentId && x.CourseId == courseId.Value, cancellationToken);
+
+            if (sc == null) return;
+
+            _context.StudentCourses.Remove(sc);
+
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId.Value, cancellationToken);
+            if (course != null && course.NumberOfStudentsEnrolled > 0)
+                course.NumberOfStudentsEnrolled--;
         }
     }
 }

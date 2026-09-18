@@ -4,7 +4,8 @@ namespace Domain.enums
     {
         Pending,
         Completed,
-        Failed
+        Failed,
+        Refunded
     }
 }
 

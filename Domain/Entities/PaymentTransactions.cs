@@ -42,11 +42,30 @@ namespace Domain.Entities
         [Column("is_deleted")]
         public bool IsDeleted { get; set; }
 
+        // ── Payout fields (set on webhook Completed) ──────────────────────
+        [Column("payee_type")]
+        public PayeeType? PayeeType { get; set; }
+
+        [Column("payee_id")]
+        public Guid? PayeeId { get; set; }
+
+        [Column("platform_percent_fee")]
+        public decimal PlatformPercentFee { get; set; }
+
+        [Column("paymob_acceptance_fee")]
+        public decimal PaymobAcceptanceFee { get; set; }
+
+        [Column("payee_credit")]
+        public decimal PayeeCredit { get; set; }
+
+        /// <summary>Null until the 15th monthly job claims this payment into a batch.</summary>
+        [Column("payout_batch_id")]
+        [ForeignKey(nameof(PayoutBatch))]
+        public Guid? PayoutBatchId { get; set; }
+
         public Student? Student { get; set; }
         public Course? Course { get; set; }
         public Section? Section { get; set; }
+        public PayoutBatch? PayoutBatch { get; set; }
     }
-
 }
-
-

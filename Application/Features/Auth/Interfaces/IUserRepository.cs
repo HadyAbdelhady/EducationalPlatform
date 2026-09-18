@@ -1,4 +1,4 @@
-﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces;
 using Domain.Entities;
 
 namespace Application.Features.Auth.Interfaces
@@ -10,5 +10,6 @@ namespace Application.Features.Auth.Interfaces
         Task<User?> GetInstructorByIdWithRelationsAsync(Guid userId, CancellationToken cancellationToken = default);
         Task<bool> DoesInstructorExistAsync(Guid instructorId, CancellationToken cancellationToken);
         Task<bool> DoesStudentExistAsync(Guid studentId, CancellationToken cancellationToken);
+        Task<Guid?> GetStudentCenterIdAsync(Guid studentId, CancellationToken cancellationToken = default);
     }
 }

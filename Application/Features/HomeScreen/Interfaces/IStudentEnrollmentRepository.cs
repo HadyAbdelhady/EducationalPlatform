@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 
 namespace Application.Features.HomeScreen.Interfaces
 {
@@ -10,6 +10,7 @@ namespace Application.Features.HomeScreen.Interfaces
         Task AddStudentCourseAsync(StudentCourse studentCourse, CancellationToken cancellationToken = default);
         Task AddStudentSectionAsync(StudentSection studentSection, CancellationToken cancellationToken = default);
         Task EnrollFromPaymentAsync(Guid studentId, Guid? courseId, Guid? sectionId, CancellationToken cancellationToken = default);
+        Task UnenrollFromPaymentAsync(Guid studentId, Guid? courseId, Guid? sectionId, CancellationToken cancellationToken = default);
         Task<decimal> GetRemainingCoursePriceAsync(Guid studentId, Guid courseId, decimal catalogPrice, CancellationToken cancellationToken = default);
     }
 }

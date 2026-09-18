@@ -19,6 +19,9 @@ namespace Domain.Entities
         [Column("application_name")]
         public string ApplicationName { get; set; } = string.Empty;
 
+        [Column("paymob_recipient_id")]
+        public string? PaymobRecipientId { get; set; }
+
         public ICollection<InstructorCourse> InstructorCourses { get; set; } = [];
         public ICollection<InstructorSection> InstructorSections { get; set; } = [];
         public ICollection<InstructorReview> InstructorReviews { get; set; } = [];

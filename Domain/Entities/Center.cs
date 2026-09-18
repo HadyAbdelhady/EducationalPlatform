@@ -24,6 +24,9 @@ namespace Domain.Entities
         [Column("location_maps")]
         public string? LocationMaps { get; set; }
 
+        [Column("paymob_recipient_id")]
+        public string? PaymobRecipientId { get; set; }
+
         [Column("is_deleted")]
         public bool IsDeleted { get; set; }
 
