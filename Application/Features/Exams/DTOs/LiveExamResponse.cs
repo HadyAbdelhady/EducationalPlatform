@@ -26,5 +26,6 @@ namespace Application.Features.Exams.DTOs
         public int? RemainingMinutes { get; set; }
         public decimal? AutoScore { get; set; }
         public bool TriedScreenshot { get; set; }
+        public int ScreenshotTrials { get; set; }
     }
 }

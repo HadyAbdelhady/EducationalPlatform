@@ -53,7 +53,8 @@ namespace Application.Features.Exams.Query.GetLiveExam
                     er.Status,
                     er.TakenAt,
                     er.StudentMark,
-                    er.Student.TriedScreenshot
+                    er.Student.TriedScreenshot,
+                    er.Student.ScreenshotTrials
                 })
                 .ToListAsync(cancellationToken);
 
@@ -100,7 +101,8 @@ namespace Application.Features.Exams.Query.GetLiveExam
                     RemainingMinutes = remaining,
                     AutoScore = (r.Status == ExamResultStatus.Passed || r.Status == ExamResultStatus.Failed)
                         ? r.StudentMark : null,
-                    TriedScreenshot = r.TriedScreenshot
+                    TriedScreenshot = r.TriedScreenshot,
+                    ScreenshotTrials = r.ScreenshotTrials
                 };
             }).ToList();
 

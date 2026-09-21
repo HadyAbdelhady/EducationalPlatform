@@ -1,4 +1,4 @@
-﻿using Application.Features.EducationYears.Interfaces;
+using Application.Features.EducationYears.Interfaces;
 using Application.Features.Auth.DTOs;
 using Application.Common.Interfaces;
 using Application.Features.Auth.Interfaces;
@@ -73,6 +73,7 @@ namespace Application.Features.Auth.Commands.StudentGoogleLogin
                         ParentPhoneNumber = request.ParentPhoneNumber,
                         EducationYearId = request.EducationYearId,
                         TriedScreenshot = false,
+                        ScreenshotTrials = 0,
                         CenterId = request.CenterId  // null in instructor-only mode
                     };
 

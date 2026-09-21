@@ -71,7 +71,9 @@ namespace Infrastructure.Features.Profiles
                     EducationYearId = s.EducationYearId,
                     EducationYearName = s.EducationYear.EducationYearName,
                     CenterId = s.CenterId,
-                    CenterName = s.Center != null ? s.Center.Name : null
+                    CenterName = s.Center != null ? s.Center.Name : null,
+                    TriedScreenshot = s.TriedScreenshot,
+                    ScreenshotTrials = s.ScreenshotTrials
                 })
                 .FirstOrDefaultAsync(cancellationToken);
         }

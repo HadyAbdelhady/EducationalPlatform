@@ -490,7 +490,8 @@ namespace Infrastructure.Features.HomeScreen
                     EntityId = s.UserId,
                     Title = "Screenshot attempt detected",
                     When = EgyptTime.UtcNow,
-                    ParentPhone = s.ParentPhoneNumber
+                    ParentPhone = s.ParentPhoneNumber,
+                    ScreenshotTrials = s.ScreenshotTrials
                 })
                 .ToListAsync(cancellationToken);
             items.AddRange(screenshots);

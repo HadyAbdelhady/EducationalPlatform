@@ -34,6 +34,8 @@ namespace Application.Features.Profiles.DTOs
         public string EducationYearName { get; set; } = string.Empty;
         public Guid? CenterId { get; set; }
         public string? CenterName { get; set; }
+        public bool TriedScreenshot { get; set; }
+        public int ScreenshotTrials { get; set; }
         public List<EnrollmentProgressDto> Enrollments { get; set; } = [];
     }
 

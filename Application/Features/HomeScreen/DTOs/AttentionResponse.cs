@@ -15,5 +15,6 @@ namespace Application.Features.HomeScreen.DTOs
         public string Title { get; set; } = string.Empty;
         public DateTimeOffset When { get; set; }
         public string ParentPhone { get; set; } = string.Empty;
+        public int ScreenshotTrials { get; set; }
     }
 }

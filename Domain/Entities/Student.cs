@@ -17,6 +17,9 @@ namespace Domain.Entities
         [Column("tried_screenshot")]
         public bool TriedScreenshot { get; set; }
 
+        [Column("screenshot_trials")]
+        public int ScreenshotTrials { get; set; } = 0;
+
         [Required]
         [Column("parent_phone_number")]
         public string ParentPhoneNumber { get; set; } = string.Empty;

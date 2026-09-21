@@ -1,4 +1,4 @@
-﻿using Infrastructure.Common.Data;
+using Infrastructure.Common.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,10 +17,11 @@ namespace Infrastructure.Common.Middleware
         {
             // Resolve scoped DbContext from the request scope to avoid resolving scoped services from the root provider
             var dbContext = context.RequestServices.GetService(typeof(EducationDbContext)) as EducationDbContext;
-            // Skip middleware for authentication endpoints
+            // Skip middleware for authentication endpoints and screenshot reporting
             if (context.Request.Path.StartsWithSegments("/api/auth") ||
                 context.Request.Path.StartsWithSegments("/api/studentAuth") ||
-                context.Request.Path.StartsWithSegments("/api/instructorAuth"))
+                context.Request.Path.StartsWithSegments("/api/instructorAuth") ||
+                (context.Request.Path.Value?.Contains("screenshot-", StringComparison.OrdinalIgnoreCase) ?? false))
             {
                 await _next(context);
                 return;
