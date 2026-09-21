@@ -1,0 +1,46 @@
+Application/Features/Auth/Commands/StudentGoogleLogin/StudentGoogleLoginCommandHandler.cs
+  h_62ffff2fbd0461 1,76
+Application/Features/Exams/DTOs/LiveExamResponse.cs
+  h_62ffff2fbd0461 29
+Application/Features/Exams/Query/GetLiveExam/GetLiveExamQueryHandler.cs
+  h_62ffff2fbd0461 56-57,104-105
+Application/Features/HomeScreen/DTOs/AttentionResponse.cs
+  h_62ffff2fbd0461 18
+Application/Features/Profiles/DTOs/ProfileResponses.cs
+  h_62ffff2fbd0461 37-38
+Application/Features/Students/Commands/IncrementScreenshotTrial/IncrementScreenshotTrialCommand.cs
+  h_62ffff2fbd0461 1-11
+Application/Features/Students/Commands/IncrementScreenshotTrial/IncrementScreenshotTrialCommandHandler.cs
+  h_62ffff2fbd0461 1-38
+Application/Features/Students/Commands/ResetScreenshotTrial/ResetScreenshotRestrictionCommand.cs
+  h_62ffff2fbd0461 1-11
+Application/Features/Students/Commands/ResetScreenshotTrial/ResetScreenshotRestrictionCommandHandler.cs
+  h_62ffff2fbd0461 1-38
+Application/Features/Students/DTOs/StudentScreenshotStatusDto.cs
+  h_62ffff2fbd0461 1-10
+Application/Features/Students/Interfaces/IStudentRepository.cs
+  h_62ffff2fbd0461 1-10
+Domain/Entities/Student.cs
+  h_62ffff2fbd0461 20-22
+Edu_Base/Features/Students/StudentController.cs
+  h_62ffff2fbd0461 1-75
+Infrastructure/Common/Middleware/ScreenshotCheckMiddleware.cs
+  h_62ffff2fbd0461 1,20,23-24
+Infrastructure/Features/HomeScreen/HomeScreenRepository.cs
+  h_62ffff2fbd0461 493-494
+Infrastructure/Features/Profiles/ProfileRepository.cs
+  h_62ffff2fbd0461 74-76
+Infrastructure/Features/Students/StudentRepository.cs
+  h_62ffff2fbd0461 1-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "71df04ba66a599f097831c7a31fc047fa410ad98",
+  "prompts": {},
+  "humans": {
+    "h_62ffff2fbd0461": {
+      "author": "HadyAbdelhady <hadyabdelhady1@gmail.com>"
+    }
+  }
+}
