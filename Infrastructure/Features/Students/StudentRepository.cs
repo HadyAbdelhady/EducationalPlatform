@@ -21,5 +21,11 @@ namespace Infrastructure.Features.Students
             _context.Students.Update(student);
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task AddScreenshotAsync(StudentScreenshot screenshot, CancellationToken cancellationToken = default)
+        {
+            await _context.StudentScreenshots.AddAsync(screenshot, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

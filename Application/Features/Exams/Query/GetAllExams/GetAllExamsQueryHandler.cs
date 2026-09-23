@@ -86,40 +86,64 @@ namespace Application.Features.Exams.Query.GetAllExams
                 .ApplySort(request.RequestSkeleton.SortBy, request.RequestSkeleton.IsDescending, _examFilterRegistry.Sorts);
 
             var now = EgyptTime.UtcNow;
-            var examsQuery = exams
-                .Select(e => new
+            IQueryable<ExamListDto> examsQuery = isInstructor
+                ? exams.Select(e => new ExamListDto
                 {
-                    Exam = e,
-                    StudentResult = !isInstructor
-                        ? e.ExamResults.FirstOrDefault(se => se.StudentId == request.UserId)
-                        : null
-                })
-                .Select(x => new ExamListDto
-                {
-                    ExamId = x.Exam.Id,
-                    Name = x.Exam.Name,
-                    Description = x.Exam.Description,
-                    ExamStatus = x.Exam.Status == ExamStatus.Draft
+                    ExamId = e.Id,
+                    Name = e.Name,
+                    Description = e.Description,
+                    ExamStatus = e.Status == ExamStatus.Draft
                         ? ExamStatus.Draft
-                        : (x.Exam.Status == ExamStatus.Finished || (x.Exam.EndTime != null && x.Exam.EndTime <= now)
+                        : (e.Status == ExamStatus.Finished || (e.EndTime != null && e.EndTime <= now)
                             ? ExamStatus.Finished
-                            : (x.Exam.StartTime != null && x.Exam.StartTime <= now
+                            : (e.StartTime != null && e.StartTime <= now
                                 ? ExamStatus.Started
                                 : ExamStatus.Scheduled)),
-                    StudentExamStatusResult = x.StudentResult != null ? x.StudentResult.Status : ExamResultStatus.NotStarted,
-                    StartTime = x.Exam.StartTime,
-                    EndTime = x.Exam.EndTime,
-                    IsTaken = x.StudentResult != null &&
-                        (x.StudentResult.Status == ExamResultStatus.InProgress || x.StudentResult.Status == ExamResultStatus.Passed || x.StudentResult.Status == ExamResultStatus.Failed),
-                    TotalMark = x.Exam.TotalMark,
-                    NumberOfQuestions = x.Exam.NumberOfQuestions,
-                    DurationInMinutes = x.Exam.DurationInMinutes,
-                    IsRandomized = x.Exam.IsRandomized,
-                    ExamType = x.Exam.ExamType,
-                    PassMarkPercentage = x.Exam.PassMarkPercentage,
-                    ObtainedMarks = x.StudentResult != null ? (x.StudentResult.StudentMark ?? 0m) : 0m,
-                    TakenAt = x.StudentResult != null ? x.StudentResult.TakenAt : null,
-                });
+                    StudentExamStatusResult = ExamResultStatus.NotStarted,
+                    StartTime = e.StartTime,
+                    EndTime = e.EndTime,
+                    IsTaken = false,
+                    TotalMark = e.TotalMark,
+                    NumberOfQuestions = e.NumberOfQuestions,
+                    DurationInMinutes = e.DurationInMinutes,
+                    IsRandomized = e.IsRandomized,
+                    ExamType = e.ExamType,
+                    PassMarkPercentage = e.PassMarkPercentage,
+                    ObtainedMarks = 0m,
+                    TakenAt = null,
+                })
+                : exams
+                    .Select(e => new
+                    {
+                        Exam = e,
+                        StudentResult = e.ExamResults.FirstOrDefault(se => se.StudentId == request.UserId)
+                    })
+                    .Select(x => new ExamListDto
+                    {
+                        ExamId = x.Exam.Id,
+                        Name = x.Exam.Name,
+                        Description = x.Exam.Description,
+                        ExamStatus = x.Exam.Status == ExamStatus.Draft
+                            ? ExamStatus.Draft
+                            : (x.Exam.Status == ExamStatus.Finished || (x.Exam.EndTime != null && x.Exam.EndTime <= now)
+                                ? ExamStatus.Finished
+                                : (x.Exam.StartTime != null && x.Exam.StartTime <= now
+                                    ? ExamStatus.Started
+                                    : ExamStatus.Scheduled)),
+                        StudentExamStatusResult = x.StudentResult != null ? x.StudentResult.Status : ExamResultStatus.NotStarted,
+                        StartTime = x.Exam.StartTime,
+                        EndTime = x.Exam.EndTime,
+                        IsTaken = x.StudentResult != null &&
+                            (x.StudentResult.Status == ExamResultStatus.InProgress || x.StudentResult.Status == ExamResultStatus.Passed || x.StudentResult.Status == ExamResultStatus.Failed),
+                        TotalMark = x.Exam.TotalMark,
+                        NumberOfQuestions = x.Exam.NumberOfQuestions,
+                        DurationInMinutes = x.Exam.DurationInMinutes,
+                        IsRandomized = x.Exam.IsRandomized,
+                        ExamType = x.Exam.ExamType,
+                        PassMarkPercentage = x.Exam.PassMarkPercentage,
+                        ObtainedMarks = x.StudentResult != null ? (x.StudentResult.StudentMark ?? 0m) : 0m,
+                        TakenAt = x.StudentResult != null ? x.StudentResult.TakenAt : null,
+                    });
 
             var pageSize = request.RequestSkeleton.PageSize > 0
                 ? request.RequestSkeleton.PageSize

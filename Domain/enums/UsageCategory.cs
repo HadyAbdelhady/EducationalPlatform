@@ -5,5 +5,6 @@ namespace Domain.enums
         Thumbnail,
         ProfilePicture,
         CourseThumbnail,
+        Screenshot,
     }
 }

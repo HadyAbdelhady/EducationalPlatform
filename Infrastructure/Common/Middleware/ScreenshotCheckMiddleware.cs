@@ -21,7 +21,7 @@ namespace Infrastructure.Common.Middleware
             if (context.Request.Path.StartsWithSegments("/api/auth") ||
                 context.Request.Path.StartsWithSegments("/api/studentAuth") ||
                 context.Request.Path.StartsWithSegments("/api/instructorAuth") ||
-                (context.Request.Path.Value?.Contains("screenshot-", StringComparison.OrdinalIgnoreCase) ?? false))
+                (context.Request.Path.Value?.Contains("screenshot", StringComparison.OrdinalIgnoreCase) ?? false))
             {
                 await _next(context);
                 return;

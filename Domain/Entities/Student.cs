@@ -49,6 +49,7 @@ namespace Domain.Entities
         public ICollection<StudentExamResult> ExamResults { get; set; } = [];
         public ICollection<PaymentTransactions> Payments { get; set; } = [];
         public ICollection<StudentAnswers> StudentSubmissions { get; set; } = [];
+        public ICollection<StudentScreenshot> Screenshots { get; set; } = [];
     }
 }
 

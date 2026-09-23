@@ -19,28 +19,37 @@ namespace Edu_Base.Features.Students
         private readonly ICurrentUserService _currentUser = currentUser;
 
         /// <summary>
-        /// Increments the screenshot attempt counter for a student and flags them as restricted.
-        /// Can be reported by the student themselves or by an instructor/admin.
-        /// POST /api/students/{studentId}/screenshot-trials/increment
+        /// Records an attempted screenshot by the authenticated student, uploads the captured page image to Cloudinary,
+        /// creates a historical record of the attempt, increments their counter, and restricts their account.
+        /// POST /api/students/screenshot-trial
+        /// Content-Type: multipart/form-data
         /// </summary>
-        [HttpPost("{studentId:guid}/screenshot-trials/increment")]
-        [HttpPost("{studentId:guid}/screenshot-trial")]
-        [Authorize(Roles = "Student,Instructor,CenterAdmin,Admin")]
+        [HttpPost("screenshot-trial")]
+        [Consumes("multipart/form-data")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> IncrementScreenshotTrial(
-            Guid studentId,
+            IFormFile image,
+            [FromForm] string? pageName = null,
             CancellationToken cancellationToken = default)
         {
-            if (User.IsInRole("Student"))
+            if (!_currentUser.TryGetUserId(out var studentId))
             {
-                if (!_currentUser.TryGetUserId(out var requesterId) || requesterId != studentId)
-                {
-                    return Forbid();
-                }
+                return Unauthorized("User id not found in token.");
             }
 
-            _logger.LogInformation("Incrementing screenshot trial for student: {StudentId}", studentId);
+            if (image is null || image.Length == 0)
+            {
+                return BadRequest("A screenshot image file is required.");
+            }
 
-            var command = new IncrementScreenshotTrialCommand { StudentId = studentId };
+            _logger.LogInformation("Recording screenshot trial for student: {StudentId} on page: {PageName}", studentId, pageName);
+
+            var command = new IncrementScreenshotTrialCommand
+            {
+                StudentId = studentId,
+                ImageFile = image,
+                PageName = pageName
+            };
             var result = await _mediator.Send(command, cancellationToken);
 
             return result.IsSuccess
@@ -55,8 +64,6 @@ namespace Edu_Base.Features.Students
         /// POST /api/students/{studentId}/screenshot-restriction/reset
         /// </summary>
         [HttpPost("{studentId:guid}/screenshot-restriction/reset")]
-        [HttpPost("{studentId:guid}/screenshot-trials/reset")]
-        [HttpPost("{studentId:guid}/reset-screenshot-trial")]
         [Authorize(Roles = "Instructor,CenterAdmin,Admin")]
         public async Task<IActionResult> ResetScreenshotRestriction(
             Guid studentId,

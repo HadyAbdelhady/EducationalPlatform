@@ -1,4 +1,4 @@
-﻿using Application.Common;
+using Application.Common;
 using Application.Features.Videos.DTOs;
 using Application.Common.Interfaces;
 using CloudinaryDotNet;
@@ -401,6 +401,7 @@ namespace Infrastructure.Common.Services
                 UsageCategory.ProfilePicture => "educational_platform/profile_pictures",
                 UsageCategory.Thumbnail => "educational_platform/video_thumbnails",
                 UsageCategory.CourseThumbnail => "educational_platform/course_thumbnails",
+                UsageCategory.Screenshot => "educational_platform/screenshots",
                 _ => "educational_platform/uploads"
             };
         }
@@ -439,6 +440,11 @@ namespace Infrastructure.Common.Services
                     .Width(800).Height(450)
                     .Crop("fill")
                     .Gravity("center")
+                    .Quality("auto:good")
+                    .FetchFormat("auto"),
+
+                // Mobile Screenshot: Maintain original dimensions/aspect ratio
+                UsageCategory.Screenshot => new Transformation()
                     .Quality("auto:good")
                     .FetchFormat("auto"),
 
