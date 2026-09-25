@@ -14,9 +14,15 @@ namespace Domain.Entities
         [ForeignKey(nameof(Student))]
         public Guid StudentId { get; set; }
 
-        [Required]
+        [Column("entity_type")]
+        [MaxLength(100)]
+        public string? EntityType { get; set; }
+
+        [Column("entity_id")]
+        public Guid? EntityId { get; set; }
+
         [Column("image_url")]
-        public string ImageUrl { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
 
         [Column("page_name")]
         [MaxLength(255)]

@@ -1,6 +1,7 @@
 using Application.Common.Interfaces;
 using Application.Features.Students.Commands.IncrementScreenshotTrial;
 using Application.Features.Students.Commands.ResetScreenshotTrial;
+using Application.Features.Students.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,17 +20,14 @@ namespace Edu_Base.Features.Students
         private readonly ICurrentUserService _currentUser = currentUser;
 
         /// <summary>
-        /// Records an attempted screenshot by the authenticated student, uploads the captured page image to Cloudinary,
-        /// creates a historical record of the attempt, increments their counter, and restricts their account.
+        /// Records an attempted screenshot by the authenticated student,
+        /// creates a historical record of the attempt with the target entity, increments their counter, and restricts their account.
         /// POST /api/students/screenshot-trial
-        /// Content-Type: multipart/form-data
         /// </summary>
         [HttpPost("screenshot-trial")]
-        [Consumes("multipart/form-data")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> IncrementScreenshotTrial(
-            IFormFile image,
-            [FromForm] string? pageName = null,
+            [FromBody] IncrementScreenshotTrialRequest? request,
             CancellationToken cancellationToken = default)
         {
             if (!_currentUser.TryGetUserId(out var studentId))
@@ -37,18 +35,15 @@ namespace Edu_Base.Features.Students
                 return Unauthorized("User id not found in token.");
             }
 
-            if (image is null || image.Length == 0)
-            {
-                return BadRequest("A screenshot image file is required.");
-            }
-
-            _logger.LogInformation("Recording screenshot trial for student: {StudentId} on page: {PageName}", studentId, pageName);
+            _logger.LogInformation("Recording screenshot trial for student: {StudentId}, EntityType: {EntityType}, EntityId: {EntityId}",
+                studentId, request?.EntityType, request?.EntityId);
 
             var command = new IncrementScreenshotTrialCommand
             {
                 StudentId = studentId,
-                ImageFile = image,
-                PageName = pageName
+                EntityType = request?.EntityType,
+                EntityId = request?.EntityId,
+                PageName = request?.PageName
             };
             var result = await _mediator.Send(command, cancellationToken);
 
