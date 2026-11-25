@@ -100,5 +100,21 @@ namespace Edu_Base.Features.Questions
             return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
         }
 
+        [HttpPost("BulkCreate")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> BulkCreate([FromForm] BulkAddQuestionsCommand command, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
+        [HttpPatch("BulkUpdate")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> BulkUpdate([FromForm] BulkUpdateQuestionsCommand command, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+            return result.IsSuccess ? Ok(result) : StatusCode((int)result.ErrorType, result);
+        }
+
     }
 }
